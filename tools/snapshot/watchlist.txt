@@ -56,3 +56,10 @@ langgenius/dify	adjacent
 Mintplex-Labs/anything-llm	adjacent
 khoj-ai/khoj	adjacent
 stanford-oval/storm	adjacent
+DeusData/codebase-memory-mcp	adjacent
+Mirix-AI/MIRIX	agent-memory
+getzep/zep	agent-memory
+monarch-initiative/ontogpt	core
+urchade/GLiNER	core
+zjunlp/DeepKE	core
+GoogleCloudPlatform/open-knowledge-format	markdown-kb
