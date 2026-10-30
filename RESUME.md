@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261030 19:23 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). Branch:
+Last updated 20261030 19:39 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). Branch:
 `worktree-20261030_1852-kb-kg-docs-scaffold` (private remote; nothing is on `main` yet).
 
 ## Done and committed
@@ -16,22 +16,50 @@ Last updated 20261030 19:23 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). Bran
 | `bcd1b3d` | First landscape snapshot, 20261030 19:13 UTC: 924 repositories, data only |
 | `d955525` | `pinakes/experiments/`: what Pinakes has measured and how it decides |
 | `f49c44d` | Proposed project selection; seven missed projects added to the watchlist |
+| `b1fd9d2` | The card form defined in the entry template |
+| `0426230` | Four pilot cards: kuzu, claude-mem, tencentdb-agent-memory, openkb |
 
-## Running
+## Running (wave B, started about 19:30 UTC)
 
-Nothing. All twenty wave A writers have reported and been reviewed.
+The owner approved the [selection](kb-kg/landscape/20261030_1922-selection.md) with a pilot first. The
+pilot (4 hard-case cards) cost 159,932 tokens and 59 tool calls; it is reviewed and committed (`0426230`).
 
-## Waiting on the owner
+- **10 deep entries** (one file each in `kb-kg/projects/`): mem0, cognee, openviking, letta, pageindex,
+  llm-wiki-nashsu, basic-memory, tigerless-agent-memory, graphify, llm-graph-builder.
+- **10 card batches of 4**, 40 cards, by slug: rag-anything, semantica, yuxi, hyper-extract; m-flow,
+  nano-graphrag, kag, neo4j-graphrag-python; graphrag-sdk, ai-knowledge-graph, trustgraph, ontogpt;
+  gliner, deepke, a-mem, mirix; supermemory, hindsight, memos, memori; memu, everos, honcho, memmachine;
+  zep, claude-obsidian, obsidian-mind, open-knowledge; llm-wiki-agent, obsidian-wiki, llm-wiki-compiler,
+  llmwiki-lucasastorian; karpathy-llm-wiki, okf-agent-memory, open-knowledge-format, kiwifs;
+  understand-anything, codegraph, codebase-memory-mcp, code-review-graph.
 
-- **Approve or edit the selection**, [`kb-kg/landscape/20261030_1922-selection.md`](kb-kg/landscape/20261030_1922-selection.md):
-  10 new deep entries and 55 cards, about 24 writer runs, about 5M tokens (a guess for the cards; the
-  basis is in the file). Wave B does not start before this.
+## Not yet launched: the platform allows 20 concurrent writers
+
+Launch these three batches as soon as slots free (brief: `wave-b-brief.md` in the session scratchpad, or
+rewrite it from `kb-kg/projects/_TEMPLATE.md` and the rules in `CLAUDE.md`). Card form, one file each,
+`W/kb-kg/projects/<slug>.md`, category `adjacent`, graph databases and platforms covered only for what
+bears on KBs and KGs built or queried with LLMs:
+
+| Batch | Slug: repo | Note |
+|---|---|---|
+| 11 | neo4j: neo4j/neo4j | GPL-3.0 community edition; say what other editions exist as the project states it |
+| 11 | falkordb: FalkorDB/FalkorDB | licence NOASSERTION: read the file |
+| 11 | memgraph: memgraph/memgraph | licence NOASSERTION: read the file |
+| 11 | surrealdb: surrealdb/surrealdb | licence NOASSERTION: read the file |
+| 12 | dify: langgenius/dify | NOASSERTION; the licence may add conditions: quote them |
+| 12 | ragflow: infiniflow/ragflow | what it says about GraphRAG support |
+| 12 | llama-index: run-llama/llama_index | the property-graph index, if documented |
+| 12 | anything-llm: Mintplex-Labs/anything-llm | |
+| 13 | haystack: deepset-ai/haystack | document stores, retrieval, graph support, MCP only |
+| 13 | khoj: khoj-ai/khoj | AGPL-3.0; about 89 days since the last push: do not conclude abandonment |
+| 13 | mcp-servers: modelcontextprotocol/servers | NOASSERTION; focus on the reference memory server if it exists |
 
 ## Next, in order
 
-1. Wave B, once the selection is approved: one Sonnet writer per deep entry, one per four cards, one
-   writer per file, each following `kb-kg/projects/_TEMPLATE.md`. Review each against the live API as
-   in wave A, run the gate and the link check, commit one unit at a time.
+1. Wave B: review each finished entry against the live API as in wave A (headline facts for every one;
+   deeper claims rest on the cited sources), run the gate and the link check, commit one unit at a time.
+   Launch the three batches listed above as slots free. Then update `kb-kg/projects/` index and the
+   `kb-kg/README.md` status row.
 2. Re-run `uv run tools/gh_snapshot.py` after wave B: it picks up the seven watchlist additions and
    produces the first comparison with an earlier snapshot.
 3. Wave C: `kb-kg/directions/` (what the field is trying, grouped by direction), the experiments worth
