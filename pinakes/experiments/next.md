@@ -1,0 +1,71 @@
+# What Pinakes should measure next
+
+**Status: proposals only. Nothing here has run.** Each needs the owner's explicit yes, one at a time. This
+page continues [what Pinakes has measured](README.md): it takes the items Pinakes' own documents leave
+approved, gated or unmeasured, and says what each would cost. Field-neutral experiments are in
+[`../../kb-kg/experiments/README.md`](../../kb-kg/experiments/README.md).
+
+Pinakes' own rules apply to anything that touches it. A paid run needs the dedicated key variable, is priced
+and refused against three budget windows before its first call, and asks once
+([STATUS](https://github.com/lucagattoni/pinakes/blob/main/docs/STATUS.md)). Another session works in the
+Pinakes repository, so I would tell it the exact files before touching anything there.
+
+| ID | Item | Cost | Source of the item |
+|---|---|---|---|
+| P1 | Did the approved graph-gate re-run on a corpus with sections happen? | None | Approved 20260825 18:16; no result found |
+| P2 | `[ner]` and `mentions` edges (Gate 2) | **Blocked** | Precondition N2: a licensed channel |
+| P3 | Public-dataset baselines for the free retrieval path | Free CPU | The benchmark harness the owner is building |
+| P4 | Does `pnk ask --deep` lift the 20 frozen multi-hop questions? | Small, with a measured basis | No accuracy result on that set found |
+
+## P1: Ask whether the sections re-run happened
+
+Pinakes' ROADMAP records that the re-run on a corpus that has sections "was TAKEN by the user 20260825
+18:16", would cost "~2.4 h of free CPU", and has an expected result of "another null". I found no result in
+STATUS, ROADMAP, DESIGN or the dated plans, and the published RFC corpus repository's newest commit predates
+the heading-path work. That does not prove it did not run. **This is the owner's own approved item, not a new
+proposal.** The proposed step is only to ask the Pinakes session, which holds that knowledge, whether it ran
+and where the result is. Cost: none.
+
+## P2: Gate 2 is blocked, and the field offers a candidate extractor
+
+Gate 2 defaults `mentions` edges on only if a long list of conditions holds; the first is that a licensed
+channel exists, and none is licensed (the `expand` gate failed). So Gate 2 cannot run now. For when it can, the
+field-neutral [GLiNER entry](../../kb-kg/projects/gliner.md) describes a small entity extractor that calls no
+LLM; its model-weight licences were not verified by the writer. Cost today: none, because nothing runs.
+
+## P3: Public-dataset baselines for the free retrieval path
+
+The owner described a harness that benchmarks Pinakes retrieval against public datasets with ground-truth
+evidence, starting with MultiHop-RAG (2,556 queries with evidence in 2 to 4 documents, per the
+[papers page](../../kb-kg/papers-benchmarks/README.md)). That repository does not report itself public, so I do
+not name or link it. A first run would be Pinakes' free path (BM25, local embeddings and reranking) against
+BM25 alone. **Cost: free local CPU**; time is unstated until a run. **Models: local only.** The dataset's licence
+is unstated in what I read and would be read first. The result would give the free path a number on a public
+set, which Pinakes does not have today. It would be run in that repository, not here.
+
+## P4: `pnk ask --deep` on the 20 frozen multi-hop questions
+
+Pinakes' documents record what a deep run costs (estimates and measured spend on synthetic corpora) and I
+found no accuracy result for it on the RFC multi-hop set; I may have missed one. The 20 multi-hop questions
+were frozen before any code ran. The figures below are from STATUS; the arithmetic is mine.
+
+| Quantity | Value | Basis |
+|---|---|---|
+| Estimator, cheap branch (one synthesis call) | EUR 0.2627 | STATUS, at the shipped defaults |
+| Estimator, a three-round loop | EUR 1.6872 | STATUS |
+| Per-operation cap | EUR 2.00 | STATUS (decision D-30) |
+| Measured spend per run, one-call branch | about EUR 0.0071 | EUR 0.0353 over 5 runs |
+| Measured spend per run, calibrated loop | about EUR 0.0271 | EUR 0.0542 over 2 runs |
+| Measured spend per run, uncalibrated loop | about EUR 0.0618 | EUR 0.1235 over 2 runs |
+| Twenty questions at the uncalibrated-loop rate | about EUR 1.24 | 20 times 0.0618, my arithmetic |
+| Twenty questions at the estimator's ceiling | about EUR 33.74 | 20 times 1.6872, my arithmetic |
+
+The measured runs were on small synthetic corpora, so spend on the 300-RFC corpus is **unstated**; the
+estimator over-reserved by 22 to 51 times in those measurements, so the ceiling is not the expectation. **Pilot:
+3 questions**, then set the cap from what they cost. Pinakes would still refuse any single run whose estimate
+exceeds its per-operation cap. This uses Pinakes as built and changes none of its code.
+
+## What I need from you
+
+Which of P1, P3 and P4 to start, the cap for P4's pilot if you start it, and whether I may message the Pinakes
+session for P1. P2 waits for a licensed channel.
