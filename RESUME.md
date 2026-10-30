@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261030 19:16 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). Branch:
+Last updated 20261030 19:18 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). Branch:
 `worktree-20261030_1852-kb-kg-docs-scaffold` (private remote; nothing is on `main` yet).
 
 ## Done and committed
@@ -12,13 +12,11 @@ Last updated 20261030 19:16 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). Bran
 | `ddf740c` | 12 July investigations, each split into `kb-kg/projects/` and `pinakes/takeaways/` |
 | `f1ddbfd` | `pinakes/`: approach record, recommendations R1 to R7, ClaudeKB precedent |
 | `c8bf9c2` | Project `CLAUDE.md`, added at the owner's yes |
+| `abc6be7` | `tools/gh_snapshot.py`, 57 tests, mutation-checked on the 90-day rule |
+| `bcd1b3d` | First landscape snapshot, 20261030 19:13 UTC: 924 repositories, data only, no selection yet |
 
 ## Running when this was written
 
-- The landscape snapshot tool (`tools/gh_snapshot.py`, its tests, and the first snapshot under
-  `kb-kg/landscape/`). Its test file `tools/test_gh_snapshot.py` line 121 holds a fake path and
-  token on purpose and **fails the public-safety gate**; the fix is to build those strings by
-  concatenation so the literal is never in the file. Do not commit the file until the gate passes.
 - `pinakes/experiments/README.md` (what Pinakes has measured).
 
 ## Next, in order
