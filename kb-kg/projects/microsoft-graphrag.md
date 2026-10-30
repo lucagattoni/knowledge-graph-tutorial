@@ -201,7 +201,7 @@ the code comment in [30]; no source states it.
 | LazyGraphRAG index cost equals vector RAG and is 0.1% of full GraphRAG | MSR blog, 20241125 [24] | Authors' own claim. |
 | LazyGraphRAG answers global queries at comparable quality to GraphRAG global search at more than 700 times lower query cost; at a 500-test budget it "significantly outperforms all conditions" at about 4% of the query cost | MSR blog [24] | 5,590 AP news articles, 100 synthetic queries, LLM head-to-head judging. The blog states the 4% against "GraphRAG global search" in the introduction and against "C2" in the results, so the two baselines differ. The blog's own definition of C2 was not captured. No code, prompts or paper behind the numbers. |
 
-Third-party evaluations: none were read in this run (unstated, not "none exist"). Discussion #1490
+Third-party evaluations: none were searched for in this run (unstated, not "none exist"); the [fast-graphrag](fast-graphrag.md) entry does hold token and time figures for Microsoft GraphRAG from the GraphRAG-Bench comparison, a benchmark not run by this project. Discussion #1490
 mentions KET-RAG (arXiv 2502.09304), a framework built on GraphRAG that targets cheaper indexing; it
 was not evaluated here [22].
 

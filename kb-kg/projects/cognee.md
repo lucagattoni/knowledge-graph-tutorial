@@ -220,6 +220,9 @@ None found. What was checked, so the gap is on record:
   LongMemEval, MEME and MemoryAgentBench. Its baseline list and Tables 3 to 10 have no Cognee row. Only the
   first 100,000 of 232,162 characters of the HTML were read [26].
 - A web search at 19:33 UTC found pages from Cognee, Mem0 and Vectorize, and no third-party run [34].
+- Added after the entries were compared: the [Letta entry](letta.md) lists Cognee at 20.6 in the MemoryAgentBench
+  main table (UC San Diego authors, ICLR 2026), a paper not written by Cognee. This entry did not read that table,
+  so the heading above means "none found by this entry's own search".
 - The Vectorize article (20260315) compares Mem0, Cognee and its own product Hindsight. It gives no Cognee
   scores and says Cognee "has not published a LongMemEval score" [27]. Its publisher sells a competing
   product.

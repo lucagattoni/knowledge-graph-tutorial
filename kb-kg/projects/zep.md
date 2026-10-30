@@ -41,7 +41,7 @@ No engine is here. Everything calls Zep Cloud through the `zep-cloud` SDK, whose
 
 ## Status and direction
 
-Active as a samples repository: five commits on 20261014 moved it to the v4 SDK, and `zep-cloud` 4.0.1 is on PyPI [5][9]. The Zep MCP server in `mcp/` is marked deprecated and points to an "official Zep Memory MCP server" [8]. Issues are disabled; the search API shows 28 open pull requests, the GitHub field 36 open items, a gap I could not explain [1][12]. Roadmap: unstated.
+Active as a samples repository: five commits on 20261014 moved it to the v4 SDK, and `zep-cloud` 4.0.1 is on PyPI [5][9]. The Zep MCP server in `mcp/` is marked deprecated (commit "Deprecate Zep MCP server README", 20260729) and points to an "official Zep Memory MCP server" [8]. Issues are disabled; the search API shows 28 open pull requests, the GitHub field 36 open items, a gap I could not explain [1][12]. Roadmap: unstated.
 
 ## Sources
 

@@ -78,7 +78,7 @@ Read from the README, `pyproject.toml` extras and the repository tree on 2026103
 | Backend | Status | Notes |
 |---|---|---|
 | Neo4j | supported; the default dependency (`neo4j>=5.26.0`) [12] | README requires Neo4j 5.26 [4]. A 20260901 release (v0.30.0) changed Neo4j query routing so that the configured database name is honoured; this affects only Neo4j Enterprise users who set a non-default database [5]. |
-| FalkorDB | supported (`falkordb>=1.1.2,<2.0.0`) [12] | README requires FalkorDB 1.1.2 [4]. Reference MCP server default [11]. |
+| FalkorDB | supported (`falkordb>=1.1.2,<2.0.0`) [12] | The README's requirements list reads "FalkorDB 1.1.2" [4]. The pyproject pins the Python client package `falkordb>=1.1.2,<2.0.0` [12], so that number matches the client package's minimum and is not a FalkorDB server version (the [falkordb](falkordb.md) and [graphrag-sdk](graphrag-sdk.md) entries give server lines 4.x and 6.0); the README does not say which it means. Reference MCP server default [11]. |
 | FalkorDB embedded ("falkordblite") | supported, optional extra, Python 3.12+ only [12] | Added in v0.29.2 (20260608) [5]. This corrects the July note, which called Kuzu "the only embedded option". |
 | Amazon Neptune | supported (Neptune Database Cluster or Neptune Analytics) [4] | Needs an Amazon OpenSearch Serverless collection for full-text search [4]. |
 | Kuzu | **deprecated** | Marked deprecated in v0.29.2 and dropped from the default test matrix (PR #1548) [5]. The README says the upstream Kuzu project is no longer maintained, that the driver "emits a `DeprecationWarning`" and that Kuzu "will be removed in a future release" [4]. The README names Kuzu 0.11.2 while the extra pins `kuzu>=0.11.3` [4][12]. |
@@ -244,7 +244,8 @@ calculation error and stood by its criticism of the other side's method; the iss
 inactivity on 20250519 [20]. Both figures are vendor-reported. A web search on 20261030 19:01 UTC
 returned vendor blogs and secondary write-ups with conflicting numbers; none was verified here, so no
 independent evaluation is cited. Published results from independent evaluators: **none found in this
-run**.
+run**. The [Letta entry](letta.md) lists "Zep" at 24.0 in the MemoryAgentBench main table (UC San Diego authors,
+ICLR 2026); this entry did not read that table and which Zep configuration was run is unstated here.
 
 ## Direction
 

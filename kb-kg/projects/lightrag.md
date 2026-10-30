@@ -153,8 +153,10 @@ routing logic is a fallback in `kg_query`: if both keyword lists come back empty
 
 ## Cost and operating profile
 
-The figures below are arithmetic on the defaults above, not measurements; no published cost measurement was found
-in the sources read.
+The figures below are arithmetic on the defaults above, not measurements; no cost measurement by the project itself was found
+in the sources read. Token counts for LightRAG from other projects' benchmark runs appear in the
+[HippoRAG](hipporag.md) entry (its Table 12 comparison) and the [fast-graphrag](fast-graphrag.md) entry
+(GraphRAG-Bench); they were not re-measured for this entry.
 
 | Phase | What it spends |
 |---|---|
