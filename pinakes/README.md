@@ -11,11 +11,11 @@ disagrees with it is out of date.
 
 | Part | What it holds | State |
 |---|---|---|
-| [`approach/`](approach/) | The Pinakes graph approach: lazy, agent-driven, budget-tunable. The design decision layer, moved from Pinakes' `docs/graph/`. | in progress |
-| [`recommendations-r1-r7.md`](recommendations-r1-r7.md) | The seven recommendations drawn from the literature review. | in progress |
-| [`takeaways/`](takeaways/) | Per project: what Pinakes took, what it left, and the licence gate. | in progress |
-| [`precedent/`](precedent/) | Earlier in-house work that Pinakes follows. | in progress |
-| [`experiments/`](experiments/) | What Pinakes has measured and what it should measure next. | not started |
+| [`approach/`](approach/) | The Pinakes graph approach: lazy, agent-driven, budget-tunable. The design decision layer, moved from Pinakes' `docs/graph/`. | moved; status block added 20261030 |
+| [`recommendations-r1-r7.md`](recommendations-r1-r7.md) | The seven recommendations drawn from the literature review. | moved; status per recommendation added 20261030 |
+| [`takeaways/`](takeaways/) | Per project: what Pinakes took, what it left, and the licence gate. | 12 entries |
+| [`precedent/`](precedent/) | Earlier in-house work that Pinakes follows. | ClaudeKB moved and updated |
+| [`experiments/`](experiments/) | What Pinakes has measured and what it should measure next. | measured results in progress; next experiments not started |
 
 ## Licence gate
 

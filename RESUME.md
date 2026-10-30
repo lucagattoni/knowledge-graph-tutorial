@@ -1,35 +1,47 @@
 # Resume
 
-Last updated 20261030 19:05 UTC. The decisions are in [`DECISIONS.md`](DECISIONS.md).
+Last updated 20261030 19:14 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). Branch:
+`worktree-20261030_1852-kb-kg-docs-scaffold` (private remote; nothing is on `main` yet).
 
-## Done
+## Done and committed
 
-- Scaffold: section READMEs, the two entry templates, the public-safety gate (proven to fail on
-  planted leaks and to pass on the clean tree).
+| Commit | What |
+|---|---|
+| `2d95ad9` | Scaffold, templates, public-safety gate |
+| `718d8e8` | `kb-kg/`: primer, LLM-era timeline, literature review, papers and benchmarks |
+| `ddf740c` | 12 July investigations, each split into `kb-kg/projects/` and `pinakes/takeaways/` |
+| `f1ddbfd` | `pinakes/`: approach record, recommendations R1 to R7, ClaudeKB precedent |
 
-## Running
+## Running when this was written
 
-- **Wave A**, background agents, one writer per file:
-  - `tools/gh_snapshot.py` and its inputs (landscape snapshot tool)
-  - the 12 external investigations, each split into `kb-kg/projects/<slug>.md` and
-    `pinakes/takeaways/<slug>.md`
-  - `pinakes/precedent/claudekb.md`
-  - `kb-kg/literature/graph-rag-research.md` and `pinakes/recommendations-r1-r7.md`
-  - `pinakes/approach/PINAKES_APPROACH.md`
-  - `kb-kg/primer/README.md`, `kb-kg/llm-era/README.md`, `kb-kg/papers-benchmarks/README.md`
+- The landscape snapshot tool (`tools/gh_snapshot.py`, its tests, and the first snapshot under
+  `kb-kg/landscape/`). Its test file `tools/test_gh_snapshot.py` line 121 holds a fake path and
+  token on purpose and **fails the public-safety gate**; the fix is to build those strings by
+  concatenation so the literal is never in the file. Do not commit the file until the gate passes.
+- `pinakes/experiments/README.md` (what Pinakes has measured).
 
-Nothing from wave A is trusted until it has been read and has passed the gate.
+## Next, in order
 
-## Next
+1. Review both, run `tools/check_public_safe.sh` (must exit 0) and the link check, commit.
+2. Choose the project list for wave B from the first snapshot: cards for every project in the four
+   categories that is starred and pushed within 90 days, deep dives for about ten.
+3. Wave B writes the entries; wave C writes `kb-kg/directions/` and the experiments to run next
+   (each states its cost, models and data first and waits for the owner's yes).
+4. Licence for this repository's text, a full content check, then the owner's explicit yes to make it
+   public. Only after that: the *historical* banner and link on Pinakes' `docs/graph/`.
 
-1. Review each wave A file; run `tools/check_public_safe.sh`; commit one logical unit at a time.
-2. Run the snapshot tool; choose the project list for wave B (cards and a few deep dives).
-3. Wave B: project entries. Wave C: directions, experiments to run next, Pinakes experiments page.
-4. Full content check, licence choice, then ask for the explicit yes to make the repository public.
-5. Only after that: the *historical* banner and link on Pinakes' `docs/graph/`.
+## Debts that are written down so they are not lost
+
+- **Unverified items.** Every entry lists its own "not verified" items. Across entries the largest are:
+  six literature figures marked unverifiable (`kb-kg/literature/`); whether LazyGraphRAG is in the
+  open-source package; many 2026 papers read as title or abstract only; whether the star growth of the
+  fastest repositories is organic; the primer's first-use dates for "knowledge base" and for Cyc.
+- **Gate coverage.** `tools/check_public_safe.sh` scans the working tree, not the staged set.
+- **Benchmark repository.** Describe it, link it only once the API reports it public.
+- **A project `CLAUDE.md`** is proposed and waiting for the owner's yes.
 
 ## Not to do
 
-- Do not make the repository public, and do not touch the Pinakes repository, without the owner's
-  explicit yes at that step.
+- Do not make the repository public, or touch the Pinakes repository, without the owner's explicit
+  yes at that step.
 - Do not name private repositories anywhere in this repository.
