@@ -1,6 +1,7 @@
 # Resume
 
-Last updated 20261030 19:39 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). Branch:
+Last updated 20261030 19:44 UTC. Deep entries committed so far (9 of 10): llm-graph-builder, tigerless-agent-memory,
+pageindex, mem0, llm-wiki-nashsu, graphify, openviking, cognee, basic-memory. Still running: letta, and the 13 card batches. Decisions: [`DECISIONS.md`](DECISIONS.md). Branch:
 `worktree-20261030_1852-kb-kg-docs-scaffold` (private remote; nothing is on `main` yet).
 
 ## Done and committed
@@ -33,11 +34,13 @@ pilot (4 hard-case cards) cost 159,932 tokens and 59 tool calls; it is reviewed 
   llmwiki-lucasastorian; karpathy-llm-wiki, okf-agent-memory, open-knowledge-format, kiwifs;
   understand-anything, codegraph, codebase-memory-mcp, code-review-graph.
 
-## Not yet launched: the platform allows 20 concurrent writers
+## Launched late: the platform allows 20 concurrent writers
 
-Launch these three batches as soon as slots free (brief: `wave-b-brief.md` in the session scratchpad, or
-rewrite it from `kb-kg/projects/_TEMPLATE.md` and the rules in `CLAUDE.md`). Card form, one file each,
-`W/kb-kg/projects/<slug>.md`, category `adjacent`, graph databases and platforms covered only for what
+These three batches were refused at 19:30 and **launched at about 19:40 to 19:45 UTC as slots freed** (11, 12
+and 13 all running). Do not launch them again; check `kb-kg/projects/` for their files first. If a restart
+finds them missing, relaunch from this table (brief: `wave-b-brief.md` in the session scratchpad, or rewrite
+it from `kb-kg/projects/_TEMPLATE.md` and the rules in `CLAUDE.md`). Card form, one file each,
+`kb-kg/projects/<slug>.md`, category `adjacent`, graph databases and platforms covered only for what
 bears on KBs and KGs built or queried with LLMs:
 
 | Batch | Slug: repo | Note |
@@ -85,6 +88,11 @@ bears on KBs and KGs built or queried with LLMs:
   - not re-derived by me: no recorded result for the graph-gate re-run approved 20260825; no labelled
     re-extraction trigger in `audit.py`; a defect count of five against six for the deep-loop report tool.
 - **Gate coverage.** `tools/check_public_safe.sh` scans the working tree, not the staged set.
+- **A rename in Pinakes.** Another session working in the Pinakes repository told this one (20261030) that
+  it is renaming "the template release" in Pinakes' CLAUDE.md and `docs/` and will not edit
+  `docs/graph/PINAKES_APPROACH.md`. This repository's copy, `pinakes/approach/PINAKES_APPROACH.md`, and
+  `pinakes/recommendations-r1-r7.md` use the old name in places. Re-read them against Pinakes'
+  `docs/STATUS.md` once that rename lands, and update the names here. Nothing was changed yet.
 - **Benchmark repository.** Describe it, link it only once the API reports it public (it did not at
   20261030 18:52 UTC).
 
