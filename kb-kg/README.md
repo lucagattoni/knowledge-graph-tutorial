@@ -12,7 +12,7 @@ mention Pinakes except where Pinakes is itself one of the projects surveyed.
 | [`landscape/`](landscape/) | Which projects are the most starred *and* active, as of a date? | tool built; two snapshots (20261030 19:13 and 19:54); selection made and approved |
 | [`papers-benchmarks/`](papers-benchmarks/) | Which papers, surveys, benchmarks and datasets define the state of the art? | first draft, 20261030 |
 | [`directions/`](directions/) | Which directions is the field trying, and what is the evidence for each? | nine first drafts, 20261030 |
-| [`experiments/`](experiments/) | What should be tested next, and at what cost? | not started |
+| [`experiments/`](experiments/) | What should be tested next, and at what cost? | five proposals; none has run |
 
 ## Project categories
 
