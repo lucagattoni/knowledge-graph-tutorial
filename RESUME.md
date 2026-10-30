@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261030 19:14 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). Branch:
+Last updated 20261030 19:16 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). Branch:
 `worktree-20261030_1852-kb-kg-docs-scaffold` (private remote; nothing is on `main` yet).
 
 ## Done and committed
@@ -11,6 +11,7 @@ Last updated 20261030 19:14 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). Bran
 | `718d8e8` | `kb-kg/`: primer, LLM-era timeline, literature review, papers and benchmarks |
 | `ddf740c` | 12 July investigations, each split into `kb-kg/projects/` and `pinakes/takeaways/` |
 | `f1ddbfd` | `pinakes/`: approach record, recommendations R1 to R7, ClaudeKB precedent |
+| `c8bf9c2` | Project `CLAUDE.md`, added at the owner's yes |
 
 ## Running when this was written
 
@@ -38,7 +39,6 @@ Last updated 20261030 19:14 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). Bran
   fastest repositories is organic; the primer's first-use dates for "knowledge base" and for Cyc.
 - **Gate coverage.** `tools/check_public_safe.sh` scans the working tree, not the staged set.
 - **Benchmark repository.** Describe it, link it only once the API reports it public.
-- **A project `CLAUDE.md`** is proposed and waiting for the owner's yes.
 
 ## Not to do
 
