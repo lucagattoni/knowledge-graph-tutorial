@@ -16,6 +16,12 @@ Rules for every entry:
 - Dates are UTC: YYYYMMDD HH:MM. Star counts and push dates carry the snapshot time.
 - Licence comes from the LICENSE file. If the README badge disagrees, say so.
 - No local paths, no private repository names, no personal addresses.
+- tier: card keeps only the header table and these four sections, in this order: "What it is", "How it
+  works" (at most 120 words), "Status and direction" (at most 80 words), "Sources". About 400 to 700
+  words in all. Omit the other sections.
+- tier: deep for an entry that did not begin as one of the July 2026 investigations omits
+  "Changed since the July 2026 investigation". It may add "Recent changes" (the last 90 days) after
+  "Direction".
 -->
 
 | | |
