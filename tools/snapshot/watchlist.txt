@@ -1,0 +1,58 @@
+# Repositories that every snapshot must track, whatever the search returns.
+#
+# Format: owner/repo<TAB>category   (a real TAB; blank lines and lines starting with # are ignored)
+# Categories: core, agent-memory, markdown-kb, adjacent
+#
+# A watchlist entry always gets its listed category as primary category, is always
+# enriched (release, commits, contributors), and is shown in its category table even
+# when its rank is below the top N. The category is an editorial choice, editable here.
+
+# The twelve projects covered by the July 2026 investigations
+microsoft/graphrag	core
+HKUDS/LightRAG	core
+getzep/graphiti	agent-memory
+OSU-NLP-Group/HippoRAG	core
+circlemind-ai/fast-graphrag	core
+LHRLAB/Graph-R1	core
+datastax/graph-rag	core
+vitali87/code-graph-rag	adjacent
+HKUDS/MiniRAG	core
+DEEP-PolyU/LinearRAG	core
+chensyCN/LogicRAG	core
+TencentCloudADP/youtu-graphrag	core
+
+# GraphRAG and KG construction, first-pass tracked list
+DEEP-PolyU/Awesome-GraphRAG	core
+neo4j/neo4j-graphrag-python	core
+FalkorDB/GraphRAG-SDK	core
+OpenSPG/KAG	core
+gusye1234/nano-graphrag	core
+HKUDS/RAG-Anything	core
+neo4j-labs/llm-graph-builder	core
+
+# Agent memory
+mem0ai/mem0	agent-memory
+letta-ai/letta	agent-memory
+topoteretes/cognee	agent-memory
+MemTensor/MemOS	agent-memory
+agiresearch/A-mem	agent-memory
+
+# Markdown and LLM-wiki knowledge bases
+basicmachines-co/basic-memory	markdown-kb
+Ar9av/obsidian-wiki	markdown-kb
+SamurAIGPT/llm-wiki-agent	markdown-kb
+Astro-Han/karpathy-llm-wiki	markdown-kb
+VectifyAI/OpenKB	markdown-kb
+
+# Adjacent: graph databases, RAG platforms, assistants, tool servers
+kuzudb/kuzu	adjacent
+modelcontextprotocol/servers	adjacent
+run-llama/llama_index	adjacent
+infiniflow/ragflow	adjacent
+SciPhi-AI/R2R	adjacent
+Cinnamon/kotaemon	adjacent
+deepset-ai/haystack	adjacent
+langgenius/dify	adjacent
+Mintplex-Labs/anything-llm	adjacent
+khoj-ai/khoj	adjacent
+stanford-oval/storm	adjacent

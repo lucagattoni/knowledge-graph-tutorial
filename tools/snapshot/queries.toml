@@ -1,0 +1,70 @@
+# Queries and thresholds for tools/gh_snapshot.py.
+#
+# Edit this file to change what a snapshot searches for and when a flag is raised.
+# Every value below is a heuristic, not a verdict: see tools/snapshot/README.md.
+#
+# Each category table holds GitHub repository-search queries (topics and keywords).
+# The tool runs each query twice: once restricted to repositories pushed within
+# the last quiet_days (the ranked table), once to those pushed longer ago (the
+# quiet table). Both passes sort by stars, so a long-dead giant cannot crowd an
+# active project out of the result window.
+
+[flags]
+# A repository is "quiet" when whole days since its last push exceed this number.
+# The ranking rule uses the same number: only repositories that are not quiet
+# (and not archived) are ranked.
+quiet_days = 90
+# "fast-growth": stars / max(age_days, 1) at or above this value.
+fast_growth_stars_per_day = 150
+# "low-forks": at least low_forks_min_stars stars AND forks per 100 stars below
+# low_forks_per_100_stars.
+low_forks_min_stars = 5000
+low_forks_per_100_stars = 3
+
+[search]
+# Results requested per search call (GitHub allows at most 100) and pages per query.
+per_page = 100
+pages = 1
+# Stars floor added to every query as stars:>=N. It trims the long tail only;
+# it cannot change the top of a stars-sorted ranking.
+min_stars = 100
+# Run the second (quiet) pass per query. Set to false to halve the search calls
+# and leave the quiet tables holding only watchlist repositories and archived ones.
+quiet_pass = true
+
+[core]
+description = "GraphRAG frameworks, KG construction from text, KG querying including text-to-Cypher"
+queries = [
+  'topic:graphrag',
+  'topic:graph-rag',
+  'topic:knowledge-graph topic:llm',
+  'topic:knowledge-graph topic:rag',
+  '"knowledge graph construction" in:name,description',
+  'text2cypher in:name,description,readme',
+]
+
+[agent-memory]
+description = "Memory layers and temporal knowledge graphs for agents"
+queries = [
+  'topic:agent-memory',
+  'topic:ai-memory',
+  'topic:long-term-memory',
+  'topic:mcp-server knowledge graph in:description',
+]
+
+[markdown-kb]
+description = "Markdown-native and 'LLM wiki' knowledge bases, Obsidian-style second brains for agents"
+queries = [
+  'topic:llm-wiki',
+  '"llm wiki" in:name,description',
+  'topic:obsidian topic:llm',
+  'topic:obsidian topic:ai-agents',
+]
+
+[adjacent]
+description = "Code knowledge graphs, graph databases, RAG platforms"
+queries = [
+  'topic:graph-database',
+  'code knowledge graph in:description',
+  'topic:rag topic:llm',
+]
