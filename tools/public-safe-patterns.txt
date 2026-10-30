@@ -1,0 +1,18 @@
+# Extended regular expressions, one per line, used by tools/check_public_safe.sh.
+# Blank lines and lines starting with '#' are ignored.
+
+# Paths from a developer machine
+/Users/[A-Za-z0-9._-]+
+/private/tmp
+/home/[a-z][a-z0-9_-]+/
+
+# Credentials
+sk-ant-[A-Za-z0-9_-]{10,}
+ghp_[A-Za-z0-9]{20,}
+github_pat_[A-Za-z0-9_]{20,}
+AKIA[0-9A-Z]{16}
+-----BEGIN [A-Z ]*PRIVATE KEY-----
+(API_KEY|SECRET|TOKEN|PASSWORD)[A-Z_]*[ ]*=[ ]*['"]?[A-Za-z0-9_-]{12,}
+
+# Personal mailbox addresses
+[A-Za-z0-9._%+-]+@(gmail|outlook|hotmail|icloud|proton)\.(com|me)
