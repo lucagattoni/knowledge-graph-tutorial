@@ -44,4 +44,21 @@ chosen after seeing a result is fixed here instead.
 
 ## Results
 
-*Not yet run. The index build is in progress.*
+*The three questions have not run. No paid call has been made.*
+
+### Index build (free, local CPU), finished 20261031 19:18 UTC
+
+Started 16:05 UTC, exit code 0, so about 3 h 13 min against the roughly two hours I had estimated. Read from the
+build's own output and from `pnk doctor` and `pnk budget` (0.32.8) at 19:18 UTC:
+
+| Item | Value |
+|---|---|
+| Sync result | 300 indexed, 0 removed |
+| Index | 300 active documents, 106806 chunks |
+| Derived edges | 214217, plus 391 authored (membership 106806, sibling 106506, co-located 262, shared-tag 643) |
+| Budget | 0.00 of 10.00 today, 0.00 of 10.00 this month, 0 reservations, per-operation cap 2.00 |
+| Doctor warnings | calibration: no fitted thresholds, so confidence reports `unknown`; heading coverage: 0 of 106806 chunks carry a heading path (`[chunking] headings` is unset); embedding and reranker revisions unpinned; scale past the 50000 NumPy-tier threshold |
+
+The two conditions that matter for the questions: the run uses an uncalibrated KB (as the plan states), and the
+chunks carry no heading paths, so citations here have no heading component. Both are the corpus manifest's
+settings, not choices made for this pilot.
