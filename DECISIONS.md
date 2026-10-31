@@ -22,6 +22,9 @@ out; nothing here is inferred.
 | D-14 | Experiments | Decided one at a time: each states its cost, models and data first and runs only after an explicit yes. |
 | D-15 | Benchmark | Pinakes retrieval is benchmarked against public datasets with ground-truth evidence, in its own repository. This repository describes the benchmark and links to it once that repository is public; Pinakes benchmark runs happen there. |
 | D-16 | Parallel research | Maximum parallelism is allowed. Builder agents run on Sonnet. |
+| D-17 | Licence (20261031) | **Apache-2.0 for everything**, text and code, with a `NOTICE` saying that quoted third-party text and fetched data keep their own terms. Chosen from four options. The visibility change is still a separate step. |
+| D-18 | Free experiments (20261031) | X1 (describe the snapshots) and P1 (ask the Pinakes session whether the sections re-run happened) approved, run and recorded. |
+| D-19 | A paid pilot (20261031) | P4 (the deep loop on 3 of the 20 frozen multi-hop questions) approved with a hosted model and a **total cap of EUR 10**. The owner sets the API key in their own terminal; no secrets file is read. X2, X4 and P3 are not started. |
 
 ## Working rules adopted for this repository
 
@@ -40,7 +43,7 @@ These follow from the decisions above; the owner can overrule any of them.
 
 | Item | Owner | Blocks |
 |---|---|---|
-| Licence for this repository's text | owner | the visibility change |
+| ~~Licence for this repository's text~~ | done: D-17 (the copyright line in `NOTICE` uses the git author name "Luca Gattoni"; the owner may change it) | |
 | Full content check, then the explicit yes to make the repository public | owner | the pointer from Pinakes |
 | Pinakes side: *historical* banner and link on the 16 files in `docs/graph/` | owner's go, then a separate change in the Pinakes repository under its own rules | nothing here; do it after the visibility change so the link does not dangle |
 | Link to the benchmark repository | verify it reports public first | the `pinakes/experiments/` benchmark page |

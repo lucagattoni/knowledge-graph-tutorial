@@ -1,0 +1,13 @@
+Knowledge bases and knowledge graphs: a reference
+Copyright 2026 Luca Gattoni
+
+This repository is licensed under the Apache License, Version 2.0. The full text is in LICENSE.
+
+Third-party material. The documents quote short passages from other projects' licences, README files,
+papers and web pages, and record facts fetched from the GitHub API, package indexes and arXiv. All of that
+remains under its own terms. The Apache-2.0 licence of this repository covers only the original text and code
+written for it. Where a passage is reproduced, the entry that quotes it names its source and the time it was
+read. The listed projects' own code is not included here.
+
+Related project. Some documents were adapted from the documentation of Pinakes, which the same author
+publishes under the Apache License, Version 2.0 (https://github.com/lucagattoni/pinakes).

@@ -44,5 +44,9 @@ pinakes/
   approach/            the Pinakes graph approach (design decision layer)
   precedent/           earlier in-house work
   experiments/         what Pinakes tests, and what it measured
-tools/                 snapshot script and the public-safety gate
+tools/                 snapshot, projects-index and snapshot-description scripts, and the public-safety gate
 ```
+
+## Licence
+
+Apache-2.0 for the text and the code. See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE): quoted third-party text and data fetched from other services keep their own terms.
