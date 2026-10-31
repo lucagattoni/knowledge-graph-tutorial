@@ -30,7 +30,7 @@ Each proposal answers a question the [direction pages](../directions/README.md) 
 ## X1: Describe the snapshots
 
 - **Question.** The [evidence page](../directions/evidence-and-claims.md) flags nine repositories as
-  fast-growing and cannot say whether the growth is organic. How do they sit among the 931 repositories in
+  fast-growing in the first snapshot (ten in the second) and cannot say whether the growth is organic. How do they sit among the 931 repositories in
   the newest [snapshot](../landscape/20261030_1954-github/README.md) on stars per day, forks per 100 stars,
   contributors and issues?
 - **Method.** Percentiles and a table from `repos.tsv`. No model, no new API calls.
@@ -38,6 +38,12 @@ Each proposal answers a question the [direction pages](../directions/README.md) 
 - **Cost.** None beyond local compute.
 - **What it would change.** It gives the flag context. It cannot tell organic growth from inflated growth, and
   the page would say so.
+- **Ran 20261031 16:00 UTC.** Output: [`x1-snapshot-distributions/`](x1-snapshot-distributions/README.md),
+  made by `tools/describe_snapshot.py` (14 tests; a deliberate break of its tie rule turned 3 red). No model, no
+  network, no money. Among the 552 ranked repositories of the second snapshot, the ten flagged repositories sit
+  at the 95th to 99th percentile on stars, by construction at the 98th to 100th on stars per day, between the
+  15th and 75th on forks per 100 stars, and between the 25th and 91st on contributors where recorded. This is a
+  description of this set; it does not say whether any growth is organic.
 
 ## X2: The measured index cost of cheap graph builders (pilot)
 

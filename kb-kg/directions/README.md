@@ -39,7 +39,8 @@ marked **Reading**. None ranks projects, recommends one, or says which direction
   behind it (databases, memory systems and file-based projects together) as exposing an MCP server, and says
   the count is its own computation. The [file-based projects](plain-files-and-wikis.md) are described as pairing
   a derived index with an agent interface, "often MCP".
-- **Star counts are the weakest signal here.** The snapshot flags nine repositories as fast-growing. Several
+- **Star counts are the weakest signal here.** The first snapshot flags nine repositories as fast-growing (the second flags ten, adding
+  [codebase-memory-mcp](../projects/codebase-memory-mcp.md), which entered the watchlist in between). Several
   entries report that the stargazers endpoint returned 404, so no star timeline was examined for them, and no page
   concludes anything about how the stars arose.
 
