@@ -24,8 +24,10 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
 ## Waiting on the owner
 
 1. **The API key for P4.** The index build for the P4 pilot finished at 19:18 UTC on 20261031 (exit 0,
-   300 documents, 106806 chunks; `pnk doctor` clean of faults; budget 0.00 of 10.00). The owner exports
-   `PINAKES_ANTHROPIC_API_KEY` in a terminal tab and says so; the plan, written before any paid call, is in
+   300 documents, 106806 chunks; `pnk doctor` clean of faults; budget 0.00 of 10.00). The owner chose (D-20)
+   to keep the key in a file only they can read, outside any repository; once they have created it, the first
+   question runs in a terminal tab the assistant opens and the owner confirms the estimate there. Round 0 and
+   the three estimates (EUR 1.64 each) are already in the plan. The plan, written before any paid call, is in
    [`pinakes/experiments/p4-deep-pilot.md`](pinakes/experiments/p4-deep-pilot.md). The total cap is EUR 10
    (D-19). X2, X3, X4, X5 and P3 are not started and each still needs its own yes (D-14).
 2. **A full content check, then the explicit yes to make the repository public.** The gate and the checks run

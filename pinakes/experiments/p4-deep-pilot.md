@@ -13,7 +13,7 @@ chosen after seeing a result is fixed here instead.
 | Manifest | The corpus's own `pinakes.toml`, except `[budget]`: `per_operation_eur` 2.00, `daily_eur` 10.00, `monthly_eur` 10.00. The owner's EUR 10 total cap is therefore the binding window; the 2.00 per-operation cap is Pinakes' shipped default. |
 | Index | Built fresh with `pnk sync` (free, local CPU: `fastembed` `bge-small-en-v1.5` and a local reranker). The old index predates the schema bump and is not used. |
 | Questions | The **first three in file order** of `eval/multihop-questions.yaml`: `http-rate-limit-status-code-provenance`, `uri-ipv6-literal-bracket-lineage`, `sip-invite-2xx-retransmission-defect`. The file says its 20 questions were authored 20260804 and frozen at the commit that first pushed it. The rule is file order, fixed now; it is not a choice of favourable questions. |
-| Key | `PINAKES_ANTHROPIC_API_KEY`, set by the owner in their own terminal. Never written to a file or to this repository. |
+| Key | `PINAKES_ANTHROPIC_API_KEY`. The plan first said the owner would set it in their own terminal only. At 20261031 23:38 UTC the owner chose instead (D-20) to keep it in a file only they can read, outside any repository, so a terminal tab I open can use it. I never open that file; the run script reads one line of it into its own process and refuses a file others can read. Nothing about the key is written to this repository. |
 | Calibration | None. The KB is uncalibrated, so the free retrieval's confidence is `unknown` and, per Pinakes' STATUS, `--deep` takes the loop with no early stop, bounded by its round limit and the budget windows. |
 
 ## Stopping rule
@@ -62,3 +62,22 @@ build's own output and from `pnk doctor` and `pnk budget` (0.32.8) at 19:18 UTC:
 The two conditions that matter for the questions: the run uses an uncalibrated KB (as the plan states), and the
 chunks carry no heading paths, so citations here have no heading component. Both are the corpus manifest's
 settings, not choices made for this pilot.
+
+### Round 0 and the estimates, read before any paid call (20261031 23:38 UTC)
+
+`pnk ask --offline -k 8 --json` on each question, with no `--deep` and no key: a local retrieval, no model call,
+no spend. "Found" means that at least one of the 8 returned passages comes from the listed document. It does not
+mean the passage holds the fact the question needs. The output is not committed.
+
+| Question | Evidence documents found | Missing | Estimate of the deep run |
+|---|---|---|---|
+| 1 `http-rate-limit-status-code-provenance` | 2 of 3 | `docs/http/rfc2616.txt` | EUR 1.64 |
+| 2 `uri-ipv6-literal-bracket-lineage` | 3 of 3 | none | EUR 1.64 |
+| 3 `sip-invite-2xx-retransmission-defect` | 2 of 2 | none | EUR 1.64 |
+
+Each retrieval reports `confidence` `unknown` and, in its `escalation` block, `cost_eur` `1.64` with the note
+that without a calibrated signal "a run ends at its caps rather than at sufficiency". Each estimate is under the
+EUR 2.00 per-operation cap; the three together are EUR 4.92 (my arithmetic), under the EUR 10 total. The
+measured spend on earlier synthetic corpora was far below the estimate (see [next.md](next.md)), so the estimate
+is a ceiling, not an expectation. Question 1's eight passages come from four documents, five of them from
+RFC 6585; question 3's are seven of eight from RFC 6026.

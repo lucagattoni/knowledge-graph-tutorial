@@ -25,6 +25,7 @@ out; nothing here is inferred.
 | D-17 | Licence (20261031) | **Apache-2.0 for everything**, text and code, with a `NOTICE` saying that quoted third-party text and fetched data keep their own terms. Chosen from four options. The visibility change is still a separate step. |
 | D-18 | Free experiments (20261031) | X1 (describe the snapshots) and P1 (ask the Pinakes session whether the sections re-run happened) approved, run and recorded. |
 | D-19 | A paid pilot (20261031) | P4 (the deep loop on 3 of the 20 frozen multi-hop questions) approved with a hosted model and a **total cap of EUR 10**. The owner sets the API key in their own terminal; no secrets file is read. X2, X4 and P3 are not started. |
+| D-20 | Where the P4 key lives (20261031) | The owner chose to keep the API key in a file only they can read, outside any repository, so a terminal tab opened by the assistant can use it. This replaces the "set in the terminal only" part of D-19. The assistant never opens the file; the run script reads one line into its own process and refuses a file others can read. The owner deletes the file when P4 ends and may rotate the key. |
 
 ## Working rules adopted for this repository
 
