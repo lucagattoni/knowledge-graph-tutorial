@@ -53,6 +53,9 @@ set, which Pinakes does not have today. It would be run in that repository, not 
 
 ## P4: `pnk ask --deep` on the 20 frozen multi-hop questions
 
+**Approved 20261031 as a pilot of 3 questions with a total cap of EUR 10. The plan, written before any paid
+call, is [p4-deep-pilot.md](p4-deep-pilot.md).**
+
 Pinakes' documents record what a deep run costs (estimates and measured spend on synthetic corpora) and I
 found no accuracy result for it on the RFC multi-hop set; I may have missed one. The 20 multi-hop questions
 were frozen before any code ran. The figures below are from STATUS; the arithmetic is mine.

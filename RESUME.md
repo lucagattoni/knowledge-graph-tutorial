@@ -23,15 +23,23 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
 
 ## Waiting on the owner
 
-1. **Experiments.** [`kb-kg/experiments/README.md`](kb-kg/experiments/README.md) and
-   [`pinakes/experiments/next.md`](pinakes/experiments/next.md): which to start, with which model, under which
-   pilot cap. Each needs its own yes (D-14).
-2. **A licence for this repository's text.**
-3. **A full content check, then the explicit yes to make the repository public.** The gate and the checks run
-   so far do not replace that review.
-4. **After the flip only:** the *historical* banner and link on Pinakes' `docs/graph/`.
-5. **The benchmark repository.** Describe it; link it only once the API reports it public (it did not at
+1. **The API key for P4.** The index build for the P4 pilot started at about 16:07 UTC on 20261031 (free local
+   CPU; expected on the order of two hours). When it has finished, the owner exports
+   `PINAKES_ANTHROPIC_API_KEY` in a terminal tab and says so; the plan, written before any paid call, is in
+   [`pinakes/experiments/p4-deep-pilot.md`](pinakes/experiments/p4-deep-pilot.md). The total cap is EUR 10
+   (D-19). X2, X3, X4, X5 and P3 are not started and each still needs its own yes (D-14).
+2. **A full content check, then the explicit yes to make the repository public.** The gate and the checks run
+   so far do not replace that review. The licence is chosen (D-17: Apache-2.0); the copyright line in `NOTICE`
+   uses the git author name "Luca Gattoni" and the owner may change it.
+3. **After the flip only:** the *historical* banner and link on Pinakes' `docs/graph/`.
+4. **The benchmark repository.** Describe it; link it only once the API reports it public (it did not at
    20261030 18:52 UTC).
+
+## Done since the first pass
+
+- **X1** ran 20261031 (`kb-kg/experiments/x1-snapshot-distributions/`).
+- **P1** answered by the Pinakes session 20261031: the sections re-run is not recorded as run.
+- **Licence** chosen and added (`LICENSE`, `NOTICE`).
 
 ## Next, once the owner answers
 

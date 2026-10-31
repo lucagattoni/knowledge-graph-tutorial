@@ -1,0 +1,47 @@
+# P4: a pilot of `pnk ask --deep` on three frozen multi-hop questions
+
+**Plan written 20261031 16:06 UTC, before any paid call.** The owner approved this pilot with a total cap of
+EUR 10 (decision D-19). Results are added below the line when the run is done. Everything that could be
+chosen after seeing a result is fixed here instead.
+
+## What is fixed
+
+| Item | Value |
+|---|---|
+| Software | `pinakes` 0.32.8 from PyPI, unmodified (`uvx --from "pinakes[light,claude]==0.32.8" pnk ...`) |
+| Corpus | A scratch copy of the published RFC corpus repository (300 documents). The repository itself is not touched. |
+| Manifest | The corpus's own `pinakes.toml`, except `[budget]`: `per_operation_eur` 2.00, `daily_eur` 10.00, `monthly_eur` 10.00. The owner's EUR 10 total cap is therefore the binding window; the 2.00 per-operation cap is Pinakes' shipped default. |
+| Index | Built fresh with `pnk sync` (free, local CPU: `fastembed` `bge-small-en-v1.5` and a local reranker). The old index predates the schema bump and is not used. |
+| Questions | The **first three in file order** of `eval/multihop-questions.yaml`: `http-rate-limit-status-code-provenance`, `uri-ipv6-literal-bracket-lineage`, `sip-invite-2xx-retransmission-defect`. The file says its 20 questions were authored 20260804 and frozen at the commit that first pushed it. The rule is file order, fixed now; it is not a choice of favourable questions. |
+| Key | `PINAKES_ANTHROPIC_API_KEY`, set by the owner in their own terminal. Never written to a file or to this repository. |
+| Calibration | None. The KB is uncalibrated, so the free retrieval's confidence is `unknown` and, per Pinakes' STATUS, `--deep` takes the loop with no early stop, bounded by its round limit and the budget windows. |
+
+## Stopping rule
+
+- One question at a time. Each run shows its estimate and asks for confirmation; I read the estimate before
+  anyone confirms.
+- Stop and report if any single estimate exceeds EUR 2.00 (Pinakes would refuse it anyway) or if the three runs
+  together would exceed the EUR 10 cap.
+- **No question is re-run to get a better answer.** A refusal or a failure is reported as it is.
+
+## Recorded for each question
+
+1. Whether the free retrieval (round 0, `final_k` 8) returns each evidence document the question lists.
+2. The run's estimate and reconciled spend (from `pnk budget`) and the path of its transcript.
+3. The answer, the passages it cites, and whether the cited passages cover every evidence document.
+4. The number of rounds used and which bound ended the run.
+5. My reading of whether the answer is right, made by reading the evidence documents. It is labelled as a
+   reading; the file gives no gold answer text.
+
+## What this cannot show
+
+- Three questions cannot estimate an accuracy rate, and nothing from them is compared with the free path's
+  7 of 20 (the `off` arm of the graph gate): that arm used a different instrument and all 20 questions.
+- The cost is for this corpus, these three questions and this version. It does not bound other runs.
+- It tests Pinakes as built. It changes none of its code.
+
+---
+
+## Results
+
+*Not yet run. The index build is in progress.*
