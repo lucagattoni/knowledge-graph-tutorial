@@ -26,6 +26,14 @@ the heading-path work. That does not prove it did not run. **This is the owner's
 proposal.** The proposed step is only to ask the Pinakes session, which holds that knowledge, whether it ran
 and where the result is. Cost: none.
 
+**Answered 20261031 by the Pinakes session: not run, as far as the repository records.** It read
+`origin/main` at `c4bf2cb` and reports: ROADMAP still states the re-run in the future tense with no verdict;
+the sweep's own liveness test for it ("no verdict recorded means still open") finds no verdict; no commit
+since 20260825 touches `tools/graph_gate.py` or `tools/graph_matrix.py`; no commit message since mentions the
+re-run; the changelog and retrospectives mention it only as having sat unowned for 21 days; and the published
+RFC corpus repository's newest commit is `376b1cb` (20260804). **The limit of that answer:** a run that left
+no commit and no note would not show in the repository. Only the owner can say whether one happened.
+
 ## P2: Gate 2 is blocked, and the field offers a candidate extractor
 
 Gate 2 defaults `mentions` edges on only if a long list of conditions holds; the first is that a licensed
