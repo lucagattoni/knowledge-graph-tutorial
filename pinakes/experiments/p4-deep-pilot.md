@@ -120,3 +120,32 @@ documents: the document that added 429 (RFC 6585), the specification it amended 
 introduced with it (428, 431, 511). The run gave the first in round 1, **gave the second in no round**, and named
 431 and 511 but never 428 for the third. The last printed block, round 3, does not repeat the round-1 finding
 about 429. This is one question; it supports no accuracy rate and no comparison with the free path.
+
+### Question 2: `uri-ipv6-literal-bracket-lineage` (run 20261101 22:38 UTC)
+
+| Item | Value |
+|---|---|
+| Pre-flight estimate (free) | EUR 1.64 |
+| Spend | EUR 0.0910 over 6 paid calls, from `pnk budget`; the run's own line rounds it to EUR 0.09. About one eighteenth of the estimate (my arithmetic: 1.64 / 0.0910 is 18.0). Total so far EUR 0.1725. |
+| Rounds and bound | 3 of 3, "stopped at the round cap ... not at sufficiency". |
+| Transcript | `.pinakes/deep/01M6CM859FYC2J7T6G2N2ZZ4NM.json` in the scratch copy; the printed session is in the scratchpad log. Neither is committed. |
+| Evidence documents among the cited passages | RFC 2732: rounds 1 and 3. RFC 3986: all three rounds. RFC 2396: one passage in round 1 (its scope paragraph), none in rounds 2 and 3. |
+
+What the log prints, one answer block per round:
+- **Round 1:** RFC 2732 introduced the bracket notation. Says no passage states which syntax document it updated,
+  that RFC 3986 obsoletes an earlier one, or the grammar rule.
+- **Round 2:** says RFC 2732's header and RFC 3986's front matter are "not addressed"; gives
+  `IP-literal = "[" ( IPv6address / IPvFuture ) "]"` for RFC 3986, and says the `host` production is not in its passages.
+- **Round 3:** says the passage it cites states that RFC 2732 updates the generic syntax defined in RFC 2396;
+  gives `host = IP-literal / IPv4address / reg-name`; says the sub-rules of `IP-literal` and `IPvFuture` are not in
+  its passages.
+
+**My reading, made against the documents in the scratch corpus (read 20261101 22:37 UTC), not from memory.** RFC
+2732's introduction says "This document updates the generic syntax for Uniform Resource Identifiers defined in
+RFC 2396". RFC 3986's header reads `Obsoletes: 2732, 2396, 1808`, and it defines `host = IP-literal /
+IPv4address / reg-name` and `IP-literal = "[" ( IPv6address / IPvFuture ) "]"`. So the question's three parts
+have these answers in the documents: RFC 2732 introduced the notation, it updated RFC 2396, and the current rule
+is `IP-literal` in RFC 3986. Each part appears correctly in at least one printed block, but **no single block
+holds all three**, and the blocks disagree: round 1 says no passage states that RFC 2732 updates anything, while
+round 3 cites one that does. The last block, round 3, gives the update and the `host` production but not the
+`IP-literal` rule. One question supports no accuracy rate and no comparison with the free path.
