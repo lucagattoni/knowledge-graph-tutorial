@@ -26,6 +26,7 @@ out; nothing here is inferred.
 | D-18 | Free experiments (20261031) | X1 (describe the snapshots) and P1 (ask the Pinakes session whether the sections re-run happened) approved, run and recorded. |
 | D-19 | A paid pilot (20261031) | P4 (the deep loop on 3 of the 20 frozen multi-hop questions) approved with a hosted model and a **total cap of EUR 10**. The owner sets the API key in their own terminal; no secrets file is read. X2, X4 and P3 are not started. |
 | D-20 | Where the P4 key lives (20261031) | The owner chose to keep the API key in a file only they can read, outside any repository, so a terminal tab opened by the assistant can use it. This replaces the "set in the terminal only" part of D-19. The assistant never opens the file; the run script reads one line into its own process and refuses a file others can read. The owner deletes the file when P4 ends and may rotate the key. |
+| D-21 | The P4 runs go ahead without a typed confirmation (20261101) | After two confirmation prompts went unanswered (the tabs were closed before anything was confirmed, so nothing was reserved or spent), the owner authorised the assistant in writing to run all three P4 questions itself with `--yes`, one at a time. Pinakes' budget windows (EUR 2.00 an operation, EUR 10.00 a day and a month) still refuse any run over them. The assistant re-reads each estimate for free before its run and stops on the first failure or refusal, with no retry for a better answer. The authorisation covers these three questions only. |
 
 ## Working rules adopted for this repository
 

@@ -19,7 +19,10 @@ chosen after seeing a result is fixed here instead.
 ## Stopping rule
 
 - One question at a time. Each run shows its estimate and asks for confirmation; I read the estimate before
-  anyone confirms.
+  anyone confirms. **Amended 20261101 (about 22:30 UTC, D-21):** two confirmation prompts were started in
+  terminal tabs and neither was confirmed, so the owner authorised me in writing to run all three questions with
+  `--yes`. Pinakes' budget windows still refuse any run over them. I re-read each estimate for free immediately
+  before its run, and the run script refuses an estimate that is unreadable or above EUR 2.00.
 - Stop and report if any single estimate exceeds EUR 2.00 (Pinakes would refuse it anyway) or if the three runs
   together would exceed the EUR 10 cap.
 - **No question is re-run to get a better answer.** A refusal or a failure is reported as it is.
