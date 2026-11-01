@@ -149,3 +149,56 @@ is `IP-literal` in RFC 3986. Each part appears correctly in at least one printed
 holds all three**, and the blocks disagree: round 1 says no passage states that RFC 2732 updates anything, while
 round 3 cites one that does. The last block, round 3, gives the update and the `host` production but not the
 `IP-literal` rule. One question supports no accuracy rate and no comparison with the free path.
+
+### Question 3: `sip-invite-2xx-retransmission-defect` (run 20261101 22:40 UTC)
+
+| Item | Value |
+|---|---|
+| Pre-flight estimate (free) | EUR 1.64 |
+| Spend | EUR 0.1358 over 6 paid calls, from `pnk budget`; the run's own line rounds it to EUR 0.14. About one twelfth of the estimate (my arithmetic: 1.64 / 0.1358 is 12.1). |
+| Rounds and bound | 3 of 3, "stopped at the round cap ... not at sufficiency". |
+| Transcript | `.pinakes/deep/01M6CMBBYRZKT4YH9Y3BQQRTVR.json` in the scratch copy; the printed session is in the scratchpad log. Neither is committed. |
+| Evidence documents among the cited passages | RFC 6026: all three rounds. RFC 3261: all three rounds. |
+
+What the log prints, one answer block per round:
+- **Round 1:** RFC 6026 corrects it. Besides the state machines it lists the added "Accepted" states, the change for
+  unrecoverable transport errors, and that responses matching no transaction are no longer forwarded (a security
+  risk). It says the passages show nothing on matching rules, the Via branch or timer values.
+- **Round 2:** the loop's own follow-up sub-questions. It names Timer M (client) and Timer L (server), both
+  64\*T1, and the security motivation for the stray-response change; says nothing in its passages shows a change to
+  transaction matching or the Via branch.
+- **Round 3:** states the rule for stray responses (a transaction-stateful proxy must not forward a response with
+  no matching transaction); says its passages do not answer whether Section 17.2.3 of RFC 3261 changes.
+
+**My reading, made against the documents in the scratch corpus (read 20261101 22:41 UTC), not from memory.** RFC
+6026's abstract says the correction modifies the INVITE transaction state machines and "also changes the way
+responses that cannot be matched to an existing transaction are handled to address a security risk". Its
+Section 4 lists the added and changed states, and the ban on forwarding stray INVITE responses. It defines Timer L
+and Timer M, each 64\*T1. So the question's two parts (the correcting document; what else it changes) are both
+answered correctly in round 1, and rounds 2 and 3 add detail that matches the document. The free round-0 retrieval
+already held the abstract in its first passage, so the evidence was in reach before any paid call. The loop did
+not stop after round 1 because there is no calibration; the log gives the EUR 0.1358 for the whole run and does not
+split it by round, so what the two later rounds cost is unstated. One question supports no accuracy rate and no
+comparison with the free path.
+
+## What the three runs show, and what they do not
+
+| Question | Spend | Rounds | The question's parts that appear correctly in at least one printed block (my reading) |
+|---|---|---|---|
+| 1 `http-rate-limit-status-code-provenance` | EUR 0.0815 | 3 of 3, at the cap | The document (RFC 6585). The amended specification: in no round. The other codes: 431 and 511, never 428. |
+| 2 `uri-ipv6-literal-bracket-lineage` | EUR 0.0910 | 3 of 3, at the cap | All three, spread over three blocks; no block holds all three, and the blocks disagree. |
+| 3 `sip-invite-2xx-retransmission-defect` | EUR 0.1358 | 3 of 3, at the cap | Both, in round 1. |
+
+- **Cost:** EUR 0.3084 in all (`pnk budget`) against EUR 4.92 of estimates, about one sixteenth (my arithmetic:
+  4.92 / 0.3084 is 16.0), and 3.1% of the EUR 10 cap. Every run made 6 paid calls and used all 3 rounds. The
+  estimates were ceilings, not expectations, as the earlier synthetic-corpus measurements suggested.
+- **If these three were representative, which three runs cannot show,** twenty questions would cost about EUR 2.06
+  (my arithmetic: 0.3084 / 3 times 20). A larger run is a separate proposal and needs its own yes.
+- **What the answers show:** with no calibration the loop runs to its round cap whether or not an earlier round
+  already answered. The log prints one answer block per round, and the blocks are not merged, so the last block does
+  not always hold what an earlier block found (questions 1 and 2).
+- **Not shown:** an accuracy rate, any comparison with the free path's 7 of 20, whether calibration would stop the
+  loop earlier or cheaper, or anything about the other 17 questions.
+
+*Setup note.* The key file was malformed once (see "Attempts"); after the pilot the owner is asked to delete it,
+and may rotate the key. No character of the key was printed at any point.

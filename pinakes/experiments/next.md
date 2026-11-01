@@ -1,6 +1,7 @@
 # What Pinakes should measure next
 
-**Status: proposals only. Nothing here has run.** Each needs the owner's explicit yes, one at a time. This
+**Status: P1 answered; the P4 pilot ran on 20261101 (results in [p4-deep-pilot.md](p4-deep-pilot.md)); P2 is blocked and
+P3 has not started.** Each needs the owner's explicit yes, one at a time. This
 page continues [what Pinakes has measured](README.md): it takes the items Pinakes' own documents leave
 approved, gated or unmeasured, and says what each would cost. Field-neutral experiments are in
 [`../../kb-kg/experiments/README.md`](../../kb-kg/experiments/README.md).
@@ -15,7 +16,7 @@ Pinakes repository, so I would tell it the exact files before touching anything 
 | P1 | Did the approved graph-gate re-run on a corpus with sections happen? | None | Approved 20260825 18:16; no result found |
 | P2 | `[ner]` and `mentions` edges (Gate 2) | **Blocked** | Precondition N2: a licensed channel |
 | P3 | Public-dataset baselines for the free retrieval path | Free CPU | The benchmark harness the owner is building |
-| P4 | Does `pnk ask --deep` lift the 20 frozen multi-hop questions? | Small, with a measured basis | No accuracy result on that set found |
+| P4 | Pilot of `pnk ask --deep` on 3 of the 20 frozen multi-hop questions | **Ran 20261101: EUR 0.3084 in all** | No accuracy result on that set found; three questions support none |
 
 ## P1: Ask whether the sections re-run happened
 
@@ -54,7 +55,9 @@ set, which Pinakes does not have today. It would be run in that repository, not 
 ## P4: `pnk ask --deep` on the 20 frozen multi-hop questions
 
 **Approved 20261031 as a pilot of 3 questions with a total cap of EUR 10. The plan, written before any paid
-call, is [p4-deep-pilot.md](p4-deep-pilot.md).**
+call, is [p4-deep-pilot.md](p4-deep-pilot.md). Run 20261101: the three questions cost EUR 0.3084 in all against
+EUR 4.92 of estimates, each used all 3 rounds, and the answers and my readings are in
+[the pilot's summary](p4-deep-pilot.md#what-the-three-runs-show-and-what-they-do-not).**
 
 Pinakes' documents record what a deep run costs (estimates and measured spend on synthetic corpora) and I
 found no accuracy result for it on the RFC multi-hop set; I may have missed one. The 20 multi-hop questions
@@ -78,5 +81,5 @@ exceeds its per-operation cap. This uses Pinakes as built and changes none of it
 
 ## What I need from you
 
-Which of P1, P3 and P4 to start, the cap for P4's pilot if you start it, and whether I may message the Pinakes
-session for P1. P2 waits for a licensed channel.
+P3 still needs your yes before it starts. A larger P4 (more of the 20 questions, or a calibrated KB) would be a new
+proposal with its own estimate and cap; none is scheduled. P2 waits for a licensed channel.

@@ -1,8 +1,8 @@
 # Resume
 
-Last updated 20261030 20:09 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). Branch:
+Last updated 20261101 22:43 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). Branch:
 `worktree-20261030_1852-kb-kg-docs-scaffold` (private remote; nothing is on `main` yet). The last content
-commit before this update is `9c01d6b`.
+commit before this update is `8d127cb`.
 
 ## State
 
@@ -14,8 +14,8 @@ The first full pass is written, reviewed and pushed. Nothing is running.
 | `kb-kg/projects/` | 77 entries (22 deep, 55 cards) and a generated index (`tools/build_projects_index.py`) |
 | `kb-kg/landscape/` | two snapshots (19:13 and 19:54 UTC, 20261030) and the approved selection |
 | `kb-kg/directions/` | nine pages and an overview, first drafts |
-| `kb-kg/experiments/` | five proposals, **none run** |
-| `pinakes/` | approach record, recommendations R1 to R7, 12 takeaways, ClaudeKB precedent, what Pinakes has measured, four proposals for what to measure next (**none run**) |
+| `kb-kg/experiments/` | five proposals; X1 run, the other four not started |
+| `pinakes/` | approach record, recommendations R1 to R7, 12 takeaways, ClaudeKB precedent, what Pinakes has measured, four proposals for what to measure next (P1 answered, the P4 pilot run, P2 blocked, P3 not started) |
 | `tools/` | `gh_snapshot.py` (57 tests), `build_projects_index.py` (12 tests), `check_public_safe.sh` |
 
 Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wave B about 5.9M, wave C about
@@ -23,13 +23,11 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
 
 ## Waiting on the owner
 
-1. **The API key for P4.** The index build for the P4 pilot finished at 19:18 UTC on 20261031 (exit 0,
-   300 documents, 106806 chunks; `pnk doctor` clean of faults; budget 0.00 of 10.00). The owner chose (D-20)
-   to keep the key in a file only they can read, outside any repository; once they have created it, the first
-   question runs in a terminal tab the assistant opens and the owner confirms the estimate there. Round 0 and
-   the three estimates (EUR 1.64 each) are already in the plan. The plan, written before any paid call, is in
-   [`pinakes/experiments/p4-deep-pilot.md`](pinakes/experiments/p4-deep-pilot.md). The total cap is EUR 10
-   (D-19). X2, X3, X4, X5 and P3 are not started and each still needs its own yes (D-14).
+1. **Delete the P4 key file, and decide whether to rotate the key.** The pilot is finished, so the file the
+   owner created for it (D-20) is no longer needed. Its value was once malformed (two key-shaped strings
+   joined); the file was not edited and no character of it was printed. Deleting a file holding a secret is the
+   owner's call; the assistant asks before doing it. X2, X3, X4, X5 and P3 are not started and each still needs
+   its own yes (D-14); a larger P4 would be a new proposal.
 2. **A full content check, then the explicit yes to make the repository public.** The gate and the checks run
    so far do not replace that review. The licence is chosen (D-17: Apache-2.0); the copyright line in `NOTICE`
    uses the git author name "Luca Gattoni" and the owner may change it.
@@ -42,6 +40,10 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
 - **X1** ran 20261031 (`kb-kg/experiments/x1-snapshot-distributions/`).
 - **P1** answered by the Pinakes session 20261031: the sections re-run is not recorded as run.
 - **Licence** chosen and added (`LICENSE`, `NOTICE`).
+- **P4 pilot** ran 20261101 under D-19 to D-21: three frozen multi-hop questions, EUR 0.3084 in all against EUR 4.92
+  of estimates, each run using all 3 rounds. Plan, results and my labelled readings:
+  [`pinakes/experiments/p4-deep-pilot.md`](pinakes/experiments/p4-deep-pilot.md). The raw logs and Pinakes'
+  transcripts are in the session scratchpad and are not committed; whether to keep them is the owner's call.
 
 ## Next, once the owner answers
 

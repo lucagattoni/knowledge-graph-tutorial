@@ -15,7 +15,7 @@ disagrees with it is out of date.
 | [`recommendations-r1-r7.md`](recommendations-r1-r7.md) | The seven recommendations drawn from the literature review. | moved; status per recommendation added 20261030 |
 | [`takeaways/`](takeaways/) | Per project: what Pinakes took, what it left, and the licence gate. | 12 entries |
 | [`precedent/`](precedent/) | Earlier in-house work that Pinakes follows. | ClaudeKB moved and updated |
-| [`experiments/`](experiments/) | What Pinakes has measured and what it should measure next. | measured results written; [four proposals](experiments/next.md) for what to measure next, none run |
+| [`experiments/`](experiments/) | What Pinakes has measured and what it should measure next. | measured results written; [four proposals](experiments/next.md) for what to measure next: P1 answered, the [P4 pilot](experiments/p4-deep-pilot.md) run, P2 blocked, P3 not started |
 
 ## Licence gate
 
