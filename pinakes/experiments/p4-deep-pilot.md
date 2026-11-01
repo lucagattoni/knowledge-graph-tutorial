@@ -84,3 +84,39 @@ EUR 2.00 per-operation cap; the three together are EUR 4.92 (my arithmetic), und
 measured spend on earlier synthetic corpora was far below the estimate (see [next.md](next.md)), so the estimate
 is a ceiling, not an expectation. Question 1's eight passages come from four documents, five of them from
 RFC 6585; question 3's are seven of eight from RFC 6026.
+
+### Attempts before the first answer
+
+Two confirmation prompts were started in terminal tabs (20261031 23:42 UTC and 20261101 08:51 UTC). Neither was
+confirmed: the tabs were closed, `pnk budget` showed 0 reservations, nothing was spent. After the owner's written
+authorisation (D-21), the first run (20261101 22:34 UTC) got **HTTP 401 `invalid x-api-key`**: one call, its
+reservation voided, EUR 0.0000. The cause, found by comparing lengths and prefixes without printing any
+character: the key file's value was two key-shaped strings joined (102 and 108 characters, each starting with
+`sk-ant-`). The owner's file is untouched; the run script now uses the last string (108 characters, the standard
+length). The second start, below, is the first call that went through.
+
+### Question 1: `http-rate-limit-status-code-provenance` (run 20261101 22:36 UTC)
+
+| Item | Value |
+|---|---|
+| Pre-flight estimate (free) | EUR 1.64 |
+| Spend | EUR 0.0815 over 6 paid calls, from `pnk budget`; the run's own line rounds it to EUR 0.08. About one twentieth of the estimate (my arithmetic: 1.64 / 0.0815 is 20.1). Earlier synthetic-corpus runs spent about EUR 0.0618 for an uncalibrated loop ([next.md](next.md)): the same order, and one run says no more than that. |
+| Rounds and bound | 3 of 3. The run says it "stopped at the round cap ... not at sufficiency"; with no calibration it could not stop earlier. |
+| Transcript | Kept by Pinakes in the scratch copy's `.pinakes/deep/` as `01M6CM3T24SJ1YTV9BXYNQY7SZ.json`; the printed session is in the scratchpad log. Neither is committed. |
+| Evidence documents among the cited passages | RFC 6585: yes, in every round. RFC 9110: yes, but only body text and a reference entry. RFC 2616: no passage in any round (round 2's answer says so). |
+
+What the log prints, one answer block per round (the blocks are not merged):
+- **Round 1:** RFC 6585 defines 429. The other codes, the specification it amends, and what RFC 9110 obsoleted are
+  stated as not answerable from its passages.
+- **Round 2:** confirms only 431 as defined by RFC 6585; says 428, 429 and 511 are not in its passages; the
+  amended specification is "missing"; RFC 2616 "does not appear among the passages at all".
+- **Round 3:** confirms 431 and 511; says no passage mentions 428 or 429; the "Updates" header and RFC 2616 are
+  "not present".
+
+**My reading, made against the documents in the scratch corpus (read 20261101 22:37 UTC), not from memory.** RFC
+6585's header block reads `Updates: 2616` and its sections 3 to 6 define 428, 429, 431 and 511; RFC 2616 has no
+"429" or "Too Many Requests" in it (0 matches). So the question's three parts have these answers in the
+documents: the document that added 429 (RFC 6585), the specification it amended (RFC 2616), and the codes
+introduced with it (428, 431, 511). The run gave the first in round 1, **gave the second in no round**, and named
+431 and 511 but never 428 for the third. The last printed block, round 3, does not repeat the round-1 finding
+about 429. This is one question; it supports no accuracy rate and no comparison with the free path.
