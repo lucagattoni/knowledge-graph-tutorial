@@ -46,6 +46,15 @@ be chosen and downloaded.
 step starts only on the owner's explicit yes (D-14), stating cost, model and data first. A step does not start just
 because the one before it worked.
 
+**Step 0 status, 20261102: built, with the gaps below.** (a) The [metering gateway](../../tools/metering_gateway.md)
+exists for both providers and has been exercised with the real OpenAI and Anthropic SDKs against fake providers. (b) and
+(d) Four builders were installed in throwaway environments and rehearsed against a stub; the
+[results side by side](x2-index-cost/README.md#the-rehearsals-side-by-side) are on the X2 page. (c) The 20 X2 documents
+and the 20 X4 questions with their answers are [frozen](x4-code-graph-vs-grep/README.md). **Not done:** the gateway has
+never been used against a real provider or with a builder; no scoring program exists for X4's answers, so the check that a
+perfect answerer scores 100% and a random one lands near chance is still to do; no output tokens have been measured, so no
+cost can be derived yet; and the question wording has not been tried on any agent.
+
 **How the instruments are tested before any money is spent.**
 - *The gateway,* against a stub upstream: counted usage equals the stub's reported usage; the call that would pass the
   cap is refused and nothing is forwarded; an upstream error or a 401 counts as zero; a builder configured with only
