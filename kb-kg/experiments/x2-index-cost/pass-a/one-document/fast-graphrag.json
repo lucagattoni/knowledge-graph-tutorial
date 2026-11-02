@@ -1,0 +1,354 @@
+{
+ "runner": "x2_passa_fast_graphrag.py",
+ "builder": "fast-graphrag",
+ "version": "0.0.5",
+ "package_files_sha256": "da8a9d520f70448fc951413c562f9bb094365acfa276fdcb7f93d1d46ab71146",
+ "upstream_url": "http://127.0.0.1:11434/v1",
+ "model": "granite4.2-8b-16k-cap",
+ "embed_model": "qwen3-embedding:0.6b",
+ "chat_request_defaults": {
+  "reasoning_effort": "none"
+ },
+ "embedding_dim": 1024,
+ "preflight": {
+  "ollama_version": "0.40.11",
+  "model": "granite4.2-8b-16k-cap",
+  "num_ctx": 16384,
+  "parameters": {
+   "num_ctx": "16384",
+   "num_predict": "6144",
+   "seed": "42",
+   "temperature": "0",
+   "top_p": "0.95"
+  },
+  "details": {
+   "parent_model": "granite4.2:8b",
+   "format": "gguf",
+   "family": "granite",
+   "families": [
+    "granite"
+   ],
+   "parameter_size": "8.8B",
+   "quantization_level": "Q4_K_M",
+   "runner": "llamacpp"
+  },
+  "capabilities": [
+   "tools",
+   "thinking",
+   "completion"
+  ]
+ },
+ "documents": {
+  "count": 1,
+  "source": "documents.tsv",
+  "total_chars": 6341
+ },
+ "inputs_given_to_the_builder": {
+  "domain": "Analyze news articles and identify the organizations, people, products, places and events they report on, and how these relate to each other.",
+  "example_queries": [
+   "Which company announced the product described in the article?",
+   "Who is quoted in the article, and what organization do they belong to?",
+   "What event does the article report, and where and when did it take place?"
+  ],
+  "entity_types": [
+   "Organization",
+   "Person",
+   "Product",
+   "Place",
+   "Event"
+  ]
+ },
+ "builder_settings": {
+  "defaults_seen": {
+   "llm_class": "OpenAILLMService",
+   "llm_model": "granite4.2-8b-16k-cap",
+   "llm_max_requests_concurrent": 1024,
+   "llm_rate_limit_per_minute_enabled": false,
+   "embedding_model": "qwen3-embedding:0.6b",
+   "embedding_dim": 1024,
+   "embedding_max_elements_per_request": 32,
+   "embedding_max_requests_concurrent": 1024,
+   "embedding_rate_limit_per_minute_enabled": true,
+   "max_gleaning_steps": 0,
+   "chunk_token_size": 800,
+   "chunk_token_overlap": 100,
+   "chunk_size_chars": 3200,
+   "chunk_overlap_chars": 400,
+   "max_node_description_size": 512,
+   "edge_merge_threshold": 5,
+   "insert_similarity_score_threshold": 0.9
+  },
+  "changed_from_library_defaults": {
+   "llm_max_requests_concurrent": {
+    "library": 1024,
+    "applied": 1024
+   },
+   "llm_timeout_s": {
+    "library": 180.0,
+    "applied": 1800.0
+   },
+   "model_names": "the real names given on the command line instead of gpt-4o-mini / text-embedding-3-small",
+   "embedding_dim": {
+    "library": 1536,
+    "applied": 1024
+   },
+   "base_url_and_key": "the gateway's address and a dummy key, passed to both services"
+  }
+ },
+ "ok": true,
+ "stopped_at_document": null,
+ "documents_not_indexed": [],
+ "child_exit_status": 0,
+ "checkpoints": {
+  "1": {
+   "total": {
+    "calls": 6,
+    "ok": 6,
+    "input_tokens": 15048,
+    "output_tokens": 5609,
+    "latency_ms": 413814
+   },
+   "chat": {
+    "calls": 4,
+    "ok": 4,
+    "input_tokens": 13901,
+    "output_tokens": 5609,
+    "latency_ms": 412871,
+    "retry_calls": 1
+   },
+   "embedding": {
+    "calls": 2,
+    "ok": 2,
+    "input_tokens": 1147,
+    "output_tokens": 0,
+    "latency_ms": 943,
+    "requests": 2,
+    "inputs": 42,
+    "inputs_per_request": {
+     "10": 1,
+     "32": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 2,
+     "ok": 2,
+     "input_tokens": 1147,
+     "output_tokens": 0,
+     "latency_ms": 943
+    },
+    "extract": {
+     "calls": 4,
+     "ok": 4,
+     "input_tokens": 13901,
+     "output_tokens": 5609,
+     "latency_ms": 412871,
+     "retry_calls": 1
+    }
+   },
+   "http_statuses": {
+    "200": 6
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0,
+   "documents_run": 1,
+   "documents_indexed": 1,
+   "sdk_retries_logged": 0,
+   "graph_totals": {
+    "entities": 42,
+    "relations": 57,
+    "chunks": 3
+   },
+   "extraction_calls_equal_chunker_count": true
+  }
+ },
+ "per_document": [
+  {
+   "n": 1,
+   "rank": 1,
+   "url_sha256_16": "0068586b43cf2f56",
+   "chars": 6341,
+   "chunks_by_library_chunker": 3,
+   "chunk_chars_min": 1233,
+   "chunk_chars_max": 3056,
+   "graph_totals_after": {
+    "entities": 42,
+    "relations": 57,
+    "chunks": 3
+   },
+   "chunks_stored_for_this_document": 3,
+   "seconds": 270.537,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 6,
+    "ok": 6,
+    "input_tokens": 15048,
+    "output_tokens": 5609,
+    "latency_ms": 413814
+   },
+   "chat": {
+    "calls": 4,
+    "ok": 4,
+    "input_tokens": 13901,
+    "output_tokens": 5609,
+    "latency_ms": 412871,
+    "retry_calls": 1
+   },
+   "embedding": {
+    "calls": 2,
+    "ok": 2,
+    "input_tokens": 1147,
+    "output_tokens": 0,
+    "latency_ms": 943,
+    "requests": 2,
+    "inputs": 42,
+    "inputs_per_request": {
+     "10": 1,
+     "32": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 2,
+     "ok": 2,
+     "input_tokens": 1147,
+     "output_tokens": 0,
+     "latency_ms": 943
+    },
+    "extract": {
+     "calls": 4,
+     "ok": 4,
+     "input_tokens": 13901,
+     "output_tokens": 5609,
+     "latency_ms": 412871,
+     "retry_calls": 1
+    }
+   },
+   "http_statuses": {
+    "200": 6
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0
+  }
+ ],
+ "first_request_of_each_kind": {
+  "embedding": {
+   "route": "/v1/embeddings",
+   "request_body_keys": [
+    "dimensions",
+    "encoding_format",
+    "input",
+    "model"
+   ],
+   "n_messages": 0,
+   "roles": [],
+   "response_format": null,
+   "model": "qwen3-embedding:0.6b",
+   "max_tokens": "absent",
+   "dimensions": 1024,
+   "stream": false,
+   "http_status": 200
+  },
+  "extract": {
+   "route": "/v1/chat/completions",
+   "request_body_keys": [
+    "messages",
+    "model",
+    "response_format"
+   ],
+   "n_messages": 2,
+   "roles": [
+    "system",
+    "user"
+   ],
+   "response_format": {
+    "type": "json_object"
+   },
+   "model": "granite4.2-8b-16k-cap",
+   "max_tokens": "absent",
+   "dimensions": "absent",
+   "stream": false,
+   "http_status": 200
+  }
+ },
+ "gateway": {
+  "calls_in_log": 7,
+  "calls_before_the_builder_started": 1,
+  "calls_after_the_last_document": 0,
+  "embedding_probe_calls": 1,
+  "models_requested": {
+   "granite4.2-8b-16k-cap": 4,
+   "qwen3-embedding:0.6b": 3
+  },
+  "routes": {
+   "/v1/chat/completions": 4,
+   "/v1/embeddings": 3
+  }
+ },
+ "calls_jsonl_sha256": "e0e34fbd57a7685f2fd53419a6097f855c876887cdb68815e72384d9962968d5",
+ "request_multiset_sha256": "7760a938fa381d48e6cea75c253f5bd5f0d29a4e26fb4d2525b293b5db17b660",
+ "wall_seconds_all_documents": 270.568,
+ "outbound_attempts": [],
+ "openai_sdk_retries_logged": 0,
+ "tokenizer_failures_logged_by_library": [
+  "LLM: failed to load tokenizer for model 'granite4.2-8b-16k-cap' ('Could not automatically map granite4.2-8b-16k-cap to a tokeniser. Please use `tiktoken.get_enc"
+ ],
+ "error_log_lines": {
+  "count": 0,
+  "by_head": {}
+ },
+ "environment_variable_names": [
+  "ALL_PROXY",
+  "HOME",
+  "HTTPS_PROXY",
+  "HTTP_PROXY",
+  "LC_CTYPE",
+  "NO_PROXY",
+  "OPENAI_API_KEY",
+  "OPENAI_BASE_URL",
+  "PATH",
+  "PYTHONDONTWRITEBYTECODE",
+  "TIKTOKEN_CACHE_DIR",
+  "TMPDIR",
+  "__CF_USER_TEXT_ENCODING",
+  "all_proxy",
+  "http_proxy",
+  "https_proxy",
+  "no_proxy"
+ ],
+ "minimal_environment_variable_names": [
+  "ALL_PROXY",
+  "HOME",
+  "HTTPS_PROXY",
+  "HTTP_PROXY",
+  "NO_PROXY",
+  "OPENAI_API_KEY",
+  "OPENAI_BASE_URL",
+  "PATH",
+  "PYTHONDONTWRITEBYTECODE",
+  "TIKTOKEN_CACHE_DIR",
+  "TMPDIR",
+  "all_proxy",
+  "http_proxy",
+  "https_proxy",
+  "no_proxy"
+ ],
+ "proxy_setting": "http://127.0.0.1:9",
+ "warnings": [
+  "the library could not load a tokenizer for the model name; it falls back to a naive one (no code in the package calls it on the indexing path: grep of the pinned source)"
+ ],
+ "started_utc": "20261102 15:26:54",
+ "finished_utc": "20261102 15:31:29"
+}

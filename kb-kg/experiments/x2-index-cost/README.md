@@ -1,11 +1,12 @@
 # X2: the measured index cost of cheap graph builders
 
-**Status: Step 0 groundwork (the [order and gates](../README.md#order-and-gates)) is done for the documents and the four free
-rehearsals. Nothing paid has run.** This directory holds what is frozen before any model sees it, the rehearsal results, and later the
-pilot results.
+**Status: Step 0 groundwork (the [order and gates](../README.md#order-and-gates)) is done, and so is pass A on one local model
+(20261102). Nothing paid has run.** This directory holds what is frozen before any model sees it, the rehearsal results, the
+[pass-A results](pass-a) and later the pilot results.
 
-**Next: [pass A](pass-a-local-model.md),** the same builders answered by a local model through the gateway: candidates, two traps found in Ollama's
-documentation, the plan and its limits. The owner chose `granite4.2:8b`; it is installed and the four runners are built.
+**Pass A: [a local model answers the builders](pass-a-local-model.md).** `granite4.2:8b` ran all four through the gateway: LightRAG to 20
+documents, fast-graphrag and Microsoft GraphRAG to 5, nano-graphrag failed on document 1. Output tokens were 4 to 16 times the stub's. The
+page has the candidates, the traps, the tables and the options for what comes next.
 
 ## What is frozen
 

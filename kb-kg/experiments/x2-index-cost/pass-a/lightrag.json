@@ -1,0 +1,868 @@
+{
+ "runner": "x2_passa_lightrag.py",
+ "builder": "LightRAG",
+ "package": "lightrag-hku",
+ "upstream_url": "http://127.0.0.1:11434/v1",
+ "model": "granite4.2-8b-16k-cap",
+ "embed_model": "qwen3-embedding:0.6b",
+ "chat_request_defaults": {
+  "reasoning_effort": "none"
+ },
+ "corpus_sha256": "20b61b5ab84de84a927420c5d265b7ec8d859ae49980699958a787ade9e4d28f",
+ "documents_requested": 20,
+ "checkpoints_requested": [
+  1,
+  5,
+  20
+ ],
+ "checkpoints": {
+  "1": {
+   "documents_attempted": 1,
+   "documents_processed": 1,
+   "wall_seconds_since_start": 157.6,
+   "gateway": {
+    "calls": 11,
+    "chat": {
+     "by_kind": {
+      "extraction_initial": {
+       "calls": 2,
+       "ok": 2,
+       "input_tokens": 5357,
+       "output_tokens": 3025,
+       "latency_ms": 174020
+      },
+      "extraction_gleaning": {
+       "calls": 2,
+       "ok": 2,
+       "input_tokens": 9238,
+       "output_tokens": 271,
+       "latency_ms": 126700
+      }
+     },
+     "total": {
+      "calls": 4,
+      "ok": 4,
+      "input_tokens": 14595,
+      "output_tokens": 3296,
+      "latency_ms": 300720
+     }
+    },
+    "embeddings": {
+     "by_kind": {
+      "entities": {
+       "calls": 3,
+       "ok": 3,
+       "input_tokens": 931,
+       "output_tokens": 0,
+       "latency_ms": 1541,
+       "inputs": 29
+      },
+      "relationships": {
+       "calls": 3,
+       "ok": 3,
+       "input_tokens": 1181,
+       "output_tokens": 0,
+       "latency_ms": 2152,
+       "inputs": 28
+      },
+      "chunks": {
+       "calls": 1,
+       "ok": 1,
+       "input_tokens": 1516,
+       "output_tokens": 0,
+       "latency_ms": 1147,
+       "inputs": 2
+      }
+     },
+     "total": {
+      "calls": 7,
+      "ok": 7,
+      "input_tokens": 3628,
+      "output_tokens": 0,
+      "latency_ms": 4840,
+      "inputs": 59
+     }
+    },
+    "other_calls": 0,
+    "http_status": {
+     "200": 11
+    },
+    "voided": 0,
+    "usage_missing": 0,
+    "refused_by_gateway": 0,
+    "errors": {},
+    "distinct_requests": 11,
+    "repeated_identical_requests": 0,
+    "latency_ms_total": 305560,
+    "model_requested": {
+     "chat": {
+      "granite4.2-8b-16k-cap": 4
+     },
+     "embeddings": {
+      "qwen3-embedding:0.6b": 7
+     }
+    },
+    "request_body": {
+     "chat": {
+      "keys": {
+       "messages": 4,
+       "model": 4
+      },
+      "values_of_other_keys": {}
+     },
+     "embeddings": {
+      "keys": {
+       "encoding_format": 7,
+       "input": 7,
+       "model": 7
+      },
+      "values_of_other_keys": {
+       "encoding_format": [
+        "\"base64\""
+       ]
+      }
+     }
+    },
+    "as_stub_summary": {
+     "chat_calls": 4,
+     "chat_prompt_tokens": 14595,
+     "chat_completion_tokens": 3296,
+     "embedding_calls": 7,
+     "embedding_inputs": 59,
+     "embedding_tokens": 3628,
+     "other_calls": 0
+    }
+   },
+   "builder": {
+    "stored": {
+     "chunks": 2,
+     "chunk_tokens_sum_lightrag_tokenizer": 1455,
+     "entities": 29,
+     "relationships": 28,
+     "graph_nodes": 29,
+     "graph_edges": 28,
+     "llm_response_cache_entries": 4
+    },
+    "lightrag_warning_counts": {
+     "WARNING: doc-#-chunk-#: LLM output format error; found #/# fields on ENTITY # @": 15,
+     "WARNING: doc-#-chunk-#: LLM output format error; found #/# fields on RELATION #": 1
+    }
+   }
+  },
+  "5": {
+   "documents_attempted": 5,
+   "documents_processed": 5,
+   "wall_seconds_since_start": 1160.7,
+   "gateway": {
+    "calls": 67,
+    "chat": {
+     "by_kind": {
+      "extraction_initial": {
+       "calls": 9,
+       "ok": 9,
+       "input_tokens": 24757,
+       "output_tokens": 13176,
+       "latency_ms": 769510
+      },
+      "extraction_gleaning": {
+       "calls": 9,
+       "ok": 9,
+       "input_tokens": 41786,
+       "output_tokens": 11114,
+       "latency_ms": 948272
+      }
+     },
+     "total": {
+      "calls": 18,
+      "ok": 18,
+      "input_tokens": 66543,
+      "output_tokens": 24290,
+      "latency_ms": 1717782
+     }
+    },
+    "embeddings": {
+     "by_kind": {
+      "entities": {
+       "calls": 23,
+       "ok": 23,
+       "input_tokens": 5417,
+       "output_tokens": 0,
+       "latency_ms": 19765,
+       "inputs": 203
+      },
+      "relationships": {
+       "calls": 21,
+       "ok": 21,
+       "input_tokens": 7011,
+       "output_tokens": 0,
+       "latency_ms": 20448,
+       "inputs": 186
+      },
+      "chunks": {
+       "calls": 5,
+       "ok": 5,
+       "input_tokens": 7516,
+       "output_tokens": 0,
+       "latency_ms": 5123,
+       "inputs": 9
+      }
+     },
+     "total": {
+      "calls": 49,
+      "ok": 49,
+      "input_tokens": 19944,
+      "output_tokens": 0,
+      "latency_ms": 45336,
+      "inputs": 398
+     }
+    },
+    "other_calls": 0,
+    "http_status": {
+     "200": 67
+    },
+    "voided": 0,
+    "usage_missing": 0,
+    "refused_by_gateway": 0,
+    "errors": {},
+    "distinct_requests": 67,
+    "repeated_identical_requests": 0,
+    "latency_ms_total": 1763118,
+    "model_requested": {
+     "chat": {
+      "granite4.2-8b-16k-cap": 18
+     },
+     "embeddings": {
+      "qwen3-embedding:0.6b": 49
+     }
+    },
+    "request_body": {
+     "chat": {
+      "keys": {
+       "messages": 18,
+       "model": 18
+      },
+      "values_of_other_keys": {}
+     },
+     "embeddings": {
+      "keys": {
+       "encoding_format": 49,
+       "input": 49,
+       "model": 49
+      },
+      "values_of_other_keys": {
+       "encoding_format": [
+        "\"base64\""
+       ]
+      }
+     }
+    },
+    "as_stub_summary": {
+     "chat_calls": 18,
+     "chat_prompt_tokens": 66543,
+     "chat_completion_tokens": 24290,
+     "embedding_calls": 49,
+     "embedding_inputs": 398,
+     "embedding_tokens": 19944,
+     "other_calls": 0
+    }
+   },
+   "builder": {
+    "stored": {
+     "chunks": 9,
+     "chunk_tokens_sum_lightrag_tokenizer": 7338,
+     "entities": 203,
+     "relationships": 186,
+     "graph_nodes": 203,
+     "graph_edges": 186,
+     "llm_response_cache_entries": 17
+    },
+    "lightrag_warning_counts": {
+     "WARNING: doc-#-chunk-#: LLM output format error; found #/# fields on ENTITY # @": 40,
+     "WARNING: doc-#-chunk-#: LLM output format error; found #/# fields on RELATION #": 24,
+     "WARNING: doc-#-chunk-#: LLM output format error; find LLM use <|#|> as record s": 4,
+     "WARNING: OpenAI response truncated by token limit (finish_reason=length, conten": 1,
+     "WARNING: Skipping LLM cache write for truncated extract response (finish_reason": 1,
+     "WARNING: Token-limit truncation during gleaning entity extraction for chunk doc": 1,
+     "WARNING: doc-#-chunk-#: Complete delimiter can not be found in extraction resul": 3,
+     "WARNING: Warning: token-limit truncation hit # of # chunks during entity extrac": 1
+    }
+   }
+  },
+  "20": {
+   "documents_attempted": 20,
+   "documents_processed": 20,
+   "wall_seconds_since_start": 6321.0,
+   "gateway": {
+    "calls": 342,
+    "chat": {
+     "by_kind": {
+      "extraction_initial": {
+       "calls": 49,
+       "ok": 49,
+       "input_tokens": 140433,
+       "output_tokens": 97826,
+       "latency_ms": 6654051
+      },
+      "extraction_gleaning": {
+       "calls": 49,
+       "ok": 49,
+       "input_tokens": 259222,
+       "output_tokens": 37007,
+       "latency_ms": 4489949
+      },
+      "summary_entity": {
+       "calls": 2,
+       "ok": 2,
+       "input_tokens": 1454,
+       "output_tokens": 558,
+       "latency_ms": 24173
+      }
+     },
+     "total": {
+      "calls": 100,
+      "ok": 100,
+      "input_tokens": 401109,
+      "output_tokens": 135391,
+      "latency_ms": 11168173
+     }
+    },
+    "embeddings": {
+     "by_kind": {
+      "entities": {
+       "calls": 112,
+       "ok": 112,
+       "input_tokens": 32413,
+       "output_tokens": 0,
+       "latency_ms": 118826,
+       "inputs": 1046
+      },
+      "relationships": {
+       "calls": 110,
+       "ok": 110,
+       "input_tokens": 38596,
+       "output_tokens": 0,
+       "latency_ms": 111434,
+       "inputs": 1012
+      },
+      "chunks": {
+       "calls": 20,
+       "ok": 20,
+       "input_tokens": 45881,
+       "output_tokens": 0,
+       "latency_ms": 24275,
+       "inputs": 49
+      }
+     },
+     "total": {
+      "calls": 242,
+      "ok": 242,
+      "input_tokens": 116890,
+      "output_tokens": 0,
+      "latency_ms": 254535,
+      "inputs": 2107
+     }
+    },
+    "other_calls": 0,
+    "http_status": {
+     "200": 342
+    },
+    "voided": 0,
+    "usage_missing": 0,
+    "refused_by_gateway": 0,
+    "errors": {},
+    "distinct_requests": 342,
+    "repeated_identical_requests": 0,
+    "latency_ms_total": 11422708,
+    "model_requested": {
+     "chat": {
+      "granite4.2-8b-16k-cap": 100
+     },
+     "embeddings": {
+      "qwen3-embedding:0.6b": 242
+     }
+    },
+    "request_body": {
+     "chat": {
+      "keys": {
+       "messages": 100,
+       "model": 100
+      },
+      "values_of_other_keys": {}
+     },
+     "embeddings": {
+      "keys": {
+       "encoding_format": 242,
+       "input": 242,
+       "model": 242
+      },
+      "values_of_other_keys": {
+       "encoding_format": [
+        "\"base64\""
+       ]
+      }
+     }
+    },
+    "as_stub_summary": {
+     "chat_calls": 100,
+     "chat_prompt_tokens": 401109,
+     "chat_completion_tokens": 135391,
+     "embedding_calls": 242,
+     "embedding_inputs": 2107,
+     "embedding_tokens": 116890,
+     "other_calls": 0
+    }
+   },
+   "builder": {
+    "stored": {
+     "chunks": 49,
+     "chunk_tokens_sum_lightrag_tokenizer": 44560,
+     "entities": 1023,
+     "relationships": 1011,
+     "graph_nodes": 1023,
+     "graph_edges": 1011,
+     "llm_response_cache_entries": 97
+    },
+    "lightrag_warning_counts": {
+     "WARNING: doc-#-chunk-#: LLM output format error; found #/# fields on ENTITY # @": 234,
+     "WARNING: doc-#-chunk-#: LLM output format error; found #/# fields on RELATION #": 104,
+     "WARNING: doc-#-chunk-#: LLM output format error; find LLM use <|#|> as record s": 6,
+     "WARNING: OpenAI response truncated by token limit (finish_reason=length, conten": 3,
+     "WARNING: Skipping LLM cache write for truncated extract response (finish_reason": 3,
+     "WARNING: Token-limit truncation during gleaning entity extraction for chunk doc": 1,
+     "WARNING: doc-#-chunk-#: Complete delimiter can not be found in extraction resul": 7,
+     "WARNING: Warning: token-limit truncation hit # of # chunks during entity extrac": 3,
+     "WARNING: Token-limit truncation during initial entity extraction for chunk doc-": 2,
+     "WARNING: Recovering mis-prefixed relation: # ~ #": 19,
+     "WARNING: Entity type contains comma, taking first non-empty token in record [#,": 4
+    }
+   }
+  }
+ },
+ "status": "ok",
+ "failure": null,
+ "started_utc": "20261102 15:46:38",
+ "python": "3.12.16",
+ "machine": "arm64",
+ "system": "Darwin",
+ "environment": {
+  "python_isolated_mode": true,
+  "names_kept": [
+   "HOME",
+   "LC_CTYPE",
+   "PATH",
+   "TMPDIR"
+  ],
+  "names_removed": 1,
+  "removed_names_that_look_like_credentials": 0,
+  "proxy": "http://127.0.0.1:9 (closed port), loopback excluded",
+  "builder_settings_set_by_flag": {}
+ },
+ "gateway": {
+  "base_url": "http://127.0.0.1:49442/v1",
+  "models": [
+   "granite4.2-8b-16k-cap",
+   "qwen3-embedding:0.6b"
+  ],
+  "upstream_timeout_s": 1800,
+  "metering": "prices are zero; the cap cannot refuse"
+ },
+ "preflight": {
+  "ollama_version": "0.40.11",
+  "model": "granite4.2-8b-16k-cap",
+  "num_ctx": 16384,
+  "parameters": {
+   "num_ctx": "16384",
+   "num_predict": "6144",
+   "seed": "42",
+   "temperature": "0",
+   "top_p": "0.95"
+  },
+  "details": {
+   "parent_model": "granite4.2:8b",
+   "format": "gguf",
+   "family": "granite",
+   "families": [
+    "granite"
+   ],
+   "parameter_size": "8.8B",
+   "quantization_level": "Q4_K_M",
+   "runner": "llamacpp"
+  },
+  "capabilities": [
+   "tools",
+   "thinking",
+   "completion"
+  ]
+ },
+ "tripwire_selftest_recorded_a_connect_to_127.0.0.1:9": true,
+ "tokenizer": {
+  "o200k_base": "available",
+  "cl100k_base": "available"
+ },
+ "embedding_dim": 1024,
+ "dimension_probe": {
+  "http_status": 200,
+  "input_tokens": 4,
+  "latency_ms": 24,
+  "vector_length": 1024,
+  "note": "not counted in any checkpoint"
+ },
+ "config_as_constructed": {
+  "chunk_token_size": 1200,
+  "chunk_overlap_token_size": 100,
+  "entity_extract_max_gleaning": 1,
+  "force_llm_summary_on_merge": 8,
+  "summary_max_tokens": 1200,
+  "summary_context_size": 12000,
+  "llm_model_max_async": 2,
+  "default_llm_timeout_s": 1800,
+  "worker_timeout_s_arithmetic": 3600,
+  "max_parallel_insert": 3,
+  "embedding_batch_num": 10,
+  "embedding_func_max_async": 8,
+  "embedding_dim": 1024,
+  "embedding_max_token_size": 8192,
+  "entity_extraction_use_json": false,
+  "enable_llm_cache": true,
+  "enable_llm_cache_for_entity_extract": true,
+  "tiktoken_model_name": "gpt-4o-mini",
+  "llm_model_name": "granite4.2-8b-16k-cap",
+  "overridden_by_flag": [
+   "default_llm_timeout",
+   "llm_model_max_async"
+  ],
+  "chunking": "fixed-token (ainsert always uses it)"
+ },
+ "per_document": [
+  {
+   "document": 1,
+   "doc_rank": 1,
+   "chars": 6341,
+   "doc_status": "processed",
+   "wall_seconds": 157.6,
+   "gateway_calls": 11,
+   "chat_calls": 4,
+   "chat_input_tokens": 14595,
+   "chat_output_tokens": 3296,
+   "embedding_inputs": 59,
+   "latency_ms_total": 305560,
+   "non_200_calls": 0
+  },
+  {
+   "document": 2,
+   "doc_rank": 2,
+   "chars": 6005,
+   "doc_status": "processed",
+   "wall_seconds": 461.4,
+   "gateway_calls": 12,
+   "chat_calls": 4,
+   "chat_input_tokens": 14371,
+   "chat_output_tokens": 9461,
+   "embedding_inputs": 61,
+   "latency_ms_total": 618171,
+   "non_200_calls": 0
+  },
+  {
+   "document": 3,
+   "doc_rank": 3,
+   "chars": 5112,
+   "doc_status": "processed",
+   "wall_seconds": 56.4,
+   "gateway_calls": 7,
+   "chat_calls": 2,
+   "chat_input_tokens": 7564,
+   "chat_output_tokens": 1209,
+   "embedding_inputs": 26,
+   "latency_ms_total": 57209,
+   "non_200_calls": 0
+  },
+  {
+   "document": 4,
+   "doc_rank": 4,
+   "chars": 6374,
+   "doc_status": "processed",
+   "wall_seconds": 351.6,
+   "gateway_calls": 27,
+   "chat_calls": 4,
+   "chat_input_tokens": 14935,
+   "chat_output_tokens": 7446,
+   "embedding_inputs": 211,
+   "latency_ms_total": 522515,
+   "non_200_calls": 0
+  },
+  {
+   "document": 5,
+   "doc_rank": 5,
+   "chars": 8626,
+   "doc_status": "processed",
+   "wall_seconds": 133.6,
+   "gateway_calls": 10,
+   "chat_calls": 4,
+   "chat_input_tokens": 15078,
+   "chat_output_tokens": 2878,
+   "embedding_inputs": 41,
+   "latency_ms_total": 259663,
+   "non_200_calls": 0
+  },
+  {
+   "document": 6,
+   "doc_rank": 6,
+   "chars": 6083,
+   "doc_status": "processed",
+   "wall_seconds": 699.8,
+   "gateway_calls": 15,
+   "chat_calls": 4,
+   "chat_input_tokens": 20512,
+   "chat_output_tokens": 14661,
+   "embedding_inputs": 99,
+   "latency_ms_total": 1363173,
+   "non_200_calls": 0
+  },
+  {
+   "document": 7,
+   "doc_rank": 7,
+   "chars": 14982,
+   "doc_status": "processed",
+   "wall_seconds": 234.8,
+   "gateway_calls": 16,
+   "chat_calls": 6,
+   "chat_input_tokens": 24208,
+   "chat_output_tokens": 5095,
+   "embedding_inputs": 84,
+   "latency_ms_total": 406562,
+   "non_200_calls": 0
+  },
+  {
+   "document": 8,
+   "doc_rank": 8,
+   "chars": 6237,
+   "doc_status": "processed",
+   "wall_seconds": 177.6,
+   "gateway_calls": 14,
+   "chat_calls": 4,
+   "chat_input_tokens": 14433,
+   "chat_output_tokens": 3910,
+   "embedding_inputs": 81,
+   "latency_ms_total": 330294,
+   "non_200_calls": 0
+  },
+  {
+   "document": 9,
+   "doc_rank": 9,
+   "chars": 11756,
+   "doc_status": "processed",
+   "wall_seconds": 291.4,
+   "gateway_calls": 19,
+   "chat_calls": 6,
+   "chat_input_tokens": 24521,
+   "chat_output_tokens": 6421,
+   "embedding_inputs": 108,
+   "latency_ms_total": 507411,
+   "non_200_calls": 0
+  },
+  {
+   "document": 10,
+   "doc_rank": 10,
+   "chars": 10120,
+   "doc_status": "processed",
+   "wall_seconds": 215.4,
+   "gateway_calls": 17,
+   "chat_calls": 6,
+   "chat_input_tokens": 20965,
+   "chat_output_tokens": 4482,
+   "embedding_inputs": 87,
+   "latency_ms_total": 424009,
+   "non_200_calls": 0
+  },
+  {
+   "document": 11,
+   "doc_rank": 11,
+   "chars": 8275,
+   "doc_status": "processed",
+   "wall_seconds": 373.5,
+   "gateway_calls": 10,
+   "chat_calls": 4,
+   "chat_input_tokens": 20444,
+   "chat_output_tokens": 7968,
+   "embedding_inputs": 45,
+   "latency_ms_total": 741277,
+   "non_200_calls": 0
+  },
+  {
+   "document": 12,
+   "doc_rank": 12,
+   "chars": 5601,
+   "doc_status": "processed",
+   "wall_seconds": 254.7,
+   "gateway_calls": 12,
+   "chat_calls": 4,
+   "chat_input_tokens": 13560,
+   "chat_output_tokens": 5702,
+   "embedding_inputs": 71,
+   "latency_ms_total": 506352,
+   "non_200_calls": 0
+  },
+  {
+   "document": 13,
+   "doc_rank": 13,
+   "chars": 6359,
+   "doc_status": "processed",
+   "wall_seconds": 189.4,
+   "gateway_calls": 15,
+   "chat_calls": 4,
+   "chat_input_tokens": 15325,
+   "chat_output_tokens": 4088,
+   "embedding_inputs": 95,
+   "latency_ms_total": 360928,
+   "non_200_calls": 0
+  },
+  {
+   "document": 14,
+   "doc_rank": 14,
+   "chars": 9754,
+   "doc_status": "processed",
+   "wall_seconds": 165.6,
+   "gateway_calls": 11,
+   "chat_calls": 4,
+   "chat_input_tokens": 15752,
+   "chat_output_tokens": 3611,
+   "embedding_inputs": 57,
+   "latency_ms_total": 310526,
+   "non_200_calls": 0
+  },
+  {
+   "document": 15,
+   "doc_rank": 15,
+   "chars": 13179,
+   "doc_status": "processed",
+   "wall_seconds": 493.4,
+   "gateway_calls": 32,
+   "chat_calls": 6,
+   "chat_input_tokens": 29621,
+   "chat_output_tokens": 10742,
+   "embedding_inputs": 246,
+   "latency_ms_total": 925396,
+   "non_200_calls": 0
+  },
+  {
+   "document": 16,
+   "doc_rank": 16,
+   "chars": 22011,
+   "doc_status": "processed",
+   "wall_seconds": 1103.5,
+   "gateway_calls": 45,
+   "chat_calls": 11,
+   "chat_input_tokens": 48088,
+   "chat_output_tokens": 23428,
+   "embedding_inputs": 328,
+   "latency_ms_total": 1944073,
+   "non_200_calls": 0
+  },
+  {
+   "document": 17,
+   "doc_rank": 17,
+   "chars": 16351,
+   "doc_status": "processed",
+   "wall_seconds": 365.7,
+   "gateway_calls": 22,
+   "chat_calls": 8,
+   "chat_input_tokens": 32588,
+   "chat_output_tokens": 7877,
+   "embedding_inputs": 126,
+   "latency_ms_total": 738172,
+   "non_200_calls": 0
+  },
+  {
+   "document": 18,
+   "doc_rank": 18,
+   "chars": 7683,
+   "doc_status": "processed",
+   "wall_seconds": 131.4,
+   "gateway_calls": 13,
+   "chat_calls": 4,
+   "chat_input_tokens": 15266,
+   "chat_output_tokens": 2820,
+   "embedding_inputs": 82,
+   "latency_ms_total": 259945,
+   "non_200_calls": 0
+  },
+  {
+   "document": 19,
+   "doc_rank": 19,
+   "chars": 12684,
+   "doc_status": "processed",
+   "wall_seconds": 236.4,
+   "gateway_calls": 16,
+   "chat_calls": 7,
+   "chat_input_tokens": 23365,
+   "chat_output_tokens": 5221,
+   "embedding_inputs": 78,
+   "latency_ms_total": 409944,
+   "non_200_calls": 0
+  },
+  {
+   "document": 20,
+   "doc_rank": 20,
+   "chars": 8038,
+   "doc_status": "processed",
+   "wall_seconds": 227.8,
+   "gateway_calls": 18,
+   "chat_calls": 4,
+   "chat_input_tokens": 15918,
+   "chat_output_tokens": 5075,
+   "embedding_inputs": 122,
+   "latency_ms_total": 431528,
+   "non_200_calls": 0
+  }
+ ],
+ "stored_final": {
+  "chunks": 49,
+  "chunk_tokens_sum_lightrag_tokenizer": 44560,
+  "entities": 1023,
+  "relationships": 1011,
+  "graph_nodes": 1023,
+  "graph_edges": 1011,
+  "llm_response_cache_entries": 97
+ },
+ "lightrag_warning_counts": {
+  "WARNING: doc-#-chunk-#: LLM output format error; found #/# fields on ENTITY # @": 234,
+  "WARNING: doc-#-chunk-#: LLM output format error; found #/# fields on RELATION #": 104,
+  "WARNING: doc-#-chunk-#: LLM output format error; find LLM use <|#|> as record s": 6,
+  "WARNING: OpenAI response truncated by token limit (finish_reason=length, conten": 3,
+  "WARNING: Skipping LLM cache write for truncated extract response (finish_reason": 3,
+  "WARNING: Token-limit truncation during gleaning entity extraction for chunk doc": 1,
+  "WARNING: doc-#-chunk-#: Complete delimiter can not be found in extraction resul": 7,
+  "WARNING: Warning: token-limit truncation hit # of # chunks during entity extrac": 3,
+  "WARNING: Token-limit truncation during initial entity extraction for chunk doc-": 2,
+  "WARNING: Recovering mis-prefixed relation: # ~ #": 19,
+  "WARNING: Entity type contains comma, taking first non-empty token in record [#,": 4
+ },
+ "openai_api_base_was_set_to_gateway": true,
+ "outbound": {
+  "connections_not_to_gateway": {},
+  "name_lookups_not_loopback": {},
+  "subprocess_starts": [
+   "subprocess.Popen:uname from subprocess < platform < functools < platform < openai._base_client < concurrent.futures.thread",
+   "subprocess.Popen:file from subprocess < platform < openai._base_client < concurrent.futures.thread < threading",
+   "subprocess.Popen:file from subprocess < platform < openai._base_client < concurrent.futures.thread < threading"
+  ]
+ },
+ "gateway_log_records": 343,
+ "calls_logged_after_last_checkpoint": 0,
+ "calls_jsonl_sha256": "3ef0eed18ef829bfe1ab7bdbebf5c4e6a219820e7a7dd8850c774c4ff5c1bdab",
+ "calls_jsonl_note": "sha256 of the gateway's own log (no bodies); it holds call ids and times, so it differs between runs. calls_multiset_sha256 is the order-free, time-free fingerprint",
+ "calls_multiset_sha256": "f42174e7a87b5f999db9cd4ae54c299df4609d3b296fe269b7973ec28bb06c6c",
+ "version": "1.5.7",
+ "dependency_versions": {
+  "lightrag-hku": "1.5.7",
+  "openai": "3.42.1",
+  "tiktoken": "0.14.0",
+  "nano-vectordb": "0.0.4.3",
+  "networkx": "3.7",
+  "numpy": "2.5.4",
+  "tenacity": "9.1.4",
+  "pipmaster": "1.2.2"
+ },
+ "finished_utc": "20261102 17:32:00",
+ "wall_seconds": 6321.9
+}

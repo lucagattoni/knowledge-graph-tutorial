@@ -1,18 +1,15 @@
 # Resume
 
-Last updated 20261102 18:35 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261102 20:00 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
 ## State
 
-The first full pass is written, reviewed and pushed. **Running since 20261102 15:38 UTC: X2 pass A on a local model (free, nothing paid). The owner chose every builder to 20
-documents, then at 18:28 UTC narrowed it to 5 documents for what was left: nano-graphrag failed at document 1, LightRAG is done to 20,
-fast-graphrag is done to 5 (it dropped document 14), Microsoft GraphRAG is running to 5.** The order, arguments and
-settings are on [the pass-A page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md#how-the-full-run-was-launched); outputs
-are in the session's scratch directory, outside the repository. If it stopped, a finished builder's result JSON is in
-that directory; rerun an unfinished builder from scratch (a runner has no resume), and read
-`python tools/exp/passa_common.py facts WORKDIR/gateway` for how its answers ended.
+The first full pass is written, reviewed and pushed. Nothing is running. X2 pass A on a local model finished 20261102 19:41 UTC
+(free, nothing paid): the owner chose every builder to 20 documents, then narrowed the rest to 5. Result files:
+[`kb-kg/experiments/x2-index-cost/pass-a/`](kb-kg/experiments/x2-index-cost/pass-a); tables and arguments: [the pass-A
+page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md).
 
 | Part | State |
 |---|---|
@@ -20,7 +17,7 @@ that directory; rerun an unfinished builder from scratch (a runner has no resume
 | `kb-kg/projects/` | 77 entries (22 deep, 55 cards) and a generated index (`tools/build_projects_index.py`) |
 | `kb-kg/landscape/` | two snapshots (19:13 and 19:54 UTC, 20261030) and the approved selection |
 | `kb-kg/directions/` | nine pages and an overview, first drafts |
-| `kb-kg/experiments/` | five proposals; X1 run; **Step 0 of the order and gates built 20261102** (D-25); X2 pass A (local model) built and run on one document per builder (D-26); X3 to X5 not started |
+| `kb-kg/experiments/` | five proposals; X1 run; **Step 0 of the order and gates built 20261102** (D-25); X2 pass A on a local model done (D-26, D-27); X3 to X5 not started |
 | `pinakes/` | approach record, recommendations R1 to R7, 12 takeaways, ClaudeKB precedent, what Pinakes has measured, four proposals for what to measure next (P1 answered, the P4 pilot run, P2 blocked, P3's free-path half in the public benchmark repository, described on its own page) |
 | `tools/` | `gh_snapshot.py` (57 tests), `build_projects_index.py` (12 tests), `check_public_safe.sh`; `tools/exp/` (stub model server, document selection, statistics, four builder rehearsal runners, two SDK end-to-end checks; 32 tests plus the runners); `metering_gateway.py` (88 tests); four pass-A runners (`x2_passa_*.py`) and `passa_common.py` (19 tests) |
 
@@ -32,15 +29,13 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
 1. **Whether to rotate the P4 key.** The key file was deleted at the owner's request on 20261102. The
    variable may still be exported in the owner's own terminal tab (`unset PINAKES_ANTHROPIC_API_KEY` clears it
    there). Its value was once malformed; rotating or revoking the key is the owner's call.
-2. **How far to take X2 pass A (D-26), then the first paid step (D-24, D-25).** `granite4.2:8b` is installed (derived
-   copies `granite4.2-8b-16k` and `-cap`) and each builder has indexed one document (results and the four options on
-   [the pass-A page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md#decision-for-the-owner)); a longer free run
-   is about 1.8 h to 5 documents or about 10.5 h to 20. To resume, use the command line in each runner's header
-   (`tools/exp/x2_passa_*.py`): one builder at a time, `--chat-default reasoning_effort=none`, the `-cap` model, a
-   preflight minimum of 16384, concurrency 2. The builders' throwaway virtual environments were in the session's scratch
-   directory and must be rebuilt at the pins on each builder's rehearsal page; the derived models are in Ollama (`ollama list`).
-   Later, for pass B, a hosted model, a new key and a cap. None of X2 to X5 beyond pass A is
-   started and each paid step needs its own yes with model, provider and cap (D-14). Pinakes follow-ups (a BM25-alone
+2. **What follows pass A (D-26, D-27).** Three options are on [the pass-A
+   page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md#where-this-leaves-the-owner): a second local model on the
+   cheapest builder (free, about 20 minutes plus the pull), the paid pilot (pass B: model, provider, cap and a new key), or
+   X4. To rerun a builder, use the command line in its runner's header (`tools/exp/x2_passa_*.py`) and the arguments on the
+   page; the builders' throwaway virtual environments were in the session's scratch directory and must be rebuilt at the pins
+   on each builder's rehearsal page; the derived models are in Ollama (`ollama list`). None of X3 to X5 is started and each
+   paid step needs its own yes with model, provider and cap (D-14). Pinakes follow-ups (a BM25-alone
    arm request, a calibrated deep run) are in [`pinakes/experiments/next.md`](pinakes/experiments/next.md#order-for-the-follow-ups).
    The `NOTICE` copyright line uses the git author name "Luca Gattoni"; the owner may change it.
 3. **Whether the safety gate should fail when its private-name list is missing.** A new worktree has no copy of the

@@ -1,0 +1,352 @@
+{
+ "builder": "nano-graphrag",
+ "builder_overrides": {
+  "chat_model_for_both_slots": "granite4.2-8b-16k-cap",
+  "client_timeout_s": 3600.0,
+  "embedding_dim": 1024,
+  "embedding_model": "qwen3-embedding:0.6b",
+  "max_async": 2,
+  "note": "every other setting is the builder's default"
+ },
+ "calls_jsonl": "nano.calls.jsonl",
+ "calls_jsonl_sha256": "bc52037b7f474ae06279851dc44a0135f732ea3152657c4b3bc2a815cccaf63d",
+ "chat_request_defaults": {
+  "reasoning_effort": "none"
+ },
+ "checkpoints": {},
+ "chunking_arithmetic": {
+  "chunks_per_document": [
+   2,
+   2,
+   1,
+   2,
+   2,
+   2,
+   3,
+   2,
+   3,
+   3,
+   2,
+   2,
+   2,
+   2,
+   3,
+   5,
+   4,
+   2,
+   3,
+   2
+  ],
+  "step_tokens": 1100,
+  "tokenizer": "o200k_base",
+  "tokens_per_document": [
+   1355,
+   1203,
+   1066,
+   1470,
+   1844,
+   1272,
+   3046,
+   1340,
+   2577,
+   2239,
+   1909,
+   1132,
+   1436,
+   1958,
+   2957,
+   5021,
+   3698,
+   1981,
+   2661,
+   1621
+  ],
+  "total_chunks": 49,
+  "total_document_tokens": 41786
+ },
+ "corpus_sha256": "20b61b5ab84de84a927420c5d265b7ec8d859ae49980699958a787ade9e4d28f",
+ "defaults_observed": {
+  "best_model_max_async": 2,
+  "cheap_model_max_async": 2,
+  "chunk_overlap_token_size": 100,
+  "chunk_token_size": 1200,
+  "embedding_batch_num": 32,
+  "embedding_func_max_async": 2,
+  "enable_llm_cache": true,
+  "enable_local": true,
+  "enable_naive_rag": false,
+  "entity_extract_max_gleaning": 1,
+  "entity_summary_to_max_tokens": 500,
+  "graph_cluster_algorithm": "leiden",
+  "max_graph_cluster_size": 10,
+  "tiktoken_model_name": "gpt-4o"
+ },
+ "dimension_probe": {
+  "excluded_from_all_counts": true,
+  "http_status": 200,
+  "input_tokens": 3,
+  "latency_ms": 25,
+  "usage_missing": false
+ },
+ "embed_model": "qwen3-embedding:0.6b",
+ "embedding_dim": 1024,
+ "environment": {
+  "api_key": "dummy (not a key)",
+  "http_proxy": "http://127.0.0.1:9",
+  "no_proxy": "127.0.0.1,localhost",
+  "tiktoken_cache_dir_set": true
+ },
+ "failure": {
+  "document_index": 1,
+  "message_chars": 17,
+  "raised_at": [
+   "base_events.py:691 run_until_complete",
+   "nano_graphrag/graphrag.py:308 ainsert",
+   "nano_graphrag/_storage/gdb_networkx.py:138 clustering",
+   "nano_graphrag/_storage/gdb_networkx.py:204 _leiden_clustering",
+   "<@beartype(graspologic.partition.leiden.hierarchical_leiden) at 0x1339bb560>:304 hierarchical_leiden",
+   "graspologic/partition/leiden.py:588 hierarchical_leiden"
+  ],
+  "rank": 1,
+  "stage": "index",
+  "traceback_file": "failure.txt in the working directory (holds the message, which may quote text)",
+  "type": "leiden.EmptyNetworkError"
+ },
+ "failure_snapshot": {
+  "by_kind": {
+   "embedding": {
+    "calls": 1,
+    "http_statuses": {
+     "200": 1
+    },
+    "input_tokens": 1345,
+    "inputs": 18,
+    "latency_ms": 998,
+    "models": {
+     "qwen3-embedding:0.6b": 1
+    },
+    "ok": 1,
+    "output_tokens": 0
+   },
+   "entity_extraction": {
+    "calls": 2,
+    "http_statuses": {
+     "200": 2
+    },
+    "input_tokens": 5696,
+    "latency_ms": 205336,
+    "models": {
+     "granite4.2-8b-16k-cap": 2
+    },
+    "ok": 2,
+    "output_tokens": 3937
+   },
+   "gleaning_continue": {
+    "calls": 2,
+    "http_statuses": {
+     "200": 2
+    },
+    "input_tokens": 9695,
+    "latency_ms": 728593,
+    "models": {
+     "granite4.2-8b-16k-cap": 2
+    },
+    "ok": 2,
+    "output_tokens": 6878
+   }
+  },
+  "calls": 5,
+  "client_side_retries": {
+   "pending_estimate": 0,
+   "sdk_retry_log_lines": 0,
+   "waited_s": 0.0
+  },
+  "errors": {},
+  "graph": {
+   "chunks_stored": 0,
+   "communities_in_report_store": 0,
+   "connected_components": 18,
+   "documents_stored": 0,
+   "edges": 0,
+   "largest_component_nodes": 1,
+   "nodes": 18,
+   "nodes_with_cluster_data": 0
+  },
+  "http_statuses": {
+   "200": 5
+  },
+  "indexing_seconds_so_far": 487.1,
+  "n_docs": 0,
+  "refusals": {},
+  "repeats": {
+   "distinct_requests": 5,
+   "extra_calls": 0,
+   "extra_calls_after_a_non_200_attempt": 0,
+   "repeated_requests": 0
+  },
+  "request_multiset_sha256": "ac0fa2814401bd6b97289b035940005427b61402d3b7eb373e58d37dc2b4a5bf",
+  "total": {
+   "calls": 5,
+   "input_tokens": 16736,
+   "latency_ms": 934927,
+   "ok": 5,
+   "output_tokens": 10815
+  },
+  "usage_missing": 0,
+  "voided": 0
+ },
+ "failures": [
+  "the builder failed on document 1 of 20"
+ ],
+ "final_settle": {
+  "pending_estimate": 0,
+  "sdk_retry_log_lines": 0,
+  "waited_s": 0.0
+ },
+ "finished_utc": "20261102 15:46:37 UTC",
+ "gateway_summary": {
+  "by_model": {
+   "granite4.2-8b-16k-cap": {
+    "calls": 4,
+    "input_tokens": 15391,
+    "output_tokens": 10815,
+    "spent": "0",
+    "usage_missing": 0,
+    "voided": 0
+   },
+   "qwen3-embedding:0.6b": {
+    "calls": 2,
+    "input_tokens": 1348,
+    "output_tokens": 0,
+    "spent": "0",
+    "usage_missing": 0,
+    "voided": 0
+   }
+  },
+  "cached_input_tokens": 12881,
+  "calls": 6,
+  "cap": "1",
+  "currency": "LOCAL-ZERO",
+  "input_tokens": 16739,
+  "ok": 6,
+  "open_reservations": "0",
+  "output_tokens": 10815,
+  "refused": 0,
+  "remaining": "1",
+  "requests": 6,
+  "spent": "0",
+  "usage_missing": 0,
+  "voided": 0
+ },
+ "model": "granite4.2-8b-16k-cap",
+ "model_name_check": {
+  "calls_with_an_unexpected_name": {},
+  "chat_names_sent": [
+   "granite4.2-8b-16k-cap"
+  ],
+  "embedding_names_sent": [
+   "qwen3-embedding:0.6b"
+  ]
+ },
+ "network_guard": {
+  "connect_attempts": [],
+  "dns_lookups_non_loopback": []
+ },
+ "openai_sdk_in_use": {
+  "max_retries": 2,
+  "timeout_seconds": "3600.0"
+ },
+ "per_document": [],
+ "preflight": {
+  "facts": {
+   "capabilities": [
+    "tools",
+    "thinking",
+    "completion"
+   ],
+   "details": {
+    "families": [
+     "granite"
+    ],
+    "family": "granite",
+    "format": "gguf",
+    "parameter_size": "8.8B",
+    "parent_model": "granite4.2:8b",
+    "quantization_level": "Q4_K_M",
+    "runner": "llamacpp"
+   },
+   "model": "granite4.2-8b-16k-cap",
+   "num_ctx": 16384,
+   "ollama_version": "0.40.11",
+   "parameters": {
+    "num_ctx": "16384",
+    "num_predict": "6144",
+    "seed": "42",
+    "temperature": "0",
+    "top_p": "0.95"
+   }
+  },
+  "min_ctx": 16384,
+  "mode": "require",
+  "ollama": true
+ },
+ "request_params_by_kind": {
+  "embedding": {
+   "encoding_format": [
+    "\"float\""
+   ],
+   "input": [
+    "<text>"
+   ],
+   "model": [
+    "\"qwen3-embedding:0.6b\""
+   ]
+  },
+  "entity_extraction": {
+   "messages": [
+    "<text>"
+   ],
+   "model": [
+    "\"granite4.2-8b-16k-cap\""
+   ]
+  },
+  "gleaning_continue": {
+   "messages": [
+    "<text>"
+   ],
+   "model": [
+    "\"granite4.2-8b-16k-cap\""
+   ]
+  }
+ },
+ "runner": {
+  "checkpoints": [
+   1,
+   5,
+   20
+  ],
+  "documents_planned": 20,
+  "file": "tools/exp/x2_passa_nano_graphrag.py"
+ },
+ "runtime": {
+  "machine": "arm64",
+  "nano_graphrag_version": "0.0.8.2",
+  "packages": {
+   "graspologic": "3.4.4",
+   "httpx": "0.28.1",
+   "nano-vectordb": "0.0.4.3",
+   "networkx": "3.7",
+   "numpy": "1.26.4",
+   "openai": "3.42.1",
+   "tenacity": "9.2.1",
+   "tiktoken": "0.14.0"
+  },
+  "python": "3.12.16"
+ },
+ "started_utc": "20261102 15:38:30 UTC",
+ "status": "failed",
+ "upstream_url": "http://127.0.0.1:11434/v1",
+ "version": "0.0.8.2",
+ "wall_seconds": 487.6,
+ "warnings": []
+}

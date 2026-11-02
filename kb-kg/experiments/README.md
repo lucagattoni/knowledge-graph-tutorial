@@ -61,7 +61,7 @@ cost can be derived yet; and the question wording has not been tried on any agen
   the gateway's address and a dummy key cannot reach the provider another way. Then break the cap check on purpose;
   the test must turn red.
 - *The builders,* against the stub: calls and prompt tokens per document are identical across two runs; each
-  installs and runs on Apple Silicon. Output tokens cannot be known from a stub and stay unmeasured until pass A or B.
+  installs and runs on Apple Silicon. Output tokens cannot be known from a stub; pass A measured them for one local model (4 to 16 times the stub's, [page](x2-index-cost/pass-a-local-model.md#results-of-the-longer-runs)), and a hosted model will differ.
 - *The scoring,* before any model run: the answer keys are derived by hand; a perfect answerer scores 100% and a
   random one lands near chance; the paired sign test matches a known table.
 - *Lessons from the first paid pilot, built in:* read the free pre-flight estimate first; check the key's shape

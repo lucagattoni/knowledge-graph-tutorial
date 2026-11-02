@@ -1,11 +1,9 @@
 # X2 pass A: a local model answers the builders
 
-**Status (20261102 15:35 UTC): the owner chose `granite4.2:8b`; the model is installed, the four runners are built and agree
-with the stub rehearsals through the gateway, and each builder has indexed one document with the real model (results below).
-The owner chose option B below (every builder to 20 documents) and the run started at 20261102 15:38 UTC; at 18:28 UTC the
-owner narrowed what was left to "5 docs only". Finished so far: nano-graphrag (failed at document 1), LightRAG (1, 5 and 20
-documents) and fast-graphrag (1 and 5 documents, then stopped at a dropped document 14). Microsoft GraphRAG is running to 5
-documents.**
+**Status (20261102 19:45 UTC): done for this model. `granite4.2:8b` ran all four builders on the frozen documents through the
+gateway, free. The owner chose every builder to 20 documents, then narrowed the rest to 5 ("5 docs only"). Results:
+LightRAG to 20 documents, fast-graphrag to 5 (a 14th document was dropped by the library), Microsoft GraphRAG to 5,
+nano-graphrag failed on document 1. Result files are in [`pass-a/`](pass-a). Nothing paid ran.**
 The stub [rehearsals](README.md) counted what each builder sends. Pass A lets a real local model answer, through the [metering gateway](../../../tools/metering_gateway.md),
 so that output tokens, retries and the calls that depend on the model's text become measurable. It costs no money. Its
 numbers are for one small local model, not for a hosted one; what it can and cannot show is at the end.
@@ -136,7 +134,8 @@ response format of GraphRAG's community reports, and `reasoning_effort` added by
   I read one: the model had written its entity list and then kept writing commentary about it ("No ... only ... is
   referenced", "I'll stop and use ..."). The cap bounds the time lost per event (6,144 tokens is about four to five
   minutes here); it also truncates, so a truncated answer is a different input to the builder. The cap is my choice, set
-  above the longest answer that ended normally (3,093 tokens); nobody measured how often it bites.
+  above the longest answer that ended normally (3,093 tokens). Over the full runs it bit in 11 of 292 chat answers (LightRAG
+  3 of 100, nano-graphrag 1 of 4, fast-graphrag 0 of 60, Microsoft GraphRAG 7 of 128).
 - **Thinking is off** with the gateway default. Without it, the same model answered the same question in 17 s and 278 tokens
   instead of 0.3 s and 8 (trap 2).
 
@@ -154,21 +153,61 @@ otherwise. I confirmed the first row in the installed source myself.
 | fast-graphrag | One chunk answered in invalid JSON drops the whole document without an exception, and the other chunks' calls are still paid for (shown with the stub); the runner flags it. Timeouts can multiply calls up to nine times per chunk (27 requests for 3 chunks against a slow stub). The retry message embeds the failed completion, so retry prompts differ by model name |
 | All | The gateway voids a failed attempt, so failed or timed-out attempts carry no tokens: token sums understate what Ollama processed when attempts fail, while call counts and statuses include them. Summed latency includes time spent waiting in Ollama's queue, so wall time is the honest figure |
 
-## Time for longer runs (arithmetic, not measurement)
+## Results of the longer runs
 
-Scaling each builder's one-document wall time by how its stub calls grow from one document to 5 and 20 (LightRAG 4 to 18
-to 98 chat calls; fast-graphrag 3 to 15 to 80; Microsoft GraphRAG by stub output tokens 1,525 to 4,418 to 31,371, and each
-checkpoint is a fresh index run). One sample each, and the runaway answers do not scale smoothly, so read each as
-"within a factor of two either way".
+Run 20261102 15:38 to 19:41 UTC, one builder at a time, on `granite4.2-8b-16k-cap`, with `reasoning_effort: none` added by the
+gateway. Every figure is from the gateway's own log (Ollama's usage fields); the stub columns are the committed rehearsals'
+figures at the same document count. Result files: [`pass-a/`](pass-a) (the one-document runs are in `pass-a/one-document/`).
+Prompt tokens are counted by the model's tokenizer, the stub's by another, so only the output column compares like with like.
 
-| Builder | 5 documents | 20 documents | Note |
+| Builder | Documents | Chat calls (stub) | Prompt tokens | Output tokens (stub) | Output, times the stub | Wall time |
+|---|---|---|---|---|---|---|
+| LightRAG | 1 | 4 (4) | 14,595 | 3,296 (798) | 4.1 | 158 s |
+| LightRAG | 5 | 18 (18) | 66,543 | 24,290 (3,636) | 6.7 | 19.3 min |
+| LightRAG | 20 | 100 (98) | 401,109 | 135,391 (19,371) | 7.0 | 105 min |
+| fast-graphrag | 1 | 4 (3) | 13,902 | 5,601 (932) | 6.0 | 262 s |
+| fast-graphrag | 5 | 18 (15) | 52,264 | 19,457 (4,670) | 4.2 | 14.6 min |
+| fast-graphrag | 13 indexed of 14 | 60 | 176,572 | 66,278 | | 49.7 min |
+| Microsoft GraphRAG | 1 | 37 (9) | 43,594 | 22,889 (1,525) | 15.0 | 18.3 min |
+| Microsoft GraphRAG | 5 | 91 (29) | 107,005 | 70,204 (4,418) | 15.9 | 54.0 min |
+| nano-graphrag | stopped in document 1 | 4 | 15,391 | 10,815 | | 8.1 min |
+
+Per document at the largest checkpoint, for planning a paid run (this model's tokens, rounded; includes each builder's fixed
+costs, so it is not a per-chunk rate): LightRAG about 20,100 prompt and 6,800 output tokens (20 documents); fast-graphrag
+about 10,500 and 3,900 (5); Microsoft GraphRAG about 21,400 and 14,000 (5). The 20 documents hold 49 chunks.
+
+What came out of them:
+
+- **LightRAG** indexed all 20 documents: all 342 calls returned HTTP 200, none was retried or voided, 1,023 entities and 1,011
+  relationships were stored. It logged 234 entity lines and 104 relation lines with the wrong number of fields, 19 relations it
+  recovered from a wrong prefix, and 3 truncations at the cap. It made 2 more chat calls than the stub (entity summaries).
+- **fast-graphrag** indexed documents 1 to 13 (504 entities, 663 relations, 45 chunks). Document 14 has 4 chunks; the library
+  logged "Error during information extraction from document", stored none of its chunks and returned without an exception.
+  The runner noticed the missing chunks and stopped (exit status 1). 81 calls, all HTTP 200; the OpenAI client retried none, and the library repeated two identical chat requests.
+- **Microsoft GraphRAG** indexed 1 and 5 documents (separate fresh runs). Its calls are mostly description summaries (63 for
+  entities and 6 for relationships at 5 documents) and the two extraction passes; 3 community reports each time. Its 7
+  truncations at the cap are in the extraction passes. One relationship was dropped for a missing entity at 5 documents.
+- **nano-graphrag** stopped in document 1, as in the one-document run: every relationship record had `|>` where `<|>` belongs,
+  so the graph had no edges and clustering raised `EmptyNetworkError`. One of its four answers hit the cap this time.
+- **The same run does not repeat exactly.** Microsoft GraphRAG on one document made 27 chat calls in the one-document run and
+  37 in the full run (22,463 and 22,889 output tokens); nano-graphrag's output went from 5,891 to 10,815 tokens, and the cap
+  bit in one run and not the other. LightRAG's one-document result was identical both times (4 calls, 3,296 tokens) and
+  fast-graphrag's differed by 8 tokens. The model has a fixed seed and temperature 0, so the cause is outside what I set
+  (concurrency and cache effects are my guess); I did not investigate. Read any single figure as one draw.
+
+## The estimate against what happened
+
+My arithmetic (written before the full run, scaling the one-document wall times) against the measured times:
+
+| Builder | Documents | Estimated | Measured |
 |---|---|---|---|
-| LightRAG | about 12 min | about 66 min | one pass gives 1, 5 and 20 |
-| fast-graphrag | about 23 min | about 2 h | one pass gives 1, 5 and 20 |
-| Microsoft GraphRAG | about 52 min (plus 18 min for the 1-document run) | about 6.2 h | separate fresh runs: 18 min + 52 min + 6.2 h is about 7.4 h |
-| nano-graphrag | does not get past document 1 with this model | | |
-| **All, to 5 documents** | **about 1.8 h** | | |
-| **All, to 20 documents** | | **about 10.5 h** | |
+| LightRAG | 5 | 12 min | 19.3 min |
+| LightRAG | 20 | 66 min | 105 min |
+| fast-graphrag | 5 | 23 min | 14.6 min |
+| Microsoft GraphRAG | 1, then 5 (fresh runs) | 18 and 52 min | 18.3 and 54.0 min |
+
+Within a factor of two in every case, in both directions. LightRAG ran 1.6 times longer than estimated at 20 documents, and
+I raised the estimate for the rest of option B from 10.5 to about 16 hours; the owner then asked for 5 documents only.
 
 ## How the full run was launched
 
@@ -196,16 +235,18 @@ with `--checkpoints 1,5`; a second fast-graphrag run that would have continued p
 and then cancelled; LightRAG's finished 20-document result and fast-graphrag's partial one are kept. The 20-document figure
 therefore exists for LightRAG alone.
 
-## Decision for the owner
+## Where this leaves the owner
 
-The page's own rule was to stop and ask if the estimate came to hours. Options, with what each costs:
+Pass A was meant to show what the stub could not: output tokens, retries, and the calls that depend on the model's text. It
+did, for one small model: output was 4 to 16 times the stub's, call counts moved with the model's text (Microsoft GraphRAG 3
+times the stub's calls at 5 documents), one builder could not run at all, another dropped a document, and the same run did
+not repeat exactly. What it cannot do is price a hosted run: that model writes differently. Next steps, none started:
 
-| Option | Machine time | What it gives | Cost |
+| Option | Machine time or money | What it gives | Cost |
 |---|---|---|---|
-| A. Up to 5 documents for LightRAG, fast-graphrag and Microsoft GraphRAG | about 1.8 h | Output tokens and call counts per chunk for three builders; enough to re-estimate pass B | No 20-document figure; nano-graphrag recorded as failing on this model |
-| B. Everything to 20 documents | about 10.5 h (overnight) | The full 20-document table for three builders | The Mac is busy for the night; Microsoft GraphRAG alone is 6 h of it |
-| C. A different, better-behaved model first | pull time plus a new one-document round | May avoid the format slips and the rambling; nano-graphrag might run | A new unknown: it may be slower, and thinking models need the same check |
-| D. Stop pass A here and go to the paid pilot | none | Real hosted-model numbers sooner | Needs model, provider, cap and a new key (D-14); loses the free check of call counts |
+| A. A second local model on the cheapest builder (LightRAG, 1 and 5 documents) | pull time plus about 20 min | How much of the above is this model and how much the builders; a free sensitivity check before any paid run | One more model's pull; thinking models need the same switch check |
+| B. The paid pilot (pass B) with a hosted model | a cap you set, plus a new key | The numbers a cost estimate needs | Needs model, provider, cap and key (D-14); no 20-document local figure for three builders |
+| C. Stop X2 here and move to X4 | none | The scoring program and the agent client are the next unbuilt pieces of the order | X2's cost question stays unanswered |
 
 ## What pass A cannot show
 

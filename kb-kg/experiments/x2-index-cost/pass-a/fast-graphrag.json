@@ -1,0 +1,1453 @@
+{
+ "runner": "x2_passa_fast_graphrag.py",
+ "builder": "fast-graphrag",
+ "version": "0.0.5",
+ "package_files_sha256": "da8a9d520f70448fc951413c562f9bb094365acfa276fdcb7f93d1d46ab71146",
+ "upstream_url": "http://127.0.0.1:11434/v1",
+ "model": "granite4.2-8b-16k-cap",
+ "embed_model": "qwen3-embedding:0.6b",
+ "chat_request_defaults": {
+  "reasoning_effort": "none"
+ },
+ "embedding_dim": 1024,
+ "preflight": {
+  "ollama_version": "0.40.11",
+  "model": "granite4.2-8b-16k-cap",
+  "num_ctx": 16384,
+  "parameters": {
+   "num_ctx": "16384",
+   "num_predict": "6144",
+   "seed": "42",
+   "temperature": "0",
+   "top_p": "0.95"
+  },
+  "details": {
+   "parent_model": "granite4.2:8b",
+   "format": "gguf",
+   "family": "granite",
+   "families": [
+    "granite"
+   ],
+   "parameter_size": "8.8B",
+   "quantization_level": "Q4_K_M",
+   "runner": "llamacpp"
+  },
+  "capabilities": [
+   "tools",
+   "thinking",
+   "completion"
+  ]
+ },
+ "documents": {
+  "count": 20,
+  "source": "documents.tsv",
+  "total_chars": 191571
+ },
+ "inputs_given_to_the_builder": {
+  "domain": "Analyze news articles and identify the organizations, people, products, places and events they report on, and how these relate to each other.",
+  "example_queries": [
+   "Which company announced the product described in the article?",
+   "Who is quoted in the article, and what organization do they belong to?",
+   "What event does the article report, and where and when did it take place?"
+  ],
+  "entity_types": [
+   "Organization",
+   "Person",
+   "Product",
+   "Place",
+   "Event"
+  ]
+ },
+ "builder_settings": {
+  "defaults_seen": {
+   "llm_class": "OpenAILLMService",
+   "llm_model": "granite4.2-8b-16k-cap",
+   "llm_max_requests_concurrent": 2,
+   "llm_rate_limit_per_minute_enabled": false,
+   "embedding_model": "qwen3-embedding:0.6b",
+   "embedding_dim": 1024,
+   "embedding_max_elements_per_request": 32,
+   "embedding_max_requests_concurrent": 1024,
+   "embedding_rate_limit_per_minute_enabled": true,
+   "max_gleaning_steps": 0,
+   "chunk_token_size": 800,
+   "chunk_token_overlap": 100,
+   "chunk_size_chars": 3200,
+   "chunk_overlap_chars": 400,
+   "max_node_description_size": 512,
+   "edge_merge_threshold": 5,
+   "insert_similarity_score_threshold": 0.9
+  },
+  "changed_from_library_defaults": {
+   "llm_max_requests_concurrent": {
+    "library": 1024,
+    "applied": 2
+   },
+   "llm_timeout_s": {
+    "library": 180.0,
+    "applied": 3600.0
+   },
+   "model_names": "the real names given on the command line instead of gpt-4o-mini / text-embedding-3-small",
+   "embedding_dim": {
+    "library": 1536,
+    "applied": 1024
+   },
+   "base_url_and_key": "the gateway's address and a dummy key, passed to both services"
+  }
+ },
+ "ok": false,
+ "stopped_at_document": 14,
+ "documents_not_indexed": [
+  14
+ ],
+ "child_exit_status": 0,
+ "checkpoints": {
+  "1": {
+   "total": {
+    "calls": 6,
+    "ok": 6,
+    "input_tokens": 15049,
+    "output_tokens": 5601,
+    "latency_ms": 416742
+   },
+   "chat": {
+    "calls": 4,
+    "ok": 4,
+    "input_tokens": 13902,
+    "output_tokens": 5601,
+    "latency_ms": 415812,
+    "retry_calls": 1
+   },
+   "embedding": {
+    "calls": 2,
+    "ok": 2,
+    "input_tokens": 1147,
+    "output_tokens": 0,
+    "latency_ms": 930,
+    "requests": 2,
+    "inputs": 42,
+    "inputs_per_request": {
+     "10": 1,
+     "32": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 2,
+     "ok": 2,
+     "input_tokens": 1147,
+     "output_tokens": 0,
+     "latency_ms": 930
+    },
+    "extract": {
+     "calls": 4,
+     "ok": 4,
+     "input_tokens": 13902,
+     "output_tokens": 5601,
+     "latency_ms": 415812,
+     "retry_calls": 1
+    }
+   },
+   "http_statuses": {
+    "200": 6
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0,
+   "documents_run": 1,
+   "documents_indexed": 1,
+   "sdk_retries_logged": 0,
+   "graph_totals": {
+    "entities": 42,
+    "relations": 57,
+    "chunks": 3
+   },
+   "extraction_calls_equal_chunker_count": true
+  },
+  "5": {
+   "total": {
+    "calls": 26,
+    "ok": 26,
+    "input_tokens": 56734,
+    "output_tokens": 19457,
+    "latency_ms": 1486017
+   },
+   "chat": {
+    "calls": 18,
+    "ok": 18,
+    "input_tokens": 52264,
+    "output_tokens": 19457,
+    "latency_ms": 1482196,
+    "retry_calls": 3
+   },
+   "embedding": {
+    "calls": 8,
+    "ok": 8,
+    "input_tokens": 4470,
+    "output_tokens": 0,
+    "latency_ms": 3821,
+    "requests": 8,
+    "inputs": 176,
+    "inputs_per_request": {
+     "10": 1,
+     "13": 1,
+     "15": 1,
+     "19": 1,
+     "23": 1,
+     "32": 3
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 8,
+     "ok": 8,
+     "input_tokens": 4470,
+     "output_tokens": 0,
+     "latency_ms": 3821
+    },
+    "extract": {
+     "calls": 18,
+     "ok": 18,
+     "input_tokens": 52264,
+     "output_tokens": 19457,
+     "latency_ms": 1482196,
+     "retry_calls": 3
+    }
+   },
+   "http_statuses": {
+    "200": 26
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0,
+   "documents_run": 5,
+   "documents_indexed": 5,
+   "sdk_retries_logged": 0,
+   "graph_totals": {
+    "entities": 176,
+    "relations": 229,
+    "chunks": 15
+   },
+   "extraction_calls_equal_chunker_count": true
+  },
+  "14": {
+   "total": {
+    "calls": 81,
+    "ok": 81,
+    "input_tokens": 189345,
+    "output_tokens": 66278,
+    "latency_ms": 5134775
+   },
+   "chat": {
+    "calls": 60,
+    "ok": 60,
+    "input_tokens": 176572,
+    "output_tokens": 66278,
+    "latency_ms": 5123705,
+    "retry_calls": 9
+   },
+   "embedding": {
+    "calls": 21,
+    "ok": 21,
+    "input_tokens": 12773,
+    "output_tokens": 0,
+    "latency_ms": 11070,
+    "requests": 21,
+    "inputs": 508,
+    "inputs_per_request": {
+     "4": 1,
+     "10": 2,
+     "13": 1,
+     "15": 1,
+     "17": 1,
+     "19": 1,
+     "23": 1,
+     "25": 1,
+     "26": 1,
+     "29": 2,
+     "32": 9
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 21,
+     "ok": 21,
+     "input_tokens": 12773,
+     "output_tokens": 0,
+     "latency_ms": 11070
+    },
+    "extract": {
+     "calls": 60,
+     "ok": 60,
+     "input_tokens": 176572,
+     "output_tokens": 66278,
+     "latency_ms": 5123705,
+     "retry_calls": 9
+    }
+   },
+   "http_statuses": {
+    "200": 81
+   },
+   "repeated_identical_requests": {
+    "chat": 2,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0,
+   "documents_run": 14,
+   "documents_indexed": 13,
+   "sdk_retries_logged": 0,
+   "graph_totals": {
+    "entities": 504,
+    "relations": 663,
+    "chunks": 45
+   },
+   "extraction_calls_equal_chunker_count": false,
+   "stopped_here": true
+  }
+ },
+ "per_document": [
+  {
+   "n": 1,
+   "rank": 1,
+   "url_sha256_16": "0068586b43cf2f56",
+   "chars": 6341,
+   "chunks_by_library_chunker": 3,
+   "chunk_chars_min": 1233,
+   "chunk_chars_max": 3056,
+   "graph_totals_after": {
+    "entities": 42,
+    "relations": 57,
+    "chunks": 3
+   },
+   "chunks_stored_for_this_document": 3,
+   "seconds": 262.294,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 6,
+    "ok": 6,
+    "input_tokens": 15049,
+    "output_tokens": 5601,
+    "latency_ms": 416742
+   },
+   "chat": {
+    "calls": 4,
+    "ok": 4,
+    "input_tokens": 13902,
+    "output_tokens": 5601,
+    "latency_ms": 415812,
+    "retry_calls": 1
+   },
+   "embedding": {
+    "calls": 2,
+    "ok": 2,
+    "input_tokens": 1147,
+    "output_tokens": 0,
+    "latency_ms": 930,
+    "requests": 2,
+    "inputs": 42,
+    "inputs_per_request": {
+     "10": 1,
+     "32": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 2,
+     "ok": 2,
+     "input_tokens": 1147,
+     "output_tokens": 0,
+     "latency_ms": 930
+    },
+    "extract": {
+     "calls": 4,
+     "ok": 4,
+     "input_tokens": 13902,
+     "output_tokens": 5601,
+     "latency_ms": 415812,
+     "retry_calls": 1
+    }
+   },
+   "http_statuses": {
+    "200": 6
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0
+  },
+  {
+   "n": 2,
+   "rank": 2,
+   "url_sha256_16": "01648ca159300692",
+   "chars": 6005,
+   "chunks_by_library_chunker": 3,
+   "chunk_chars_min": 680,
+   "chunk_chars_max": 3146,
+   "graph_totals_after": {
+    "entities": 65,
+    "relations": 92,
+    "chunks": 6
+   },
+   "chunks_stored_for_this_document": 3,
+   "seconds": 172.054,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 5,
+    "ok": 5,
+    "input_tokens": 12987,
+    "output_tokens": 3815,
+    "latency_ms": 295236
+   },
+   "chat": {
+    "calls": 4,
+    "ok": 4,
+    "input_tokens": 12294,
+    "output_tokens": 3815,
+    "latency_ms": 294886,
+    "retry_calls": 1
+   },
+   "embedding": {
+    "calls": 1,
+    "ok": 1,
+    "input_tokens": 693,
+    "output_tokens": 0,
+    "latency_ms": 350,
+    "requests": 1,
+    "inputs": 23,
+    "inputs_per_request": {
+     "23": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 1,
+     "ok": 1,
+     "input_tokens": 693,
+     "output_tokens": 0,
+     "latency_ms": 350
+    },
+    "extract": {
+     "calls": 4,
+     "ok": 4,
+     "input_tokens": 12294,
+     "output_tokens": 3815,
+     "latency_ms": 294886,
+     "retry_calls": 1
+    }
+   },
+   "http_statuses": {
+    "200": 5
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0
+  },
+  {
+   "n": 3,
+   "rank": 3,
+   "url_sha256_16": "019b1ddf6f78fa7e",
+   "chars": 5112,
+   "chunks_by_library_chunker": 2,
+   "chunk_chars_min": 2674,
+   "chunk_chars_max": 2694,
+   "graph_totals_after": {
+    "entities": 80,
+    "relations": 117,
+    "chunks": 8
+   },
+   "chunks_stored_for_this_document": 2,
+   "seconds": 81.728,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 4,
+    "ok": 4,
+    "input_tokens": 9142,
+    "output_tokens": 1797,
+    "latency_ms": 133942
+   },
+   "chat": {
+    "calls": 3,
+    "ok": 3,
+    "input_tokens": 8718,
+    "output_tokens": 1797,
+    "latency_ms": 133726,
+    "retry_calls": 1
+   },
+   "embedding": {
+    "calls": 1,
+    "ok": 1,
+    "input_tokens": 424,
+    "output_tokens": 0,
+    "latency_ms": 216,
+    "requests": 1,
+    "inputs": 15,
+    "inputs_per_request": {
+     "15": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 1,
+     "ok": 1,
+     "input_tokens": 424,
+     "output_tokens": 0,
+     "latency_ms": 216
+    },
+    "extract": {
+     "calls": 3,
+     "ok": 3,
+     "input_tokens": 8718,
+     "output_tokens": 1797,
+     "latency_ms": 133726,
+     "retry_calls": 1
+    }
+   },
+   "http_statuses": {
+    "200": 4
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0
+  },
+  {
+   "n": 4,
+   "rank": 4,
+   "url_sha256_16": "024c021da3256374",
+   "chars": 6374,
+   "chunks_by_library_chunker": 3,
+   "chunk_chars_min": 1055,
+   "chunk_chars_max": 2896,
+   "graph_totals_after": {
+    "entities": 131,
+    "relations": 165,
+    "chunks": 11
+   },
+   "chunks_stored_for_this_document": 3,
+   "seconds": 169.631,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 5,
+    "ok": 5,
+    "input_tokens": 8565,
+    "output_tokens": 3890,
+    "latency_ms": 308180
+   },
+   "chat": {
+    "calls": 3,
+    "ok": 3,
+    "input_tokens": 7455,
+    "output_tokens": 3890,
+    "latency_ms": 306914,
+    "retry_calls": 0
+   },
+   "embedding": {
+    "calls": 2,
+    "ok": 2,
+    "input_tokens": 1110,
+    "output_tokens": 0,
+    "latency_ms": 1266,
+    "requests": 2,
+    "inputs": 51,
+    "inputs_per_request": {
+     "19": 1,
+     "32": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 2,
+     "ok": 2,
+     "input_tokens": 1110,
+     "output_tokens": 0,
+     "latency_ms": 1266
+    },
+    "extract": {
+     "calls": 3,
+     "ok": 3,
+     "input_tokens": 7455,
+     "output_tokens": 3890,
+     "latency_ms": 306914,
+     "retry_calls": 0
+    }
+   },
+   "http_statuses": {
+    "200": 5
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0
+  },
+  {
+   "n": 5,
+   "rank": 5,
+   "url_sha256_16": "02e889122ba12a26",
+   "chars": 8626,
+   "chunks_by_library_chunker": 4,
+   "chunk_chars_min": 836,
+   "chunk_chars_max": 3191,
+   "graph_totals_after": {
+    "entities": 176,
+    "relations": 229,
+    "chunks": 15
+   },
+   "chunks_stored_for_this_document": 4,
+   "seconds": 187.97,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 6,
+    "ok": 6,
+    "input_tokens": 10991,
+    "output_tokens": 4354,
+    "latency_ms": 331917
+   },
+   "chat": {
+    "calls": 4,
+    "ok": 4,
+    "input_tokens": 9895,
+    "output_tokens": 4354,
+    "latency_ms": 330858,
+    "retry_calls": 0
+   },
+   "embedding": {
+    "calls": 2,
+    "ok": 2,
+    "input_tokens": 1096,
+    "output_tokens": 0,
+    "latency_ms": 1059,
+    "requests": 2,
+    "inputs": 45,
+    "inputs_per_request": {
+     "13": 1,
+     "32": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 2,
+     "ok": 2,
+     "input_tokens": 1096,
+     "output_tokens": 0,
+     "latency_ms": 1059
+    },
+    "extract": {
+     "calls": 4,
+     "ok": 4,
+     "input_tokens": 9895,
+     "output_tokens": 4354,
+     "latency_ms": 330858,
+     "retry_calls": 0
+    }
+   },
+   "http_statuses": {
+    "200": 6
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0
+  },
+  {
+   "n": 6,
+   "rank": 6,
+   "url_sha256_16": "02ecfbdc00c2bc17",
+   "chars": 6083,
+   "chunks_by_library_chunker": 3,
+   "chunk_chars_min": 1051,
+   "chunk_chars_max": 3054,
+   "graph_totals_after": {
+    "entities": 234,
+    "relations": 306,
+    "chunks": 18
+   },
+   "chunks_stored_for_this_document": 3,
+   "seconds": 265.309,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 6,
+    "ok": 6,
+    "input_tokens": 13768,
+    "output_tokens": 5899,
+    "latency_ms": 437617
+   },
+   "chat": {
+    "calls": 4,
+    "ok": 4,
+    "input_tokens": 12504,
+    "output_tokens": 5899,
+    "latency_ms": 436274,
+    "retry_calls": 1
+   },
+   "embedding": {
+    "calls": 2,
+    "ok": 2,
+    "input_tokens": 1264,
+    "output_tokens": 0,
+    "latency_ms": 1343,
+    "requests": 2,
+    "inputs": 58,
+    "inputs_per_request": {
+     "26": 1,
+     "32": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 2,
+     "ok": 2,
+     "input_tokens": 1264,
+     "output_tokens": 0,
+     "latency_ms": 1343
+    },
+    "extract": {
+     "calls": 4,
+     "ok": 4,
+     "input_tokens": 12504,
+     "output_tokens": 5899,
+     "latency_ms": 436274,
+     "retry_calls": 1
+    }
+   },
+   "http_statuses": {
+    "200": 6
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0
+  },
+  {
+   "n": 7,
+   "rank": 7,
+   "url_sha256_16": "0343487a677b62d3",
+   "chars": 14982,
+   "chunks_by_library_chunker": 6,
+   "chunk_chars_min": 1714,
+   "chunk_chars_max": 3098,
+   "graph_totals_after": {
+    "entities": 283,
+    "relations": 377,
+    "chunks": 24
+   },
+   "chunks_stored_for_this_document": 6,
+   "seconds": 285.571,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 10,
+    "ok": 10,
+    "input_tokens": 27400,
+    "output_tokens": 6117,
+    "latency_ms": 529582
+   },
+   "chat": {
+    "calls": 8,
+    "ok": 8,
+    "input_tokens": 26104,
+    "output_tokens": 6117,
+    "latency_ms": 528251,
+    "retry_calls": 2
+   },
+   "embedding": {
+    "calls": 2,
+    "ok": 2,
+    "input_tokens": 1296,
+    "output_tokens": 0,
+    "latency_ms": 1331,
+    "requests": 2,
+    "inputs": 49,
+    "inputs_per_request": {
+     "17": 1,
+     "32": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 2,
+     "ok": 2,
+     "input_tokens": 1296,
+     "output_tokens": 0,
+     "latency_ms": 1331
+    },
+    "extract": {
+     "calls": 8,
+     "ok": 8,
+     "input_tokens": 26104,
+     "output_tokens": 6117,
+     "latency_ms": 528251,
+     "retry_calls": 2
+    }
+   },
+   "http_statuses": {
+    "200": 10
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0
+  },
+  {
+   "n": 8,
+   "rank": 8,
+   "url_sha256_16": "0370fe5c0dcecb48",
+   "chars": 6237,
+   "chunks_by_library_chunker": 3,
+   "chunk_chars_min": 1074,
+   "chunk_chars_max": 2984,
+   "graph_totals_after": {
+    "entities": 314,
+    "relations": 419,
+    "chunks": 27
+   },
+   "chunks_stored_for_this_document": 3,
+   "seconds": 141.621,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 5,
+    "ok": 5,
+    "input_tokens": 11674,
+    "output_tokens": 3185,
+    "latency_ms": 249147
+   },
+   "chat": {
+    "calls": 4,
+    "ok": 4,
+    "input_tokens": 10852,
+    "output_tokens": 3185,
+    "latency_ms": 248677,
+    "retry_calls": 1
+   },
+   "embedding": {
+    "calls": 1,
+    "ok": 1,
+    "input_tokens": 822,
+    "output_tokens": 0,
+    "latency_ms": 470,
+    "requests": 1,
+    "inputs": 32,
+    "inputs_per_request": {
+     "32": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 1,
+     "ok": 1,
+     "input_tokens": 822,
+     "output_tokens": 0,
+     "latency_ms": 470
+    },
+    "extract": {
+     "calls": 4,
+     "ok": 4,
+     "input_tokens": 10852,
+     "output_tokens": 3185,
+     "latency_ms": 248677,
+     "retry_calls": 1
+    }
+   },
+   "http_statuses": {
+    "200": 5
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0
+  },
+  {
+   "n": 9,
+   "rank": 9,
+   "url_sha256_16": "037f37fc8794dabc",
+   "chars": 11756,
+   "chunks_by_library_chunker": 5,
+   "chunk_chars_min": 1238,
+   "chunk_chars_max": 3130,
+   "graph_totals_after": {
+    "entities": 356,
+    "relations": 484,
+    "chunks": 32
+   },
+   "chunks_stored_for_this_document": 5,
+   "seconds": 218.05,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 7,
+    "ok": 7,
+    "input_tokens": 13819,
+    "output_tokens": 4991,
+    "latency_ms": 397847
+   },
+   "chat": {
+    "calls": 5,
+    "ok": 5,
+    "input_tokens": 12742,
+    "output_tokens": 4991,
+    "latency_ms": 396941,
+    "retry_calls": 0
+   },
+   "embedding": {
+    "calls": 2,
+    "ok": 2,
+    "input_tokens": 1077,
+    "output_tokens": 0,
+    "latency_ms": 906,
+    "requests": 2,
+    "inputs": 42,
+    "inputs_per_request": {
+     "10": 1,
+     "32": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 2,
+     "ok": 2,
+     "input_tokens": 1077,
+     "output_tokens": 0,
+     "latency_ms": 906
+    },
+    "extract": {
+     "calls": 5,
+     "ok": 5,
+     "input_tokens": 12742,
+     "output_tokens": 4991,
+     "latency_ms": 396941,
+     "retry_calls": 0
+    }
+   },
+   "http_statuses": {
+    "200": 7
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0
+  },
+  {
+   "n": 10,
+   "rank": 10,
+   "url_sha256_16": "038eabdb237efe3f",
+   "chars": 10120,
+   "chunks_by_library_chunker": 4,
+   "chunk_chars_min": 2178,
+   "chunk_chars_max": 3070,
+   "graph_totals_after": {
+    "entities": 392,
+    "relations": 543,
+    "chunks": 36
+   },
+   "chunks_stored_for_this_document": 4,
+   "seconds": 184.413,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 6,
+    "ok": 6,
+    "input_tokens": 11416,
+    "output_tokens": 4241,
+    "latency_ms": 318153
+   },
+   "chat": {
+    "calls": 4,
+    "ok": 4,
+    "input_tokens": 10402,
+    "output_tokens": 4241,
+    "latency_ms": 317170,
+    "retry_calls": 0
+   },
+   "embedding": {
+    "calls": 2,
+    "ok": 2,
+    "input_tokens": 1014,
+    "output_tokens": 0,
+    "latency_ms": 983,
+    "requests": 2,
+    "inputs": 36,
+    "inputs_per_request": {
+     "4": 1,
+     "32": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 2,
+     "ok": 2,
+     "input_tokens": 1014,
+     "output_tokens": 0,
+     "latency_ms": 983
+    },
+    "extract": {
+     "calls": 4,
+     "ok": 4,
+     "input_tokens": 10402,
+     "output_tokens": 4241,
+     "latency_ms": 317170,
+     "retry_calls": 0
+    }
+   },
+   "http_statuses": {
+    "200": 6
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0
+  },
+  {
+   "n": 11,
+   "rank": 11,
+   "url_sha256_16": "03a4ece0fb5cb7f9",
+   "chars": 8275,
+   "chunks_by_library_chunker": 3,
+   "chunk_chars_min": 2696,
+   "chunk_chars_max": 3089,
+   "graph_totals_after": {
+    "entities": 419,
+    "relations": 577,
+    "chunks": 39
+   },
+   "chunks_stored_for_this_document": 3,
+   "seconds": 127.751,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 4,
+    "ok": 4,
+    "input_tokens": 8935,
+    "output_tokens": 2878,
+    "latency_ms": 215229
+   },
+   "chat": {
+    "calls": 3,
+    "ok": 3,
+    "input_tokens": 8062,
+    "output_tokens": 2878,
+    "latency_ms": 214787,
+    "retry_calls": 0
+   },
+   "embedding": {
+    "calls": 1,
+    "ok": 1,
+    "input_tokens": 873,
+    "output_tokens": 0,
+    "latency_ms": 442,
+    "requests": 1,
+    "inputs": 29,
+    "inputs_per_request": {
+     "29": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 1,
+     "ok": 1,
+     "input_tokens": 873,
+     "output_tokens": 0,
+     "latency_ms": 442
+    },
+    "extract": {
+     "calls": 3,
+     "ok": 3,
+     "input_tokens": 8062,
+     "output_tokens": 2878,
+     "latency_ms": 214787,
+     "retry_calls": 0
+    }
+   },
+   "http_statuses": {
+    "200": 4
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0
+  },
+  {
+   "n": 12,
+   "rank": 12,
+   "url_sha256_16": "03c3ac59773da075",
+   "chars": 5601,
+   "chunks_by_library_chunker": 3,
+   "chunk_chars_min": 292,
+   "chunk_chars_max": 3120,
+   "graph_totals_after": {
+    "entities": 448,
+    "relations": 611,
+    "chunks": 42
+   },
+   "chunks_stored_for_this_document": 3,
+   "seconds": 235.688,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 5,
+    "ok": 5,
+    "input_tokens": 14831,
+    "output_tokens": 5022,
+    "latency_ms": 373788
+   },
+   "chat": {
+    "calls": 4,
+    "ok": 4,
+    "input_tokens": 14089,
+    "output_tokens": 5022,
+    "latency_ms": 373353,
+    "retry_calls": 1
+   },
+   "embedding": {
+    "calls": 1,
+    "ok": 1,
+    "input_tokens": 742,
+    "output_tokens": 0,
+    "latency_ms": 435,
+    "requests": 1,
+    "inputs": 29,
+    "inputs_per_request": {
+     "29": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 1,
+     "ok": 1,
+     "input_tokens": 742,
+     "output_tokens": 0,
+     "latency_ms": 435
+    },
+    "extract": {
+     "calls": 4,
+     "ok": 4,
+     "input_tokens": 14089,
+     "output_tokens": 5022,
+     "latency_ms": 373353,
+     "retry_calls": 1
+    }
+   },
+   "http_statuses": {
+    "200": 5
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0
+  },
+  {
+   "n": 13,
+   "rank": 13,
+   "url_sha256_16": "0476f8f8472ce475",
+   "chars": 6359,
+   "chunks_by_library_chunker": 3,
+   "chunk_chars_min": 1184,
+   "chunk_chars_max": 2983,
+   "graph_totals_after": {
+    "entities": 504,
+    "relations": 663,
+    "chunks": 45
+   },
+   "chunks_stored_for_this_document": 3,
+   "seconds": 200.578,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 5,
+    "ok": 5,
+    "input_tokens": 8721,
+    "output_tokens": 4590,
+    "latency_ms": 353822
+   },
+   "chat": {
+    "calls": 3,
+    "ok": 3,
+    "input_tokens": 7506,
+    "output_tokens": 4590,
+    "latency_ms": 352483,
+    "retry_calls": 0
+   },
+   "embedding": {
+    "calls": 2,
+    "ok": 2,
+    "input_tokens": 1215,
+    "output_tokens": 0,
+    "latency_ms": 1339,
+    "requests": 2,
+    "inputs": 57,
+    "inputs_per_request": {
+     "25": 1,
+     "32": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 2,
+     "ok": 2,
+     "input_tokens": 1215,
+     "output_tokens": 0,
+     "latency_ms": 1339
+    },
+    "extract": {
+     "calls": 3,
+     "ok": 3,
+     "input_tokens": 7506,
+     "output_tokens": 4590,
+     "latency_ms": 352483,
+     "retry_calls": 0
+    }
+   },
+   "http_statuses": {
+    "200": 5
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0
+  },
+  {
+   "n": 14,
+   "rank": 14,
+   "url_sha256_16": "04ccbc6009a196f8",
+   "chars": 9754,
+   "chunks_by_library_chunker": 4,
+   "chunk_chars_min": 1834,
+   "chunk_chars_max": 3154,
+   "graph_totals_after": {
+    "entities": 504,
+    "relations": 663,
+    "chunks": 45
+   },
+   "chunks_stored_for_this_document": 0,
+   "seconds": 449.215,
+   "error_log_lines_in_document": 2,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": false,
+   "silently_dropped": "insert returned, but the number of chunks stored is not the number the library's chunker made for this document",
+   "total": {
+    "calls": 7,
+    "ok": 7,
+    "input_tokens": 22047,
+    "output_tokens": 9898,
+    "latency_ms": 773573
+   },
+   "chat": {
+    "calls": 7,
+    "ok": 7,
+    "input_tokens": 22047,
+    "output_tokens": 9898,
+    "latency_ms": 773573,
+    "retry_calls": 1
+   },
+   "embedding": {
+    "calls": 0,
+    "ok": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "latency_ms": 0,
+    "requests": 0,
+    "inputs": 0,
+    "inputs_per_request": {}
+   },
+   "by_kind": {
+    "extract": {
+     "calls": 7,
+     "ok": 7,
+     "input_tokens": 22047,
+     "output_tokens": 9898,
+     "latency_ms": 773573,
+     "retry_calls": 1
+    }
+   },
+   "http_statuses": {
+    "200": 7
+   },
+   "repeated_identical_requests": {
+    "chat": 2,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0
+  }
+ ],
+ "first_request_of_each_kind": {
+  "embedding": {
+   "route": "/v1/embeddings",
+   "request_body_keys": [
+    "dimensions",
+    "encoding_format",
+    "input",
+    "model"
+   ],
+   "n_messages": 0,
+   "roles": [],
+   "response_format": null,
+   "model": "qwen3-embedding:0.6b",
+   "max_tokens": "absent",
+   "dimensions": 1024,
+   "stream": false,
+   "http_status": 200
+  },
+  "extract": {
+   "route": "/v1/chat/completions",
+   "request_body_keys": [
+    "messages",
+    "model",
+    "response_format"
+   ],
+   "n_messages": 2,
+   "roles": [
+    "system",
+    "user"
+   ],
+   "response_format": {
+    "type": "json_object"
+   },
+   "model": "granite4.2-8b-16k-cap",
+   "max_tokens": "absent",
+   "dimensions": "absent",
+   "stream": false,
+   "http_status": 200
+  }
+ },
+ "gateway": {
+  "calls_in_log": 82,
+  "calls_before_the_builder_started": 1,
+  "calls_after_the_last_document": 0,
+  "embedding_probe_calls": 1,
+  "models_requested": {
+   "granite4.2-8b-16k-cap": 60,
+   "qwen3-embedding:0.6b": 22
+  },
+  "routes": {
+   "/v1/chat/completions": 60,
+   "/v1/embeddings": 22
+  }
+ },
+ "calls_jsonl_sha256": "1d0c4b9c875adfb5d0265fd92316f47eb79545471e68182af09f7c1e6a9c41d2",
+ "request_multiset_sha256": "adc3f2dc92824a57b3017eeff748f07b8617e2231b3fa39e577c5f2edb5ba94d",
+ "wall_seconds_all_documents": 2982.281,
+ "outbound_attempts": [],
+ "openai_sdk_retries_logged": 0,
+ "tokenizer_failures_logged_by_library": [
+  "LLM: failed to load tokenizer for model 'granite4.2-8b-16k-cap' ('Could not automatically map granite4.2-8b-16k-cap to a tokeniser. Please use `tiktoken.get_enc"
+ ],
+ "error_log_lines": {
+  "count": 2,
+  "by_head": {
+   "graphrag: An error occurred": 1,
+   "graphrag: Error during information extraction from document": 1
+  }
+ },
+ "environment_variable_names": [
+  "ALL_PROXY",
+  "HOME",
+  "HTTPS_PROXY",
+  "HTTP_PROXY",
+  "LC_CTYPE",
+  "NO_PROXY",
+  "OPENAI_API_KEY",
+  "OPENAI_BASE_URL",
+  "PATH",
+  "PYTHONDONTWRITEBYTECODE",
+  "TIKTOKEN_CACHE_DIR",
+  "TMPDIR",
+  "__CF_USER_TEXT_ENCODING",
+  "all_proxy",
+  "http_proxy",
+  "https_proxy",
+  "no_proxy"
+ ],
+ "minimal_environment_variable_names": [
+  "ALL_PROXY",
+  "HOME",
+  "HTTPS_PROXY",
+  "HTTP_PROXY",
+  "NO_PROXY",
+  "OPENAI_API_KEY",
+  "OPENAI_BASE_URL",
+  "PATH",
+  "PYTHONDONTWRITEBYTECODE",
+  "TIKTOKEN_CACHE_DIR",
+  "TMPDIR",
+  "all_proxy",
+  "http_proxy",
+  "https_proxy",
+  "no_proxy"
+ ],
+ "proxy_setting": "http://127.0.0.1:9",
+ "warnings": [
+  "the library could not load a tokenizer for the model name; it falls back to a naive one (no code in the package calls it on the indexing path: grep of the pinned source)"
+ ],
+ "started_utc": "20261102 17:32:00",
+ "finished_utc": "20261102 18:21:48"
+}
