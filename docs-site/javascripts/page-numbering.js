@@ -1,8 +1,8 @@
 // Number a page from its entry in the left navigation, where mkdocs_hooks.py numbers the chapters
 // and the sections inside them: the title becomes "1.2 - The LLM era: ...", its sections "1.2.1 - ..."
 // and "1.2.2 - ...", their subsections "1.2.2.1 - ...". The same numbers go into the right-hand
-// contents list. A page whose nav label has no number (one entry per project) and Home are left as
-// they are.
+// contents list. A page whose nav label has no number (Home, the Index and Archive tabs) is left as
+// it is.
 //
 // Done in JS (not in the Markdown) so the source files, their heading anchors and the GitHub
 // rendering stay clean: cross-document links across the repository target those anchors, and the
@@ -18,10 +18,11 @@ document$.subscribe(function () {
   var title = content && content.querySelector("h1");
   if (!title || title.dataset.numbered) return;
 
-  // The nav link text starts with the number, e.g. "1.2 LLM era". The trailing dot is optional
-  // because a top-level chapter is labelled "3. Decisions", not "3.1 Decisions".
+  // The nav link text starts with the number: "3. Projects" for a chapter, "3.2 LightRAG" for a page
+  // in it. The number always has a dot, so a label of the unnumbered Index and Archive tabs that
+  // merely starts with digits ("20 Newsgroups", "2WikiMultiHopQA") is not taken for one.
   var active = document.querySelector(".md-sidebar--primary .md-nav__link--active");
-  var match = active && active.textContent.trim().match(/^(\d+(?:\.\d+)*)\.?\s/);
+  var match = active && active.textContent.trim().match(/^(\d+\.\d+(?:\.\d+)*|\d+(?=\.\s))\.?\s/);
   if (!match) return;
   var pageNum = match[1];
 
