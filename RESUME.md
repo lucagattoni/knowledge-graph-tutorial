@@ -1,13 +1,14 @@
 # Resume
 
-Last updated 20261102 15:50 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261102 18:35 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
 ## State
 
-The first full pass is written, reviewed and pushed. **Running since 20261102 15:38 UTC: X2 pass A, all four builders
-to 20 documents on a local model (option B, about 10 hours by my arithmetic; free, nothing paid).** The order, arguments and
+The first full pass is written, reviewed and pushed. **Running since 20261102 15:38 UTC: X2 pass A on a local model (free, nothing paid). The owner chose every builder to 20
+documents, then at 18:28 UTC narrowed it to 5 documents for what was left: nano-graphrag failed at document 1, LightRAG is done to 20,
+fast-graphrag is done to 5 (it dropped document 14), Microsoft GraphRAG is running to 5.** The order, arguments and
 settings are on [the pass-A page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md#how-the-full-run-was-launched); outputs
 are in the session's scratch directory, outside the repository. If it stopped, a finished builder's result JSON is in
 that directory; rerun an unfinished builder from scratch (a runner has no resume), and read

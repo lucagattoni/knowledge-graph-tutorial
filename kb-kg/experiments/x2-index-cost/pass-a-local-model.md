@@ -2,8 +2,10 @@
 
 **Status (20261102 15:35 UTC): the owner chose `granite4.2:8b`; the model is installed, the four runners are built and agree
 with the stub rehearsals through the gateway, and each builder has indexed one document with the real model (results below).
-The owner chose option B below (every builder to 20 documents, about ten hours by my arithmetic) and the run started at
-20261102 15:38 UTC; results are not in yet.**
+The owner chose option B below (every builder to 20 documents) and the run started at 20261102 15:38 UTC; at 18:28 UTC the
+owner narrowed what was left to "5 docs only". Finished so far: nano-graphrag (failed at document 1), LightRAG (1, 5 and 20
+documents) and fast-graphrag (1 and 5 documents, then stopped at a dropped document 14). Microsoft GraphRAG is running to 5
+documents.**
 The stub [rehearsals](README.md) counted what each builder sends. Pass A lets a real local model answer, through the [metering gateway](../../../tools/metering_gateway.md),
 so that output tokens, retries and the calls that depend on the model's text become measurable. It costs no money. Its
 numbers are for one small local model, not for a hosted one; what it can and cannot show is at the end.
@@ -187,6 +189,12 @@ Two settings differ from the one-document runs. fast-graphrag was given a concur
 of a document at once, and a queue in Ollama could then exceed the timeout). Microsoft GraphRAG's limit on one index run
 was raised from 6 hours to 12, because my estimate for its 20-document run is 6.2 hours. The Mac was kept awake with
 `caffeinate -i`.
+
+**Narrowed at 18:28 UTC.** After LightRAG took 105 minutes against my 66-minute estimate, I put the rest of option B at about
+16 hours, and the owner replied "5 docs only". So: Microsoft GraphRAG was stopped eight minutes into its first run and restarted
+with `--checkpoints 1,5`; a second fast-graphrag run that would have continued past its dropped document to 20 was queued
+and then cancelled; LightRAG's finished 20-document result and fast-graphrag's partial one are kept. The 20-document figure
+therefore exists for LightRAG alone.
 
 ## Decision for the owner
 
