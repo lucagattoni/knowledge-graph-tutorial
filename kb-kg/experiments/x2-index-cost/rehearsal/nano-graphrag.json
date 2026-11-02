@@ -1,0 +1,7019 @@
+{
+ "code_path_0_0_8_2": {
+  "chunking": "_op.py chunking_by_token_size: step = chunk size minus overlap = 1100 tokens, so a document of n tokens gives ceil(n/1100) chunks; the last can be almost wholly overlap. Chunks with identical text collapse by hash.",
+  "defaults": {
+   "best_model": "gpt-4o",
+   "best_model_max_async": 16,
+   "cheap_model": "gpt-4o-mini",
+   "cheap_model_max_async": 16,
+   "chunk_overlap_token_size": 100,
+   "chunk_token_size": 1200,
+   "embedding_batch_num": 32,
+   "embedding_func_max_async": 16,
+   "embedding_model": "text-embedding-3-small (1536 dimensions)",
+   "enable_llm_cache": true,
+   "enable_local": true,
+   "enable_naive_rag": false,
+   "entity_extract_max_gleaning": 1,
+   "entity_summary_to_max_tokens": 500,
+   "max_graph_cluster_size": 10,
+   "where": "graphrag.py lines 57-125; the runs read them back from the GraphRAG object (defaults_observed in each scenario)"
+  },
+  "description_summary": "_op.py _handle_entity_relation_summary: when an entity or a relation is merged and its joined descriptions are at least 500 tokens long, one call to the cheap model (max_tokens 500). Otherwise no call.",
+  "embeddings": "vdb_nanovectordb.py upsert: only entities by default (text = entity name plus description; no chunk embeddings unless enable_naive_rag), 32 texts per request, up to 16 requests at once. An entity touched by a later insert is embedded again.",
+  "entity_extraction": "_op.py extract_entities: for every chunk one extraction call (best model) and, with the default gleaning of 1, one 'continue' call whose prompt carries the whole first prompt and the model's first answer. With the default of 1 the loop-check ('YES | NO') call is never made (the loop breaks before it); with a gleaning setting of 2 or more it is made after each round and the loop goes on while the model answers yes. All chunks of one insert call run concurrently, at most 16 at a time.",
+  "graph_and_communities": "graphrag.py ainsert: every insert call drops the stored community reports, clusters again (hierarchical Leiden on the largest connected component only, gdb_networkx.py 34-41 and 203) and writes one best-model call per community, JSON mode (response_format json_object). A community whose prompt is byte-identical to an earlier one is answered from the response cache and makes no call.",
+  "read_utc": "20261102 10:30 to 10:35, from the installed source",
+  "response_cache": "_llm.py openai_complete_if_cache: key is the md5 of (model, messages); on by default; the whole cache file is rewritten after every call (a time cost, not a token cost).",
+  "retries": "_llm.py: tenacity, 5 attempts (3 for the Azure functions), waits 4 to 10 s, on RateLimitError and APIConnectionError only. The OpenAI SDK also retries on its own: max_retries is 2 in the installed SDK (measured, openai_sdk_defaults in each scenario). A community report whose answer holds no parsable JSON raises in convert_response_to_json and ends the insert (from reading the code; not run).",
+  "telemetry": "No networking code in nano_graphrag/*.py (grep for requests, urllib, http, posthog, telemetry, analytics, sentry found only a comment URL). Dependencies were not audited; see the observed attempts below."
+ },
+ "corpus_sha256": "20b61b5ab84de84a927420c5d265b7ec8d859ae49980699958a787ade9e4d28f",
+ "count_depends_on_the_model": {
+  "depends_on_answers": [
+   "Prompt tokens of the 'continue' calls (they resend the model's first answer: 140,802 with shape A against 169,024 with shape B)",
+   "Entities per chunk, hence embedding inputs (0 against 234 per-document or 224 batch)",
+   "Whether any description summary call happens (needs a merged description of 500 tokens or more; shape B produced none)",
+   "Number and size of community reports: only the largest connected component is clustered (110 of 224 nodes with shape B), and unchanged communities are served from the cache (48 report calls per-document with cache, 161 without, 29 in one batch insert; all with shape B)",
+   "Number of loop-check calls if gleaning is set above 1",
+   "Retries on rate-limit or connection errors (provider behaviour)",
+   "Whether a report answer is valid JSON (a bad one ends the insert)"
+  ],
+  "independent_of_answers": [
+   "Number of extraction calls (one per chunk: 49 here, which equals the arithmetic ceil(tokens/1100) summed over the documents)",
+   "Number of 'continue' calls at the default gleaning of 1 (one per chunk)",
+   "Prompt tokens of the extraction calls (the template and the chunk text)"
+  ]
+ },
+ "determinism_check_sensitivity": {
+  "run_utc": "20261102 10:40",
+  "what": "The determinism comparison was made to fail on purpose: a copy of the runner whose shape-B answers append 3 random bytes to the snippet was run twice (perdoc-B) in a scratch directory. compare() then reported not identical on final.by_kind, final.stub_summary and prompt_multiset_sha256, and also against the good run. The call counts per kind were still equal, so the prompt tokens and the prompt hashes are what catch it."
+ },
+ "determinism_perdoc_B_vs_repeat": {
+  "compared": [
+   "final.by_kind (calls, prompt and completion tokens, models, embedding inputs)",
+   "final.stub_summary",
+   "final.graph",
+   "prompt_multiset_sha256 (every prompt's SHA-256 with kind, model, path and token count, sorted)"
+  ],
+  "differences": [],
+  "identical": true
+ },
+ "environment_for_runs": {
+  "command": "env -i PATH=/usr/bin:/bin:/opt/homebrew/bin HOME=$SCRATCH/home TIKTOKEN_CACHE_DIR=$SCRATCH/tiktoken-cache HTTP_PROXY=http://127.0.0.1:9 HTTPS_PROXY=http://127.0.0.1:9 http_proxy=http://127.0.0.1:9 https_proxy=http://127.0.0.1:9 NO_PROXY=127.0.0.1,localhost no_proxy=127.0.0.1,localhost $SCRATCH/venv/bin/python tools/exp/x2_nano_graphrag.py --corpus $SCRATCH/corpus.json --documents kb-kg/experiments/x2-index-cost/documents.tsv --out kb-kg/experiments/x2-index-cost/rehearsal/nano-graphrag.json --scratch $SCRATCH/runs --secondary head-acb35c0=$SCRATCH/venv-main/bin/python",
+  "guard": "Each run also patches Python's socket connect and getaddrinfo: any connect to a non-loopback address is recorded and refused; loopback connects to a port other than the stub's (the proxy's port 9) are recorded",
+  "key": "OPENAI_API_KEY is set to a dummy string inside each run; OPENAI_BASE_URL is the stub's loopback address"
+ },
+ "guard_selftest": {
+  "proxy_env": {
+   "HTTPS_PROXY": "http://127.0.0.1:9",
+   "HTTP_PROXY": "http://127.0.0.1:9",
+   "NO_PROXY": "127.0.0.1,localhost"
+  },
+  "raw_socket": "failed: ConnectionRefusedError",
+  "recorded": {
+   "connect_attempts": [
+    {
+     "count": 1,
+     "host": "127.0.0.1",
+     "kind": "loopback_other_port",
+     "packages": [],
+     "port": 9
+    },
+    {
+     "count": 1,
+     "host": "192.0.2.1",
+     "kind": "refused_non_loopback",
+     "packages": [],
+     "port": 80
+    }
+   ],
+   "dns_lookups_non_loopback": [
+    {
+     "count": 1,
+     "host": "192.0.2.1",
+     "packages": []
+    }
+   ]
+  },
+  "urllib_via_proxy": "failed: URLError"
+ },
+ "install": {
+  "head_of_main_build": {
+   "failure_without_workaround": "`import nano_graphrag` fails with ModuleNotFoundError: No module named 'transformers' at nano_graphrag/_utils.py line 17 (an unconditional `from transformers import AutoTokenizer`). transformers is not in requirements.txt (read in the clone at acb35c0).",
+   "how": "git clone, then uv pip install ./clone into a second Python 3.12 environment: exit 0, 108 packages (adds aioboto3)",
+   "workaround": "uv pip install transformers (5.22.1, with safetensors 0.8.0); import then works (warning: PyTorch not found). The head-of-main runs below used this workaround."
+  },
+  "method": "uv venv --python 3.12 DIR; uv pip install --python DIR/bin/python nano-graphrag==0.0.8.2 (uv 0.13.6)",
+  "python_3_13_attempt": "3.13.18: install exit 0 and `import nano_graphrag` works (SyntaxWarnings from graspologic and hyppo docstrings). uv printed 'Building hnswlib==0.8.0' and 'Building numpy==1.26.4' (numpy 1.26.4 has no 3.13 wheel; graspologic pins numpy<2), and installed graspologic 3.4.4 although its metadata says <3.13. Why uv allowed that was not investigated. No scenario was run on 3.13. Python 3.14 and 3.15 were not tried.",
+  "read_utc": "20261102 10:27 to 10:38",
+  "resolved_versions": {
+   "dspy-ai": "3.4.1",
+   "graspologic": "3.4.4",
+   "graspologic-native": "1.3.1",
+   "hnswlib": "0.8.0",
+   "httpx": "0.28.1",
+   "nano-vectordb": "0.0.4.3",
+   "neo4j": "6.4.1",
+   "networkx": "3.7",
+   "numpy": "1.26.4",
+   "openai": "3.42.1",
+   "tenacity": "9.2.1",
+   "tiktoken": "0.14.0"
+  },
+  "result_primary": "exit 0, 100 packages installed, no workaround, and uv printed no 'Building' line. hnswlib is sdist-only on PyPI (checked on its PyPI JSON); the installed copy is a locally built cp312 macosx_11_0_arm64 wheel (setuptools) that uv took from its local cache; where that cache entry came from is unstated.",
+  "tiktoken_vocabulary": "The builder calls tiktoken.encoding_for_model('gpt-4o') (o200k_base) when it chunks, and tiktoken downloads that vocabulary from a Microsoft Azure blob URL on first use (URL in tiktoken_ext/openai_public.py). I fetched o200k_base and cl100k_base once, with tiktoken, into a cache directory before the offline runs and pointed TIKTOKEN_CACHE_DIR at it. The runs themselves made no download."
+ },
+ "licence": {
+  "caveats": "Not chased. The package metadata of the direct dependencies, as installed, states: openai Apache-2.0, tiktoken MIT, networkx BSD-3-Clause, graspologic MIT, nano-vectordb MIT (classifier), xxhash BSD-2-Clause, tenacity Apache-2.0, dspy-ai MIT, neo4j 'Apache-2.0 AND Python-2.0', future MIT, numpy BSD classifier; hnswlib's metadata states no licence. These are the packages' own statements, not their LICENSE files. The default models are OpenAI hosted models (gpt-4o, gpt-4o-mini, text-embedding-3-small); their terms were not read. No model weights are installed.",
+  "file": "LICENSE in the installed distribution (nano_graphrag-0.0.8.2.dist-info/LICENSE) and in the clone at v0.0.8 and at main acb35c0",
+  "first_lines": [
+   "MIT License",
+   "",
+   "Copyright (c) 2024 Gustavo Ye"
+  ],
+  "lines": 21,
+  "matches_entry": "yes: kb-kg/projects/nano-graphrag.md says MIT, standard text, 21 lines, copyright 2024",
+  "read_utc": "20261102 10:29",
+  "sha256": "e76d815cd0c0da9d13ab946ab7c07fb914b791f026822ded5e3477ed3d959cd9 (identical in all three places)"
+ },
+ "not_measured_by_the_stub": [
+  "Output tokens of real answers (the completion tokens above are the stub's own text, from shapes A and B)",
+  "How many summary and report calls a real graph triggers, and how large those prompts are",
+  "Retries and rate-limit behaviour of a real provider; whether a failed request is billed",
+  "Quality of the extracted graph; wall-clock time with a real model (the stub has no latency)",
+  "Behaviour on a provider other than the OpenAI protocol (the request surface is in request_params_by_kind: chat completions with a fixed model name per slot, response_format json_object on reports, max_tokens 500 on summaries, embeddings with encoding_format float; there is no Anthropic embeddings call to translate)",
+  "Python 3.13 and newer: not run",
+  "Other platforms; the GitHub v0.0.8 tag (identical on the default path by file comparison, not run)"
+ ],
+ "pin": {
+  "indexed_build": "PyPI package nano-graphrag 0.0.8.2 (the build every scenario in `scenarios` ran on)",
+  "relation_between_builds": {
+   "pypi_0.0.8.2_vs_github_v0.0.8": "byte-identical files except nano_graphrag/__init__.py (version string) and nano_graphrag/entity_extraction/extract.py and module.py (the optional DSPy extractor, not on the default path). Compared with cmp against the tag, 20261102 10:29 UTC. The v0.0.8 tag itself was not run.",
+   "pypi_0.0.8.2_vs_main": "every file of the installed package is byte-identical to main at commit c061781 (20241010) and at a96899b (20241016) except the __version__ line; main's head acb35c0 differs from it in 9 files (_llm.py, _op.py, _utils.py, base.py, graphrag.py, gdb_neo4j.py, gdb_networkx.py, entity_extraction/metric.py and module.py)"
+  },
+  "source_default_branch": "default branch main, head acb35c065614eb5a2f5f1be9a56b235f5a2e0a7a committed 20260127 07:50:55 UTC; 22 commits after v0.0.8 (git log v0.0.8..HEAD in a clone). Read 20261102 10:29 UTC",
+  "source_github_release": "gh api repos/gusye1234/nano-graphrag/releases: latest release v0.0.8, published 20241001 16:00:46 UTC, tag commit cddcda71c81bb52c46effba8f987d16f95bad02c (four releases, v0.0.5 to v0.0.8). Read 20261102 10:27 UTC",
+  "source_pypi": "https://pypi.org/pypi/nano-graphrag/json: latest version 0.0.8.2, wheel and sdist uploaded 20241019 13:06 UTC; Requires-Python >=3.9. Read 20261102 10:27 UTC",
+  "why_this_build": "The latest published release. The last GitHub release is 13 months old, so the head of main was also run (see secondary_builds) to show whether the default indexing path changed."
+ },
+ "python": {
+  "used": "3.12.16 (uv-managed CPython, macOS arm64)",
+  "why": "nano-graphrag declares >=3.9; its dependency graspologic 3.4.4 declares >=3.9,<3.13 (installed metadata). The other dependencies' bounds were not checked."
+ },
+ "repository": "https://github.com/gusye1234/nano-graphrag",
+ "runner": {
+  "checkpoints": [
+   1,
+   5,
+   20
+  ],
+  "file": "tools/exp/x2_nano_graphrag.py",
+  "finished_utc": "20261102 10:45:20 UTC"
+ },
+ "scenarios": {
+  "batch-B": {
+   "answers_produced_by_responder": {
+    "entities_in_answers": 294,
+    "extraction_answers": 49,
+    "relations_in_answers": 245
+   },
+   "checkpoints": {
+    "20": {
+     "by_kind": {
+      "community_report": {
+       "calls": 29,
+       "completion_tokens": 5916,
+       "models": {
+        "gpt-4o": 29
+       },
+       "prompt_tokens": 67162
+      },
+      "embedding": {
+       "calls": 7,
+       "completion_tokens": 0,
+       "inputs": 224,
+       "models": {
+        "text-embedding-3-small": 7
+       },
+       "prompt_tokens": 11695
+      },
+      "entity_extraction": {
+       "calls": 49,
+       "completion_tokens": 28467,
+       "models": {
+        "gpt-4o": 49
+       },
+       "prompt_tokens": 139626
+      },
+      "gleaning_continue": {
+       "calls": 49,
+       "completion_tokens": 245,
+       "models": {
+        "gpt-4o": 49
+       },
+       "prompt_tokens": 169024
+      }
+     },
+     "graph": {
+      "chunks_stored": 49,
+      "communities_in_report_store": 29,
+      "connected_components": 12,
+      "documents_stored": 20,
+      "edges": 234,
+      "largest_component_nodes": 110,
+      "nodes": 224,
+      "nodes_with_cluster_data": 110
+     },
+     "n_docs": 20,
+     "stub_summary": {
+      "chat_calls": 127,
+      "chat_completion_tokens": 34628,
+      "chat_prompt_tokens": 375812,
+      "embedding_calls": 7,
+      "embedding_inputs": 224,
+      "embedding_tokens": 11695,
+      "other_calls": 0,
+      "tokenizer": "tiktoken:cl100k_base"
+     }
+    }
+   },
+   "child_wall_seconds_incl_imports": 2.9,
+   "chunking_arithmetic": {
+    "chunks_per_document": [
+     2,
+     2,
+     1,
+     2,
+     2,
+     2,
+     3,
+     2,
+     3,
+     3,
+     2,
+     2,
+     2,
+     2,
+     3,
+     5,
+     4,
+     2,
+     3,
+     2
+    ],
+    "step_tokens": 1100,
+    "tokenizer": "o200k_base",
+    "tokens_per_document": [
+     1355,
+     1203,
+     1066,
+     1470,
+     1844,
+     1272,
+     3046,
+     1340,
+     2577,
+     2239,
+     1909,
+     1132,
+     1436,
+     1958,
+     2957,
+     5021,
+     3698,
+     1981,
+     2661,
+     1621
+    ],
+    "total_chunks": 49,
+    "total_document_tokens": 41786
+   },
+   "defaults_observed": {
+    "best_model_max_async": 16,
+    "cheap_model_max_async": 16,
+    "chunk_overlap_token_size": 100,
+    "chunk_token_size": 1200,
+    "embedding_batch_num": 32,
+    "embedding_func_max_async": 16,
+    "enable_llm_cache": true,
+    "enable_local": true,
+    "enable_naive_rag": false,
+    "entity_extract_max_gleaning": 1,
+    "entity_summary_to_max_tokens": 500,
+    "graph_cluster_algorithm": "leiden",
+    "max_graph_cluster_size": 10,
+    "tiktoken_model_name": "gpt-4o"
+   },
+   "final": {
+    "by_kind": {
+     "community_report": {
+      "calls": 29,
+      "completion_tokens": 5916,
+      "models": {
+       "gpt-4o": 29
+      },
+      "prompt_tokens": 67162
+     },
+     "embedding": {
+      "calls": 7,
+      "completion_tokens": 0,
+      "inputs": 224,
+      "models": {
+       "text-embedding-3-small": 7
+      },
+      "prompt_tokens": 11695
+     },
+     "entity_extraction": {
+      "calls": 49,
+      "completion_tokens": 28467,
+      "models": {
+       "gpt-4o": 49
+      },
+      "prompt_tokens": 139626
+     },
+     "gleaning_continue": {
+      "calls": 49,
+      "completion_tokens": 245,
+      "models": {
+       "gpt-4o": 49
+      },
+      "prompt_tokens": 169024
+     }
+    },
+    "graph": {
+     "chunks_stored": 49,
+     "communities_in_report_store": 29,
+     "connected_components": 12,
+     "documents_stored": 20,
+     "edges": 234,
+     "largest_component_nodes": 110,
+     "nodes": 224,
+     "nodes_with_cluster_data": 110
+    },
+    "n_docs": 20,
+    "stub_summary": {
+     "chat_calls": 127,
+     "chat_completion_tokens": 34628,
+     "chat_prompt_tokens": 375812,
+     "embedding_calls": 7,
+     "embedding_inputs": 224,
+     "embedding_tokens": 11695,
+     "other_calls": 0,
+     "tokenizer": "tiktoken:cl100k_base"
+    }
+   },
+   "llm_cache": "on",
+   "mode": "batch",
+   "network_guard": {
+    "connect_attempts": [],
+    "dns_lookups_non_loopback": []
+   },
+   "openai_sdk_defaults": {
+    "max_retries": 2,
+    "timeout_seconds": "Timeout(connect=5.0, read=600, write=600, pool=600)"
+   },
+   "other_calls": 0,
+   "per_document": [
+    {
+     "all_documents_in_one_insert": true,
+     "seconds": 1.74
+    }
+   ],
+   "prompt_multiset_sha256": "9a7e4f73287734cf32b8cc23f27e139bc000c19467f5559055d0c0e22705a43c",
+   "prompt_template_tokens": {
+    "community_report_empty": 1526,
+    "description_summary_empty": 117,
+    "entity_extraction_empty_chunk": 1933,
+    "gleaning_continue_prompt": 19,
+    "gleaning_loop_check_prompt": 26
+   },
+   "request_params_by_kind": {
+    "community_report": {
+     "messages": [
+      "<text>"
+     ],
+     "model": [
+      "\"gpt-4o\""
+     ],
+     "response_format": [
+      "{\"type\": \"json_object\"}"
+     ]
+    },
+    "embedding": {
+     "encoding_format": [
+      "\"float\""
+     ],
+     "input": [
+      "<text>"
+     ],
+     "model": [
+      "\"text-embedding-3-small\""
+     ]
+    },
+    "entity_extraction": {
+     "messages": [
+      "<text>"
+     ],
+     "model": [
+      "\"gpt-4o\""
+     ]
+    },
+    "gleaning_continue": {
+     "messages": [
+      "<text>"
+     ],
+     "model": [
+      "\"gpt-4o\""
+     ]
+    }
+   },
+   "runtime": {
+    "machine": "arm64",
+    "nano_graphrag_version": "0.0.8.2",
+    "packages": {
+     "graspologic": "3.4.4",
+     "httpx": "0.28.1",
+     "nano-vectordb": "0.0.4.3",
+     "networkx": "3.7",
+     "numpy": "1.26.4",
+     "openai": "3.42.1",
+     "tenacity": "9.2.1",
+     "tiktoken": "0.14.0"
+    },
+    "python": "3.12.16"
+   },
+   "scenario": "batch-B",
+   "shape": "B",
+   "started_utc": "20261102 10:45:11 UTC",
+   "stub_tokenizer": "tiktoken:cl100k_base",
+   "wall_seconds": 2.2
+  },
+  "perdoc-A": {
+   "answers_produced_by_responder": {
+    "entities_in_answers": 0,
+    "extraction_answers": 0,
+    "relations_in_answers": 0
+   },
+   "checkpoints": {
+    "1": {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5355
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5403
+      }
+     },
+     "graph": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "n_docs": 1,
+     "stub_summary": {
+      "chat_calls": 4,
+      "chat_completion_tokens": 20,
+      "chat_prompt_tokens": 10758,
+      "embedding_calls": 0,
+      "embedding_inputs": 0,
+      "embedding_tokens": 0,
+      "other_calls": 0,
+      "tokenizer": "tiktoken:cl100k_base"
+     }
+    },
+    "20": {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 49,
+       "completion_tokens": 245,
+       "models": {
+        "gpt-4o": 49
+       },
+       "prompt_tokens": 139626
+      },
+      "gleaning_continue": {
+       "calls": 49,
+       "completion_tokens": 245,
+       "models": {
+        "gpt-4o": 49
+       },
+       "prompt_tokens": 140802
+      }
+     },
+     "graph": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "n_docs": 20,
+     "stub_summary": {
+      "chat_calls": 98,
+      "chat_completion_tokens": 490,
+      "chat_prompt_tokens": 280428,
+      "embedding_calls": 0,
+      "embedding_inputs": 0,
+      "embedding_tokens": 0,
+      "other_calls": 0,
+      "tokenizer": "tiktoken:cl100k_base"
+     }
+    },
+    "5": {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 9,
+       "completion_tokens": 45,
+       "models": {
+        "gpt-4o": 9
+       },
+       "prompt_tokens": 24791
+      },
+      "gleaning_continue": {
+       "calls": 9,
+       "completion_tokens": 45,
+       "models": {
+        "gpt-4o": 9
+       },
+       "prompt_tokens": 25007
+      }
+     },
+     "graph": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "n_docs": 5,
+     "stub_summary": {
+      "chat_calls": 18,
+      "chat_completion_tokens": 90,
+      "chat_prompt_tokens": 49798,
+      "embedding_calls": 0,
+      "embedding_inputs": 0,
+      "embedding_tokens": 0,
+      "other_calls": 0,
+      "tokenizer": "tiktoken:cl100k_base"
+     }
+    }
+   },
+   "child_wall_seconds_incl_imports": 1.4,
+   "chunking_arithmetic": {
+    "chunks_per_document": [
+     2,
+     2,
+     1,
+     2,
+     2,
+     2,
+     3,
+     2,
+     3,
+     3,
+     2,
+     2,
+     2,
+     2,
+     3,
+     5,
+     4,
+     2,
+     3,
+     2
+    ],
+    "step_tokens": 1100,
+    "tokenizer": "o200k_base",
+    "tokens_per_document": [
+     1355,
+     1203,
+     1066,
+     1470,
+     1844,
+     1272,
+     3046,
+     1340,
+     2577,
+     2239,
+     1909,
+     1132,
+     1436,
+     1958,
+     2957,
+     5021,
+     3698,
+     1981,
+     2661,
+     1621
+    ],
+    "total_chunks": 49,
+    "total_document_tokens": 41786
+   },
+   "defaults_observed": {
+    "best_model_max_async": 16,
+    "cheap_model_max_async": 16,
+    "chunk_overlap_token_size": 100,
+    "chunk_token_size": 1200,
+    "embedding_batch_num": 32,
+    "embedding_func_max_async": 16,
+    "enable_llm_cache": true,
+    "enable_local": true,
+    "enable_naive_rag": false,
+    "entity_extract_max_gleaning": 1,
+    "entity_summary_to_max_tokens": 500,
+    "graph_cluster_algorithm": "leiden",
+    "max_graph_cluster_size": 10,
+    "tiktoken_model_name": "gpt-4o"
+   },
+   "final": {
+    "by_kind": {
+     "entity_extraction": {
+      "calls": 49,
+      "completion_tokens": 245,
+      "models": {
+       "gpt-4o": 49
+      },
+      "prompt_tokens": 139626
+     },
+     "gleaning_continue": {
+      "calls": 49,
+      "completion_tokens": 245,
+      "models": {
+       "gpt-4o": 49
+      },
+      "prompt_tokens": 140802
+     }
+    },
+    "graph": {
+     "chunks_stored": 0,
+     "communities_in_report_store": 0,
+     "connected_components": 0,
+     "documents_stored": 0,
+     "edges": 0,
+     "largest_component_nodes": 0,
+     "nodes": 0,
+     "nodes_with_cluster_data": 0
+    },
+    "n_docs": 20,
+    "stub_summary": {
+     "chat_calls": 98,
+     "chat_completion_tokens": 490,
+     "chat_prompt_tokens": 280428,
+     "embedding_calls": 0,
+     "embedding_inputs": 0,
+     "embedding_tokens": 0,
+     "other_calls": 0,
+     "tokenizer": "tiktoken:cl100k_base"
+    }
+   },
+   "llm_cache": "on",
+   "mode": "perdoc",
+   "network_guard": {
+    "connect_attempts": [],
+    "dns_lookups_non_loopback": []
+   },
+   "openai_sdk_defaults": {
+    "max_retries": 2,
+    "timeout_seconds": "Timeout(connect=5.0, read=600, write=600, pool=600)"
+   },
+   "other_calls": 0,
+   "per_document": [
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5355
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5403
+      }
+     },
+     "chars": 6341,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 1,
+     "seconds": 0.12,
+     "url_sha256_16": "0068586b43cf2f56"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5173
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5221
+      }
+     },
+     "chars": 6005,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 2,
+     "seconds": 0.01,
+     "url_sha256_16": "01648ca159300692"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 1,
+       "completion_tokens": 5,
+       "models": {
+        "gpt-4o": 1
+       },
+       "prompt_tokens": 3008
+      },
+      "gleaning_continue": {
+       "calls": 1,
+       "completion_tokens": 5,
+       "models": {
+        "gpt-4o": 1
+       },
+       "prompt_tokens": 3032
+      }
+     },
+     "chars": 5112,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 3,
+     "seconds": 0.0,
+     "url_sha256_16": "019b1ddf6f78fa7e"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5459
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5507
+      }
+     },
+     "chars": 6374,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 4,
+     "seconds": 0.01,
+     "url_sha256_16": "024c021da3256374"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5796
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5844
+      }
+     },
+     "chars": 8626,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 5,
+     "seconds": 0.01,
+     "url_sha256_16": "02e889122ba12a26"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5251
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5299
+      }
+     },
+     "chars": 6083,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 6,
+     "seconds": 0.0,
+     "url_sha256_16": "02ecfbdc00c2bc17"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 9070
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 9142
+      }
+     },
+     "chars": 14982,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 7,
+     "seconds": 0.01,
+     "url_sha256_16": "0343487a677b62d3"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5314
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5362
+      }
+     },
+     "chars": 6237,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 8,
+     "seconds": 0.01,
+     "url_sha256_16": "0370fe5c0dcecb48"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8579
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8651
+      }
+     },
+     "chars": 11756,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 9,
+     "seconds": 0.01,
+     "url_sha256_16": "037f37fc8794dabc"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8194
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8266
+      }
+     },
+     "chars": 10120,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 10,
+     "seconds": 0.01,
+     "url_sha256_16": "038eabdb237efe3f"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5898
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5946
+      }
+     },
+     "chars": 8275,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 11,
+     "seconds": 0.01,
+     "url_sha256_16": "03a4ece0fb5cb7f9"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5033
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5081
+      }
+     },
+     "chars": 5601,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 12,
+     "seconds": 0.01,
+     "url_sha256_16": "03c3ac59773da075"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5431
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5479
+      }
+     },
+     "chars": 6359,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 13,
+     "seconds": 0.01,
+     "url_sha256_16": "0476f8f8472ce475"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5942
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5990
+      }
+     },
+     "chars": 9754,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 14,
+     "seconds": 0.01,
+     "url_sha256_16": "04ccbc6009a196f8"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8984
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 9056
+      }
+     },
+     "chars": 13179,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 15,
+     "seconds": 0.01,
+     "url_sha256_16": "04fd1826153b3083"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 5,
+       "completion_tokens": 25,
+       "models": {
+        "gpt-4o": 5
+       },
+       "prompt_tokens": 15178
+      },
+      "gleaning_continue": {
+       "calls": 5,
+       "completion_tokens": 25,
+       "models": {
+        "gpt-4o": 5
+       },
+       "prompt_tokens": 15298
+      }
+     },
+     "chars": 22011,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 16,
+     "seconds": 0.01,
+     "url_sha256_16": "0501457d04bf9f55"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 4,
+       "completion_tokens": 20,
+       "models": {
+        "gpt-4o": 4
+       },
+       "prompt_tokens": 11728
+      },
+      "gleaning_continue": {
+       "calls": 4,
+       "completion_tokens": 20,
+       "models": {
+        "gpt-4o": 4
+       },
+       "prompt_tokens": 11824
+      }
+     },
+     "chars": 16351,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 17,
+     "seconds": 0.01,
+     "url_sha256_16": "054b706b1f216197"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5971
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6019
+      }
+     },
+     "chars": 7683,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 18,
+     "seconds": 0.01,
+     "url_sha256_16": "0559abf992d9f2f2"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8664
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8736
+      }
+     },
+     "chars": 12684,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 19,
+     "seconds": 0.01,
+     "url_sha256_16": "05cd6a49a650e655"
+    },
+    {
+     "by_kind": {
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5598
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5646
+      }
+     },
+     "chars": 8038,
+     "graph_after": {
+      "chunks_stored": 0,
+      "communities_in_report_store": 0,
+      "connected_components": 0,
+      "documents_stored": 0,
+      "edges": 0,
+      "largest_component_nodes": 0,
+      "nodes": 0,
+      "nodes_with_cluster_data": 0
+     },
+     "rank": 20,
+     "seconds": 0.01,
+     "url_sha256_16": "06bc8ec253404962"
+    }
+   ],
+   "prompt_multiset_sha256": "3005dea61f91a8d0397b9bd50ae89899f5a9296d8b597e8e84b86b8360506953",
+   "prompt_template_tokens": {
+    "community_report_empty": 1526,
+    "description_summary_empty": 117,
+    "entity_extraction_empty_chunk": 1933,
+    "gleaning_continue_prompt": 19,
+    "gleaning_loop_check_prompt": 26
+   },
+   "request_params_by_kind": {
+    "entity_extraction": {
+     "messages": [
+      "<text>"
+     ],
+     "model": [
+      "\"gpt-4o\""
+     ]
+    },
+    "gleaning_continue": {
+     "messages": [
+      "<text>"
+     ],
+     "model": [
+      "\"gpt-4o\""
+     ]
+    }
+   },
+   "runtime": {
+    "machine": "arm64",
+    "nano_graphrag_version": "0.0.8.2",
+    "packages": {
+     "graspologic": "3.4.4",
+     "httpx": "0.28.1",
+     "nano-vectordb": "0.0.4.3",
+     "networkx": "3.7",
+     "numpy": "1.26.4",
+     "openai": "3.42.1",
+     "tenacity": "9.2.1",
+     "tiktoken": "0.14.0"
+    },
+    "python": "3.12.16"
+   },
+   "scenario": "perdoc-A",
+   "shape": "A",
+   "started_utc": "20261102 10:45:03 UTC",
+   "stub_tokenizer": "tiktoken:cl100k_base",
+   "wall_seconds": 0.7
+  },
+  "perdoc-B": {
+   "answers_produced_by_responder": {
+    "entities_in_answers": 294,
+    "extraction_answers": 49,
+    "relations_in_answers": 245
+   },
+   "checkpoints": {
+    "1": {
+     "by_kind": {
+      "community_report": {
+       "calls": 3,
+       "completion_tokens": 612,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 5994
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 10,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 494
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1188,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5355
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6581
+      }
+     },
+     "graph": {
+      "chunks_stored": 2,
+      "communities_in_report_store": 3,
+      "connected_components": 1,
+      "documents_stored": 1,
+      "edges": 10,
+      "largest_component_nodes": 10,
+      "nodes": 10,
+      "nodes_with_cluster_data": 10
+     },
+     "n_docs": 1,
+     "stub_summary": {
+      "chat_calls": 7,
+      "chat_completion_tokens": 1810,
+      "chat_prompt_tokens": 17930,
+      "embedding_calls": 1,
+      "embedding_inputs": 10,
+      "embedding_tokens": 494,
+      "other_calls": 0,
+      "tokenizer": "tiktoken:cl100k_base"
+     }
+    },
+    "20": {
+     "by_kind": {
+      "community_report": {
+       "calls": 48,
+       "completion_tokens": 9792,
+       "models": {
+        "gpt-4o": 48
+       },
+       "prompt_tokens": 112502
+      },
+      "embedding": {
+       "calls": 20,
+       "completion_tokens": 0,
+       "inputs": 234,
+       "models": {
+        "text-embedding-3-small": 20
+       },
+       "prompt_tokens": 12202
+      },
+      "entity_extraction": {
+       "calls": 49,
+       "completion_tokens": 28467,
+       "models": {
+        "gpt-4o": 49
+       },
+       "prompt_tokens": 139626
+      },
+      "gleaning_continue": {
+       "calls": 49,
+       "completion_tokens": 245,
+       "models": {
+        "gpt-4o": 49
+       },
+       "prompt_tokens": 169024
+      }
+     },
+     "graph": {
+      "chunks_stored": 49,
+      "communities_in_report_store": 29,
+      "connected_components": 12,
+      "documents_stored": 20,
+      "edges": 234,
+      "largest_component_nodes": 110,
+      "nodes": 224,
+      "nodes_with_cluster_data": 110
+     },
+     "n_docs": 20,
+     "stub_summary": {
+      "chat_calls": 146,
+      "chat_completion_tokens": 38504,
+      "chat_prompt_tokens": 421152,
+      "embedding_calls": 20,
+      "embedding_inputs": 234,
+      "embedding_tokens": 12202,
+      "other_calls": 0,
+      "tokenizer": "tiktoken:cl100k_base"
+     }
+    },
+    "5": {
+     "by_kind": {
+      "community_report": {
+       "calls": 3,
+       "completion_tokens": 612,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 5994
+      },
+      "embedding": {
+       "calls": 5,
+       "completion_tokens": 0,
+       "inputs": 43,
+       "models": {
+        "text-embedding-3-small": 5
+       },
+       "prompt_tokens": 2137
+      },
+      "entity_extraction": {
+       "calls": 9,
+       "completion_tokens": 5201,
+       "models": {
+        "gpt-4o": 9
+       },
+       "prompt_tokens": 24791
+      },
+      "gleaning_continue": {
+       "calls": 9,
+       "completion_tokens": 45,
+       "models": {
+        "gpt-4o": 9
+       },
+       "prompt_tokens": 30163
+      }
+     },
+     "graph": {
+      "chunks_stored": 9,
+      "communities_in_report_store": 3,
+      "connected_components": 5,
+      "documents_stored": 5,
+      "edges": 44,
+      "largest_component_nodes": 10,
+      "nodes": 43,
+      "nodes_with_cluster_data": 10
+     },
+     "n_docs": 5,
+     "stub_summary": {
+      "chat_calls": 21,
+      "chat_completion_tokens": 5858,
+      "chat_prompt_tokens": 60948,
+      "embedding_calls": 5,
+      "embedding_inputs": 43,
+      "embedding_tokens": 2137,
+      "other_calls": 0,
+      "tokenizer": "tiktoken:cl100k_base"
+     }
+    }
+   },
+   "child_wall_seconds_incl_imports": 3.5,
+   "chunking_arithmetic": {
+    "chunks_per_document": [
+     2,
+     2,
+     1,
+     2,
+     2,
+     2,
+     3,
+     2,
+     3,
+     3,
+     2,
+     2,
+     2,
+     2,
+     3,
+     5,
+     4,
+     2,
+     3,
+     2
+    ],
+    "step_tokens": 1100,
+    "tokenizer": "o200k_base",
+    "tokens_per_document": [
+     1355,
+     1203,
+     1066,
+     1470,
+     1844,
+     1272,
+     3046,
+     1340,
+     2577,
+     2239,
+     1909,
+     1132,
+     1436,
+     1958,
+     2957,
+     5021,
+     3698,
+     1981,
+     2661,
+     1621
+    ],
+    "total_chunks": 49,
+    "total_document_tokens": 41786
+   },
+   "defaults_observed": {
+    "best_model_max_async": 16,
+    "cheap_model_max_async": 16,
+    "chunk_overlap_token_size": 100,
+    "chunk_token_size": 1200,
+    "embedding_batch_num": 32,
+    "embedding_func_max_async": 16,
+    "enable_llm_cache": true,
+    "enable_local": true,
+    "enable_naive_rag": false,
+    "entity_extract_max_gleaning": 1,
+    "entity_summary_to_max_tokens": 500,
+    "graph_cluster_algorithm": "leiden",
+    "max_graph_cluster_size": 10,
+    "tiktoken_model_name": "gpt-4o"
+   },
+   "final": {
+    "by_kind": {
+     "community_report": {
+      "calls": 48,
+      "completion_tokens": 9792,
+      "models": {
+       "gpt-4o": 48
+      },
+      "prompt_tokens": 112502
+     },
+     "embedding": {
+      "calls": 20,
+      "completion_tokens": 0,
+      "inputs": 234,
+      "models": {
+       "text-embedding-3-small": 20
+      },
+      "prompt_tokens": 12202
+     },
+     "entity_extraction": {
+      "calls": 49,
+      "completion_tokens": 28467,
+      "models": {
+       "gpt-4o": 49
+      },
+      "prompt_tokens": 139626
+     },
+     "gleaning_continue": {
+      "calls": 49,
+      "completion_tokens": 245,
+      "models": {
+       "gpt-4o": 49
+      },
+      "prompt_tokens": 169024
+     }
+    },
+    "graph": {
+     "chunks_stored": 49,
+     "communities_in_report_store": 29,
+     "connected_components": 12,
+     "documents_stored": 20,
+     "edges": 234,
+     "largest_component_nodes": 110,
+     "nodes": 224,
+     "nodes_with_cluster_data": 110
+    },
+    "n_docs": 20,
+    "stub_summary": {
+     "chat_calls": 146,
+     "chat_completion_tokens": 38504,
+     "chat_prompt_tokens": 421152,
+     "embedding_calls": 20,
+     "embedding_inputs": 234,
+     "embedding_tokens": 12202,
+     "other_calls": 0,
+     "tokenizer": "tiktoken:cl100k_base"
+    }
+   },
+   "llm_cache": "on",
+   "mode": "perdoc",
+   "network_guard": {
+    "connect_attempts": [],
+    "dns_lookups_non_loopback": []
+   },
+   "openai_sdk_defaults": {
+    "max_retries": 2,
+    "timeout_seconds": "Timeout(connect=5.0, read=600, write=600, pool=600)"
+   },
+   "other_calls": 0,
+   "per_document": [
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 3,
+       "completion_tokens": 612,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 5994
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 10,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 494
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1188,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5355
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6581
+      }
+     },
+     "chars": 6341,
+     "graph_after": {
+      "chunks_stored": 2,
+      "communities_in_report_store": 3,
+      "connected_components": 1,
+      "documents_stored": 1,
+      "edges": 10,
+      "largest_component_nodes": 10,
+      "nodes": 10,
+      "nodes_with_cluster_data": 10
+     },
+     "rank": 1,
+     "seconds": 1.37,
+     "url_sha256_16": "0068586b43cf2f56"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 9,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 478
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1169,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5173
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6380
+      }
+     },
+     "chars": 6005,
+     "graph_after": {
+      "chunks_stored": 4,
+      "communities_in_report_store": 3,
+      "connected_components": 2,
+      "documents_stored": 2,
+      "edges": 20,
+      "largest_component_nodes": 10,
+      "nodes": 19,
+      "nodes_with_cluster_data": 10
+     },
+     "rank": 2,
+     "seconds": 0.03,
+     "url_sha256_16": "01648ca159300692"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 6,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 234
+      },
+      "entity_extraction": {
+       "calls": 1,
+       "completion_tokens": 562,
+       "models": {
+        "gpt-4o": 1
+       },
+       "prompt_tokens": 3008
+      },
+      "gleaning_continue": {
+       "calls": 1,
+       "completion_tokens": 5,
+       "models": {
+        "gpt-4o": 1
+       },
+       "prompt_tokens": 3589
+      }
+     },
+     "chars": 5112,
+     "graph_after": {
+      "chunks_stored": 5,
+      "communities_in_report_store": 3,
+      "connected_components": 3,
+      "documents_stored": 3,
+      "edges": 25,
+      "largest_component_nodes": 10,
+      "nodes": 25,
+      "nodes_with_cluster_data": 10
+     },
+     "rank": 3,
+     "seconds": 0.02,
+     "url_sha256_16": "019b1ddf6f78fa7e"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 9,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 494
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1202,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5459
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6699
+      }
+     },
+     "chars": 6374,
+     "graph_after": {
+      "chunks_stored": 7,
+      "communities_in_report_store": 3,
+      "connected_components": 4,
+      "documents_stored": 4,
+      "edges": 35,
+      "largest_component_nodes": 10,
+      "nodes": 34,
+      "nodes_with_cluster_data": 10
+     },
+     "rank": 4,
+     "seconds": 0.03,
+     "url_sha256_16": "024c021da3256374"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 9,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 437
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1080,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5796
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6914
+      }
+     },
+     "chars": 8626,
+     "graph_after": {
+      "chunks_stored": 9,
+      "communities_in_report_store": 3,
+      "connected_components": 5,
+      "documents_stored": 5,
+      "edges": 44,
+      "largest_component_nodes": 10,
+      "nodes": 43,
+      "nodes_with_cluster_data": 10
+     },
+     "rank": 5,
+     "seconds": 0.03,
+     "url_sha256_16": "02e889122ba12a26"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 6,
+       "completion_tokens": 1224,
+       "models": {
+        "gpt-4o": 6
+       },
+       "prompt_tokens": 13251
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 11,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 526
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1105,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5251
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6394
+      }
+     },
+     "chars": 6083,
+     "graph_after": {
+      "chunks_stored": 11,
+      "communities_in_report_store": 6,
+      "connected_components": 5,
+      "documents_stored": 6,
+      "edges": 54,
+      "largest_component_nodes": 19,
+      "nodes": 53,
+      "nodes_with_cluster_data": 29
+     },
+     "rank": 6,
+     "seconds": 0.04,
+     "url_sha256_16": "02ecfbdc00c2bc17"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 15,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 678
+      },
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 1665,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 9070
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 10792
+      }
+     },
+     "chars": 14982,
+     "graph_after": {
+      "chunks_stored": 14,
+      "communities_in_report_store": 6,
+      "connected_components": 6,
+      "documents_stored": 7,
+      "edges": 69,
+      "largest_component_nodes": 19,
+      "nodes": 68,
+      "nodes_with_cluster_data": 29
+     },
+     "rank": 7,
+     "seconds": 0.04,
+     "url_sha256_16": "0343487a677b62d3"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 6,
+       "completion_tokens": 1224,
+       "models": {
+        "gpt-4o": 6
+       },
+       "prompt_tokens": 13321
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 11,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 558
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1252,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5314
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6604
+      }
+     },
+     "chars": 6237,
+     "graph_after": {
+      "chunks_stored": 16,
+      "communities_in_report_store": 8,
+      "connected_components": 6,
+      "documents_stored": 8,
+      "edges": 79,
+      "largest_component_nodes": 29,
+      "nodes": 78,
+      "nodes_with_cluster_data": 39
+     },
+     "rank": 8,
+     "seconds": 0.04,
+     "url_sha256_16": "0370fe5c0dcecb48"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 11,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 669
+      },
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 1660,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8579
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 10296
+      }
+     },
+     "chars": 11756,
+     "graph_after": {
+      "chunks_stored": 19,
+      "communities_in_report_store": 8,
+      "connected_components": 7,
+      "documents_stored": 9,
+      "edges": 92,
+      "largest_component_nodes": 29,
+      "nodes": 89,
+      "nodes_with_cluster_data": 39
+     },
+     "rank": 9,
+     "seconds": 0.04,
+     "url_sha256_16": "037f37fc8794dabc"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 13,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 699
+      },
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 1731,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8194
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 9982
+      }
+     },
+     "chars": 10120,
+     "graph_after": {
+      "chunks_stored": 22,
+      "communities_in_report_store": 8,
+      "connected_components": 8,
+      "documents_stored": 10,
+      "edges": 106,
+      "largest_component_nodes": 29,
+      "nodes": 102,
+      "nodes_with_cluster_data": 39
+     },
+     "rank": 10,
+     "seconds": 0.04,
+     "url_sha256_16": "038eabdb237efe3f"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 10,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 477
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1162,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5898
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 7098
+      }
+     },
+     "chars": 8275,
+     "graph_after": {
+      "chunks_stored": 24,
+      "communities_in_report_store": 8,
+      "connected_components": 9,
+      "documents_stored": 11,
+      "edges": 116,
+      "largest_component_nodes": 29,
+      "nodes": 112,
+      "nodes_with_cluster_data": 39
+     },
+     "rank": 11,
+     "seconds": 0.04,
+     "url_sha256_16": "03a4ece0fb5cb7f9"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 11,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 491
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1183,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5033
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6254
+      }
+     },
+     "chars": 5601,
+     "graph_after": {
+      "chunks_stored": 26,
+      "communities_in_report_store": 8,
+      "connected_components": 10,
+      "documents_stored": 12,
+      "edges": 126,
+      "largest_component_nodes": 29,
+      "nodes": 123,
+      "nodes_with_cluster_data": 39
+     },
+     "rank": 12,
+     "seconds": 0.04,
+     "url_sha256_16": "03c3ac59773da075"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 5,
+       "completion_tokens": 1020,
+       "models": {
+        "gpt-4o": 5
+       },
+       "prompt_tokens": 13067
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 12,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 560
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1241,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5431
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6710
+      }
+     },
+     "chars": 6359,
+     "graph_after": {
+      "chunks_stored": 28,
+      "communities_in_report_store": 6,
+      "connected_components": 11,
+      "documents_stored": 13,
+      "edges": 136,
+      "largest_component_nodes": 34,
+      "nodes": 134,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 13,
+     "seconds": 0.05,
+     "url_sha256_16": "0476f8f8472ce475"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 11,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 453
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1102,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5942
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 7082
+      }
+     },
+     "chars": 9754,
+     "graph_after": {
+      "chunks_stored": 30,
+      "communities_in_report_store": 6,
+      "connected_components": 12,
+      "documents_stored": 14,
+      "edges": 146,
+      "largest_component_nodes": 34,
+      "nodes": 145,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 14,
+     "seconds": 0.04,
+     "url_sha256_16": "04ccbc6009a196f8"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 16,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 716
+      },
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 1721,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8984
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 10762
+      }
+     },
+     "chars": 13179,
+     "graph_after": {
+      "chunks_stored": 33,
+      "communities_in_report_store": 6,
+      "connected_components": 13,
+      "documents_stored": 15,
+      "edges": 161,
+      "largest_component_nodes": 34,
+      "nodes": 161,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 15,
+     "seconds": 0.05,
+     "url_sha256_16": "04fd1826153b3083"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 2,
+       "completion_tokens": 408,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5782
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 22,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 1241
+      },
+      "entity_extraction": {
+       "calls": 5,
+       "completion_tokens": 2915,
+       "models": {
+        "gpt-4o": 5
+       },
+       "prompt_tokens": 15178
+      },
+      "gleaning_continue": {
+       "calls": 5,
+       "completion_tokens": 25,
+       "models": {
+        "gpt-4o": 5
+       },
+       "prompt_tokens": 18188
+      }
+     },
+     "chars": 22011,
+     "graph_after": {
+      "chunks_stored": 38,
+      "communities_in_report_store": 6,
+      "connected_components": 13,
+      "documents_stored": 16,
+      "edges": 186,
+      "largest_component_nodes": 34,
+      "nodes": 182,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 16,
+     "seconds": 0.07,
+     "url_sha256_16": "0501457d04bf9f55"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 17,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 1010
+      },
+      "entity_extraction": {
+       "calls": 4,
+       "completion_tokens": 2451,
+       "models": {
+        "gpt-4o": 4
+       },
+       "prompt_tokens": 11728
+      },
+      "gleaning_continue": {
+       "calls": 4,
+       "completion_tokens": 20,
+       "models": {
+        "gpt-4o": 4
+       },
+       "prompt_tokens": 14255
+      }
+     },
+     "chars": 16351,
+     "graph_after": {
+      "chunks_stored": 42,
+      "communities_in_report_store": 6,
+      "connected_components": 14,
+      "documents_stored": 17,
+      "edges": 204,
+      "largest_component_nodes": 34,
+      "nodes": 199,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 17,
+     "seconds": 0.06,
+     "url_sha256_16": "054b706b1f216197"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 9,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 489
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1178,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5971
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 7187
+      }
+     },
+     "chars": 7683,
+     "graph_after": {
+      "chunks_stored": 44,
+      "communities_in_report_store": 6,
+      "connected_components": 15,
+      "documents_stored": 18,
+      "edges": 213,
+      "largest_component_nodes": 34,
+      "nodes": 208,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 18,
+     "seconds": 0.04,
+     "url_sha256_16": "0559abf992d9f2f2"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 26,
+       "completion_tokens": 5304,
+       "models": {
+        "gpt-4o": 26
+       },
+       "prompt_tokens": 61087
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 12,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 958
+      },
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 1631,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8664
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 10352
+      }
+     },
+     "chars": 12684,
+     "graph_after": {
+      "chunks_stored": 47,
+      "communities_in_report_store": 29,
+      "connected_components": 11,
+      "documents_stored": 19,
+      "edges": 225,
+      "largest_component_nodes": 110,
+      "nodes": 214,
+      "nodes_with_cluster_data": 110
+     },
+     "rank": 19,
+     "seconds": 0.1,
+     "url_sha256_16": "05cd6a49a650e655"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 10,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 540
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1269,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5598
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6905
+      }
+     },
+     "chars": 8038,
+     "graph_after": {
+      "chunks_stored": 49,
+      "communities_in_report_store": 29,
+      "connected_components": 12,
+      "documents_stored": 20,
+      "edges": 234,
+      "largest_component_nodes": 110,
+      "nodes": 224,
+      "nodes_with_cluster_data": 110
+     },
+     "rank": 20,
+     "seconds": 0.05,
+     "url_sha256_16": "06bc8ec253404962"
+    }
+   ],
+   "prompt_multiset_sha256": "8c27df8113a951892013a6cb2bdf8027b8d8de2c62c7da6cd1ee4b2fa3887cfa",
+   "prompt_template_tokens": {
+    "community_report_empty": 1526,
+    "description_summary_empty": 117,
+    "entity_extraction_empty_chunk": 1933,
+    "gleaning_continue_prompt": 19,
+    "gleaning_loop_check_prompt": 26
+   },
+   "request_params_by_kind": {
+    "community_report": {
+     "messages": [
+      "<text>"
+     ],
+     "model": [
+      "\"gpt-4o\""
+     ],
+     "response_format": [
+      "{\"type\": \"json_object\"}"
+     ]
+    },
+    "embedding": {
+     "encoding_format": [
+      "\"float\""
+     ],
+     "input": [
+      "<text>"
+     ],
+     "model": [
+      "\"text-embedding-3-small\""
+     ]
+    },
+    "entity_extraction": {
+     "messages": [
+      "<text>"
+     ],
+     "model": [
+      "\"gpt-4o\""
+     ]
+    },
+    "gleaning_continue": {
+     "messages": [
+      "<text>"
+     ],
+     "model": [
+      "\"gpt-4o\""
+     ]
+    }
+   },
+   "runtime": {
+    "machine": "arm64",
+    "nano_graphrag_version": "0.0.8.2",
+    "packages": {
+     "graspologic": "3.4.4",
+     "httpx": "0.28.1",
+     "nano-vectordb": "0.0.4.3",
+     "networkx": "3.7",
+     "numpy": "1.26.4",
+     "openai": "3.42.1",
+     "tenacity": "9.2.1",
+     "tiktoken": "0.14.0"
+    },
+    "python": "3.12.16"
+   },
+   "scenario": "perdoc-B",
+   "shape": "B",
+   "started_utc": "20261102 10:44:59 UTC",
+   "stub_tokenizer": "tiktoken:cl100k_base",
+   "wall_seconds": 2.7
+  },
+  "perdoc-B-nocache": {
+   "answers_produced_by_responder": {
+    "entities_in_answers": 294,
+    "extraction_answers": 49,
+    "relations_in_answers": 245
+   },
+   "checkpoints": {
+    "1": {
+     "by_kind": {
+      "community_report": {
+       "calls": 3,
+       "completion_tokens": 612,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 5994
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 10,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 494
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1188,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5355
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6581
+      }
+     },
+     "graph": {
+      "chunks_stored": 2,
+      "communities_in_report_store": 3,
+      "connected_components": 1,
+      "documents_stored": 1,
+      "edges": 10,
+      "largest_component_nodes": 10,
+      "nodes": 10,
+      "nodes_with_cluster_data": 10
+     },
+     "n_docs": 1,
+     "stub_summary": {
+      "chat_calls": 7,
+      "chat_completion_tokens": 1810,
+      "chat_prompt_tokens": 17930,
+      "embedding_calls": 1,
+      "embedding_inputs": 10,
+      "embedding_tokens": 494,
+      "other_calls": 0,
+      "tokenizer": "tiktoken:cl100k_base"
+     }
+    },
+    "20": {
+     "by_kind": {
+      "community_report": {
+       "calls": 161,
+       "completion_tokens": 32844,
+       "models": {
+        "gpt-4o": 161
+       },
+       "prompt_tokens": 369532
+      },
+      "embedding": {
+       "calls": 20,
+       "completion_tokens": 0,
+       "inputs": 234,
+       "models": {
+        "text-embedding-3-small": 20
+       },
+       "prompt_tokens": 12202
+      },
+      "entity_extraction": {
+       "calls": 49,
+       "completion_tokens": 28467,
+       "models": {
+        "gpt-4o": 49
+       },
+       "prompt_tokens": 139626
+      },
+      "gleaning_continue": {
+       "calls": 49,
+       "completion_tokens": 245,
+       "models": {
+        "gpt-4o": 49
+       },
+       "prompt_tokens": 169024
+      }
+     },
+     "graph": {
+      "chunks_stored": 49,
+      "communities_in_report_store": 29,
+      "connected_components": 12,
+      "documents_stored": 20,
+      "edges": 234,
+      "largest_component_nodes": 110,
+      "nodes": 224,
+      "nodes_with_cluster_data": 110
+     },
+     "n_docs": 20,
+     "stub_summary": {
+      "chat_calls": 259,
+      "chat_completion_tokens": 61556,
+      "chat_prompt_tokens": 678182,
+      "embedding_calls": 20,
+      "embedding_inputs": 234,
+      "embedding_tokens": 12202,
+      "other_calls": 0,
+      "tokenizer": "tiktoken:cl100k_base"
+     }
+    },
+    "5": {
+     "by_kind": {
+      "community_report": {
+       "calls": 15,
+       "completion_tokens": 3060,
+       "models": {
+        "gpt-4o": 15
+       },
+       "prompt_tokens": 29970
+      },
+      "embedding": {
+       "calls": 5,
+       "completion_tokens": 0,
+       "inputs": 43,
+       "models": {
+        "text-embedding-3-small": 5
+       },
+       "prompt_tokens": 2137
+      },
+      "entity_extraction": {
+       "calls": 9,
+       "completion_tokens": 5201,
+       "models": {
+        "gpt-4o": 9
+       },
+       "prompt_tokens": 24791
+      },
+      "gleaning_continue": {
+       "calls": 9,
+       "completion_tokens": 45,
+       "models": {
+        "gpt-4o": 9
+       },
+       "prompt_tokens": 30163
+      }
+     },
+     "graph": {
+      "chunks_stored": 9,
+      "communities_in_report_store": 3,
+      "connected_components": 5,
+      "documents_stored": 5,
+      "edges": 44,
+      "largest_component_nodes": 10,
+      "nodes": 43,
+      "nodes_with_cluster_data": 10
+     },
+     "n_docs": 5,
+     "stub_summary": {
+      "chat_calls": 33,
+      "chat_completion_tokens": 8306,
+      "chat_prompt_tokens": 84924,
+      "embedding_calls": 5,
+      "embedding_inputs": 43,
+      "embedding_tokens": 2137,
+      "other_calls": 0,
+      "tokenizer": "tiktoken:cl100k_base"
+     }
+    }
+   },
+   "child_wall_seconds_incl_imports": 3.3,
+   "chunking_arithmetic": {
+    "chunks_per_document": [
+     2,
+     2,
+     1,
+     2,
+     2,
+     2,
+     3,
+     2,
+     3,
+     3,
+     2,
+     2,
+     2,
+     2,
+     3,
+     5,
+     4,
+     2,
+     3,
+     2
+    ],
+    "step_tokens": 1100,
+    "tokenizer": "o200k_base",
+    "tokens_per_document": [
+     1355,
+     1203,
+     1066,
+     1470,
+     1844,
+     1272,
+     3046,
+     1340,
+     2577,
+     2239,
+     1909,
+     1132,
+     1436,
+     1958,
+     2957,
+     5021,
+     3698,
+     1981,
+     2661,
+     1621
+    ],
+    "total_chunks": 49,
+    "total_document_tokens": 41786
+   },
+   "defaults_observed": {
+    "best_model_max_async": 16,
+    "cheap_model_max_async": 16,
+    "chunk_overlap_token_size": 100,
+    "chunk_token_size": 1200,
+    "embedding_batch_num": 32,
+    "embedding_func_max_async": 16,
+    "enable_llm_cache": false,
+    "enable_local": true,
+    "enable_naive_rag": false,
+    "entity_extract_max_gleaning": 1,
+    "entity_summary_to_max_tokens": 500,
+    "graph_cluster_algorithm": "leiden",
+    "max_graph_cluster_size": 10,
+    "tiktoken_model_name": "gpt-4o"
+   },
+   "final": {
+    "by_kind": {
+     "community_report": {
+      "calls": 161,
+      "completion_tokens": 32844,
+      "models": {
+       "gpt-4o": 161
+      },
+      "prompt_tokens": 369532
+     },
+     "embedding": {
+      "calls": 20,
+      "completion_tokens": 0,
+      "inputs": 234,
+      "models": {
+       "text-embedding-3-small": 20
+      },
+      "prompt_tokens": 12202
+     },
+     "entity_extraction": {
+      "calls": 49,
+      "completion_tokens": 28467,
+      "models": {
+       "gpt-4o": 49
+      },
+      "prompt_tokens": 139626
+     },
+     "gleaning_continue": {
+      "calls": 49,
+      "completion_tokens": 245,
+      "models": {
+       "gpt-4o": 49
+      },
+      "prompt_tokens": 169024
+     }
+    },
+    "graph": {
+     "chunks_stored": 49,
+     "communities_in_report_store": 29,
+     "connected_components": 12,
+     "documents_stored": 20,
+     "edges": 234,
+     "largest_component_nodes": 110,
+     "nodes": 224,
+     "nodes_with_cluster_data": 110
+    },
+    "n_docs": 20,
+    "stub_summary": {
+     "chat_calls": 259,
+     "chat_completion_tokens": 61556,
+     "chat_prompt_tokens": 678182,
+     "embedding_calls": 20,
+     "embedding_inputs": 234,
+     "embedding_tokens": 12202,
+     "other_calls": 0,
+     "tokenizer": "tiktoken:cl100k_base"
+    }
+   },
+   "llm_cache": "off",
+   "mode": "perdoc",
+   "network_guard": {
+    "connect_attempts": [],
+    "dns_lookups_non_loopback": []
+   },
+   "openai_sdk_defaults": {
+    "max_retries": 2,
+    "timeout_seconds": "Timeout(connect=5.0, read=600, write=600, pool=600)"
+   },
+   "other_calls": 0,
+   "per_document": [
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 3,
+       "completion_tokens": 612,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 5994
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 10,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 494
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1188,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5355
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6581
+      }
+     },
+     "chars": 6341,
+     "graph_after": {
+      "chunks_stored": 2,
+      "communities_in_report_store": 3,
+      "connected_components": 1,
+      "documents_stored": 1,
+      "edges": 10,
+      "largest_component_nodes": 10,
+      "nodes": 10,
+      "nodes_with_cluster_data": 10
+     },
+     "rank": 1,
+     "seconds": 1.25,
+     "url_sha256_16": "0068586b43cf2f56"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 3,
+       "completion_tokens": 612,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 5994
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 9,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 478
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1169,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5173
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6380
+      }
+     },
+     "chars": 6005,
+     "graph_after": {
+      "chunks_stored": 4,
+      "communities_in_report_store": 3,
+      "connected_components": 2,
+      "documents_stored": 2,
+      "edges": 20,
+      "largest_component_nodes": 10,
+      "nodes": 19,
+      "nodes_with_cluster_data": 10
+     },
+     "rank": 2,
+     "seconds": 0.03,
+     "url_sha256_16": "01648ca159300692"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 3,
+       "completion_tokens": 612,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 5994
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 6,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 234
+      },
+      "entity_extraction": {
+       "calls": 1,
+       "completion_tokens": 562,
+       "models": {
+        "gpt-4o": 1
+       },
+       "prompt_tokens": 3008
+      },
+      "gleaning_continue": {
+       "calls": 1,
+       "completion_tokens": 5,
+       "models": {
+        "gpt-4o": 1
+       },
+       "prompt_tokens": 3589
+      }
+     },
+     "chars": 5112,
+     "graph_after": {
+      "chunks_stored": 5,
+      "communities_in_report_store": 3,
+      "connected_components": 3,
+      "documents_stored": 3,
+      "edges": 25,
+      "largest_component_nodes": 10,
+      "nodes": 25,
+      "nodes_with_cluster_data": 10
+     },
+     "rank": 3,
+     "seconds": 0.02,
+     "url_sha256_16": "019b1ddf6f78fa7e"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 3,
+       "completion_tokens": 612,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 5994
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 9,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 494
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1202,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5459
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6699
+      }
+     },
+     "chars": 6374,
+     "graph_after": {
+      "chunks_stored": 7,
+      "communities_in_report_store": 3,
+      "connected_components": 4,
+      "documents_stored": 4,
+      "edges": 35,
+      "largest_component_nodes": 10,
+      "nodes": 34,
+      "nodes_with_cluster_data": 10
+     },
+     "rank": 4,
+     "seconds": 0.02,
+     "url_sha256_16": "024c021da3256374"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 3,
+       "completion_tokens": 612,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 5994
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 9,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 437
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1080,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5796
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6914
+      }
+     },
+     "chars": 8626,
+     "graph_after": {
+      "chunks_stored": 9,
+      "communities_in_report_store": 3,
+      "connected_components": 5,
+      "documents_stored": 5,
+      "edges": 44,
+      "largest_component_nodes": 10,
+      "nodes": 43,
+      "nodes_with_cluster_data": 10
+     },
+     "rank": 5,
+     "seconds": 0.03,
+     "url_sha256_16": "02e889122ba12a26"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 6,
+       "completion_tokens": 1224,
+       "models": {
+        "gpt-4o": 6
+       },
+       "prompt_tokens": 13251
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 11,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 526
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1105,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5251
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6394
+      }
+     },
+     "chars": 6083,
+     "graph_after": {
+      "chunks_stored": 11,
+      "communities_in_report_store": 6,
+      "connected_components": 5,
+      "documents_stored": 6,
+      "edges": 54,
+      "largest_component_nodes": 19,
+      "nodes": 53,
+      "nodes_with_cluster_data": 29
+     },
+     "rank": 6,
+     "seconds": 0.04,
+     "url_sha256_16": "02ecfbdc00c2bc17"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 6,
+       "completion_tokens": 1224,
+       "models": {
+        "gpt-4o": 6
+       },
+       "prompt_tokens": 13251
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 15,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 678
+      },
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 1665,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 9070
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 10792
+      }
+     },
+     "chars": 14982,
+     "graph_after": {
+      "chunks_stored": 14,
+      "communities_in_report_store": 6,
+      "connected_components": 6,
+      "documents_stored": 7,
+      "edges": 69,
+      "largest_component_nodes": 19,
+      "nodes": 68,
+      "nodes_with_cluster_data": 29
+     },
+     "rank": 7,
+     "seconds": 0.05,
+     "url_sha256_16": "0343487a677b62d3"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 8,
+       "completion_tokens": 1632,
+       "models": {
+        "gpt-4o": 8
+       },
+       "prompt_tokens": 17674
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 11,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 558
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1252,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5314
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6604
+      }
+     },
+     "chars": 6237,
+     "graph_after": {
+      "chunks_stored": 16,
+      "communities_in_report_store": 8,
+      "connected_components": 6,
+      "documents_stored": 8,
+      "edges": 79,
+      "largest_component_nodes": 29,
+      "nodes": 78,
+      "nodes_with_cluster_data": 39
+     },
+     "rank": 8,
+     "seconds": 0.05,
+     "url_sha256_16": "0370fe5c0dcecb48"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 8,
+       "completion_tokens": 1632,
+       "models": {
+        "gpt-4o": 8
+       },
+       "prompt_tokens": 17674
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 11,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 669
+      },
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 1660,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8579
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 10296
+      }
+     },
+     "chars": 11756,
+     "graph_after": {
+      "chunks_stored": 19,
+      "communities_in_report_store": 8,
+      "connected_components": 7,
+      "documents_stored": 9,
+      "edges": 92,
+      "largest_component_nodes": 29,
+      "nodes": 89,
+      "nodes_with_cluster_data": 39
+     },
+     "rank": 9,
+     "seconds": 0.05,
+     "url_sha256_16": "037f37fc8794dabc"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 8,
+       "completion_tokens": 1632,
+       "models": {
+        "gpt-4o": 8
+       },
+       "prompt_tokens": 17674
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 13,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 699
+      },
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 1731,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8194
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 9982
+      }
+     },
+     "chars": 10120,
+     "graph_after": {
+      "chunks_stored": 22,
+      "communities_in_report_store": 8,
+      "connected_components": 8,
+      "documents_stored": 10,
+      "edges": 106,
+      "largest_component_nodes": 29,
+      "nodes": 102,
+      "nodes_with_cluster_data": 39
+     },
+     "rank": 10,
+     "seconds": 0.04,
+     "url_sha256_16": "038eabdb237efe3f"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 8,
+       "completion_tokens": 1632,
+       "models": {
+        "gpt-4o": 8
+       },
+       "prompt_tokens": 17674
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 10,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 477
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1162,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5898
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 7098
+      }
+     },
+     "chars": 8275,
+     "graph_after": {
+      "chunks_stored": 24,
+      "communities_in_report_store": 8,
+      "connected_components": 9,
+      "documents_stored": 11,
+      "edges": 116,
+      "largest_component_nodes": 29,
+      "nodes": 112,
+      "nodes_with_cluster_data": 39
+     },
+     "rank": 11,
+     "seconds": 0.04,
+     "url_sha256_16": "03a4ece0fb5cb7f9"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 8,
+       "completion_tokens": 1632,
+       "models": {
+        "gpt-4o": 8
+       },
+       "prompt_tokens": 17674
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 11,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 491
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1183,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5033
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6254
+      }
+     },
+     "chars": 5601,
+     "graph_after": {
+      "chunks_stored": 26,
+      "communities_in_report_store": 8,
+      "connected_components": 10,
+      "documents_stored": 12,
+      "edges": 126,
+      "largest_component_nodes": 29,
+      "nodes": 123,
+      "nodes_with_cluster_data": 39
+     },
+     "rank": 12,
+     "seconds": 0.06,
+     "url_sha256_16": "03c3ac59773da075"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 6,
+       "completion_tokens": 1224,
+       "models": {
+        "gpt-4o": 6
+       },
+       "prompt_tokens": 15019
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 12,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 560
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1241,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5431
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6710
+      }
+     },
+     "chars": 6359,
+     "graph_after": {
+      "chunks_stored": 28,
+      "communities_in_report_store": 6,
+      "connected_components": 11,
+      "documents_stored": 13,
+      "edges": 136,
+      "largest_component_nodes": 34,
+      "nodes": 134,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 13,
+     "seconds": 0.05,
+     "url_sha256_16": "0476f8f8472ce475"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 6,
+       "completion_tokens": 1224,
+       "models": {
+        "gpt-4o": 6
+       },
+       "prompt_tokens": 15019
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 11,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 453
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1102,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5942
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 7082
+      }
+     },
+     "chars": 9754,
+     "graph_after": {
+      "chunks_stored": 30,
+      "communities_in_report_store": 6,
+      "connected_components": 12,
+      "documents_stored": 14,
+      "edges": 146,
+      "largest_component_nodes": 34,
+      "nodes": 145,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 14,
+     "seconds": 0.04,
+     "url_sha256_16": "04ccbc6009a196f8"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 6,
+       "completion_tokens": 1224,
+       "models": {
+        "gpt-4o": 6
+       },
+       "prompt_tokens": 15019
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 16,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 716
+      },
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 1721,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8984
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 10762
+      }
+     },
+     "chars": 13179,
+     "graph_after": {
+      "chunks_stored": 33,
+      "communities_in_report_store": 6,
+      "connected_components": 13,
+      "documents_stored": 15,
+      "edges": 161,
+      "largest_component_nodes": 34,
+      "nodes": 161,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 15,
+     "seconds": 0.05,
+     "url_sha256_16": "04fd1826153b3083"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 6,
+       "completion_tokens": 1224,
+       "models": {
+        "gpt-4o": 6
+       },
+       "prompt_tokens": 15103
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 22,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 1241
+      },
+      "entity_extraction": {
+       "calls": 5,
+       "completion_tokens": 2915,
+       "models": {
+        "gpt-4o": 5
+       },
+       "prompt_tokens": 15178
+      },
+      "gleaning_continue": {
+       "calls": 5,
+       "completion_tokens": 25,
+       "models": {
+        "gpt-4o": 5
+       },
+       "prompt_tokens": 18188
+      }
+     },
+     "chars": 22011,
+     "graph_after": {
+      "chunks_stored": 38,
+      "communities_in_report_store": 6,
+      "connected_components": 13,
+      "documents_stored": 16,
+      "edges": 186,
+      "largest_component_nodes": 34,
+      "nodes": 182,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 16,
+     "seconds": 0.06,
+     "url_sha256_16": "0501457d04bf9f55"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 6,
+       "completion_tokens": 1224,
+       "models": {
+        "gpt-4o": 6
+       },
+       "prompt_tokens": 15103
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 17,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 1010
+      },
+      "entity_extraction": {
+       "calls": 4,
+       "completion_tokens": 2451,
+       "models": {
+        "gpt-4o": 4
+       },
+       "prompt_tokens": 11728
+      },
+      "gleaning_continue": {
+       "calls": 4,
+       "completion_tokens": 20,
+       "models": {
+        "gpt-4o": 4
+       },
+       "prompt_tokens": 14255
+      }
+     },
+     "chars": 16351,
+     "graph_after": {
+      "chunks_stored": 42,
+      "communities_in_report_store": 6,
+      "connected_components": 14,
+      "documents_stored": 17,
+      "edges": 204,
+      "largest_component_nodes": 34,
+      "nodes": 199,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 17,
+     "seconds": 0.05,
+     "url_sha256_16": "054b706b1f216197"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 6,
+       "completion_tokens": 1224,
+       "models": {
+        "gpt-4o": 6
+       },
+       "prompt_tokens": 15103
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 9,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 489
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1178,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5971
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 7187
+      }
+     },
+     "chars": 7683,
+     "graph_after": {
+      "chunks_stored": 44,
+      "communities_in_report_store": 6,
+      "connected_components": 15,
+      "documents_stored": 18,
+      "edges": 213,
+      "largest_component_nodes": 34,
+      "nodes": 208,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 18,
+     "seconds": 0.04,
+     "url_sha256_16": "0559abf992d9f2f2"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 29,
+       "completion_tokens": 5916,
+       "models": {
+        "gpt-4o": 29
+       },
+       "prompt_tokens": 67162
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 12,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 958
+      },
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 1631,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8664
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 10352
+      }
+     },
+     "chars": 12684,
+     "graph_after": {
+      "chunks_stored": 47,
+      "communities_in_report_store": 29,
+      "connected_components": 11,
+      "documents_stored": 19,
+      "edges": 225,
+      "largest_component_nodes": 110,
+      "nodes": 214,
+      "nodes_with_cluster_data": 110
+     },
+     "rank": 19,
+     "seconds": 0.07,
+     "url_sha256_16": "05cd6a49a650e655"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 29,
+       "completion_tokens": 5916,
+       "models": {
+        "gpt-4o": 29
+       },
+       "prompt_tokens": 67162
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 10,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 540
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1269,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5598
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6905
+      }
+     },
+     "chars": 8038,
+     "graph_after": {
+      "chunks_stored": 49,
+      "communities_in_report_store": 29,
+      "connected_components": 12,
+      "documents_stored": 20,
+      "edges": 234,
+      "largest_component_nodes": 110,
+      "nodes": 224,
+      "nodes_with_cluster_data": 110
+     },
+     "rank": 20,
+     "seconds": 0.06,
+     "url_sha256_16": "06bc8ec253404962"
+    }
+   ],
+   "prompt_multiset_sha256": "06e2516c9ec3073a4cbd69850028ac8a19e4f2cf7933085db3b75893fcb08494",
+   "prompt_template_tokens": {
+    "community_report_empty": 1526,
+    "description_summary_empty": 117,
+    "entity_extraction_empty_chunk": 1933,
+    "gleaning_continue_prompt": 19,
+    "gleaning_loop_check_prompt": 26
+   },
+   "request_params_by_kind": {
+    "community_report": {
+     "messages": [
+      "<text>"
+     ],
+     "model": [
+      "\"gpt-4o\""
+     ],
+     "response_format": [
+      "{\"type\": \"json_object\"}"
+     ]
+    },
+    "embedding": {
+     "encoding_format": [
+      "\"float\""
+     ],
+     "input": [
+      "<text>"
+     ],
+     "model": [
+      "\"text-embedding-3-small\""
+     ]
+    },
+    "entity_extraction": {
+     "messages": [
+      "<text>"
+     ],
+     "model": [
+      "\"gpt-4o\""
+     ]
+    },
+    "gleaning_continue": {
+     "messages": [
+      "<text>"
+     ],
+     "model": [
+      "\"gpt-4o\""
+     ]
+    }
+   },
+   "runtime": {
+    "machine": "arm64",
+    "nano_graphrag_version": "0.0.8.2",
+    "packages": {
+     "graspologic": "3.4.4",
+     "httpx": "0.28.1",
+     "nano-vectordb": "0.0.4.3",
+     "networkx": "3.7",
+     "numpy": "1.26.4",
+     "openai": "3.42.1",
+     "tenacity": "9.2.1",
+     "tiktoken": "0.14.0"
+    },
+    "python": "3.12.16"
+   },
+   "scenario": "perdoc-B-nocache",
+   "shape": "B",
+   "started_utc": "20261102 10:45:07 UTC",
+   "stub_tokenizer": "tiktoken:cl100k_base",
+   "wall_seconds": 2.6
+  },
+  "perdoc-B-repeat": {
+   "answers_produced_by_responder": {
+    "entities_in_answers": 294,
+    "extraction_answers": 49,
+    "relations_in_answers": 245
+   },
+   "checkpoints": {
+    "1": {
+     "by_kind": {
+      "community_report": {
+       "calls": 3,
+       "completion_tokens": 612,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 5994
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 10,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 494
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1188,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5355
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6581
+      }
+     },
+     "graph": {
+      "chunks_stored": 2,
+      "communities_in_report_store": 3,
+      "connected_components": 1,
+      "documents_stored": 1,
+      "edges": 10,
+      "largest_component_nodes": 10,
+      "nodes": 10,
+      "nodes_with_cluster_data": 10
+     },
+     "n_docs": 1,
+     "stub_summary": {
+      "chat_calls": 7,
+      "chat_completion_tokens": 1810,
+      "chat_prompt_tokens": 17930,
+      "embedding_calls": 1,
+      "embedding_inputs": 10,
+      "embedding_tokens": 494,
+      "other_calls": 0,
+      "tokenizer": "tiktoken:cl100k_base"
+     }
+    },
+    "20": {
+     "by_kind": {
+      "community_report": {
+       "calls": 48,
+       "completion_tokens": 9792,
+       "models": {
+        "gpt-4o": 48
+       },
+       "prompt_tokens": 112502
+      },
+      "embedding": {
+       "calls": 20,
+       "completion_tokens": 0,
+       "inputs": 234,
+       "models": {
+        "text-embedding-3-small": 20
+       },
+       "prompt_tokens": 12202
+      },
+      "entity_extraction": {
+       "calls": 49,
+       "completion_tokens": 28467,
+       "models": {
+        "gpt-4o": 49
+       },
+       "prompt_tokens": 139626
+      },
+      "gleaning_continue": {
+       "calls": 49,
+       "completion_tokens": 245,
+       "models": {
+        "gpt-4o": 49
+       },
+       "prompt_tokens": 169024
+      }
+     },
+     "graph": {
+      "chunks_stored": 49,
+      "communities_in_report_store": 29,
+      "connected_components": 12,
+      "documents_stored": 20,
+      "edges": 234,
+      "largest_component_nodes": 110,
+      "nodes": 224,
+      "nodes_with_cluster_data": 110
+     },
+     "n_docs": 20,
+     "stub_summary": {
+      "chat_calls": 146,
+      "chat_completion_tokens": 38504,
+      "chat_prompt_tokens": 421152,
+      "embedding_calls": 20,
+      "embedding_inputs": 234,
+      "embedding_tokens": 12202,
+      "other_calls": 0,
+      "tokenizer": "tiktoken:cl100k_base"
+     }
+    },
+    "5": {
+     "by_kind": {
+      "community_report": {
+       "calls": 3,
+       "completion_tokens": 612,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 5994
+      },
+      "embedding": {
+       "calls": 5,
+       "completion_tokens": 0,
+       "inputs": 43,
+       "models": {
+        "text-embedding-3-small": 5
+       },
+       "prompt_tokens": 2137
+      },
+      "entity_extraction": {
+       "calls": 9,
+       "completion_tokens": 5201,
+       "models": {
+        "gpt-4o": 9
+       },
+       "prompt_tokens": 24791
+      },
+      "gleaning_continue": {
+       "calls": 9,
+       "completion_tokens": 45,
+       "models": {
+        "gpt-4o": 9
+       },
+       "prompt_tokens": 30163
+      }
+     },
+     "graph": {
+      "chunks_stored": 9,
+      "communities_in_report_store": 3,
+      "connected_components": 5,
+      "documents_stored": 5,
+      "edges": 44,
+      "largest_component_nodes": 10,
+      "nodes": 43,
+      "nodes_with_cluster_data": 10
+     },
+     "n_docs": 5,
+     "stub_summary": {
+      "chat_calls": 21,
+      "chat_completion_tokens": 5858,
+      "chat_prompt_tokens": 60948,
+      "embedding_calls": 5,
+      "embedding_inputs": 43,
+      "embedding_tokens": 2137,
+      "other_calls": 0,
+      "tokenizer": "tiktoken:cl100k_base"
+     }
+    }
+   },
+   "child_wall_seconds_incl_imports": 3.2,
+   "chunking_arithmetic": {
+    "chunks_per_document": [
+     2,
+     2,
+     1,
+     2,
+     2,
+     2,
+     3,
+     2,
+     3,
+     3,
+     2,
+     2,
+     2,
+     2,
+     3,
+     5,
+     4,
+     2,
+     3,
+     2
+    ],
+    "step_tokens": 1100,
+    "tokenizer": "o200k_base",
+    "tokens_per_document": [
+     1355,
+     1203,
+     1066,
+     1470,
+     1844,
+     1272,
+     3046,
+     1340,
+     2577,
+     2239,
+     1909,
+     1132,
+     1436,
+     1958,
+     2957,
+     5021,
+     3698,
+     1981,
+     2661,
+     1621
+    ],
+    "total_chunks": 49,
+    "total_document_tokens": 41786
+   },
+   "defaults_observed": {
+    "best_model_max_async": 16,
+    "cheap_model_max_async": 16,
+    "chunk_overlap_token_size": 100,
+    "chunk_token_size": 1200,
+    "embedding_batch_num": 32,
+    "embedding_func_max_async": 16,
+    "enable_llm_cache": true,
+    "enable_local": true,
+    "enable_naive_rag": false,
+    "entity_extract_max_gleaning": 1,
+    "entity_summary_to_max_tokens": 500,
+    "graph_cluster_algorithm": "leiden",
+    "max_graph_cluster_size": 10,
+    "tiktoken_model_name": "gpt-4o"
+   },
+   "final": {
+    "by_kind": {
+     "community_report": {
+      "calls": 48,
+      "completion_tokens": 9792,
+      "models": {
+       "gpt-4o": 48
+      },
+      "prompt_tokens": 112502
+     },
+     "embedding": {
+      "calls": 20,
+      "completion_tokens": 0,
+      "inputs": 234,
+      "models": {
+       "text-embedding-3-small": 20
+      },
+      "prompt_tokens": 12202
+     },
+     "entity_extraction": {
+      "calls": 49,
+      "completion_tokens": 28467,
+      "models": {
+       "gpt-4o": 49
+      },
+      "prompt_tokens": 139626
+     },
+     "gleaning_continue": {
+      "calls": 49,
+      "completion_tokens": 245,
+      "models": {
+       "gpt-4o": 49
+      },
+      "prompt_tokens": 169024
+     }
+    },
+    "graph": {
+     "chunks_stored": 49,
+     "communities_in_report_store": 29,
+     "connected_components": 12,
+     "documents_stored": 20,
+     "edges": 234,
+     "largest_component_nodes": 110,
+     "nodes": 224,
+     "nodes_with_cluster_data": 110
+    },
+    "n_docs": 20,
+    "stub_summary": {
+     "chat_calls": 146,
+     "chat_completion_tokens": 38504,
+     "chat_prompt_tokens": 421152,
+     "embedding_calls": 20,
+     "embedding_inputs": 234,
+     "embedding_tokens": 12202,
+     "other_calls": 0,
+     "tokenizer": "tiktoken:cl100k_base"
+    }
+   },
+   "llm_cache": "on",
+   "mode": "perdoc",
+   "network_guard": {
+    "connect_attempts": [],
+    "dns_lookups_non_loopback": []
+   },
+   "openai_sdk_defaults": {
+    "max_retries": 2,
+    "timeout_seconds": "Timeout(connect=5.0, read=600, write=600, pool=600)"
+   },
+   "other_calls": 0,
+   "per_document": [
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 3,
+       "completion_tokens": 612,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 5994
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 10,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 494
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1188,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5355
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6581
+      }
+     },
+     "chars": 6341,
+     "graph_after": {
+      "chunks_stored": 2,
+      "communities_in_report_store": 3,
+      "connected_components": 1,
+      "documents_stored": 1,
+      "edges": 10,
+      "largest_component_nodes": 10,
+      "nodes": 10,
+      "nodes_with_cluster_data": 10
+     },
+     "rank": 1,
+     "seconds": 1.29,
+     "url_sha256_16": "0068586b43cf2f56"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 9,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 478
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1169,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5173
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6380
+      }
+     },
+     "chars": 6005,
+     "graph_after": {
+      "chunks_stored": 4,
+      "communities_in_report_store": 3,
+      "connected_components": 2,
+      "documents_stored": 2,
+      "edges": 20,
+      "largest_component_nodes": 10,
+      "nodes": 19,
+      "nodes_with_cluster_data": 10
+     },
+     "rank": 2,
+     "seconds": 0.02,
+     "url_sha256_16": "01648ca159300692"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 6,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 234
+      },
+      "entity_extraction": {
+       "calls": 1,
+       "completion_tokens": 562,
+       "models": {
+        "gpt-4o": 1
+       },
+       "prompt_tokens": 3008
+      },
+      "gleaning_continue": {
+       "calls": 1,
+       "completion_tokens": 5,
+       "models": {
+        "gpt-4o": 1
+       },
+       "prompt_tokens": 3589
+      }
+     },
+     "chars": 5112,
+     "graph_after": {
+      "chunks_stored": 5,
+      "communities_in_report_store": 3,
+      "connected_components": 3,
+      "documents_stored": 3,
+      "edges": 25,
+      "largest_component_nodes": 10,
+      "nodes": 25,
+      "nodes_with_cluster_data": 10
+     },
+     "rank": 3,
+     "seconds": 0.02,
+     "url_sha256_16": "019b1ddf6f78fa7e"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 9,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 494
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1202,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5459
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6699
+      }
+     },
+     "chars": 6374,
+     "graph_after": {
+      "chunks_stored": 7,
+      "communities_in_report_store": 3,
+      "connected_components": 4,
+      "documents_stored": 4,
+      "edges": 35,
+      "largest_component_nodes": 10,
+      "nodes": 34,
+      "nodes_with_cluster_data": 10
+     },
+     "rank": 4,
+     "seconds": 0.03,
+     "url_sha256_16": "024c021da3256374"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 9,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 437
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1080,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5796
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6914
+      }
+     },
+     "chars": 8626,
+     "graph_after": {
+      "chunks_stored": 9,
+      "communities_in_report_store": 3,
+      "connected_components": 5,
+      "documents_stored": 5,
+      "edges": 44,
+      "largest_component_nodes": 10,
+      "nodes": 43,
+      "nodes_with_cluster_data": 10
+     },
+     "rank": 5,
+     "seconds": 0.02,
+     "url_sha256_16": "02e889122ba12a26"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 6,
+       "completion_tokens": 1224,
+       "models": {
+        "gpt-4o": 6
+       },
+       "prompt_tokens": 13251
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 11,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 526
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1105,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5251
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6394
+      }
+     },
+     "chars": 6083,
+     "graph_after": {
+      "chunks_stored": 11,
+      "communities_in_report_store": 6,
+      "connected_components": 5,
+      "documents_stored": 6,
+      "edges": 54,
+      "largest_component_nodes": 19,
+      "nodes": 53,
+      "nodes_with_cluster_data": 29
+     },
+     "rank": 6,
+     "seconds": 0.04,
+     "url_sha256_16": "02ecfbdc00c2bc17"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 15,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 678
+      },
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 1665,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 9070
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 10792
+      }
+     },
+     "chars": 14982,
+     "graph_after": {
+      "chunks_stored": 14,
+      "communities_in_report_store": 6,
+      "connected_components": 6,
+      "documents_stored": 7,
+      "edges": 69,
+      "largest_component_nodes": 19,
+      "nodes": 68,
+      "nodes_with_cluster_data": 29
+     },
+     "rank": 7,
+     "seconds": 0.04,
+     "url_sha256_16": "0343487a677b62d3"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 6,
+       "completion_tokens": 1224,
+       "models": {
+        "gpt-4o": 6
+       },
+       "prompt_tokens": 13321
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 11,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 558
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1252,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5314
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6604
+      }
+     },
+     "chars": 6237,
+     "graph_after": {
+      "chunks_stored": 16,
+      "communities_in_report_store": 8,
+      "connected_components": 6,
+      "documents_stored": 8,
+      "edges": 79,
+      "largest_component_nodes": 29,
+      "nodes": 78,
+      "nodes_with_cluster_data": 39
+     },
+     "rank": 8,
+     "seconds": 0.04,
+     "url_sha256_16": "0370fe5c0dcecb48"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 11,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 669
+      },
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 1660,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8579
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 10296
+      }
+     },
+     "chars": 11756,
+     "graph_after": {
+      "chunks_stored": 19,
+      "communities_in_report_store": 8,
+      "connected_components": 7,
+      "documents_stored": 9,
+      "edges": 92,
+      "largest_component_nodes": 29,
+      "nodes": 89,
+      "nodes_with_cluster_data": 39
+     },
+     "rank": 9,
+     "seconds": 0.03,
+     "url_sha256_16": "037f37fc8794dabc"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 13,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 699
+      },
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 1731,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8194
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 9982
+      }
+     },
+     "chars": 10120,
+     "graph_after": {
+      "chunks_stored": 22,
+      "communities_in_report_store": 8,
+      "connected_components": 8,
+      "documents_stored": 10,
+      "edges": 106,
+      "largest_component_nodes": 29,
+      "nodes": 102,
+      "nodes_with_cluster_data": 39
+     },
+     "rank": 10,
+     "seconds": 0.04,
+     "url_sha256_16": "038eabdb237efe3f"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 10,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 477
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1162,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5898
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 7098
+      }
+     },
+     "chars": 8275,
+     "graph_after": {
+      "chunks_stored": 24,
+      "communities_in_report_store": 8,
+      "connected_components": 9,
+      "documents_stored": 11,
+      "edges": 116,
+      "largest_component_nodes": 29,
+      "nodes": 112,
+      "nodes_with_cluster_data": 39
+     },
+     "rank": 11,
+     "seconds": 0.03,
+     "url_sha256_16": "03a4ece0fb5cb7f9"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 11,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 491
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1183,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5033
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6254
+      }
+     },
+     "chars": 5601,
+     "graph_after": {
+      "chunks_stored": 26,
+      "communities_in_report_store": 8,
+      "connected_components": 10,
+      "documents_stored": 12,
+      "edges": 126,
+      "largest_component_nodes": 29,
+      "nodes": 123,
+      "nodes_with_cluster_data": 39
+     },
+     "rank": 12,
+     "seconds": 0.04,
+     "url_sha256_16": "03c3ac59773da075"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 5,
+       "completion_tokens": 1020,
+       "models": {
+        "gpt-4o": 5
+       },
+       "prompt_tokens": 13067
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 12,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 560
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1241,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5431
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6710
+      }
+     },
+     "chars": 6359,
+     "graph_after": {
+      "chunks_stored": 28,
+      "communities_in_report_store": 6,
+      "connected_components": 11,
+      "documents_stored": 13,
+      "edges": 136,
+      "largest_component_nodes": 34,
+      "nodes": 134,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 13,
+     "seconds": 0.04,
+     "url_sha256_16": "0476f8f8472ce475"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 11,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 453
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1102,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5942
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 7082
+      }
+     },
+     "chars": 9754,
+     "graph_after": {
+      "chunks_stored": 30,
+      "communities_in_report_store": 6,
+      "connected_components": 12,
+      "documents_stored": 14,
+      "edges": 146,
+      "largest_component_nodes": 34,
+      "nodes": 145,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 14,
+     "seconds": 0.03,
+     "url_sha256_16": "04ccbc6009a196f8"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 16,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 716
+      },
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 1721,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8984
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 10762
+      }
+     },
+     "chars": 13179,
+     "graph_after": {
+      "chunks_stored": 33,
+      "communities_in_report_store": 6,
+      "connected_components": 13,
+      "documents_stored": 15,
+      "edges": 161,
+      "largest_component_nodes": 34,
+      "nodes": 161,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 15,
+     "seconds": 0.05,
+     "url_sha256_16": "04fd1826153b3083"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 2,
+       "completion_tokens": 408,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5782
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 22,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 1241
+      },
+      "entity_extraction": {
+       "calls": 5,
+       "completion_tokens": 2915,
+       "models": {
+        "gpt-4o": 5
+       },
+       "prompt_tokens": 15178
+      },
+      "gleaning_continue": {
+       "calls": 5,
+       "completion_tokens": 25,
+       "models": {
+        "gpt-4o": 5
+       },
+       "prompt_tokens": 18188
+      }
+     },
+     "chars": 22011,
+     "graph_after": {
+      "chunks_stored": 38,
+      "communities_in_report_store": 6,
+      "connected_components": 13,
+      "documents_stored": 16,
+      "edges": 186,
+      "largest_component_nodes": 34,
+      "nodes": 182,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 16,
+     "seconds": 0.07,
+     "url_sha256_16": "0501457d04bf9f55"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 17,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 1010
+      },
+      "entity_extraction": {
+       "calls": 4,
+       "completion_tokens": 2451,
+       "models": {
+        "gpt-4o": 4
+       },
+       "prompt_tokens": 11728
+      },
+      "gleaning_continue": {
+       "calls": 4,
+       "completion_tokens": 20,
+       "models": {
+        "gpt-4o": 4
+       },
+       "prompt_tokens": 14255
+      }
+     },
+     "chars": 16351,
+     "graph_after": {
+      "chunks_stored": 42,
+      "communities_in_report_store": 6,
+      "connected_components": 14,
+      "documents_stored": 17,
+      "edges": 204,
+      "largest_component_nodes": 34,
+      "nodes": 199,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 17,
+     "seconds": 0.05,
+     "url_sha256_16": "054b706b1f216197"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 9,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 489
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1178,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5971
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 7187
+      }
+     },
+     "chars": 7683,
+     "graph_after": {
+      "chunks_stored": 44,
+      "communities_in_report_store": 6,
+      "connected_components": 15,
+      "documents_stored": 18,
+      "edges": 213,
+      "largest_component_nodes": 34,
+      "nodes": 208,
+      "nodes_with_cluster_data": 44
+     },
+     "rank": 18,
+     "seconds": 0.03,
+     "url_sha256_16": "0559abf992d9f2f2"
+    },
+    {
+     "by_kind": {
+      "community_report": {
+       "calls": 26,
+       "completion_tokens": 5304,
+       "models": {
+        "gpt-4o": 26
+       },
+       "prompt_tokens": 61087
+      },
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 12,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 958
+      },
+      "entity_extraction": {
+       "calls": 3,
+       "completion_tokens": 1631,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 8664
+      },
+      "gleaning_continue": {
+       "calls": 3,
+       "completion_tokens": 15,
+       "models": {
+        "gpt-4o": 3
+       },
+       "prompt_tokens": 10352
+      }
+     },
+     "chars": 12684,
+     "graph_after": {
+      "chunks_stored": 47,
+      "communities_in_report_store": 29,
+      "connected_components": 11,
+      "documents_stored": 19,
+      "edges": 225,
+      "largest_component_nodes": 110,
+      "nodes": 214,
+      "nodes_with_cluster_data": 110
+     },
+     "rank": 19,
+     "seconds": 0.08,
+     "url_sha256_16": "05cd6a49a650e655"
+    },
+    {
+     "by_kind": {
+      "embedding": {
+       "calls": 1,
+       "completion_tokens": 0,
+       "inputs": 10,
+       "models": {
+        "text-embedding-3-small": 1
+       },
+       "prompt_tokens": 540
+      },
+      "entity_extraction": {
+       "calls": 2,
+       "completion_tokens": 1269,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 5598
+      },
+      "gleaning_continue": {
+       "calls": 2,
+       "completion_tokens": 10,
+       "models": {
+        "gpt-4o": 2
+       },
+       "prompt_tokens": 6905
+      }
+     },
+     "chars": 8038,
+     "graph_after": {
+      "chunks_stored": 49,
+      "communities_in_report_store": 29,
+      "connected_components": 12,
+      "documents_stored": 20,
+      "edges": 234,
+      "largest_component_nodes": 110,
+      "nodes": 224,
+      "nodes_with_cluster_data": 110
+     },
+     "rank": 20,
+     "seconds": 0.04,
+     "url_sha256_16": "06bc8ec253404962"
+    }
+   ],
+   "prompt_multiset_sha256": "8c27df8113a951892013a6cb2bdf8027b8d8de2c62c7da6cd1ee4b2fa3887cfa",
+   "prompt_template_tokens": {
+    "community_report_empty": 1526,
+    "description_summary_empty": 117,
+    "entity_extraction_empty_chunk": 1933,
+    "gleaning_continue_prompt": 19,
+    "gleaning_loop_check_prompt": 26
+   },
+   "request_params_by_kind": {
+    "community_report": {
+     "messages": [
+      "<text>"
+     ],
+     "model": [
+      "\"gpt-4o\""
+     ],
+     "response_format": [
+      "{\"type\": \"json_object\"}"
+     ]
+    },
+    "embedding": {
+     "encoding_format": [
+      "\"float\""
+     ],
+     "input": [
+      "<text>"
+     ],
+     "model": [
+      "\"text-embedding-3-small\""
+     ]
+    },
+    "entity_extraction": {
+     "messages": [
+      "<text>"
+     ],
+     "model": [
+      "\"gpt-4o\""
+     ]
+    },
+    "gleaning_continue": {
+     "messages": [
+      "<text>"
+     ],
+     "model": [
+      "\"gpt-4o\""
+     ]
+    }
+   },
+   "runtime": {
+    "machine": "arm64",
+    "nano_graphrag_version": "0.0.8.2",
+    "packages": {
+     "graspologic": "3.4.4",
+     "httpx": "0.28.1",
+     "nano-vectordb": "0.0.4.3",
+     "networkx": "3.7",
+     "numpy": "1.26.4",
+     "openai": "3.42.1",
+     "tenacity": "9.2.1",
+     "tiktoken": "0.14.0"
+    },
+    "python": "3.12.16"
+   },
+   "scenario": "perdoc-B-repeat",
+   "shape": "B",
+   "started_utc": "20261102 10:45:04 UTC",
+   "stub_tokenizer": "tiktoken:cl100k_base",
+   "wall_seconds": 2.5
+  }
+ },
+ "secondary_builds": {
+  "head-acb35c0": {
+   "batch-B": {
+    "answers_produced_by_responder": {
+     "entities_in_answers": 294,
+     "extraction_answers": 49,
+     "relations_in_answers": 245
+    },
+    "checkpoints": {
+     "20": {
+      "by_kind": {
+       "community_report": {
+        "calls": 29,
+        "completion_tokens": 5916,
+        "models": {
+         "gpt-4o": 29
+        },
+        "prompt_tokens": 67162
+       },
+       "embedding": {
+        "calls": 7,
+        "completion_tokens": 0,
+        "inputs": 224,
+        "models": {
+         "text-embedding-3-small": 7
+        },
+        "prompt_tokens": 11695
+       },
+       "entity_extraction": {
+        "calls": 49,
+        "completion_tokens": 28467,
+        "models": {
+         "gpt-4o": 49
+        },
+        "prompt_tokens": 139626
+       },
+       "gleaning_continue": {
+        "calls": 49,
+        "completion_tokens": 245,
+        "models": {
+         "gpt-4o": 49
+        },
+        "prompt_tokens": 169024
+       }
+      },
+      "graph": {
+       "chunks_stored": 49,
+       "communities_in_report_store": 29,
+       "connected_components": 12,
+       "documents_stored": 20,
+       "edges": 234,
+       "largest_component_nodes": 110,
+       "nodes": 224,
+       "nodes_with_cluster_data": 110
+      },
+      "n_docs": 20,
+      "stub_summary": {
+       "chat_calls": 127,
+       "chat_completion_tokens": 34628,
+       "chat_prompt_tokens": 375812,
+       "embedding_calls": 7,
+       "embedding_inputs": 224,
+       "embedding_tokens": 11695,
+       "other_calls": 0,
+       "tokenizer": "tiktoken:cl100k_base"
+      }
+     }
+    },
+    "child_wall_seconds_incl_imports": 3.5,
+    "chunking_arithmetic": {
+     "chunks_per_document": [
+      2,
+      2,
+      1,
+      2,
+      2,
+      2,
+      3,
+      2,
+      3,
+      3,
+      2,
+      2,
+      2,
+      2,
+      3,
+      5,
+      4,
+      2,
+      3,
+      2
+     ],
+     "step_tokens": 1100,
+     "tokenizer": "o200k_base",
+     "tokens_per_document": [
+      1355,
+      1203,
+      1066,
+      1470,
+      1844,
+      1272,
+      3046,
+      1340,
+      2577,
+      2239,
+      1909,
+      1132,
+      1436,
+      1958,
+      2957,
+      5021,
+      3698,
+      1981,
+      2661,
+      1621
+     ],
+     "total_chunks": 49,
+     "total_document_tokens": 41786
+    },
+    "defaults_observed": {
+     "best_model_max_async": 16,
+     "cheap_model_max_async": 16,
+     "chunk_overlap_token_size": 100,
+     "chunk_token_size": 1200,
+     "embedding_batch_num": 32,
+     "embedding_func_max_async": 16,
+     "enable_llm_cache": true,
+     "enable_local": true,
+     "enable_naive_rag": false,
+     "entity_extract_max_gleaning": 1,
+     "entity_summary_to_max_tokens": 500,
+     "graph_cluster_algorithm": "leiden",
+     "max_graph_cluster_size": 10,
+     "tiktoken_model_name": "gpt-4o"
+    },
+    "final": {
+     "by_kind": {
+      "community_report": {
+       "calls": 29,
+       "completion_tokens": 5916,
+       "models": {
+        "gpt-4o": 29
+       },
+       "prompt_tokens": 67162
+      },
+      "embedding": {
+       "calls": 7,
+       "completion_tokens": 0,
+       "inputs": 224,
+       "models": {
+        "text-embedding-3-small": 7
+       },
+       "prompt_tokens": 11695
+      },
+      "entity_extraction": {
+       "calls": 49,
+       "completion_tokens": 28467,
+       "models": {
+        "gpt-4o": 49
+       },
+       "prompt_tokens": 139626
+      },
+      "gleaning_continue": {
+       "calls": 49,
+       "completion_tokens": 245,
+       "models": {
+        "gpt-4o": 49
+       },
+       "prompt_tokens": 169024
+      }
+     },
+     "graph": {
+      "chunks_stored": 49,
+      "communities_in_report_store": 29,
+      "connected_components": 12,
+      "documents_stored": 20,
+      "edges": 234,
+      "largest_component_nodes": 110,
+      "nodes": 224,
+      "nodes_with_cluster_data": 110
+     },
+     "n_docs": 20,
+     "stub_summary": {
+      "chat_calls": 127,
+      "chat_completion_tokens": 34628,
+      "chat_prompt_tokens": 375812,
+      "embedding_calls": 7,
+      "embedding_inputs": 224,
+      "embedding_tokens": 11695,
+      "other_calls": 0,
+      "tokenizer": "tiktoken:cl100k_base"
+     }
+    },
+    "llm_cache": "on",
+    "mode": "batch",
+    "network_guard": {
+     "connect_attempts": [],
+     "dns_lookups_non_loopback": []
+    },
+    "openai_sdk_defaults": {
+     "max_retries": 2,
+     "timeout_seconds": "Timeout(connect=5.0, read=600, write=600, pool=600)"
+    },
+    "other_calls": 0,
+    "per_document": [
+     {
+      "all_documents_in_one_insert": true,
+      "seconds": 1.76
+     }
+    ],
+    "prompt_multiset_sha256": "9a7e4f73287734cf32b8cc23f27e139bc000c19467f5559055d0c0e22705a43c",
+    "prompt_template_tokens": {
+     "community_report_empty": 1526,
+     "description_summary_empty": 117,
+     "entity_extraction_empty_chunk": 1933,
+     "gleaning_continue_prompt": 19,
+     "gleaning_loop_check_prompt": 26
+    },
+    "request_params_by_kind": {
+     "community_report": {
+      "messages": [
+       "<text>"
+      ],
+      "model": [
+       "\"gpt-4o\""
+      ],
+      "response_format": [
+       "{\"type\": \"json_object\"}"
+      ]
+     },
+     "embedding": {
+      "encoding_format": [
+       "\"float\""
+      ],
+      "input": [
+       "<text>"
+      ],
+      "model": [
+       "\"text-embedding-3-small\""
+      ]
+     },
+     "entity_extraction": {
+      "messages": [
+       "<text>"
+      ],
+      "model": [
+       "\"gpt-4o\""
+      ]
+     },
+     "gleaning_continue": {
+      "messages": [
+       "<text>"
+      ],
+      "model": [
+       "\"gpt-4o\""
+      ]
+     }
+    },
+    "runtime": {
+     "machine": "arm64",
+     "nano_graphrag_version": "0.0.8.2",
+     "packages": {
+      "graspologic": "3.4.4",
+      "httpx": "0.28.1",
+      "nano-vectordb": "0.0.4.3",
+      "networkx": "3.7",
+      "numpy": "1.26.4",
+      "openai": "3.42.1",
+      "tenacity": "9.2.1",
+      "tiktoken": "0.14.0"
+     },
+     "python": "3.12.16"
+    },
+    "scenario": "batch-B",
+    "shape": "B",
+    "started_utc": "20261102 10:45:18 UTC",
+    "stub_tokenizer": "tiktoken:cl100k_base",
+    "wall_seconds": 2.2
+   },
+   "perdoc-B": {
+    "answers_produced_by_responder": {
+     "entities_in_answers": 294,
+     "extraction_answers": 49,
+     "relations_in_answers": 245
+    },
+    "checkpoints": {
+     "1": {
+      "by_kind": {
+       "community_report": {
+        "calls": 3,
+        "completion_tokens": 612,
+        "models": {
+         "gpt-4o": 3
+        },
+        "prompt_tokens": 5994
+       },
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 10,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 494
+       },
+       "entity_extraction": {
+        "calls": 2,
+        "completion_tokens": 1188,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 5355
+       },
+       "gleaning_continue": {
+        "calls": 2,
+        "completion_tokens": 10,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 6581
+       }
+      },
+      "graph": {
+       "chunks_stored": 2,
+       "communities_in_report_store": 3,
+       "connected_components": 1,
+       "documents_stored": 1,
+       "edges": 10,
+       "largest_component_nodes": 10,
+       "nodes": 10,
+       "nodes_with_cluster_data": 10
+      },
+      "n_docs": 1,
+      "stub_summary": {
+       "chat_calls": 7,
+       "chat_completion_tokens": 1810,
+       "chat_prompt_tokens": 17930,
+       "embedding_calls": 1,
+       "embedding_inputs": 10,
+       "embedding_tokens": 494,
+       "other_calls": 0,
+       "tokenizer": "tiktoken:cl100k_base"
+      }
+     },
+     "20": {
+      "by_kind": {
+       "community_report": {
+        "calls": 48,
+        "completion_tokens": 9792,
+        "models": {
+         "gpt-4o": 48
+        },
+        "prompt_tokens": 112502
+       },
+       "embedding": {
+        "calls": 20,
+        "completion_tokens": 0,
+        "inputs": 234,
+        "models": {
+         "text-embedding-3-small": 20
+        },
+        "prompt_tokens": 12202
+       },
+       "entity_extraction": {
+        "calls": 49,
+        "completion_tokens": 28467,
+        "models": {
+         "gpt-4o": 49
+        },
+        "prompt_tokens": 139626
+       },
+       "gleaning_continue": {
+        "calls": 49,
+        "completion_tokens": 245,
+        "models": {
+         "gpt-4o": 49
+        },
+        "prompt_tokens": 169024
+       }
+      },
+      "graph": {
+       "chunks_stored": 49,
+       "communities_in_report_store": 29,
+       "connected_components": 12,
+       "documents_stored": 20,
+       "edges": 234,
+       "largest_component_nodes": 110,
+       "nodes": 224,
+       "nodes_with_cluster_data": 110
+      },
+      "n_docs": 20,
+      "stub_summary": {
+       "chat_calls": 146,
+       "chat_completion_tokens": 38504,
+       "chat_prompt_tokens": 421152,
+       "embedding_calls": 20,
+       "embedding_inputs": 234,
+       "embedding_tokens": 12202,
+       "other_calls": 0,
+       "tokenizer": "tiktoken:cl100k_base"
+      }
+     },
+     "5": {
+      "by_kind": {
+       "community_report": {
+        "calls": 3,
+        "completion_tokens": 612,
+        "models": {
+         "gpt-4o": 3
+        },
+        "prompt_tokens": 5994
+       },
+       "embedding": {
+        "calls": 5,
+        "completion_tokens": 0,
+        "inputs": 43,
+        "models": {
+         "text-embedding-3-small": 5
+        },
+        "prompt_tokens": 2137
+       },
+       "entity_extraction": {
+        "calls": 9,
+        "completion_tokens": 5201,
+        "models": {
+         "gpt-4o": 9
+        },
+        "prompt_tokens": 24791
+       },
+       "gleaning_continue": {
+        "calls": 9,
+        "completion_tokens": 45,
+        "models": {
+         "gpt-4o": 9
+        },
+        "prompt_tokens": 30163
+       }
+      },
+      "graph": {
+       "chunks_stored": 9,
+       "communities_in_report_store": 3,
+       "connected_components": 5,
+       "documents_stored": 5,
+       "edges": 44,
+       "largest_component_nodes": 10,
+       "nodes": 43,
+       "nodes_with_cluster_data": 10
+      },
+      "n_docs": 5,
+      "stub_summary": {
+       "chat_calls": 21,
+       "chat_completion_tokens": 5858,
+       "chat_prompt_tokens": 60948,
+       "embedding_calls": 5,
+       "embedding_inputs": 43,
+       "embedding_tokens": 2137,
+       "other_calls": 0,
+       "tokenizer": "tiktoken:cl100k_base"
+      }
+     }
+    },
+    "child_wall_seconds_incl_imports": 3.7,
+    "chunking_arithmetic": {
+     "chunks_per_document": [
+      2,
+      2,
+      1,
+      2,
+      2,
+      2,
+      3,
+      2,
+      3,
+      3,
+      2,
+      2,
+      2,
+      2,
+      3,
+      5,
+      4,
+      2,
+      3,
+      2
+     ],
+     "step_tokens": 1100,
+     "tokenizer": "o200k_base",
+     "tokens_per_document": [
+      1355,
+      1203,
+      1066,
+      1470,
+      1844,
+      1272,
+      3046,
+      1340,
+      2577,
+      2239,
+      1909,
+      1132,
+      1436,
+      1958,
+      2957,
+      5021,
+      3698,
+      1981,
+      2661,
+      1621
+     ],
+     "total_chunks": 49,
+     "total_document_tokens": 41786
+    },
+    "defaults_observed": {
+     "best_model_max_async": 16,
+     "cheap_model_max_async": 16,
+     "chunk_overlap_token_size": 100,
+     "chunk_token_size": 1200,
+     "embedding_batch_num": 32,
+     "embedding_func_max_async": 16,
+     "enable_llm_cache": true,
+     "enable_local": true,
+     "enable_naive_rag": false,
+     "entity_extract_max_gleaning": 1,
+     "entity_summary_to_max_tokens": 500,
+     "graph_cluster_algorithm": "leiden",
+     "max_graph_cluster_size": 10,
+     "tiktoken_model_name": "gpt-4o"
+    },
+    "final": {
+     "by_kind": {
+      "community_report": {
+       "calls": 48,
+       "completion_tokens": 9792,
+       "models": {
+        "gpt-4o": 48
+       },
+       "prompt_tokens": 112502
+      },
+      "embedding": {
+       "calls": 20,
+       "completion_tokens": 0,
+       "inputs": 234,
+       "models": {
+        "text-embedding-3-small": 20
+       },
+       "prompt_tokens": 12202
+      },
+      "entity_extraction": {
+       "calls": 49,
+       "completion_tokens": 28467,
+       "models": {
+        "gpt-4o": 49
+       },
+       "prompt_tokens": 139626
+      },
+      "gleaning_continue": {
+       "calls": 49,
+       "completion_tokens": 245,
+       "models": {
+        "gpt-4o": 49
+       },
+       "prompt_tokens": 169024
+      }
+     },
+     "graph": {
+      "chunks_stored": 49,
+      "communities_in_report_store": 29,
+      "connected_components": 12,
+      "documents_stored": 20,
+      "edges": 234,
+      "largest_component_nodes": 110,
+      "nodes": 224,
+      "nodes_with_cluster_data": 110
+     },
+     "n_docs": 20,
+     "stub_summary": {
+      "chat_calls": 146,
+      "chat_completion_tokens": 38504,
+      "chat_prompt_tokens": 421152,
+      "embedding_calls": 20,
+      "embedding_inputs": 234,
+      "embedding_tokens": 12202,
+      "other_calls": 0,
+      "tokenizer": "tiktoken:cl100k_base"
+     }
+    },
+    "llm_cache": "on",
+    "mode": "perdoc",
+    "network_guard": {
+     "connect_attempts": [],
+     "dns_lookups_non_loopback": []
+    },
+    "openai_sdk_defaults": {
+     "max_retries": 2,
+     "timeout_seconds": "Timeout(connect=5.0, read=600, write=600, pool=600)"
+    },
+    "other_calls": 0,
+    "per_document": [
+     {
+      "by_kind": {
+       "community_report": {
+        "calls": 3,
+        "completion_tokens": 612,
+        "models": {
+         "gpt-4o": 3
+        },
+        "prompt_tokens": 5994
+       },
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 10,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 494
+       },
+       "entity_extraction": {
+        "calls": 2,
+        "completion_tokens": 1188,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 5355
+       },
+       "gleaning_continue": {
+        "calls": 2,
+        "completion_tokens": 10,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 6581
+       }
+      },
+      "chars": 6341,
+      "graph_after": {
+       "chunks_stored": 2,
+       "communities_in_report_store": 3,
+       "connected_components": 1,
+       "documents_stored": 1,
+       "edges": 10,
+       "largest_component_nodes": 10,
+       "nodes": 10,
+       "nodes_with_cluster_data": 10
+      },
+      "rank": 1,
+      "seconds": 1.16,
+      "url_sha256_16": "0068586b43cf2f56"
+     },
+     {
+      "by_kind": {
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 9,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 478
+       },
+       "entity_extraction": {
+        "calls": 2,
+        "completion_tokens": 1169,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 5173
+       },
+       "gleaning_continue": {
+        "calls": 2,
+        "completion_tokens": 10,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 6380
+       }
+      },
+      "chars": 6005,
+      "graph_after": {
+       "chunks_stored": 4,
+       "communities_in_report_store": 3,
+       "connected_components": 2,
+       "documents_stored": 2,
+       "edges": 20,
+       "largest_component_nodes": 10,
+       "nodes": 19,
+       "nodes_with_cluster_data": 10
+      },
+      "rank": 2,
+      "seconds": 0.02,
+      "url_sha256_16": "01648ca159300692"
+     },
+     {
+      "by_kind": {
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 6,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 234
+       },
+       "entity_extraction": {
+        "calls": 1,
+        "completion_tokens": 562,
+        "models": {
+         "gpt-4o": 1
+        },
+        "prompt_tokens": 3008
+       },
+       "gleaning_continue": {
+        "calls": 1,
+        "completion_tokens": 5,
+        "models": {
+         "gpt-4o": 1
+        },
+        "prompt_tokens": 3589
+       }
+      },
+      "chars": 5112,
+      "graph_after": {
+       "chunks_stored": 5,
+       "communities_in_report_store": 3,
+       "connected_components": 3,
+       "documents_stored": 3,
+       "edges": 25,
+       "largest_component_nodes": 10,
+       "nodes": 25,
+       "nodes_with_cluster_data": 10
+      },
+      "rank": 3,
+      "seconds": 0.02,
+      "url_sha256_16": "019b1ddf6f78fa7e"
+     },
+     {
+      "by_kind": {
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 9,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 494
+       },
+       "entity_extraction": {
+        "calls": 2,
+        "completion_tokens": 1202,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 5459
+       },
+       "gleaning_continue": {
+        "calls": 2,
+        "completion_tokens": 10,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 6699
+       }
+      },
+      "chars": 6374,
+      "graph_after": {
+       "chunks_stored": 7,
+       "communities_in_report_store": 3,
+       "connected_components": 4,
+       "documents_stored": 4,
+       "edges": 35,
+       "largest_component_nodes": 10,
+       "nodes": 34,
+       "nodes_with_cluster_data": 10
+      },
+      "rank": 4,
+      "seconds": 0.02,
+      "url_sha256_16": "024c021da3256374"
+     },
+     {
+      "by_kind": {
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 9,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 437
+       },
+       "entity_extraction": {
+        "calls": 2,
+        "completion_tokens": 1080,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 5796
+       },
+       "gleaning_continue": {
+        "calls": 2,
+        "completion_tokens": 10,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 6914
+       }
+      },
+      "chars": 8626,
+      "graph_after": {
+       "chunks_stored": 9,
+       "communities_in_report_store": 3,
+       "connected_components": 5,
+       "documents_stored": 5,
+       "edges": 44,
+       "largest_component_nodes": 10,
+       "nodes": 43,
+       "nodes_with_cluster_data": 10
+      },
+      "rank": 5,
+      "seconds": 0.02,
+      "url_sha256_16": "02e889122ba12a26"
+     },
+     {
+      "by_kind": {
+       "community_report": {
+        "calls": 6,
+        "completion_tokens": 1224,
+        "models": {
+         "gpt-4o": 6
+        },
+        "prompt_tokens": 13251
+       },
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 11,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 526
+       },
+       "entity_extraction": {
+        "calls": 2,
+        "completion_tokens": 1105,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 5251
+       },
+       "gleaning_continue": {
+        "calls": 2,
+        "completion_tokens": 10,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 6394
+       }
+      },
+      "chars": 6083,
+      "graph_after": {
+       "chunks_stored": 11,
+       "communities_in_report_store": 6,
+       "connected_components": 5,
+       "documents_stored": 6,
+       "edges": 54,
+       "largest_component_nodes": 19,
+       "nodes": 53,
+       "nodes_with_cluster_data": 29
+      },
+      "rank": 6,
+      "seconds": 0.03,
+      "url_sha256_16": "02ecfbdc00c2bc17"
+     },
+     {
+      "by_kind": {
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 15,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 678
+       },
+       "entity_extraction": {
+        "calls": 3,
+        "completion_tokens": 1665,
+        "models": {
+         "gpt-4o": 3
+        },
+        "prompt_tokens": 9070
+       },
+       "gleaning_continue": {
+        "calls": 3,
+        "completion_tokens": 15,
+        "models": {
+         "gpt-4o": 3
+        },
+        "prompt_tokens": 10792
+       }
+      },
+      "chars": 14982,
+      "graph_after": {
+       "chunks_stored": 14,
+       "communities_in_report_store": 6,
+       "connected_components": 6,
+       "documents_stored": 7,
+       "edges": 69,
+       "largest_component_nodes": 19,
+       "nodes": 68,
+       "nodes_with_cluster_data": 29
+      },
+      "rank": 7,
+      "seconds": 0.04,
+      "url_sha256_16": "0343487a677b62d3"
+     },
+     {
+      "by_kind": {
+       "community_report": {
+        "calls": 6,
+        "completion_tokens": 1224,
+        "models": {
+         "gpt-4o": 6
+        },
+        "prompt_tokens": 13321
+       },
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 11,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 558
+       },
+       "entity_extraction": {
+        "calls": 2,
+        "completion_tokens": 1252,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 5314
+       },
+       "gleaning_continue": {
+        "calls": 2,
+        "completion_tokens": 10,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 6604
+       }
+      },
+      "chars": 6237,
+      "graph_after": {
+       "chunks_stored": 16,
+       "communities_in_report_store": 8,
+       "connected_components": 6,
+       "documents_stored": 8,
+       "edges": 79,
+       "largest_component_nodes": 29,
+       "nodes": 78,
+       "nodes_with_cluster_data": 39
+      },
+      "rank": 8,
+      "seconds": 0.04,
+      "url_sha256_16": "0370fe5c0dcecb48"
+     },
+     {
+      "by_kind": {
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 11,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 669
+       },
+       "entity_extraction": {
+        "calls": 3,
+        "completion_tokens": 1660,
+        "models": {
+         "gpt-4o": 3
+        },
+        "prompt_tokens": 8579
+       },
+       "gleaning_continue": {
+        "calls": 3,
+        "completion_tokens": 15,
+        "models": {
+         "gpt-4o": 3
+        },
+        "prompt_tokens": 10296
+       }
+      },
+      "chars": 11756,
+      "graph_after": {
+       "chunks_stored": 19,
+       "communities_in_report_store": 8,
+       "connected_components": 7,
+       "documents_stored": 9,
+       "edges": 92,
+       "largest_component_nodes": 29,
+       "nodes": 89,
+       "nodes_with_cluster_data": 39
+      },
+      "rank": 9,
+      "seconds": 0.03,
+      "url_sha256_16": "037f37fc8794dabc"
+     },
+     {
+      "by_kind": {
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 13,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 699
+       },
+       "entity_extraction": {
+        "calls": 3,
+        "completion_tokens": 1731,
+        "models": {
+         "gpt-4o": 3
+        },
+        "prompt_tokens": 8194
+       },
+       "gleaning_continue": {
+        "calls": 3,
+        "completion_tokens": 15,
+        "models": {
+         "gpt-4o": 3
+        },
+        "prompt_tokens": 9982
+       }
+      },
+      "chars": 10120,
+      "graph_after": {
+       "chunks_stored": 22,
+       "communities_in_report_store": 8,
+       "connected_components": 8,
+       "documents_stored": 10,
+       "edges": 106,
+       "largest_component_nodes": 29,
+       "nodes": 102,
+       "nodes_with_cluster_data": 39
+      },
+      "rank": 10,
+      "seconds": 0.04,
+      "url_sha256_16": "038eabdb237efe3f"
+     },
+     {
+      "by_kind": {
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 10,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 477
+       },
+       "entity_extraction": {
+        "calls": 2,
+        "completion_tokens": 1162,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 5898
+       },
+       "gleaning_continue": {
+        "calls": 2,
+        "completion_tokens": 10,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 7098
+       }
+      },
+      "chars": 8275,
+      "graph_after": {
+       "chunks_stored": 24,
+       "communities_in_report_store": 8,
+       "connected_components": 9,
+       "documents_stored": 11,
+       "edges": 116,
+       "largest_component_nodes": 29,
+       "nodes": 112,
+       "nodes_with_cluster_data": 39
+      },
+      "rank": 11,
+      "seconds": 0.03,
+      "url_sha256_16": "03a4ece0fb5cb7f9"
+     },
+     {
+      "by_kind": {
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 11,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 491
+       },
+       "entity_extraction": {
+        "calls": 2,
+        "completion_tokens": 1183,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 5033
+       },
+       "gleaning_continue": {
+        "calls": 2,
+        "completion_tokens": 10,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 6254
+       }
+      },
+      "chars": 5601,
+      "graph_after": {
+       "chunks_stored": 26,
+       "communities_in_report_store": 8,
+       "connected_components": 10,
+       "documents_stored": 12,
+       "edges": 126,
+       "largest_component_nodes": 29,
+       "nodes": 123,
+       "nodes_with_cluster_data": 39
+      },
+      "rank": 12,
+      "seconds": 0.03,
+      "url_sha256_16": "03c3ac59773da075"
+     },
+     {
+      "by_kind": {
+       "community_report": {
+        "calls": 5,
+        "completion_tokens": 1020,
+        "models": {
+         "gpt-4o": 5
+        },
+        "prompt_tokens": 13067
+       },
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 12,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 560
+       },
+       "entity_extraction": {
+        "calls": 2,
+        "completion_tokens": 1241,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 5431
+       },
+       "gleaning_continue": {
+        "calls": 2,
+        "completion_tokens": 10,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 6710
+       }
+      },
+      "chars": 6359,
+      "graph_after": {
+       "chunks_stored": 28,
+       "communities_in_report_store": 6,
+       "connected_components": 11,
+       "documents_stored": 13,
+       "edges": 136,
+       "largest_component_nodes": 34,
+       "nodes": 134,
+       "nodes_with_cluster_data": 44
+      },
+      "rank": 13,
+      "seconds": 0.04,
+      "url_sha256_16": "0476f8f8472ce475"
+     },
+     {
+      "by_kind": {
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 11,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 453
+       },
+       "entity_extraction": {
+        "calls": 2,
+        "completion_tokens": 1102,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 5942
+       },
+       "gleaning_continue": {
+        "calls": 2,
+        "completion_tokens": 10,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 7082
+       }
+      },
+      "chars": 9754,
+      "graph_after": {
+       "chunks_stored": 30,
+       "communities_in_report_store": 6,
+       "connected_components": 12,
+       "documents_stored": 14,
+       "edges": 146,
+       "largest_component_nodes": 34,
+       "nodes": 145,
+       "nodes_with_cluster_data": 44
+      },
+      "rank": 14,
+      "seconds": 0.03,
+      "url_sha256_16": "04ccbc6009a196f8"
+     },
+     {
+      "by_kind": {
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 16,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 716
+       },
+       "entity_extraction": {
+        "calls": 3,
+        "completion_tokens": 1721,
+        "models": {
+         "gpt-4o": 3
+        },
+        "prompt_tokens": 8984
+       },
+       "gleaning_continue": {
+        "calls": 3,
+        "completion_tokens": 15,
+        "models": {
+         "gpt-4o": 3
+        },
+        "prompt_tokens": 10762
+       }
+      },
+      "chars": 13179,
+      "graph_after": {
+       "chunks_stored": 33,
+       "communities_in_report_store": 6,
+       "connected_components": 13,
+       "documents_stored": 15,
+       "edges": 161,
+       "largest_component_nodes": 34,
+       "nodes": 161,
+       "nodes_with_cluster_data": 44
+      },
+      "rank": 15,
+      "seconds": 0.04,
+      "url_sha256_16": "04fd1826153b3083"
+     },
+     {
+      "by_kind": {
+       "community_report": {
+        "calls": 2,
+        "completion_tokens": 408,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 5782
+       },
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 22,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 1241
+       },
+       "entity_extraction": {
+        "calls": 5,
+        "completion_tokens": 2915,
+        "models": {
+         "gpt-4o": 5
+        },
+        "prompt_tokens": 15178
+       },
+       "gleaning_continue": {
+        "calls": 5,
+        "completion_tokens": 25,
+        "models": {
+         "gpt-4o": 5
+        },
+        "prompt_tokens": 18188
+       }
+      },
+      "chars": 22011,
+      "graph_after": {
+       "chunks_stored": 38,
+       "communities_in_report_store": 6,
+       "connected_components": 13,
+       "documents_stored": 16,
+       "edges": 186,
+       "largest_component_nodes": 34,
+       "nodes": 182,
+       "nodes_with_cluster_data": 44
+      },
+      "rank": 16,
+      "seconds": 0.06,
+      "url_sha256_16": "0501457d04bf9f55"
+     },
+     {
+      "by_kind": {
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 17,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 1010
+       },
+       "entity_extraction": {
+        "calls": 4,
+        "completion_tokens": 2451,
+        "models": {
+         "gpt-4o": 4
+        },
+        "prompt_tokens": 11728
+       },
+       "gleaning_continue": {
+        "calls": 4,
+        "completion_tokens": 20,
+        "models": {
+         "gpt-4o": 4
+        },
+        "prompt_tokens": 14255
+       }
+      },
+      "chars": 16351,
+      "graph_after": {
+       "chunks_stored": 42,
+       "communities_in_report_store": 6,
+       "connected_components": 14,
+       "documents_stored": 17,
+       "edges": 204,
+       "largest_component_nodes": 34,
+       "nodes": 199,
+       "nodes_with_cluster_data": 44
+      },
+      "rank": 17,
+      "seconds": 0.05,
+      "url_sha256_16": "054b706b1f216197"
+     },
+     {
+      "by_kind": {
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 9,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 489
+       },
+       "entity_extraction": {
+        "calls": 2,
+        "completion_tokens": 1178,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 5971
+       },
+       "gleaning_continue": {
+        "calls": 2,
+        "completion_tokens": 10,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 7187
+       }
+      },
+      "chars": 7683,
+      "graph_after": {
+       "chunks_stored": 44,
+       "communities_in_report_store": 6,
+       "connected_components": 15,
+       "documents_stored": 18,
+       "edges": 213,
+       "largest_component_nodes": 34,
+       "nodes": 208,
+       "nodes_with_cluster_data": 44
+      },
+      "rank": 18,
+      "seconds": 0.03,
+      "url_sha256_16": "0559abf992d9f2f2"
+     },
+     {
+      "by_kind": {
+       "community_report": {
+        "calls": 26,
+        "completion_tokens": 5304,
+        "models": {
+         "gpt-4o": 26
+        },
+        "prompt_tokens": 61087
+       },
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 12,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 958
+       },
+       "entity_extraction": {
+        "calls": 3,
+        "completion_tokens": 1631,
+        "models": {
+         "gpt-4o": 3
+        },
+        "prompt_tokens": 8664
+       },
+       "gleaning_continue": {
+        "calls": 3,
+        "completion_tokens": 15,
+        "models": {
+         "gpt-4o": 3
+        },
+        "prompt_tokens": 10352
+       }
+      },
+      "chars": 12684,
+      "graph_after": {
+       "chunks_stored": 47,
+       "communities_in_report_store": 29,
+       "connected_components": 11,
+       "documents_stored": 19,
+       "edges": 225,
+       "largest_component_nodes": 110,
+       "nodes": 214,
+       "nodes_with_cluster_data": 110
+      },
+      "rank": 19,
+      "seconds": 0.08,
+      "url_sha256_16": "05cd6a49a650e655"
+     },
+     {
+      "by_kind": {
+       "embedding": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "inputs": 10,
+        "models": {
+         "text-embedding-3-small": 1
+        },
+        "prompt_tokens": 540
+       },
+       "entity_extraction": {
+        "calls": 2,
+        "completion_tokens": 1269,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 5598
+       },
+       "gleaning_continue": {
+        "calls": 2,
+        "completion_tokens": 10,
+        "models": {
+         "gpt-4o": 2
+        },
+        "prompt_tokens": 6905
+       }
+      },
+      "chars": 8038,
+      "graph_after": {
+       "chunks_stored": 49,
+       "communities_in_report_store": 29,
+       "connected_components": 12,
+       "documents_stored": 20,
+       "edges": 234,
+       "largest_component_nodes": 110,
+       "nodes": 224,
+       "nodes_with_cluster_data": 110
+      },
+      "rank": 20,
+      "seconds": 0.04,
+      "url_sha256_16": "06bc8ec253404962"
+     }
+    ],
+    "prompt_multiset_sha256": "8c27df8113a951892013a6cb2bdf8027b8d8de2c62c7da6cd1ee4b2fa3887cfa",
+    "prompt_template_tokens": {
+     "community_report_empty": 1526,
+     "description_summary_empty": 117,
+     "entity_extraction_empty_chunk": 1933,
+     "gleaning_continue_prompt": 19,
+     "gleaning_loop_check_prompt": 26
+    },
+    "request_params_by_kind": {
+     "community_report": {
+      "messages": [
+       "<text>"
+      ],
+      "model": [
+       "\"gpt-4o\""
+      ],
+      "response_format": [
+       "{\"type\": \"json_object\"}"
+      ]
+     },
+     "embedding": {
+      "encoding_format": [
+       "\"float\""
+      ],
+      "input": [
+       "<text>"
+      ],
+      "model": [
+       "\"text-embedding-3-small\""
+      ]
+     },
+     "entity_extraction": {
+      "messages": [
+       "<text>"
+      ],
+      "model": [
+       "\"gpt-4o\""
+      ]
+     },
+     "gleaning_continue": {
+      "messages": [
+       "<text>"
+      ],
+      "model": [
+       "\"gpt-4o\""
+      ]
+     }
+    },
+    "runtime": {
+     "machine": "arm64",
+     "nano_graphrag_version": "0.0.8.2",
+     "packages": {
+      "graspologic": "3.4.4",
+      "httpx": "0.28.1",
+      "nano-vectordb": "0.0.4.3",
+      "networkx": "3.7",
+      "numpy": "1.26.4",
+      "openai": "3.42.1",
+      "tenacity": "9.2.1",
+      "tiktoken": "0.14.0"
+     },
+     "python": "3.12.16"
+    },
+    "scenario": "perdoc-B",
+    "shape": "B",
+    "started_utc": "20261102 10:45:14 UTC",
+    "stub_tokenizer": "tiktoken:cl100k_base",
+    "wall_seconds": 2.4
+   }
+  }
+ },
+ "slug": "nano-graphrag",
+ "step": "X2 Step 0: dress rehearsal of indexing against a stub model server; nothing paid, no model, no key",
+ "tokenizers": {
+  "builder_chunks_with": "tiktoken o200k_base (tiktoken.encoding_for_model('gpt-4o'), model name from the builder's tiktoken_model_name default)",
+  "stub_counts_prompt_tokens_with": "tiktoken cl100k_base (the stub's counter, tiktoken 0.14.0). These are not any provider's counts."
+ }
+}
