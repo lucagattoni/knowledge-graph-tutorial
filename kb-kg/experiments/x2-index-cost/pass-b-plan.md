@@ -6,6 +6,12 @@ call has been made, nothing is approved, nothing has been spent.** The owner ask
 page says what that yes would unlock, what is fixed in advance, and what has to be built and checked for free first. Everything that
 could be chosen after seeing a result is fixed here instead.
 
+**Decided so far (owner, 20261102 20:49 UTC, reply "gpt-6-luna, USD 3"):** decision 1, OpenAI `gpt-6-luna` with reasoning off, and
+decision 2, a cap of USD 3 in total with the stage limits below. **Still open:** 3 (article text to the provider), 4 (embeddings), 5
+(builders), 6 (a new key and a hard provider-side limit), 7 (one yes or two). Recommended answers stand as written. This is not yet the
+yes that starts a paid stage: stage A needs 3 and 6 answered and the free work (stage 0) done. Stage 0 has started; progress is in
+[`RESUME.md`](../../../RESUME.md).
+
 ## What pass B answers, and what it does not
 
 **Question.** What does it cost, in calls, tokens and money, to build a graph for the same 20 documents with each cheap builder on

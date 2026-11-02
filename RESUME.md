@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261102 20:45 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261102 20:49 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
@@ -31,10 +31,11 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
    variable may still be exported in the owner's own terminal tab (`unset PINAKES_ANTHROPIC_API_KEY` clears it
    there). Its value was once malformed; rotating or revoking the key is the owner's call.
 2. **The paid pilot, X2 pass B (D-26 to D-28).** A [plan](kb-kg/experiments/x2-index-cost/pass-b-plan.md) was written 20261102 and
-   revised after an independent review; nothing is approved and nothing has been spent. It needs seven decisions from the owner
-   (provider and model, a cap, whether article text may go to the provider, embeddings, builders, a new key with a hard
-   provider-side limit, and one yes or two); the recommendation is OpenAI `gpt-6-luna` with reasoning off, a cap of USD 3 and two
-   yeses. Free work comes first (a gateway change, a hosted setup for the runners, a watchdog, a rehearsal). The other options
+   revised after an independent review; nothing has been spent. The owner chose OpenAI `gpt-6-luna` with reasoning off and a cap of
+   USD 3 (D-30). **Still needed from the owner:** whether article text may go to the provider, embeddings (recommended local),
+   builders (recommended all four), a new key with a hard provider-side limit, and one yes or two (recommended two). No paid call
+   starts before those are answered. Free work is under way (a gateway change, a hosted setup for the runners, a watchdog, a
+   pre-flight, a rehearsal). The other options
    from pass A are on [the pass-A page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md#where-this-leaves-the-owner). To
    rerun a pass-A builder, use the command line in its runner's header (`tools/exp/x2_passa_*.py`) and the arguments on the
    page; the builders' throwaway virtual environments were in the session's scratch directory and must be rebuilt at the pins
