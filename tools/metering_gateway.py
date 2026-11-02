@@ -28,6 +28,7 @@ import os
 import re
 import signal
 import ssl
+import stat
 import sys
 import threading
 import time
@@ -42,9 +43,12 @@ from pathlib import Path
 from typing import Any, Callable, Mapping
 from urllib.parse import urlsplit
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 BIND_HOST = "127.0.0.1"
+KEY_FILE_MAX_BYTES = 4096
+# The field a per-model `output_limit_default` is written to, by the protocol of the model's upstream.
+OUTPUT_LIMIT_FIELD = {"openai": "max_completion_tokens", "anthropic": "max_tokens"}
 SUMMARY_PATH = "/_meter/summary"
 MAX_BODY_BYTES = 32 * 1024 * 1024
 MTOK = 1_000_000
@@ -119,6 +123,8 @@ class Upstream:
     key_env: str  # the NAME of the environment variable
     dry_run: bool
     key: Secret | None
+    allow_request_defaults: bool = False  # a model on this upstream may carry request_defaults although the upstream is paid
+    key_file: str | None = None  # the path the key was read from, when it came from a file (never the key itself)
 
 
 @dataclass(frozen=True)
@@ -137,6 +143,7 @@ class Model:
     upstream: str
     price: Price
     request_defaults: Mapping[str, Any] = field(default_factory=dict)  # fields added to a request that lacks them
+    output_limit_default: int | None = None  # written as the provider's own output-limit field when the client sent none
 
 
 @dataclass(frozen=True)
@@ -213,6 +220,57 @@ def check_key_shape(upstream: str, value: str) -> None:
         raise ConfigError(f"upstream {upstream}: the key looks like one key pasted twice")
 
 
+TOKEN_LIKE_RE = re.compile(r"^[A-Za-z0-9_-]{20,}$")
+
+
+def read_key_file(upstream: str, path: str) -> str:
+    """The key held in `path`, for an upstream that names a key_file. Fails closed; no message holds key text.
+
+    The file must be a regular file that group and others can neither read nor write (mode 0o600 or stricter), at most
+    4 KiB, and hold one non-empty line. The newline after the key is not part of it; blank lines are ignored.
+    """
+    where = f"[upstreams.{upstream}]: key_file \"{path}\""
+    try:
+        fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK | getattr(os, "O_CLOEXEC", 0))  # O_NONBLOCK: a FIFO cannot hang the start
+    except FileNotFoundError:
+        raise ConfigError(f"{where} does not exist") from None
+    except IsADirectoryError:
+        raise ConfigError(f"{where} is not a regular file") from None
+    except (OSError, ValueError) as exc:
+        raise ConfigError(f"{where} cannot be opened ({type(exc).__name__})") from None
+    try:  # the checks run on the open file, so the file cannot change between the check and the read
+        info = os.fstat(fd)
+        if not stat.S_ISREG(info.st_mode):
+            raise ConfigError(f"{where} is not a regular file")
+        if info.st_mode & 0o077:
+            raise ConfigError(f"{where} can be read or written by group or others (mode {info.st_mode & 0o777:04o}); "
+                              "make it 600 (chmod 600) and check that no copy of the key exists elsewhere")
+        chunks, room = [], KEY_FILE_MAX_BYTES + 1
+        while room > 0:
+            chunk = os.read(fd, room)
+            if not chunk:
+                break
+            chunks.append(chunk)
+            room -= len(chunk)
+        data = b"".join(chunks)
+    except OSError as exc:
+        raise ConfigError(f"{where} cannot be read ({type(exc).__name__})") from None
+    finally:
+        os.close(fd)
+    if len(data) > KEY_FILE_MAX_BYTES:
+        raise ConfigError(f"{where} is larger than {KEY_FILE_MAX_BYTES} bytes; it should hold one key")
+    try:
+        text = data.decode("utf-8")
+    except UnicodeDecodeError:
+        raise ConfigError(f"{where} is not text") from None
+    lines = [line for line in text.split("\n") if line]  # empty pieces: the newline after the key, and any blank line
+    if not lines:
+        raise ConfigError(f"{where} is empty")
+    if len(lines) > 1:
+        raise ConfigError(f"{where} holds more than one non-empty line (two keys pasted together?)")
+    return lines[0]
+
+
 def _is_loopback_host(host: str | None) -> bool:
     if host is None:
         return False
@@ -255,7 +313,7 @@ def parse_config(text: str, environ: Mapping[str, str]) -> Config:
         where = f"[upstreams.{name}]"
         if not NAME_RE.match(name) or not isinstance(table, dict):
             raise ConfigError(f"{where}: bad name or not a table")
-        _only(table, {"protocol", "base_url", "key_env", "dry_run"}, where)
+        _only(table, {"protocol", "base_url", "key_env", "key_file", "dry_run", "allow_request_defaults"}, where)
         protocol = _string(table, "protocol", where)
         if protocol not in ("openai", "anthropic"):
             raise ConfigError(f"{where}: protocol must be \"openai\" or \"anthropic\"")
@@ -268,20 +326,39 @@ def parse_config(text: str, environ: Mapping[str, str]) -> Config:
         dry_run = table.get("dry_run", False)
         if not isinstance(dry_run, bool):
             raise ConfigError(f"{where}: dry_run must be true or false")
+        allow_defaults = table.get("allow_request_defaults", False)
+        if not isinstance(allow_defaults, bool):
+            raise ConfigError(f"{where}: allow_request_defaults must be true or false")
         key_env = table.get("key_env", "")
-        if not dry_run or key_env:
-            if not isinstance(key_env, str) or not ENV_NAME_RE.match(key_env):
-                raise ConfigError(f"{where}: key_env must be the NAME of an environment variable")
-            if any(value == key_env for value in environ.values()):
-                raise ConfigError(f"{where}: key_env holds a secret value, not a variable name; put the key in the environment")
+        key_file = table.get("key_file")
         key: Secret | None = None
-        if not dry_run:
-            value = environ.get(key_env)
-            if value is None:
-                raise ConfigError(f"{where}: the environment variable named by key_env is not set (and dry_run is not true)")
-            check_key_shape(name, value)
-            key = Secret(value)
-        upstreams[name] = Upstream(name, protocol, base_url, key_env if isinstance(key_env, str) else "", dry_run, key)
+        if key_file is not None:
+            if dry_run:
+                raise ConfigError(f"{where}: key_file is allowed only when dry_run is false (a dry_run upstream sends no key)")
+            if "key_env" in table:
+                raise ConfigError(f"{where}: give key_env or key_file, not both")
+            if not isinstance(key_file, str) or not key_file.strip():
+                raise ConfigError(f"{where}: key_file must be the path of a file that holds the key")
+            if TOKEN_LIKE_RE.match(key_file) or any(value == key_file for value in environ.values()):
+                raise ConfigError(f"{where}: key_file looks like a key, not a path (not shown); give the path of a file, "
+                                  "for example ./name")
+            key = Secret(read_key_file(name, key_file))
+            check_key_shape(name, key.reveal())
+        else:
+            if not dry_run or key_env:
+                if not isinstance(key_env, str) or not ENV_NAME_RE.match(key_env):
+                    raise ConfigError(f"{where}: key_env must be the NAME of an environment variable "
+                                      "(a paid upstream needs key_env or key_file)")
+                if any(value == key_env for value in environ.values()):
+                    raise ConfigError(f"{where}: key_env holds a secret value, not a variable name; put the key in the environment")
+            if not dry_run:
+                value = environ.get(key_env)
+                if value is None:
+                    raise ConfigError(f"{where}: the environment variable named by key_env is not set (and dry_run is not true)")
+                check_key_shape(name, value)
+                key = Secret(value)
+        upstreams[name] = Upstream(name, protocol, base_url, key_env if isinstance(key_env, str) else "", dry_run, key,
+                                   allow_defaults, key_file if isinstance(key_file, str) else None)
     if not upstreams:
         raise ConfigError("config: no upstream configured")
 
@@ -291,15 +368,16 @@ def parse_config(text: str, environ: Mapping[str, str]) -> Config:
         if not NAME_RE.match(name) or not isinstance(table, dict):
             raise ConfigError(f"{where}: bad name or not a table")
         _only(table, {"upstream", "input_per_mtok", "output_per_mtok", "cached_input_per_mtok",
-                      "cache_write_per_mtok", "source_url", "read_at", "request_defaults"}, where)
+                      "cache_write_per_mtok", "source_url", "read_at", "request_defaults", "output_limit_default"}, where)
         upstream = _string(table, "upstream", where)
         if upstream not in upstreams:
             raise ConfigError(f"{where}: upstream {upstream!r} is not configured")
         defaults = table.get("request_defaults", {})
         if not isinstance(defaults, dict):
             raise ConfigError(f"{where}: request_defaults must be a table")
-        if defaults and not upstreams[upstream].dry_run:
-            raise ConfigError(f"{where}: request_defaults is allowed only on a dry_run upstream (a field added to a paid "
+        if defaults and not upstreams[upstream].dry_run and not upstreams[upstream].allow_request_defaults:
+            raise ConfigError(f"{where}: request_defaults is allowed only on a dry_run upstream, or on an upstream whose "
+                              f"[upstreams.{upstream}] table sets allow_request_defaults = true (a field added to a paid "
                               "call can change what it costs)")
         protected = sorted(set(defaults) & PROTECTED_REQUEST_FIELDS)
         if protected:
@@ -317,6 +395,8 @@ def parse_config(text: str, environ: Mapping[str, str]) -> Config:
         read_at = _string(table, "read_at", where)
         if not DATE_RE.match(read_at):
             raise ConfigError(f"{where}: read_at must be UTC like \"20261102 10:00\"")
+        output_limit = _positive_int(table["output_limit_default"], f"{where} output_limit_default") \
+            if "output_limit_default" in table else None
         optional = {k: (_decimal(table[k], f"{where} {k}") if k in table else None)
                     for k in ("cached_input_per_mtok", "cache_write_per_mtok")}
         price = Price(
@@ -324,7 +404,7 @@ def parse_config(text: str, environ: Mapping[str, str]) -> Config:
             _decimal(table["output_per_mtok"], f"{where} output_per_mtok"),
             optional["cached_input_per_mtok"], optional["cache_write_per_mtok"], source_url, read_at,
         )
-        models[name] = Model(name, upstream, price, defaults)
+        models[name] = Model(name, upstream, price, defaults, output_limit)
     if not models:
         raise ConfigError("config: no model priced (no prices, no start)")
 
@@ -666,6 +746,19 @@ def max_output_tokens(route: Route, request: Mapping[str, Any], default: int) ->
     return limit
 
 
+def output_limit_field(route: Route, upstream: Upstream, model: Model, request: Mapping[str, Any]) -> str | None:
+    """The field a model's `output_limit_default` goes into for this request, or None when nothing is to be injected.
+
+    Only a chat-style route takes it (embeddings have no output). A client's own limit on either field wins, whatever
+    its value; a `null` counts as not sent.
+    """
+    if route.kind == "embeddings" or model.output_limit_default is None:
+        return None
+    if request.get("max_tokens") is not None or request.get("max_completion_tokens") is not None:
+        return None
+    return OUTPUT_LIMIT_FIELD[upstream.protocol]
+
+
 def reserve_amount(price: Price, body_bytes: int, bytes_per_token: int, max_output: int) -> Decimal:
     """Upper bound on what a call can cost: every input byte pessimistically costs 1/bytes_per_token of a token."""
     input_tokens = -(-body_bytes // bytes_per_token)
@@ -784,10 +877,13 @@ class Gateway:
             "spent_at_start": money_text(self.ledger.spent),
             "default_max_output_tokens": cfg.default_max_output_tokens,
             "input_bytes_per_token": cfg.input_bytes_per_token,
-            "upstreams": {n: {"protocol": u.protocol, "base_url": u.base_url, "key_env": u.key_env, "dry_run": u.dry_run}
+            "upstreams": {n: {"protocol": u.protocol, "base_url": u.base_url, "key_env": u.key_env, "dry_run": u.dry_run,
+                              "allow_request_defaults": u.allow_request_defaults,
+                              **({"key_file": u.key_file} if u.key_file is not None else {})}  # the path, never the key
                           for n, u in cfg.upstreams.items()},
             "models": {n: {"upstream": m.upstream, "source_url": m.price.source_url, "read_at": m.price.read_at,
                            "request_defaults": dict(m.request_defaults),
+                           "output_limit_default": m.output_limit_default,
                            "input_per_mtok": money_text(m.price.input_per_mtok),
                            "output_per_mtok": money_text(m.price.output_per_mtok),
                            "cached_input_per_mtok": None if m.price.cached_input_per_mtok is None
@@ -869,17 +965,21 @@ class Gateway:
         call.upstream = upstream.name
         if upstream.protocol != route.protocol:
             return refuse(400, "gateway_route_mismatch", "this model's upstream speaks a different protocol than this route")
+        forward_body = body
+        # What the gateway adds is decided from the client's request, then written in one go: first the model's output
+        # limit (so the reservation below is made from it), then its request_defaults. A field the client sent wins.
+        limit_field = output_limit_field(route, upstream, model, request)
+        if limit_field is not None:
+            request[limit_field] = model.output_limit_default
+        added = [k for k in model.request_defaults if k not in request]
+        request.update({k: model.request_defaults[k] for k in added})
+        if limit_field is not None or added:
+            forward_body = json.dumps(request).encode("utf-8")  # one re-serialisation for both
         try:
             max_out = max_output_tokens(route, request, self.cfg.default_max_output_tokens)
         except HttpError as exc:
             return refuse(exc.status, exc.code, exc.message)
-
-        forward_body = body
-        added = [k for k in model.request_defaults if k not in request]
-        if added:  # a configured default fills a field the client left out; a field the client sent always wins
-            request.update({k: model.request_defaults[k] for k in added})
-            forward_body = json.dumps(request).encode("utf-8")
-        call.defaults_applied = added
+        call.defaults_applied = added + ([limit_field] if limit_field is not None else [])
         stream = request.get("stream") is True
         if stream and route.kind == "chat":
             options = request.get("stream_options")
@@ -1212,7 +1312,12 @@ def main(argv: list[str] | None = None, environ: Mapping[str, str] | None = None
     print(f"metering_gateway: listening on http://{BIND_HOST}:{actual}  cap {money_text(config.cap)} {config.currency}  "
           f"spent so far {money_text(gateway.ledger.spent)}  log {config.log_file}  manifest {gateway.manifest_path}")
     for upstream in config.upstreams.values():
-        shown = "dry_run, no key" if upstream.dry_run else f"key from ${upstream.key_env}"
+        if upstream.dry_run:
+            shown = "dry_run, no key"
+        elif upstream.key_file is not None:
+            shown = f"key read from the file {upstream.key_file}"
+        else:
+            shown = f"key from ${upstream.key_env}"
         print(f"  upstream {upstream.name}: {upstream.protocol} {upstream.base_url} ({shown})")
     sys.stdout.flush()
 

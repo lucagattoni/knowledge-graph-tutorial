@@ -9,7 +9,8 @@ through. It exists because the third-party builders an experiment runs cannot do
 2. **A cap that is enforced before the money is spent.** A call that could take total spend past the cap is
    answered with HTTP 429 and nothing is forwarded.
 3. **The real key stays with the gateway.** The code under test holds a dummy key and the gateway's address; the
-   real key is read from the gateway's own environment, put on the outgoing request, and never printed or logged.
+   real key is read by the gateway itself, from its own environment or from a file only its owner can read, put on
+   the outgoing request, and never printed or logged.
 
 **Status: never used against a real provider.** Everything below was tested against fake upstreams on loopback,
 with invented prices and made-up keys. See [What this leaves unchecked](#what-this-leaves-unchecked).
@@ -25,6 +26,10 @@ uv run tools/metering_gateway.py --config run1/gateway.toml [--port N] [--resume
 uv run tools/metering_gateway.py --summary run1/meter.jsonl  # totals of a finished log
 ```
 
+The environment is one way to hand the gateway its key. The other is a `key_file` in the upstream's table (below): the
+gateway opens the file itself, so a runner script and the builders it starts, which may run in the runner's own
+process, never hold the key and need no variable.
+
 | Argument | Meaning |
 |---|---|
 | `--config FILE` | The TOML config below. |
@@ -32,13 +37,14 @@ uv run tools/metering_gateway.py --summary run1/meter.jsonl  # totals of a finis
 | `--resume` | Continue a run: the spend is rebuilt from the existing log. Without it, a log that already holds records stops the start (a restart must not reset the cap). |
 | `--summary LOGFILE` | Print the totals of a log (the same code as the live endpoint) and exit. The cap comes from the newest `LOGFILE.manifest-*.json` next to it. |
 
-The gateway prints its address, cap and the *names* of the key variables at start, and the totals when it stops
-(Ctrl-C or SIGTERM). Exit status 2 means it did not start.
+The gateway prints its address, cap and, for each upstream, the *name* of its key variable or the *path* of its key
+file at start, and the totals when it stops (Ctrl-C or SIGTERM). Exit status 2 means it did not start.
 
 **Fail closed at start.** It does not start without a cap, without any priced model, with a model that lacks a
 price or its `source_url` / `read_at`, with an unknown key in the config (a typo would otherwise be ignored), with a
-key variable that is unset (unless that upstream has `dry_run = true`), or with a key that is empty, holds
-whitespace or control characters, or is one key pasted twice. The messages never contain the key.
+key variable that is unset (unless that upstream has `dry_run = true`), with a key file that is missing or unsafe (see
+`key_file` below), or with a key that is empty, holds whitespace or control characters, or is one key pasted twice. The
+messages never contain the key.
 
 ## Config
 
@@ -61,6 +67,8 @@ log_bodies = false                  # true: request and response bodies go to a 
 protocol = "openai"                 # "openai" or "anthropic"
 base_url = "https://api.example.invalid/v1"        # includes the version prefix, for both protocols
 key_env = "GATEWAY_OPENAI_KEY"      # the NAME of an environment variable, never the key itself
+# key_file = "/path/outside/any/repository/openai.key"   # instead of key_env: a file the gateway reads itself
+# allow_request_defaults = true     # lets a model on this PAID upstream carry request_defaults (see below)
 # dry_run = true                    # no key needed and none is sent; for fake upstreams and a local model server
 
 [upstreams.anthropic-main]
@@ -73,6 +81,7 @@ upstream = "openai-main"
 input_per_mtok = 0.15               # per million tokens, in `currency`
 output_per_mtok = 0.60
 cached_input_per_mtok = 0.075       # optional; without it cached input is priced as plain input
+output_limit_default = 4096         # optional; the output limit written into a chat request that sets none
 source_url = "https://example.invalid/pricing"     # where these prices were read
 read_at = "20261102 10:00"          # UTC, YYYYMMDD HH:MM
 
@@ -100,15 +109,53 @@ read_at = "20261102 10:00"
 - A model's `upstream` must speak the route's protocol: `openai` upstreams serve `/v1/chat/completions` and
   `/v1/embeddings`, `anthropic` upstreams serve `/v1/messages`.
 - Plain `http://` is accepted only for a loopback upstream (otherwise the real key would travel in clear).
+- **The key of a paid upstream** comes from exactly one of two places. `key_env` is the *name* of an environment
+  variable of the gateway process. `key_file` is a path (used as written; give an absolute one) to a file that the
+  gateway opens once, at start. Giving both, or neither, on an upstream that is not `dry_run` stops the start, and so
+  does `key_file` on a `dry_run` upstream. The file must be a regular file that neither group nor others can read or
+  write (mode 600 or stricter; the message names the path and the mode), at most 4 KiB, and hold one non-empty line:
+  the key. One trailing newline is dropped and blank lines are ignored; a second non-empty line, a space, tab or
+  carriage return inside the key, an empty file, a missing path, a directory, a pipe, and bytes that are not text are
+  all refused. The key then goes through the same shape check as an environment key (not empty, no whitespace or
+  control characters, not one key pasted twice) and is redacted everywhere like it. A value of `key_file` that looks
+  like a key (20 or more letters, digits, `_` or `-` and no `/` or `.`), or equals the value of an environment
+  variable, is refused without being shown; write `./name` for a file in the working directory. No message, the
+  manifest or the log ever holds key text. The manifest records `key_file` (the path only, and only for an upstream
+  that sets it) the way it records the variable name.
 - `request_defaults` (optional, one table per model: `[models."name".request_defaults]`, for example
   `reasoning_effort = "none"`) lists JSON fields the gateway adds to a request for that model **when the client did
-  not send them**; a field the client sent, even a falsy one, always wins. It exists for a local model server whose
-  model behaves differently from what the builder assumes (a model that "thinks" unless asked not to, which a builder
-  cannot ask). It is refused on any upstream that is not `dry_run` (a field added to a paid call can change what it
-  costs), and it may not set `model`, `messages`, `input`, `stream`, `stream_options`, `n`, `max_tokens` or
-  `max_completion_tokens`. The call's log record names the fields that were added (`request_defaults_applied`), the
-  manifest holds each model's table, and the body log keeps the request **as the client sent it**; the hash and the
-  size in the record are of that request too, while the reservation is made from what was forwarded.
+  not send them**; a field the client sent, even a falsy one, always wins. It exists for a model that behaves
+  differently from what the builder assumes (a model that "thinks" unless asked not to, which a builder cannot ask).
+  It is refused on any upstream that is not `dry_run` (a field added to a paid call can change what it costs) **unless
+  that upstream's table sets `allow_request_defaults = true`**, and it may not set `model`, `messages`, `input`,
+  `stream`, `stream_options`, `n`, `max_tokens` or `max_completion_tokens` (the flag does not change that list). The
+  call's log record names the fields that were added (`request_defaults_applied`), the manifest holds each model's
+  table, and the body log keeps the request **as the client sent it**; the hash and the size in the record are of that
+  request too, while the reservation is made from what was forwarded.
+- `allow_request_defaults` (optional boolean in an `[upstreams.NAME]` table, default `false`) is the owner's explicit
+  statement that models on this upstream may carry `request_defaults` although the upstream has a key. It belongs to
+  one upstream: a flag on one does not open another. The manifest records it for every upstream.
+- `output_limit_default` (optional positive whole number in a `[models."name"]` table; zero, a negative number, a
+  boolean, a string or a fraction stops the start) bounds the output of a model whose builders send no limit. For a
+  chat route (`/v1/chat/completions` and `/v1/messages`; embeddings ignore the key), when the request has neither
+  `max_tokens` nor `max_completion_tokens` set to a non-null value, the gateway writes the limit into the forwarded
+  body **before the output is bounded and the reservation is made**, so the reservation uses it instead of
+  `default_max_output_tokens`. The field is the provider's own: `max_completion_tokens` on an `openai` upstream,
+  `max_tokens` on an `anthropic` one. A limit the client sent always wins, even a very large one (nothing is
+  clamped), on either field. A `"max_tokens": null`, which fast-graphrag sends on summary calls, counts as not sent:
+  the gateway adds the protocol's field and leaves the client's `null` as it was sent. **Whether a provider accepts a
+  request that holds both a `null` `max_tokens` and a `max_completion_tokens` is not checked here; the paid pilot's
+  stage A checks it.** The injected field's name is added to `request_defaults_applied`, after the names of any
+  `request_defaults` fields. The body log, the hash and `bytes_in` are of the client's request, as for
+  `request_defaults`, and the manifest holds each model's value. It is a separate key on purpose: `request_defaults`
+  still may not set a limit field.
+
+An example in prose, for a paid pilot: the upstream `openai-main` sets `key_file` and `allow_request_defaults = true`,
+and the model `gpt-6-luna` on it sets `output_limit_default = 6144` and a `request_defaults` table with
+`reasoning_effort = "none"`. A builder that sends only `model` and `messages` then reaches the provider with
+`max_completion_tokens: 6144` and `reasoning_effort: "none"` added, the call is reserved at 6144 output tokens, its
+record lists `reasoning_effort` and `max_completion_tokens` in `request_defaults_applied`, and the body log shows what
+the builder sent.
 
 ## Point a builder at it
 
@@ -146,7 +193,9 @@ reserve = ceil(body_bytes / input_bytes_per_token) x max(input price, cache-writ
 - `body_bytes` is the body that is forwarded. `input_bytes_per_token = 2` assumes no token is shorter than two
   bytes on average.
 - `max_output` is `max_completion_tokens` or `max_tokens`, whichever is larger (OpenAI chat), multiplied by `n`;
-  `max_tokens` (Anthropic); `0` (embeddings); `default_max_output_tokens` when the request sets none.
+  `max_tokens` (Anthropic); `0` (embeddings); `default_max_output_tokens` when the request sets none. A model's
+  `output_limit_default` is written into the request first, so for such a model a request that sets none is reserved
+  at that limit, not at `default_max_output_tokens`.
 - If `spent + open reservations + reserve > cap`, the call is answered with **429** and a JSON error that names
   `gateway_budget_exceeded` (OpenAI-shaped or Anthropic-shaped to match the route), and **nothing is forwarded**.
   A reserve that reaches the cap exactly is allowed.
@@ -190,6 +239,12 @@ more tokens than `body_bytes / input_bytes_per_token`, or when a price is stale.
 is, `reserve_exceeded` is true, and spend can pass the cap by that one call; later calls are refused. Keep a
 per-project spend limit at the provider as well, as the plan says.
 
+A voided call (a refused or failed status from the provider, a dropped connection, a timeout) is recorded at zero
+cost, because no usage reached the gateway. **A provider may still bill a generation it completed for such a call**, for
+example one the gateway gave up on at `upstream_timeout_s`, so the cap alone is not a guarantee against a bill. Set a
+generous `upstream_timeout_s` for long answers, count the voided calls in the summary, and compare the gateway's total
+with the provider's own usage page.
+
 ## Streaming
 
 `stream: true` is passed through. For OpenAI chat the gateway adds `stream_options.include_usage = true` when the
@@ -223,13 +278,14 @@ float. Bodies and the client's headers are never in this file.
 | `error` | short code such as `upstream_status`, `upstream_timeout`, `stream_interrupted`, or null |
 | `latency_ms` | request received until the call was settled |
 | `request_sha256`, `bytes_in`, `bytes_out` | SHA-256 and size of the body the client sent; bytes sent back to the client |
-| `request_defaults_applied` | the names of the `request_defaults` fields the gateway added to this request (an empty list when none) |
+| `request_defaults_applied` | the names of the fields the gateway added to this request: the `request_defaults` fields in the table's order, then the output-limit field if `output_limit_default` was injected (an empty list when none) |
 
 Other files, next to `log_file`:
 
 - `log_file.manifest-<UTC YYYYMMDD_HHMMSS_microseconds>.json`, written at every start: gateway version, SHA-256 of
   the config, cap, currency, spend carried over from a log being resumed, the upstreams (with the *names* of the key
-  variables) and every model's prices with their `source_url` and `read_at`, and its `request_defaults`.
+  variables, or the *path* of a `key_file`, and each upstream's `allow_request_defaults` flag) and every model's prices
+  with their `source_url` and `read_at`, its `request_defaults` and its `output_limit_default`.
 - `log_bodies = true` writes `{call_id, request, response}` per call to the body log (mode 600). Bodies can hold
   third-party text and must not be committed; keep that file outside the repository.
 
@@ -267,8 +323,10 @@ usage), and that Anthropic cache writes are priced at the single `cache_write_pe
   the owner wrote down.
 - **Modalities and extras are not priced separately.** Image or audio tokens, Anthropic server tools, and the
   1-hour cache TTL premium are counted only as far as the provider's total token fields cover them.
-- **The request body is forwarded unchanged**, except that `stream_options.include_usage` may be added; the
-  recorded hash is of the body the client sent.
+- **The request body is forwarded unchanged**, except for what the config asks the gateway to add: the model's
+  `request_defaults` (on a paid upstream only with `allow_request_defaults`), its `output_limit_default`, and
+  `stream_options.include_usage`. The recorded hash and `bytes_in` are of the body the client sent, and the body log
+  holds that body, so the log does not show what was added; `request_defaults_applied` names it.
 
 ## What this leaves unchecked
 
@@ -285,6 +343,12 @@ usage), and that Anthropic cache writes are priced at the single `cache_write_pe
 - The suite passed on Python 3.11, 3.12, 3.13, 3.14 and 3.15 in the author's run (20261102 11:43 UTC). A second,
   independent run used one version, 3.13.18 (`uv run python`, 20261102 11:46 UTC). The header says 3.11 or newer.
 - The fake upstreams are written by the same author as the gateway, so they share its reading of the protocols.
+- `key_file` was exercised on macOS only. Its permission check reads the mode bits of the open file, so it means nothing on
+  a file system that does not keep modes, and it cannot see a copy of the key elsewhere (a backup, a synced folder).
+  A value that is not a path but is neither key-like nor equal to an environment value would still be named in the
+  "does not exist" message.
+- `output_limit_default` was tested against fake upstreams only. No provider has been shown to accept a request that
+  carries `max_completion_tokens` together with a `null` `max_tokens`, or `max_completion_tokens` at all on a given model.
 
 ## Tests and the mutation check
 
@@ -292,9 +356,11 @@ usage), and that Anthropic cache writes are priced at the single `cache_write_pe
 uv run python -m unittest tools/test_metering_gateway.py
 ```
 
-78 tests, about 9 seconds, no network and no key: fake upstreams are real loopback servers written in the test
-file. Green on Python 3.11, 3.12, 3.13, 3.14 and 3.15 (20261102 11:43 UTC), on 10 consecutive runs on 3.13, and on
-16 runs with eight copies going at once.
+124 tests, about 10 seconds, no network and no key: fake upstreams are real loopback servers written in the test
+file. Green on Python 3.11, 3.12, 3.13, 3.14 and 3.15, one run each, and on three consecutive runs on 3.13
+(20261102 21:08 UTC, version 1.1.0). The longer series (10 consecutive runs on 3.13, 16 runs with eight copies going
+at once) were made on the earlier 78-test suite and have not been repeated on the 36 tests added since for the
+output limit, the `allow_request_defaults` flag and the key file.
 
 **Mutation check, 20261102 11:34 to 11:43 UTC.** The tool was copied to a scratch directory and one line at a time
 changed there (each anchor matched exactly once); the suite was run without `-x` on each copy. A trivial mutant
@@ -318,7 +384,43 @@ the main promises:
 The remaining mutants cover key redaction, header dropping, `stream_options` injection, usage arithmetic, the
 start-up checks, the log-failure stop and the chunked-body readers.
 
-Two things the check showed about the tests themselves. The lock mutant first survived: under CPython's global
+**Mutation check of version 1.1.0, 20261102 21:01 to 21:08 UTC**, same method (a copy, one anchor per mutant matched
+exactly once, the unmodified copy green first, the whole suite on each copy). 42 mutants: 40 killed, 2 survived.
+
+| Mutant | Tests red | One of them |
+|---|---|---|
+| `allow_request_defaults` check removed | 3 | `test_the_flag_belongs_to_one_upstream` |
+| the flag is read from any upstream instead of the model's | 1 | `test_the_flag_belongs_to_one_upstream` |
+| the flag missing from the manifest | 1 | `test_the_manifest_shows_the_flag_for_each_upstream` |
+| the reservation made without the injected limit | 7 | `test_a_null_limit_counts_as_absent_and_the_clients_null_stays_as_sent` |
+| the limit written after the reservation (injection moved below it) | 7 | the same |
+| the reservation made from `default_max_output_tokens` | 17 | `test_a_reservation_that_reaches_the_cap_exactly_is_allowed` |
+| a streamed request loses the injected limit | 2 | `test_defaults_and_the_injected_stream_options_both_reach_the_upstream` |
+| the two field names swapped, or `max_tokens` on OpenAI | 6, 5 | `test_a_null_limit_counts_as_absent_and_the_clients_null_stays_as_sent` |
+| the client's limit overwritten, or only `max_tokens` protected | 3, 1 | `test_a_limit_the_client_sent_always_wins_and_nothing_is_rewritten` |
+| `null` treated as a limit that was sent | 2 | `test_a_null_limit_counts_as_absent_and_the_clients_null_stays_as_sent` |
+| the key honoured on embeddings | 1 | `test_embeddings_ignore_the_key` |
+| the body log holds the forwarded body | 2 | `test_the_body_log_and_the_hash_keep_what_the_client_sent` |
+| `key_file` permission check removed (or group only, or others only) | 2, 1, 1 | `test_a_file_that_group_or_others_can_read_or_write_is_refused_naming_the_path` |
+| the key printed in an error (two-line message, or the shape check) | 2, 4 | `test_content_that_is_not_exactly_one_key_is_refused_without_printing_any_of_it` |
+| the key printed in the start banner, or in the manifest instead of the path | 1, 1 | `test_main_starts_with_a_good_key_file_and_says_where_the_key_came_from_not_what_it_is` |
+| `key_env` and `key_file` both accepted | 1 | `test_exactly_one_of_key_env_and_key_file_is_needed_on_a_paid_upstream` |
+| neither accepted on a paid upstream (both guards removed, or the first only) | 1, 1 | the same |
+| `key_file` accepted on a `dry_run` upstream | 1 | `test_a_dry_run_upstream_takes_no_key_file` |
+| a file key not redacted | 2 | `test_a_key_echoed_in_a_successful_body_is_replaced_for_a_file_key_too` |
+| a pipe as `key_file` (no `O_NONBLOCK`) | hangs | the start never returns; the run was stopped at its 150 s timeout, counted as killed |
+
+Also killed, not in the table: a flag that need not be a boolean, `output_limit_default` not validated or missing from
+the manifest, `key_file` missing from the manifest, a size limit off by one in either direction, a non-regular file
+accepted, two lines accepted, a key-like or environment-equal `key_file` value not refused, the shape check skipped for
+a file key, and the key ignored on the `/v1/messages` route.
+
+The two survivors. *Zero (or another falsy value) treated as an absent limit* is equivalent: the injected field is then
+added, but `max_output_tokens` still refuses any non-null value that is not a positive whole number, so the request is
+refused all the same and the log record is identical. *Neither key accepted* with one guard changed survived once
+because the other, earlier guard still refuses; the two-guard and first-guard versions above kill it.
+
+Two things the first check showed about the tests themselves. The lock mutant first survived: under CPython's global
 interpreter lock the check and the reservation are rarely interleaved by chance, so the concurrency tests now use
 a ledger that pauses between them (`SlowLedger`) and a reservation that is held while other threads check. A mutant
 that left the IPv4-mapped IPv6 unwrapping out of the loopback test also survived, because the standard library

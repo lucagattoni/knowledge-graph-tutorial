@@ -14,6 +14,7 @@ import hashlib
 import http.client
 import io
 import json
+import os
 import re
 import socket
 import sys
@@ -196,7 +197,8 @@ def answer(body):
 
 
 def toml_config(log_file: str, openai_url: str, anthropic_url: str, *, cap="10", dry_run=False,
-                gateway_extra="", models_extra="") -> str:
+                gateway_extra="", models_extra="", openai_key='key_env = "FAKE_OPENAI_KEY"', openai_extra="",
+                anthropic_extra="") -> str:
     q = json.dumps
     return f"""
 [gateway]
@@ -208,14 +210,16 @@ log_file = {q(log_file)}
 [upstreams.fake-openai]
 protocol = "openai"
 base_url = {q(openai_url)}
-key_env = "FAKE_OPENAI_KEY"
+{openai_key}
 dry_run = {str(dry_run).lower()}
+{openai_extra}
 
 [upstreams.fake-anthropic]
 protocol = "anthropic"
 base_url = {q(anthropic_url)}
 key_env = "FAKE_ANTHROPIC_KEY"
 dry_run = {str(dry_run).lower()}
+{anthropic_extra}
 
 [models."fake-small"]
 upstream = "fake-openai"
@@ -1434,6 +1438,469 @@ class RequestDefaultsTests(unittest.TestCase):
             self.parse(dated, dry_run=True)
 
 
+# --------------------------------------------------------------------------- request defaults on a keyed upstream
+
+
+ALLOW = "allow_request_defaults = true"
+KEYED_DEFAULTS = (
+    "\n[models.\"fake-local\"]\nupstream = \"fake-openai\"\ninput_per_mtok = 1\noutput_per_mtok = 2\n"
+    "source_url = \"https://example.invalid/pricing/fake-local\"\nread_at = \"20261102 10:00\"\n"
+    "\n[models.\"fake-local\".request_defaults]\nreasoning_effort = \"none\"\n"
+)
+
+
+def parse_keyed(models_extra: str, *, openai_extra: str = "", anthropic_extra: str = "", dry_run: bool = False):
+    text = toml_config("m.jsonl", "https://api.example.invalid/v1", "https://api.example.invalid/v1", dry_run=dry_run,
+                       models_extra=models_extra, openai_extra=openai_extra, anthropic_extra=anthropic_extra)
+    return mg.parse_config(text, ENVIRON)
+
+
+class KeyedRequestDefaultsTests(unittest.TestCase):
+    """request_defaults on an upstream that has a key: refused unless that upstream's own table allows it."""
+
+    def test_without_the_flag_a_keyed_upstream_still_refuses_defaults_and_the_message_names_the_flag(self):
+        with self.assertRaises(mg.ConfigError) as ctx:
+            parse_keyed(KEYED_DEFAULTS)
+        self.assertIn("allow_request_defaults", str(ctx.exception))
+        self.assertIn("[upstreams.fake-openai]", str(ctx.exception))
+        with self.assertRaisesRegex(mg.ConfigError, "allow_request_defaults"):
+            parse_keyed(KEYED_DEFAULTS, openai_extra="allow_request_defaults = false")
+
+    def test_with_the_flag_a_keyed_upstream_accepts_defaults(self):
+        cfg = parse_keyed(KEYED_DEFAULTS, openai_extra=ALLOW)
+        self.assertEqual(cfg.models["fake-local"].request_defaults, {"reasoning_effort": "none"})
+        self.assertIs(cfg.upstreams["fake-openai"].allow_request_defaults, True)
+        self.assertIs(cfg.upstreams["fake-openai"].dry_run, False)
+        self.assertIsNotNone(cfg.upstreams["fake-openai"].key)
+
+    def test_the_flag_belongs_to_one_upstream(self):
+        on_anthropic = KEYED_DEFAULTS.replace("fake-openai", "fake-anthropic")
+        with self.assertRaisesRegex(mg.ConfigError, r"allow_request_defaults.*fake-anthropic|fake-anthropic.*allow_request_defaults"):
+            parse_keyed(on_anthropic, openai_extra=ALLOW)  # the flag is on the other upstream
+        self.assertIn("fake-local", parse_keyed(on_anthropic, anthropic_extra=ALLOW).models)
+
+    def test_the_flag_is_off_by_default_and_must_be_a_boolean(self):
+        cfg = parse_keyed("")
+        self.assertEqual({u.allow_request_defaults for u in cfg.upstreams.values()}, {False})
+        for bad in ('"yes"', "1", "[]"):
+            with self.assertRaisesRegex(mg.ConfigError, "allow_request_defaults must be true or false"):
+                parse_keyed("", openai_extra=f"allow_request_defaults = {bad}")
+
+    def test_the_protected_fields_stay_protected_with_the_flag(self):
+        for name in sorted(mg.PROTECTED_REQUEST_FIELDS):
+            text = KEYED_DEFAULTS.replace('reasoning_effort = "none"', f"{name} = 5")
+            with self.assertRaisesRegex(mg.ConfigError, f"may not set.*{name}"):
+                parse_keyed(text, openai_extra=ALLOW)
+
+    def test_the_manifest_shows_the_flag_for_each_upstream(self):
+        rig = Rig(self, models_extra=KEYED_DEFAULTS, openai_extra=ALLOW)
+        upstreams = json.loads(Path(rig.gw.manifest_path).read_text())["upstreams"]
+        self.assertIs(upstreams["fake-openai"]["allow_request_defaults"], True)
+        self.assertIs(upstreams["fake-anthropic"]["allow_request_defaults"], False)
+        self.assertEqual(upstreams["fake-openai"]["dry_run"], False)
+
+    def test_a_default_reaches_a_paid_upstream_with_the_real_key_and_is_named_in_the_record(self):
+        rig = Rig(self, models_extra=KEYED_DEFAULTS, openai_extra=ALLOW)
+        client = chat_req(model="fake-local")
+        status, _, _ = rig.chat(client)
+        self.assertEqual(status, 200)
+        sent = rig.openai.requests[0]
+        self.assertEqual(json.loads(sent["body"]), {**client, "reasoning_effort": "none"})
+        self.assertEqual(sent["headers"]["authorization"], "Bearer " + REAL_OPENAI_KEY)
+        (rec,) = rig.records()
+        self.assertEqual(rec["request_defaults_applied"], ["reasoning_effort"])
+        self.assertEqual(Decimal(rec["reserve"]), expect_reserve(len(sent["body"]), "1", "2", 1000))
+        self.assertEqual(rec["request_sha256"], hashlib.sha256(encoded(client)).hexdigest())
+
+
+# --------------------------------------------------------------------------- the per-model output limit
+
+
+def priced(name: str, upstream: str, extra: str = "", out: str = "2") -> str:
+    return (f"\n[models.\"{name}\"]\nupstream = \"{upstream}\"\ninput_per_mtok = 1\noutput_per_mtok = {out}\n"
+            f"source_url = \"https://example.invalid/pricing/{name}\"\nread_at = \"20261102 10:00\"\n{extra}\n")
+
+
+LIMIT_MODELS = (
+    priced("fake-capped", "fake-openai", "output_limit_default = 6144")
+    + priced("fake-capped-claude", "fake-anthropic", "output_limit_default = 3000")
+    + priced("fake-capped-embed", "fake-openai", "output_limit_default = 5000", out="0")
+    + priced("fake-both", "fake-openai", "output_limit_default = 6144\n[models.\"fake-both\".request_defaults]\n"
+                                         "reasoning_effort = \"none\"\nseed = 7\n")
+    + priced("fake-plain", "fake-openai")
+)
+
+
+def nolimit_req(model="fake-capped", **extra) -> dict:
+    """A chat request as the cheap builders send it: no max_tokens and no max_completion_tokens."""
+    payload = {"model": model, "messages": [{"role": "user", "content": PROMPT_SENTINEL + " hello"}]}
+    payload.update(extra)
+    return payload
+
+
+class OutputLimitTests(unittest.TestCase):
+    def rig(self, **kwargs):
+        return Rig(self, models_extra=LIMIT_MODELS, openai_extra=ALLOW, **kwargs)
+
+    def forwarded(self, rig, index=0):
+        body = rig.openai.requests[index]["body"]
+        return body, json.loads(body)
+
+    def test_an_openai_upstream_gets_max_completion_tokens_and_the_reservation_uses_it(self):
+        rig = self.rig()
+        client = nolimit_req()
+        status, _, _ = rig.chat(client)
+        self.assertEqual(status, 200)
+        body, forwarded = self.forwarded(rig)
+        self.assertEqual(forwarded, {**client, "max_completion_tokens": 6144})
+        self.assertNotIn("max_tokens", forwarded)
+        (rec,) = rig.records()
+        self.assertEqual(rec["request_defaults_applied"], ["max_completion_tokens"])
+        # worked out again here: ceil(bytes / 2) input tokens at 1 per million, 6144 output tokens at 2 per million
+        self.assertEqual(Decimal(rec["reserve"]), expect_reserve(len(body), "1", "2", 6144))
+        self.assertGreater(Decimal(rec["reserve"]), expect_reserve(len(body), "1", "2", 1024), "not the old default")
+        self.assertIs(rec["reserve_exceeded"], False)
+
+    def test_an_anthropic_upstream_gets_max_tokens(self):
+        rig = self.rig()
+        client = nolimit_req("fake-capped-claude")
+        status, _, _ = rig.messages(client)
+        self.assertEqual(status, 200)
+        body = rig.anthropic.requests[0]["body"]
+        self.assertEqual(json.loads(body), {**client, "max_tokens": 3000})
+        (rec,) = rig.records()
+        self.assertEqual(rec["request_defaults_applied"], ["max_tokens"])
+        self.assertEqual(Decimal(rec["reserve"]), expect_reserve(len(body), "1", "2", 3000))
+
+    def test_a_limit_the_client_sent_always_wins_and_nothing_is_rewritten(self):
+        rig = self.rig()
+        cases = [({"max_tokens": 50}, 50), ({"max_tokens": 200000}, 200000), ({"max_completion_tokens": 77}, 77),
+                 ({"max_tokens": 10, "max_completion_tokens": 500}, 500),
+                 ({"max_tokens": None, "max_completion_tokens": 200}, 200)]
+        for n, (limit, expected) in enumerate(cases):
+            client = nolimit_req(**limit)
+            self.assertEqual(rig.chat(client)[0], 200)
+            body, _ = self.forwarded(rig, n)
+            self.assertEqual(body, encoded(client), f"{limit}: the body must be forwarded as sent")
+            rec = rig.records()[n]
+            self.assertEqual(rec["request_defaults_applied"], [], limit)
+            self.assertEqual(Decimal(rec["reserve"]), expect_reserve(len(body), "1", "2", expected), limit)
+        claude = nolimit_req("fake-capped-claude", max_tokens=50)
+        rig.messages(claude)
+        self.assertEqual(rig.anthropic.requests[0]["body"], encoded(claude))
+        self.assertEqual(rig.records()[len(cases)]["request_defaults_applied"], [])
+
+    def test_a_null_limit_counts_as_absent_and_the_clients_null_stays_as_sent(self):
+        rig = self.rig()
+        for n, (extra, name) in enumerate([({"max_tokens": None}, "max_completion_tokens"),
+                                           ({"max_completion_tokens": None}, "max_completion_tokens"),
+                                           ({"max_tokens": None, "max_completion_tokens": None}, "max_completion_tokens")]):
+            client = nolimit_req(**extra)
+            self.assertEqual(rig.chat(client)[0], 200)
+            body, forwarded = self.forwarded(rig, n)
+            self.assertEqual(forwarded, {**client, name: 6144}, extra)
+            self.assertEqual(forwarded.get("max_tokens", "absent") is None, "max_tokens" in extra, "a null that was sent stays")
+            rec = rig.records()[n]
+            self.assertEqual(rec["request_defaults_applied"], [name], extra)
+            self.assertEqual(Decimal(rec["reserve"]), expect_reserve(len(body), "1", "2", 6144), extra)
+        claude = nolimit_req("fake-capped-claude", max_tokens=None)
+        rig.messages(claude)
+        self.assertEqual(json.loads(rig.anthropic.requests[0]["body"])["max_tokens"], 3000)
+        self.assertEqual(rig.records()[3]["request_defaults_applied"], ["max_tokens"])
+
+    def test_a_bad_client_limit_is_still_refused_not_replaced(self):
+        rig = self.rig()
+        for bad in (0, -3, "100", True, 1.5):
+            status, _, body = rig.chat(nolimit_req(max_tokens=bad))
+            self.assertEqual(status, 400, bad)
+            self.assertIn("gateway_bad_request", body.decode())
+        self.assertEqual(rig.openai.count, 0)
+        self.assertEqual([r["request_defaults_applied"] for r in rig.records()], [[]] * 5)
+
+    def test_n_multiplies_the_injected_limit_like_a_client_limit(self):
+        rig = self.rig()
+        rig.chat(nolimit_req(n=3))
+        body, _ = self.forwarded(rig)
+        self.assertEqual(Decimal(rig.records()[0]["reserve"]), expect_reserve(len(body), "1", "2", 6144 * 3))
+
+    def test_embeddings_ignore_the_key(self):
+        usage = {"object": "list", "model": "fake-embed-v1", "data": [{"index": 0, "embedding": [0.1]}],
+                 "usage": {"prompt_tokens": 20, "total_tokens": 20}}
+        rig = self.rig(openai=FakeUpstream(answer(usage)))
+        client = {"model": "fake-capped-embed", "input": "text"}
+        self.assertEqual(rig.post("/v1/embeddings", client)[0], 200)
+        self.assertEqual(rig.openai.requests[0]["body"], encoded(client))
+        (rec,) = rig.records()
+        self.assertEqual(rec["request_defaults_applied"], [])
+        self.assertEqual(Decimal(rec["reserve"]), expect_reserve(len(encoded(client)), "1", "0", 0))
+
+    def test_a_model_without_the_key_is_untouched(self):
+        rig = self.rig()
+        client = nolimit_req("fake-plain")
+        rig.chat(client)
+        self.assertEqual(rig.openai.requests[0]["body"], encoded(client))
+        rec = rig.records()[0]
+        self.assertEqual(rec["request_defaults_applied"], [])
+        self.assertEqual(Decimal(rec["reserve"]), expect_reserve(len(encoded(client)), "1", "2", 1024))
+
+    def test_a_streamed_request_gets_stream_options_and_the_limit(self):
+        events = openai_sse(prompt=700, completion=40)
+        rig = self.rig(openai=FakeUpstream(lambda req, h: send_sse(h, events)))
+        client = nolimit_req(stream=True)
+        status, _, body = rig.chat(client)
+        self.assertEqual(status, 200)
+        self.assertEqual(body, b"".join(events))
+        sent, forwarded = self.forwarded(rig)
+        self.assertEqual(forwarded, {**client, "max_completion_tokens": 6144, "stream_options": {"include_usage": True}})
+        (rec,) = rig.records()
+        self.assertIs(rec["streamed"], True)
+        self.assertEqual(rec["request_defaults_applied"], ["max_completion_tokens"])
+        # the reservation is of the final body (limit and stream_options both in it) and of the injected limit
+        self.assertEqual(Decimal(rec["reserve"]), expect_reserve(len(sent), "1", "2", 6144))
+        self.assertEqual(rec["cost"], "0.00078")  # 700 x 1 + 40 x 2, per million
+
+    def test_the_reservation_is_made_from_the_injected_limit_so_the_cap_can_refuse_it(self):
+        rig = self.rig(cap="0.01")  # 6144 x 2 per million is 0.012288; the old default, 1024, would be 0.002048
+        status, _, body = rig.chat(nolimit_req())
+        self.assertEqual(status, 429)
+        self.assertIn("gateway_budget_exceeded", body.decode())
+        self.assertEqual(rig.openai.count, 0, "nothing is forwarded")
+        (rec,) = rig.records()
+        self.assertEqual(rec["refusal"], "gateway_budget_exceeded")
+        self.assertGreater(Decimal(rec["reserve"]), Decimal("0.012288"))
+        self.assertEqual(rig.chat(nolimit_req(max_tokens=100))[0], 200, "the client's own small limit fits the same cap")
+
+    def test_the_body_log_and_the_hash_keep_what_the_client_sent(self):
+        rig = self.rig(gateway_extra="log_bodies = true")
+        client = nolimit_req()
+        rig.chat(client)
+        (entry,) = (json.loads(line) for line in Path(rig.cfg.body_log_file).read_text().splitlines())
+        self.assertEqual(json.loads(entry["request"]), client)
+        self.assertNotIn("max_completion_tokens", entry["request"])
+        (rec,) = rig.records()
+        self.assertEqual(rec["request_sha256"], hashlib.sha256(encoded(client)).hexdigest())
+        self.assertEqual(rec["bytes_in"], len(encoded(client)))
+        self.assertIn("max_completion_tokens", rig.openai.requests[0]["body"].decode(), "but the upstream got it")
+
+    def test_the_limit_and_the_request_defaults_work_together_on_one_call(self):
+        rig = self.rig()
+        client = nolimit_req("fake-both", max_tokens=None, response_format={"type": "json_object"})
+        self.assertEqual(rig.chat(client)[0], 200)
+        sent = rig.openai.requests[0]
+        self.assertEqual(json.loads(sent["body"]), {**client, "max_completion_tokens": 6144,
+                                                    "reasoning_effort": "none", "seed": 7})
+        self.assertEqual(sent["headers"]["authorization"], "Bearer " + REAL_OPENAI_KEY)
+        (rec,) = rig.records()
+        self.assertEqual(rec["request_defaults_applied"], ["reasoning_effort", "seed", "max_completion_tokens"])
+        self.assertEqual(Decimal(rec["reserve"]), expect_reserve(len(sent["body"]), "1", "2", 6144))
+        self.assertEqual(rec["request_sha256"], hashlib.sha256(encoded(client)).hexdigest())
+        self.assertEqual(rec["bytes_in"], len(encoded(client)))
+        # with a limit of its own the client keeps it, and only the defaults are added
+        rig.chat(nolimit_req("fake-both", max_tokens=100))
+        second = json.loads(rig.openai.requests[1]["body"])
+        self.assertEqual((second["max_tokens"], second["reasoning_effort"], "max_completion_tokens" in second), (100, "none", False))
+        self.assertEqual(rig.wait_records(2)[1]["request_defaults_applied"], ["reasoning_effort", "seed"])
+
+    def test_the_manifest_records_each_models_limit(self):
+        rig = self.rig()
+        models = json.loads(Path(rig.gw.manifest_path).read_text())["models"]
+        self.assertEqual((models["fake-capped"]["output_limit_default"], models["fake-capped-claude"]["output_limit_default"]),
+                         (6144, 3000))
+        self.assertIsNone(models["fake-plain"]["output_limit_default"])
+
+    def test_the_key_is_a_positive_whole_number_and_nothing_else(self):
+        self.assertEqual(parse_keyed(priced("m", "fake-openai", "output_limit_default = 1")).models["m"].output_limit_default, 1)
+        self.assertIsNone(parse_keyed(priced("m", "fake-openai")).models["m"].output_limit_default)
+        for bad in ("0", "-5", "true", "false", '"100"', "1.5", "1e3", "[100]"):
+            with self.assertRaisesRegex(mg.ConfigError, "output_limit_default"):
+                parse_keyed(priced("m", "fake-openai", f"output_limit_default = {bad}"))
+
+    def test_request_defaults_may_still_not_set_a_limit_field(self):
+        for name in ("max_tokens", "max_completion_tokens"):
+            text = priced("m", "fake-openai", f"output_limit_default = 100\n[models.\"m\".request_defaults]\n{name} = 5\n")
+            with self.assertRaisesRegex(mg.ConfigError, f"may not set.*{name}"):
+                parse_keyed(text, openai_extra=ALLOW)
+
+
+# --------------------------------------------------------------------------- the key held in a file
+
+
+FILE_KEY = "-".join(["fake", "file", "key", "0123456789abcdefghij"])  # assembled here: no key-shaped literal in this file
+ENVIRON_ANTHROPIC_ONLY = {"FAKE_ANTHROPIC_KEY": REAL_ANTHROPIC_KEY}
+
+
+def make_key_file(tc: unittest.TestCase, content: bytes | str, mode: int = 0o600, name: str = "openai.key") -> str:
+    tmp = tempfile.TemporaryDirectory()
+    tc.addCleanup(tmp.cleanup)
+    path = Path(tmp.name) / name
+    path.write_bytes(content if isinstance(content, bytes) else content.encode())
+    os.chmod(path, mode)
+    return str(path)
+
+
+def key_file_line(path: str) -> str:
+    return f"key_file = {json.dumps(path)}"
+
+
+class KeyFileTests(unittest.TestCase):
+    def parse(self, line, environ=ENVIRON_ANTHROPIC_ONLY, **kwargs):
+        text = toml_config("m.jsonl", "https://api.example.invalid/v1", "https://api.example.invalid/v1",
+                           openai_key=line, **kwargs)
+        return mg.parse_config(text, environ)
+
+    def refused(self, line, fragment="", environ=ENVIRON_ANTHROPIC_ONLY, **kwargs) -> str:
+        with self.assertRaises(mg.ConfigError) as ctx:
+            self.parse(line, environ, **kwargs)
+        message = str(ctx.exception)
+        self.assertIn(fragment, message)
+        for secret in (FILE_KEY, REAL_ANTHROPIC_KEY, REAL_OPENAI_KEY):
+            self.assertNotIn(secret, message, "a refusal must never print key text")
+        return message
+
+    def test_a_key_file_with_mode_600_is_read_and_its_key_is_the_one_sent_upstream(self):
+        path = make_key_file(self, FILE_KEY + "\n")
+        rig = Rig(self, environ=ENVIRON_ANTHROPIC_ONLY, openai_key=key_file_line(path))
+        self.assertEqual(rig.chat()[0], 200)
+        rig.messages()
+        self.assertEqual(rig.openai.requests[0]["headers"]["authorization"], "Bearer " + FILE_KEY)
+        self.assertEqual(rig.anthropic.requests[0]["headers"]["x-api-key"], REAL_ANTHROPIC_KEY, "the other upstream keeps its env key")
+        upstream = rig.cfg.upstreams["fake-openai"]
+        self.assertEqual((upstream.key.reveal(), upstream.key_file, upstream.key_env), (FILE_KEY, path, ""))
+        self.assertNotIn(FILE_KEY, repr(rig.cfg))
+
+    def test_the_forms_of_a_good_file(self):
+        for label, content, mode in [("no newline", FILE_KEY, 0o600), ("one newline", FILE_KEY + "\n", 0o600),
+                                     ("read-only for the owner", FILE_KEY + "\n", 0o400),
+                                     ("blank lines are not a second key", "\n" + FILE_KEY + "\n\n", 0o600)]:
+            path = make_key_file(self, content, mode)
+            cfg = self.parse(key_file_line(path))
+            self.assertEqual(cfg.upstreams["fake-openai"].key.reveal(), FILE_KEY, label)
+
+    def test_a_file_that_group_or_others_can_read_or_write_is_refused_naming_the_path(self):
+        for mode in (0o644, 0o640, 0o604, 0o660, 0o666, 0o620, 0o602):
+            path = make_key_file(self, FILE_KEY + "\n", mode)
+            message = self.refused(key_file_line(path), "group or others")
+            self.assertIn(path, message)
+            self.assertIn(f"{mode:04o}", message)
+
+    def test_a_missing_file_a_directory_a_pipe_and_an_unreadable_value_are_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertIn(str(Path(tmp) / "absent.key"), self.refused(key_file_line(str(Path(tmp) / "absent.key")), "does not exist"))
+            self.assertIn(tmp, self.refused(key_file_line(tmp), "not a regular file"))
+            fifo = str(Path(tmp) / "pipe.key")
+            os.mkfifo(fifo, 0o600)
+            self.refused(key_file_line(fifo), "not a regular file")  # and the start did not hang on it
+        self.refused('key_file = ""', "path of a file")
+        self.refused("key_file = 5", "path of a file")
+        self.refused('key_file = "bad\\u0000path"', "cannot be opened")
+
+    def test_content_that_is_not_exactly_one_key_is_refused_without_printing_any_of_it(self):
+        two_keys = FILE_KEY + "\n" + REAL_ANTHROPIC_KEY + "\n"
+        cases = [("empty", b"", "is empty"), ("only a newline", b"\n", "is empty"),
+                 ("two lines", two_keys.encode(), "more than one"),
+                 ("a space inside", (FILE_KEY + " " + REAL_ANTHROPIC_KEY).encode(), "whitespace"),
+                 ("a tab inside", (FILE_KEY + "\t").encode(), "whitespace"),
+                 ("CRLF", (FILE_KEY + "\r\n").encode(), "whitespace"),
+                 ("one key pasted twice", (FILE_KEY * 2).encode(), "pasted twice"),
+                 ("not text", FILE_KEY.encode() + b"\xff\xfe", "is not text"),
+                 ("a trailing space line", (FILE_KEY + "\n \n").encode(), "more than one")]
+        for label, content, fragment in cases:
+            with self.subTest(label):
+                self.refused(key_file_line(make_key_file(self, content)), fragment)
+
+    def test_the_size_limit_is_4096_bytes_counting_the_newline(self):
+        key = ("a1b2c3d4e5" * 410)[:4095]  # odd length, so it cannot be one key pasted twice
+        self.assertEqual(self.parse(key_file_line(make_key_file(self, key + "\n"))).upstreams["fake-openai"].key.reveal(), key)
+        self.assertEqual(len(key.encode()) + 1, 4096)
+        self.refused(key_file_line(make_key_file(self, key + "x\n")), "larger than 4096")
+
+    def test_exactly_one_of_key_env_and_key_file_is_needed_on_a_paid_upstream(self):
+        path = make_key_file(self, FILE_KEY)
+        self.refused(f'key_env = "FAKE_OPENAI_KEY"\n{key_file_line(path)}', "not both", environ=ENVIRON)
+        self.refused("", "key_env or key_file")  # neither
+        # the other three arrangements stay valid
+        self.assertEqual(self.parse('key_env = "FAKE_OPENAI_KEY"', ENVIRON).upstreams["fake-openai"].key.reveal(), REAL_OPENAI_KEY)
+        self.assertEqual(self.parse(key_file_line(path)).upstreams["fake-openai"].key.reveal(), FILE_KEY)
+
+    def test_a_dry_run_upstream_takes_no_key_file(self):
+        path = make_key_file(self, FILE_KEY)
+        message = self.refused(key_file_line(path), "key_file is allowed only when dry_run is false", environ={}, dry_run=True)
+        self.assertNotIn(path, message)
+        self.assertEqual(self.parse("", {}, dry_run=True).upstreams["fake-openai"].key, None)  # no key at all is still fine
+
+    def test_a_key_pasted_where_a_path_belongs_is_refused_without_printing_it(self):
+        pasted = "".join(["tok", "en", "x" * 25])
+        for value, environ in ((pasted, ENVIRON_ANTHROPIC_ONLY), ("not-token-like-but/in env", dict(ENVIRON_ANTHROPIC_ONLY, X="not-token-like-but/in env"))):
+            with self.assertRaises(mg.ConfigError) as ctx:
+                self.parse(f"key_file = {json.dumps(value)}", environ)
+            self.assertIn("looks like a key", str(ctx.exception))
+            self.assertNotIn(value, str(ctx.exception))
+
+    def test_the_manifest_records_the_path_and_never_the_key_and_no_file_holds_the_key(self):
+        path = make_key_file(self, FILE_KEY + "\n")
+
+        def echo(req, h):
+            send_json(h, 500, {"you_sent": req["headers"]}, headers=[("X-Echo", req["headers"].get("authorization", ""))])
+
+        rig = Rig(self, environ=ENVIRON_ANTHROPIC_ONLY, openai_key=key_file_line(path), openai=FakeUpstream(echo),
+                  gateway_extra="log_bodies = true")
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            status, headers, body = rig.chat()
+            summary_text = json.dumps(rig.summary())
+        self.assertEqual(status, 500)
+        self.assertNotIn(FILE_KEY.encode(), body)
+        self.assertIn(b"[redacted]", body)
+        self.assertEqual(headers["X-Echo"], "Bearer [redacted]")
+        self.assertNotIn(FILE_KEY, json.dumps(headers) + summary_text + out.getvalue() + err.getvalue())
+        manifest = json.loads(Path(rig.gw.manifest_path).read_text())
+        self.assertEqual(manifest["upstreams"]["fake-openai"]["key_file"], path)
+        self.assertEqual(manifest["upstreams"]["fake-openai"]["key_env"], "")
+        self.assertNotIn("key_file", manifest["upstreams"]["fake-anthropic"], "recorded only when it is set")
+        self.assertEqual(manifest["upstreams"]["fake-anthropic"]["key_env"], "FAKE_ANTHROPIC_KEY")
+        files = [p for p in rig.dir.iterdir() if p.is_file()]
+        self.assertTrue(any(".bodies" in p.name for p in files))
+        for file in files:
+            self.assertNotIn(FILE_KEY.encode(), file.read_bytes(), f"the file key is in {file.name}")
+
+    def test_a_key_echoed_in_a_successful_body_is_replaced_for_a_file_key_too(self):
+        path = make_key_file(self, FILE_KEY)
+        body = openai_chat_body(100, 50)
+        body["choices"][0]["message"]["content"] = "key is " + FILE_KEY
+        rig = Rig(self, environ=ENVIRON_ANTHROPIC_ONLY, openai_key=key_file_line(path), openai=FakeUpstream(answer(body)),
+                  gateway_extra="log_bodies = true")
+        status, _, received = rig.chat()
+        self.assertEqual(status, 200)
+        self.assertNotIn(FILE_KEY.encode(), received)
+        self.assertNotIn(FILE_KEY.encode(), Path(rig.cfg.body_log_file).read_bytes())
+
+    def run_main(self, line: str, environ=ENVIRON_ANTHROPIC_ONLY):
+        with tempfile.TemporaryDirectory() as tmp:
+            config = Path(tmp) / "gw.toml"
+            config.write_text(toml_config(str(Path(tmp) / "meter.jsonl"), "http://127.0.0.1:1/v1", "http://127.0.0.1:1/v1",
+                                          openai_key=line))
+            out, err = io.StringIO(), io.StringIO()
+            with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err), \
+                    unittest.mock.patch.object(mg.GatewayServer, "serve_forever", side_effect=KeyboardInterrupt):
+                code = mg.main(["--config", str(config), "--port", "0"], environ)
+            return code, out.getvalue(), err.getvalue()
+
+    def test_main_starts_with_a_good_key_file_and_says_where_the_key_came_from_not_what_it_is(self):
+        path = make_key_file(self, FILE_KEY + "\n")
+        code, out, err = self.run_main(key_file_line(path))
+        self.assertEqual(code, 0, err)
+        self.assertIn(f"key read from the file {path}", out)
+        self.assertNotIn(FILE_KEY, out + err)
+
+    def test_main_refuses_to_start_on_a_key_file_others_can_read_and_prints_no_key(self):
+        path = make_key_file(self, FILE_KEY + "\n", 0o644)
+        code, out, err = self.run_main(key_file_line(path))
+        self.assertEqual(code, 2)
+        self.assertIn(path, err)
+        self.assertNotIn(FILE_KEY, out + err)
+        self.assertEqual(out, "", "nothing was started")
+
+
 # --------------------------------------------------------------------------- the documentation stays true
 
 
@@ -1447,6 +1914,13 @@ class DocumentationTests(unittest.TestCase):
         self.assertEqual(set(cfg.models), {"fake-small", "fake-embed", "fake-claude"})
         self.assertEqual(cfg.cap, Decimal("2.5"))
         self.assertEqual(cfg.currency, "FAKE-USD")
+        self.assertEqual(cfg.models["fake-small"].output_limit_default, 4096)
+
+    def test_the_keys_added_for_a_paid_pilot_and_their_rules_are_documented(self):
+        for key in ("allow_request_defaults", "output_limit_default", "key_file", "key_env", "request_defaults"):
+            self.assertIn(f"`{key}`", self.DOC)
+        for phrase in ("max_completion_tokens", "mode 600", "may still bill a generation it completed", "stage A checks it"):
+            self.assertIn(phrase, self.DOC)
 
     def test_every_log_field_is_documented_and_nothing_else(self):
         section = self.DOC.split("## The log", 1)[1].split("Other files", 1)[0]
