@@ -1,0 +1,459 @@
+---
+type: page
+order: 3
+updated: 20261102 23:45 UTC
+---
+
+# X2: the index cost of cheap graph builders
+
+This page answers one question: how many model calls and how many [tokens](../index/token.md) does each of four cheap [knowledge-graph](../index/knowledge-graph.md) builders use per document, on the same documents with the same model? It records the frozen inputs, the free rehearsals against a stub model, pass A (complete: two small local models answered the builders, one on all four, one on LightRAG alone) and pass B, a written plan whose free work (stage 0) is partly built. **Nothing paid has run, nothing is approved to run and nothing has been spent.** The archive holds the full tables and any later update: [pass-a-local-model.md](../../kb-kg/experiments/x2-index-cost/pass-a-local-model.md), whose results have not changed since archive commit `9d61077` (one sentence on a helper's test count was corrected at `d824716`), and [pass-b-plan.md](../../kb-kg/experiments/x2-index-cost/pass-b-plan.md), read again at commit `15ccdea` (committed 20261102 22:53 UTC), with the history of the plan in the section on pass B [31][53][56][65][67].
+
+## The question
+
+The archive's survey of cheaper graph building lists five ways to cut the cost of building a graph with a [large language model](../index/large-language-model.md), and finds that "measured index cost is absent from most card entries" [51][52]. X2 fills that gap for four builders: [LightRAG](../projects/lightrag.md), [nano-graphrag](../../kb-kg/projects/nano-graphrag.md), [Microsoft GraphRAG](../projects/microsoft-graphrag.md) and [fast-graphrag](../../kb-kg/projects/fast-graphrag.md). It measures calls, input and output tokens, and wall-clock time per document. It does not measure quality, and it does not rank the builders [51]. Its per-document figure is what a later matched-cost comparison (X3) would be priced from [51]. The chapter's other experiments are on the [chapter page](README.md).
+
+## Method
+
+The design, as the proposal states it [51]:
+
+- **Same documents, one model per comparison.** Each builder indexes the same documents, with one fixed small model and each builder's own default settings. "Same settings" therefore means each builder's own defaults, which differ.
+- **Counted by a gateway, not by the builder.** Every call passes through a local metering gateway that logs the provider's own usage fields in one common record, so tokens are not estimated from text [5][51].
+- **Two passes.** Pass A uses a local model, which costs no money; it is done. Pass B would use a hosted small model under a spending cap the owner sets: the model and the cap are chosen (OpenAI gpt-6-luna with reasoning off, USD 3 in total, D-30), **not yet approved to run; stage 0 (free work) under way**. The archive's plan marks the gateway change, the hosted setup for the four runners, the watchdog and the free pre-flight as built and checked against fake providers (status table of `3eede85`). Its commit `15ccdea` adds the stage-A script, checked against a fake provider by its author; the plan's status table still lists that item as in progress. A stage driver is in progress and the dress rehearsal is still to come, as that table says. See the [pass-B plan](../../kb-kg/experiments/x2-index-cost/pass-b-plan.md) and the section on pass B below [51][53][55][56][65].
+- **Free groundwork first.** Before any model ran, the 20 documents were frozen, the four builders were installed in throwaway environments with pinned versions, and each was rehearsed against a stub model server that counts what arrives [5][51].
+
+The instruments that the archive lists for this (a stub server, a statistics helper, the gateway, four pass-A runners and, for pass B, a hosted setup, a watchdog, a pre-flight and a stage-A script) were tested and deliberately broken by their authors. This page re-ran only their unit tests, on 20261102 23:32 to 23:35 UTC at `15ccdea`, and they pass; the [instruments page](instruments.md) has the counts and what was not re-run [5][56][57][62][66].
+
+## The frozen documents
+
+The documents are articles from the corpus of [MultiHop-RAG](../datasets/multihop-rag.md), a news dataset built for [multi-hop question answering](../index/multi-hop-question-answering.md) [3]. The data is hosted as the Hugging Face dataset `yixuantt/MultiHopRAG`, whose files include `corpus.json`, and its card states the licence ODC-By [1]. X2 uses the corpus documents and takes no quality measurement, so the benchmark's queries are not used (this page's inference from the proposal's method and data lines [51]). See also the [dataset page](../datasets/multihop-rag.md).
+
+**The rule.** Rank every article by the SHA-256 of its URL, written as lowercase hexadecimal, and keep the 20 smallest. It needs no random generator and no judgement. The archive says the rule was fixed before the result was looked at; that ordering cannot be checked from the repository [5]. The file `corpus.json` at revision `71ac0d0bd1f951d2d6b70311f7d2ae404e1ffa82` has SHA-256 `20b61b5ab84de84a927420c5d265b7ec8d859ae49980699958a787ade9e4d28f`, and the dataset's current revision is still that one [1][2].
+
+**Re-checked.** An independent script re-ranked the 609 articles on 20261102 and reproduced the 20 URLs in the frozen order [2][4]. The same script gave these totals, which match the archive [2][5]:
+
+| Item | Value |
+|---|---|
+| Articles in the corpus | 609, 6,297,171 characters of body text; median article 7,836 characters |
+| The 20 documents | 191,571 characters and 32,453 words; mean 9,579 characters; shortest 5,112, median 8,156.5, longest 22,011 |
+| Share of the corpus | about 3.0% by characters (arithmetic) |
+| Mix by category | technology 6, sports 6, science 3, entertainment 3, business 2 |
+| Publication dates | 20230928 to 20231224 [4] |
+
+The list holds identifiers and sizes only. The article text comes from publishers whose terms were not checked, so it is never committed, here or in any log [5].
+
+*Reading:* a rule that cannot see the text cannot favour a builder, but 20 news articles of about 1,600 words each (mean; 32,453 words over 20 articles) are one small, homogeneous sample. They say little about long documents, code or tables.
+
+## The four builders
+
+Versions and licences were re-read on 20261102 19:40 to 19:41 UTC; the PyPI entries of nano-graphrag and fast-graphrag and the GitHub release pages were read again at 20:15 UTC. The `LICENSE` file of each project was fetched at the exact tag or commit that was run, and its SHA-256 equals the hash the archive recorded for the installed copy [6][7][8][9][20][21][22][23].
+
+| Builder | Version run | Released or committed | Licence (from the `LICENSE` file) | State on 20261102 |
+|---|---|---|---|---|
+| LightRAG | `lightrag-hku` 1.5.7, tag commit `28ff1b0` | 20260902 07:23 UTC | MIT, "Copyright (c) 2025 LightRAG Team" [6] | Still the latest release; last push 20261029 [10][16] |
+| nano-graphrag | PyPI 0.0.8.2 (head of `main` is `acb35c0`) | PyPI 20241019; latest GitHub release v0.0.8 20241001 | MIT, "Copyright (c) 2024 Gustavo Ye" [8] | Last push 20260127 [12][14][17] |
+| Microsoft GraphRAG | `graphrag` 3.3.0, tag commit `5faaaf4` | 20261008 18:28 UTC | MIT, "Copyright (c) Microsoft Corporation." [7] | Still the latest release; last push 20261102 07:24 UTC [11][18] |
+| fast-graphrag | commit `23b3a1b` (no release or tag) | 20251101 20:45 UTC | MIT, "Copyright (c) 2024 circlemind-ai" [9] | No release or tag; PyPI 0.0.5 from 20250404; last push 20251101 [13][15][19] |
+
+What each does at its defaults, from the archive's rehearsals:
+
+| Builder | Chunks | Model calls per chunk | Corpus-level calls |
+|---|---|---|---|
+| LightRAG [20] | 1,200 tokens, overlap 100 | 1 extraction, 1 [gleaning](../index/gleaning.md) | Summaries only when a merged description has many fragments or grows long |
+| nano-graphrag [21] | 1,200 tokens, overlap 100 | 1 extraction, 1 "continue" | [Community reports](../index/community-report.md) for the largest connected component |
+| Microsoft GraphRAG [22] | 1,200 tokens, overlap 100 | 1 extraction, 1 continuation | Description summaries; one report per community at every level |
+| fast-graphrag [23] | 3,200-character windows, overlap 400 | 1 extraction | Summaries when a merged description exceeds 512 characters; no communities |
+
+All four were tested on Python 3.12 on Apple Silicon and installed from wheels, except `hnswlib` (nano-graphrag and fast-graphrag), which was built locally [20][21][22][23].
+
+## The stub rehearsals side by side
+
+Each builder indexed the 20 documents against a loopback stub that answers in the builder's own format and counts what it receives. No model, no key, no network, no money [20][21][22][23]. The stub's "shape B" answer is a plausible one: about 6 entities and 5 relations per chunk, written separately for each builder's format [5]. Every figure below was checked against the committed result files on 20261102 19:45 UTC [24][25][26][27].
+
+| Builder | Chunks | Chat calls | Chat prompt tokens | Per document (arithmetic) | Embedding inputs |
+|---|---|---|---|---|---|
+| LightRAG | 49 | 98 | 299,901 | 4.9 calls, 14,995 tokens | 497 |
+| nano-graphrag | 49 | 146 | 421,152 | 7.3 calls, 21,058 tokens | 234 |
+| Microsoft GraphRAG | 47 | 207 | 400,764 | 10.3 calls, 20,038 tokens (without the command line's one connectivity test) | 305 |
+| fast-graphrag | 80 | 80 | 187,783 | 4.0 calls, 9,389 tokens | 374 |
+
+**How to read it.** The table is not like for like: chunk sizes differ, so fast-graphrag makes 80 chunks from the same text where the others make 47 to 49. Prompt tokens are the stub's own count (`cl100k_base`), not any provider's, and only the input side is counted, so no cost follows from it [5][20][21][22][23]. Chunk counts and extraction calls do not depend on what a model says; summaries, community reports and the size of "continue" prompts do, and are counts for the stub's answers only [20][21][22][23].
+
+**Three findings from reading the code and the runs:**
+
+- LightRAG's gleaning is one extra pass whatever the setting, not up to n passes; its source comment says the pass runs "only 1 time when entity_extract_max_gleaning is greater than zero" [30][20].
+- fast-graphrag's gleaning never adds a call at the pinned commit. The continuation prompt is formatted with empty arguments while its system text needs a `{domain}` value, so the call fails and is caught [28][29][23].
+- The smallest valid answer, with no entities, is not valid for two builders: fast-graphrag raises on it and Microsoft GraphRAG stops after extraction [22][23].
+
+## Pass A on local models
+
+Pass A lets a real local model answer through the gateway, so that output tokens, retries and the calls that depend on the model's text become measurable. It costs no money, and its numbers are for two small local models: `granite4.2:8b` on all four builders, and `gemma4:12b` on LightRAG alone [31].
+
+### The first model, and why its hidden thinking was switched off
+
+The owner chose `granite4.2:8b` from a shortlist the archive built by size and family, not by measured quality [31]. The Ollama library lists it at 5.3 GB with a 128K context window under the Apache 2.0 licence, and the first line of the licence layer in the registry reads "Apache License Version 2.0, January 2004" (whitespace normalised) [41][42][43]. The installed copy has 8.8 billion parameters at Q4_K_M quantisation and reports `tools`, `thinking` and `completion` among its capabilities [31][32]. Embeddings come from `qwen3-embedding:0.6b` (639 MB); the Ollama page and manifest state no licence for it, so its licence is **unstated** here [44][45].
+
+Two traps in Ollama's documentation would have distorted the numbers [31]:
+
+1. **Context length.** Ollama's default depends on video memory: 4k tokens under 24 GiB, 32k from 24 to 48 GiB, 256k from 48 GiB [37]. By that table a 32 GiB Mac falls in the 32k band; the archive nevertheless treats it as sitting "at the boundary" and does not rely on the default, and this page cannot say how much memory the GPU may use on that machine [31]. The OpenAI-compatible endpoint the builders use cannot set the context per request [31]. The fix was a derived model with an explicit 16,384-token [context window](../index/context-window.md), and the runners refuse to start unless the model reports at least that [31].
+2. **Thinking.** Many recent models write reasoning before the answer. Ollama's Modelfile reference has no parameter to switch this off, and its native chat API has a `think` field that the OpenAI-compatible endpoint the builders use does not take [39][40][38]; the builders send neither. The archive read the model's library card as showing no thinking label and proposed the model for that reason; that was wrong, because the installed model reports `thinking` [31][32]. The card's text now lists thinking among the family's features [41]. The gateway therefore gained an opt-in table of request defaults, valid in the version used for pass A only for local upstreams without a key (gateway 1.1.0 can allow it on a keyed upstream; see pass B), which adds `reasoning_effort: "none"` to every chat request and names the added field in each call's record [5][31][59]. Ollama's compatibility page lists `reasoning_effort` as a supported request field [38].
+
+The archive measured the effect with one question, "list three prime numbers greater than 50", on the derived model at 20261102 14:27 UTC [31]:
+
+| Setting | Time | Completion tokens |
+|---|---|---|
+| Default | 17.1 s | 278 |
+| `reasoning_effort: "none"` | 0.3 s | 8 |
+| `"low"` | 0.8 s | 15 |
+| `"medium"` | 22.7 s | 598 |
+| `"high"` | 9.5 s | 253 |
+
+One question, one run per cell, so the sizes are not a measurement of real work: "none" and "low" are short, the default, "medium" and "high" are long and slow [31]. The consequence for reading everything below is stated by the archive: the builders see a model answering without its reasoning step, as a small non-thinking hosted model would [31]. The archive repeated the question on `gemma4:12b` at 19:50 UTC: 243 tokens by default, 10 tokens with `"none"`, and 207 to 262 with `"low"`, `"medium"` or `"high"`; for that model only "none" was short [31].
+
+A derived model caps an answer at 6,144 tokens, because one Microsoft GraphRAG answer kept generating past 15,700 tokens before the cap existed and the builders set no output limit [31].
+
+### One document each
+
+Each builder indexed the first document of the frozen list (two to three chunks) on granite, 20261102 14:42 to 15:31 UTC [31].
+
+| Builder | Result | Chat calls (stub) | Prompt tokens (stub) | Output tokens (stub) | Wall time |
+|---|---|---|---|---|---|
+| LightRAG | indexed | 4 (4) | 14,595 (11,558) | 3,296 (798) | 162 s |
+| nano-graphrag | **failed** | 4 (7) | 15,570 (17,930) | 5,891 (1,810) | 266 s |
+| Microsoft GraphRAG | indexed | 27 (9) | 30,479 (17,246) | 22,463 (1,525) | 1,090 s |
+| fast-graphrag | indexed | 4 (3) | 13,901 (6,831) | 5,609 (932) | 272 s |
+
+nano-graphrag needs five fields in a relationship record. The model wrote the last delimiter as `|>` instead of `<|>` in every one, so no relationship was parsed, the graph had no edges and the clustering step raised `EmptyNetworkError` [31]. The same failure occurred again at document 1 in the full run [35].
+
+### The full run, and the owner's narrowing
+
+The owner chose every builder to 20 documents (option B in the archive), one builder at a time, with two concurrent requests; the run started at 20261102 15:38 UTC [31][50]. The archive's arithmetic estimated 66 minutes for LightRAG's 20 documents. It took 105 minutes, and the archive then put the rest of option B at about 16 hours. At 18:28 UTC the owner replied "5 docs only", so Microsoft GraphRAG was restarted with checkpoints at 1 and 5 documents and a second fast-graphrag run was cancelled [31][50]. The 20-document figure therefore exists for LightRAG alone.
+
+### What landed on the first model
+
+The first model finished at 20261102 19:41 UTC [34]. These figures are read from the result files committed in the archive's `pass-a/` folder, one per builder, at archive commit `66fe6c0` on 20261102 20:15 UTC; the four files are unchanged since commit `8f780f8`, the version this page first used (checked with `git diff`, 20:16 UTC), and the whole `pass-a/` folder is unchanged at the pass-B plan's commit `9d61077` [32][33][34][35][54]. The archive page has the full tables [31]. In every run below, every call returned HTTP 200, no usage field was missing and no call was voided [32][33][34].
+
+**At 5 documents, the same five documents for the three builders that got there**
+
+| Builder | Chat calls | Input tokens | Output tokens | Embedding inputs | Wall time | Stub: calls, input, output | Output vs stub |
+|---|---|---|---|---|---|---|---|
+| LightRAG | 18 | 66,543 | 24,290 | 398 | 1,161 s | 18, 53,448, 3,636 | 6.7 times |
+| fast-graphrag | 18 (3 were retries) | 52,264 | 19,457 | 176 | 874 s | 15, 34,125, 4,670 | 4.2 times |
+| Microsoft GraphRAG | 91 (1 is the connectivity test) | 107,005 | 70,204 | 126 | 3,242 s | 29, 59,050, 4,418 | 15.9 times |
+| nano-graphrag | stopped at document 1 | | | | | | |
+
+Sources: result files [32][33][34][35], stub figures [24][26][27]; ratios are arithmetic. fast-graphrag's wall time is the sum of its per-document times. Microsoft GraphRAG indexes in batch, so its 5-document figure is a separate fresh run, not a continuation of its 1-document run [31]. Its 91 calls include 69 description summaries (63 for entities, 6 for relationships) where the stub's answers triggered 6, and 3 community reports where the stub's graph gave 4 [34][26].
+
+**LightRAG to 20 documents** (the only builder with a 20-document result)
+
+| Documents | Chat calls | Input tokens | Output tokens | Wall time | Entities stored | Embedding inputs |
+|---|---|---|---|---|---|---|
+| 1 | 4 | 14,595 | 3,296 | 158 s | 29 | 59 |
+| 5 | 18 | 66,543 | 24,290 | 1,161 s | 203 | 398 |
+| 20 | 100 (49 extraction, 49 gleaning, 2 summaries) | 401,109 | 135,391 | 6,321 s | 1,023 | 2,107 |
+| Stub at 20 | 98 | 299,901 | 19,371 | | 207 | 497 |
+
+Sources: [32], stub row [24]. At 20 documents that is 5.0 calls, 20,055 input tokens and 6,770 output tokens per document (arithmetic). The real output is 7.0 times the stub's. The run logged 234 entity lines and 104 relation lines with the wrong number of fields (dropped, nothing asked again), and 3 answers cut at the 6,144-token cap [32][20]. Across the whole granite pass, 11 of 292 chat answers hit the cap [49].
+
+**fast-graphrag to 13 documents**
+
+| Documents | Chat calls | Input tokens | Output tokens | Wall time | Entities stored |
+|---|---|---|---|---|---|
+| 1 | 4 (1 retry) | 13,902 | 5,601 | 262 s | 42 |
+| 5 | 18 (3 retries) | 52,264 | 19,457 | 874 s | 176 |
+| 13 | 53 (8 retries) | 154,525 | 56,380 | 2,533 s | 504 |
+
+The 13-document row is the 14-document checkpoint minus document 14 (arithmetic); the archive's row for that checkpoint (60 calls, 176,572 input and 66,278 output tokens, 49.7 minutes) includes document 14's wasted calls [31][33]. Document 14 made 7 calls (22,047 input and 9,898 output tokens) in 449 s and stored nothing: the library's `insert` returned without an exception while none of the document's 4 chunks was stored. The runner flags that and stopped, so fast-graphrag has no 20-document figure [33]. The archive's rehearsal had shown this mode with the stub: one chunk answered in invalid JSON drops the whole document silently while the other chunks' calls are still paid for [23][31].
+
+**Microsoft GraphRAG, 1 document, twice.** The archive's first run made 27 chat calls and 30,479 input tokens in 1,090 s. The run inside the full pass, on the same document, same model and same listed settings, made 37 calls (23 entity and 6 relationship summaries, 3 community reports, 2 extraction, 2 continuation, 1 connectivity test), 43,594 input and 22,889 output tokens in 1,097 s [31][34]. Nano-graphrag's two failed one-document runs differ in output too (5,891 and 10,815 tokens), while LightRAG's two were identical in tokens [31][32][35]. The model file fixes temperature 0 and seed 42 [32]. Why runs differ is **unstated**: it was not investigated.
+
+### A second model, on LightRAG only
+
+After the first model finished, the owner chose a second local model. The archive picked `gemma4:12b`: a different family (Google, where granite is IBM's), 12.4 billion parameters, and a licence layer whose opening reads "Apache License Version 2.0, January 2004" (whitespace normalised; only the opening was read, here and in the archive) [31][46][48]. It ran **LightRAG only**, to 1 and 5 documents, 20261102 19:51 to 20:02 UTC, with the same derived-copy parameters (16,384 context, 6,144-token cap, temperature 0, seed 42), the same thinking switch and the same LightRAG arguments as granite [31][36]. The decision log records it as D-28 [49].
+
+**The two models differ in backend as well as in model.** The pull installed an MLX build (safetensors, NVFP4, 7.7 GB, runner `mlx`), where the tag's registry manifest lists the GGUF Q4_K_M build of 8.02 GB. The registry shows the plain tag `12b` with the same layers and 8.02 GB total as `12b-it-q4_K_M`, and `12b-mlx` at 7.71 GB (sums of layer sizes, read 20:16 UTC) [46][47]. That the installed copy is the MLX build, and that granite runs on llama.cpp, come from the archive's `ollama show` and server log, which this page did not re-run [31]. So a difference between the two models is not only the model. Two further consequences, from the archive [31]:
+
+- The MLX runner logged that structured output is unavailable. LightRAG sends no `response_format`, so this run is unaffected; Microsoft GraphRAG and fast-graphrag ask for one, so they were not run on this build.
+- The MLX runner honoured the Modelfile's answer cap: two answers ended at exactly 6,144 tokens although LightRAG sends no `max_tokens`.
+
+| LightRAG | granite4.2:8b (llama.cpp, Q4_K_M) | gemma4:12b (MLX, NVFP4) |
+|---|---|---|
+| 1 document: chat calls, input, output tokens | 4, 14,595, 3,296 | 4, 18,673, 7,788 |
+| 5 documents: chat calls | 18 | 18 |
+| 5 documents: input tokens | 66,543 | 72,098 |
+| 5 documents: output tokens | 24,290 | 25,070 |
+| 5 documents: output in first extraction, in gleaning | 13,176, 11,114 | 19,401, 5,669 |
+| 5 documents: entities, relationships stored | 203, 186 | 271, 218 |
+| 5 documents: wall time | 1,161 s | 669 s |
+| Answers cut at the cap, of 18 | 1 (3 of 100 at 20) | 2 |
+| Lines with the wrong number of fields | 64 (40 entity lines, 24 relation lines; 338 over 20 documents) | 5 (all relation lines) |
+
+Sources: [32][36]. The cap and wrong-field rows are the `lightrag_warning_counts` of each result file's checkpoint-5 snapshot, which count from the start of the run; granite's 20-document snapshot equals the run total of 338 and 3 truncations, which is how the 5-document counts were read as cumulative. The archive page says granite's 338 lines "cannot be compared at 5 documents" because the warnings are not split by checkpoint [31]; the result file does hold them per checkpoint, so this page gives them [32][36]. Arithmetic: gemma's 5-document output is 3.2% above granite's (25,070 against 24,290), its input is 1.35 times the stub's 53,448 against granite's 1.25 times, its output is 6.9 times the stub's 3,636 against granite's 6.7 times, and its 1-document output is 2.4 times granite's.
+
+*Reading:* the two models differed about 13 times in format slips at 5 documents (64 wrong-field lines against 5, arithmetic) while their output volume agreed within about 3%, so equal volume does not mean equally well-formed answers. Granite's 64 include 40 entity lines; gemma logged none of that kind. The counts are LightRAG's own warnings, one draw each, with model and backend confounded.
+
+*Reading:* at 5 documents the two models agree on output volume within about 3% and on the call count, even though they split the output differently (gemma wrote longer first answers and shorter gleaning answers, and stored more entities). At 1 document they do not agree, because two of gemma's first answers were long. One draw each, on one builder, with model and backend confounded: this shows that output volume was not wildly model-specific for LightRAG at 5 documents, not that it is stable. Nothing separates model from backend; the archive lists a run of the same model on the llama.cpp build as an open option [31].
+
+### What the runs showed
+
+*Reading:* three things stand out, each from one machine, a few models and one sample.
+
+- **The stub's output was too small, by a factor of 4 to 16.** The earlier tables could count input but not output, and granite wrote 4.2 to 15.9 times the stub's output tokens at 5 documents. Gemma on LightRAG wrote 6.9 times. A hosted model will differ again.
+- **Calls that depend on the model's text can dominate.** LightRAG's call count tracks the chunk count (about 2 per chunk) and matched the stub, on both models. Microsoft GraphRAG's grew with description summaries, 69 where the stub triggered 6.
+- **A small model's formatting slips cost builders unequally.** nano-graphrag stopped, fast-graphrag silently lost a document, LightRAG logged 338 lines with the wrong number of fields over 20 documents on granite (64 within the first 5, against 5 on gemma) and carried on [32][33][35][36].
+
+Wall time, first call to last call, is the honest time figure, because summed per-call latency includes waiting in Ollama's queue [31]. It is still a time on one machine, not a cost.
+
+### Per document, for planning, and what the archive lists next
+
+The archive gives per-document figures at each builder's largest checkpoint "for planning a paid run": the local model's own tokens, rounded, including each builder's fixed costs, so not a per-chunk rate [31]. The 20 documents hold 49 chunks [31].
+
+| Builder and model | Checkpoint | Input tokens per document | Output tokens per document |
+|---|---|---|---|
+| LightRAG, granite | 20 documents | about 20,100 | about 6,800 |
+| fast-graphrag, granite | 5 documents | about 10,500 | about 3,900 |
+| Microsoft GraphRAG, granite | 5 documents | about 21,400 | about 14,000 |
+| LightRAG, granite and gemma | 5 documents | 13,300 to 14,400 | 4,900 to 5,000 |
+| nano-graphrag | none | no figure: it stopped in document 1 | |
+
+The same page ends with four options, none started when it was written: (A) the same gemma model on the llama.cpp backend (`gemma4:12b-it-q4_K_M`, 8.02 GB), LightRAG to 5 documents, free, about 25 minutes, which would separate model from backend; (B) plan the paid pilot, which needs nothing until the owner approves a cap; (C) another builder on gemma, after checking that the MLX runner copes with `response_format`; (D) move on to X4 [31]. Option B became the plan described below, which the owner asked for. At archive commit `15ccdea` the resume file still points to the pass-A page for the other options and records no later run of them [50][58].
+
+## Pass B: a plan, not a run
+
+The archive's plan for the paid pilot was written at 20261102 20:24 UTC and revised at 20:39 UTC after an independent review: a fresh agent fetched the sources and recomputed the numbers, and the plan lists what changed [53]. It says in its first lines: "No paid call has been made, nothing is approved, nothing has been spent." That sentence is still there at `15ccdea`. The owner asked for the plan after pass A. Under decision D-14 a paid step starts only on the owner's explicit yes with model, provider and cap. At `9d61077` the decision log had no row for the plan; its last row was D-28 [49][53][56]. Everything below is the plan's content or the archive's status of its free work, not a result. Prices and provider facts are as the plan's author read them between 20:19 and 20:36 UTC; they were not read again for this page [53].
+
+**The archive has moved on since.** At commit `40fe751` (committed 20:50 UTC) the owner's reply "gpt-6-luna, USD 3" of 20:49 UTC is recorded as D-30. Decisions 1 and 2 below are chosen; decisions 3 to 7 are open; no paid call is allowed yet; free work (stage 0) has started [55]. Six commits followed on the same day: `1e1b37c` (21:12 UTC, gateway version 1.1.0), `3657dab` (21:40 UTC, a watchdog and a free pre-flight), `f4c28b2` (22:08 UTC, a hosted setup for the four runners), `3eede85` (22:10 UTC, a status section in the plan), `d824716` (22:48 UTC, corrections to five inconsistencies in the archive's own pages) and `15ccdea` (22:53 UTC, the stage-A script) [60][65]. At `15ccdea`, read 23:31 to 23:36 UTC, `DECISIONS.md` is unchanged since `40fe751` (D-30 still says the free work "has started"), the plan's header still lists decisions 3 to 7 as open, and the plan has changed since `40fe751` in two places only: its new section "Stage 0 status" (`3eede85`, still dated 22:10 UTC) and one row of its facts table (`d824716`, below) [56][58][63][67]. The commit that added the stage-A script edited neither the plan, `RESUME.md` nor the X2 `README.md` [65][67]. The rest of this section is the plan as written, with the status of its free work added where it applies.
+
+### What it asks, and what it does not answer
+
+**The question.** What does it cost, in calls, tokens and money, to build a graph for the same 20 documents with each cheap builder on one hosted small model, on each builder's own defaults except the departures listed below? Pass A measured tokens for two local models; a hosted model writes differently, and only a hosted run gives a price [53].
+
+**Not answered:** which builder is better (no quality measurement), anything about another model, and the cost at corpus scale beyond arithmetic from the 20 documents. A run on the other provider is a separate, labelled run with its own yes (decision D-24) [53].
+
+### The decisions it needs from the owner
+
+The plan lists seven. At `9d61077` none was taken; since `40fe751` decisions 1 and 2 are chosen as recommended (D-30) and 3 to 7 are open, and they are still open at `15ccdea` [53][55][56][58][67]. The plan states its recommendation and the cost of it for each [53].
+
+| # | Decision | The plan's recommendation | Cost or caveat, as the plan states it |
+|---|---|---|---|
+| 1 | Provider and model (chosen: OpenAI `gpt-6-luna`, reasoning off, D-30 [55]) | OpenAI `gpt-6-luna`, reasoning off (`reasoning_effort: none`), Chat Completions. Alternatives: Anthropic `claude-haiku-5-5` through its OpenAI-compatibility layer with thinking disabled; OpenAI `gpt-5-nano`; stay local | Pass A's request shapes are ordinary Chat Completions, and the price equals Haiku 5.5's up to 100,000-token prompts. Reasoning has to be switched off by a field the builders cannot send, so the gateway must change (F1 below; built since, in gateway 1.1.0 [56]). Haiku cannot run two of the four builders. `gpt-5-nano` is cheaper, but its prices reached the plan's author only through a page summariser |
+| 2 | Cap (chosen: USD 3 in total, the same stage limits, D-30 [55]) | USD 3 in total, with stage limits A 0.10, B 0.20, C 0.60, D 1.50 (sum 2.40; the other 0.60 is kept for a repeat after a fault) | The ladder costs about USD 0.9 at the central estimate and about 1.6 with output doubled, so 3 is about 3 and 2 times those. A bigger cap buys nothing; a smaller one makes the gateway's pessimistic reservations refuse calls. The plan states USD because both pages it read are in USD; the owner's earlier cap was in EUR |
+| 3 | Sending article text to the provider | Yes or no | The 20 articles go to the provider's API. The dataset is ODC-By 1.0; the publishers' own terms were not checked; the text is never committed. OpenAI's data page keeps abuse-monitoring logs "up to 30 days" and does not train on API data unless the owner opts in. Anthropic's terms are not read yet. "No" means staying local |
+| 4 | Embeddings | Local `qwen3-embedding:0.6b`, as in pass A (alternative: OpenAI `text-embedding-3-small`) | Free, no second key, the same for every builder. Hosted would cost about USD 0.002 for LightRAG's 20 documents (116,890 tokens at USD 0.02 per million, arithmetic). "Cost per document" is then a hosted measurement plus an arithmetic term |
+| 5 | Builders | All four, in this order: LightRAG, fast-graphrag, Microsoft GraphRAG, nano-graphrag | nano-graphrag stopped in document 1 in both its `granite4.2:8b` runs (a delimiter slip); a hosted model may not slip, and if it does it stops there for cents |
+| 6 | Key and a hard limit | A new key for this pilot only (a file only the owner can read, outside any repository, read by the gateway itself, never printed), and a hard spending limit at the provider (a project budget or a prepaid balance of at most the cap), or the owner's statement that none exists | Required before stage A. The gateway counts a timed-out or dropped call as zero, but the provider may still bill a generation it finished, so the gateway cap alone is not a guarantee. Whether OpenAI's console offers a project limit is **unstated** in the plan. The owner deletes the key afterwards. The gateway's route for reading a key from a file is built (`key_file`, `1e1b37c`); the key itself and the limit are the owner's and still open [56][59] |
+| 7 | How many yeses | Two: one for stages A to C (about USD 0.3 at the central estimate, at most 0.9 by the limits), then one for stage D with C's numbers in hand. The alternative is one yes for everything | Stage D is the largest cost and the first at which a surprise would be expensive |
+
+### Facts the plan stands on
+
+| Fact | The plan's source and read time (UTC, 20261102) |
+|---|---|
+| Claude Haiku 5.5: USD 0.10 per million input tokens and 0.50 output for prompts up to 100,000 tokens (above that 0.50 and 2.50). Claude Sonnet 5.5: 2 and 10 | Anthropic pricing page, 20:19 |
+| `gpt-6-luna`: USD 0.10 input, 0.50 output, 0.01 cached input, 0.125 for a 30-minute cache write and 0.25 for a 12-hour one, per million tokens. Regional-processing endpoints cost a further 10%. The plan's reviewer reports a long-context tier above 272,000 input tokens and a doubled "Fast" price; prompts here are a few thousand tokens | OpenAI pricing page (raw text) and the model's page, 20:20 and 20:35 |
+| `gpt-5-nano` 0.05 and 0.40; `gpt-4o-mini` 0.15 and 0.60; `text-embedding-3-small` 0.02 per million. Only through a page summariser; the raw page text held only the `gpt-6-luna` rows | OpenAI pricing page, 20:19 |
+| `gpt-6-luna`: Chat Completions supported, embeddings not; context 1,050,000 tokens, maximum output 128,000; reasoning on by default at effort `medium`, `none` supported; "structured outputs" listed. Whether `json_object`, `max_tokens`, `temperature` and `seed` are accepted is not stated on that page | OpenAI model page, between 20:19 and 20:23 |
+| Claude Haiku 5.5: thinking on by default; `thinking: {"type": "disabled"}` accepted at effort `high` or below; thinking tokens billed as output even when not returned; a non-default `temperature`, `top_p` or `top_k` returns a 400 on every request | Anthropic thinking page, between 20:19 and 20:23 |
+| Anthropic's OpenAI-compatibility layer: `response_format` accepts only `json_schema` with `strict: true` (`json_object` returns a 400); prompt caching unsupported; `usage.*_details` always empty; `reasoning_effort` ignored; no embeddings endpoint listed; "not considered a long-term or production-ready solution" | Anthropic OpenAI-SDK page, between 20:19 and 20:23 |
+| OpenAI data use: abuse-monitoring logs retained for up to 30 days by default; API data not used for training unless the owner opts in; the page names no opt-in location and no project spend limit | OpenAI data-controls page, 20:36 |
+| What the builders really send. Pass A's body logs: LightRAG and nano-graphrag's extraction calls send only `messages`; fast-graphrag sends `response_format: json_object` on all 60 calls; Microsoft GraphRAG sends `json_schema` with `strict: true` on 6 of 128 calls (community reports). From the installed source, not seen in a log because nano-graphrag stopped in document 1: nano-graphrag sends `max_tokens` 500 on entity summaries and `json_object` on community reports; fast-graphrag's summaries send `max_tokens: null`. None sends `temperature` | Pass A's runs; nano-graphrag 0.0.8.2 source; the rehearsal pages of nano-graphrag and fast-graphrag |
+| The gateway before stage 0 (version 1.0.0), as the plan's row now words it: a model needs a price source and read time; `request_defaults` is refused on any upstream that has a key; no output-limit default is injected, so a call without `max_tokens` is reserved at `default_max_output_tokens` (1,024 unless the config sets another value; the pass-A and hosted configs set 4,096) and may cost more (recorded as `reserve_exceeded`); a timed-out, dropped or non-2xx call is recorded as zero cost; the default upstream timeout is 120 s; the log holds no `finish_reason` and no reasoning-token count (those are in the response body, logged only with `log_bodies`). **Version 1.1.0 (`1e1b37c`) adds** `allow_request_defaults` per upstream, `output_limit_default` per model and `key_file` per upstream, and the plan below describes that version. This row was corrected at `d824716`: before it, the row began "The gateway today", which the commit message says described version 1.0, and gave 4,096 as the reservation for a call without a limit [53][65] | The plan's row; this page checked the 1,024 in the gateway's code and sample config and the 4,096 in the two config writers at `15ccdea` [59][61] |
+
+The plan draws three consequences [53]:
+
+- **Hidden reasoning is the main hazard.** Both providers' small models reason by default and bill it as output, as `granite4.2:8b` did locally (17 s and 278 tokens against 0.3 s and 8 for one question). The builders cannot send the field that turns it off, so the gateway would have to add it, and when the plan was written it refused to on a paid upstream, on purpose (the plan's paragraph still says "today it refuses to", unchanged at `15ccdea`, although its facts row and status section now describe version 1.1.0). Gateway 1.1.0 adds it only for an upstream whose own config says so [53][59]. See the [instruments page](instruments.md).
+- **Two builders cannot run on Claude through that layer** (next section).
+- **The cap is not a full guard.** A call the gateway voided can still have been billed.
+
+### The builders that cannot run through a compatibility layer
+
+Anthropic's OpenAI-compatibility layer accepts a `response_format` only as `json_schema` with `strict: true`; `json_object` returns a 400 [53]. fast-graphrag sends `json_object` on every call seen in pass A, and nano-graphrag's source sends it on community reports. The plan therefore excludes both from a Claude repeat, and for the same reason counts `claude-haiku-5-5` as unable to run two of the four builders [53]. LightRAG's extraction calls send only `messages`, and Microsoft GraphRAG sent a strict `json_schema` on 6 of 128 calls [53]. Whether those two run through the layer was not tested.
+
+The plan describes the Anthropic repeat as separate, later and needing its own yes [53]:
+
+- `claude-haiku-5-5` with `thinking: {"type": "disabled"}` added as a gateway default. The field is documented natively and **untested through the layer**, which ignores `reasoning_effort`.
+- No prompt caching and no reasoning-token detail in `usage`, so the stage-A and watchdog checks on reasoning tokens would have nothing to read. The provider's console would be the only check.
+- Embeddings stay local. The prices equal `gpt-6-luna`'s up to 100,000-token prompts, but the tokenizers differ, so the cost table applies as arithmetic only.
+
+### What it costs: arithmetic, not measurement
+
+Tokens are pass A's (`granite4.2:8b`'s own tokenizer; a hosted model's counts differ). LightRAG is measured at 20 documents. The others are scaled by characters: the first 5 documents hold 32,458 of the 20's 191,571 characters (factor 5.90) and the first 13 hold 101,871 (factor 1.88). LightRAG, the one builder measured at both sizes, grew 6.0 times in input and 5.6 in output from 5 to 20 documents. nano-graphrag has no run past one document: its input is the stub count, and its output a guess between LightRAG's output-to-input ratio (0.34) and its own single document's (0.70, which included a capped answer); the middle (0.52) is used. Prices are `gpt-6-luna`'s; embeddings are local and free [53].
+
+| Builder | Input tokens | Output tokens | How scaled | USD for 20 documents, output x0.5 / x1 / x2 |
+|---|---|---|---|---|
+| LightRAG | 401,109 | 135,391 | measured | 0.074 / 0.108 / 0.176 |
+| fast-graphrag | 331,955 | 124,603 | 13-document run x 1.88 | 0.064 / 0.095 / 0.158 |
+| Microsoft GraphRAG | 631,330 | 414,204 | 5-document run x 5.90 | 0.167 / 0.270 / 0.477 |
+| nano-graphrag | 421,152 | 218,999 | stub input; output ratio 0.52 | 0.097 / 0.152 / 0.261 |
+| **All four** | | | | **0.402 / 0.625 / 1.072** |
+
+With nano-graphrag's ratio at 0.34 or 0.70 the central total is 0.587 or 0.663. Microsoft GraphRAG's summaries may grow faster than characters; that is not in the number [53].
+
+| Stage | Central estimate (output x1) | Output x2 | Limit | Stop at |
+|---|---|---|---|---|
+| A (at most 12 calls) | at most 0.02 | | 0.10 | 0.10 |
+| B: 1 document, four builders | 0.030 | 0.051 | 0.20 | 0.09 |
+| C: 5 documents, four builders, twice | 0.235 | 0.404 | 0.60 | 0.60 |
+| D: 20 documents, four builders | 0.625 | 1.072 | 1.50 | 1.50 |
+| **Ladder** | **0.91** | **1.55** | 2.40 | |
+
+"Stop at" is the lower of the stage limit and 3 times the stage's central estimate. Stage B uses pass A's measured one-document tokens, which carry each builder's fixed costs [53].
+
+- **Headline unit.** LightRAG at `gpt-6-luna` is about USD 0.0054 per document, 5.4 per thousand documents, and about 3.5 for the whole 609-article corpus (extrapolated by characters, 32.9 times the 20) [53].
+- **For scale.** At Claude Sonnet 5.5 (USD 2 and 10) the same four builders would cost about 12.5 at the central estimate, so a mid-tier model needs a different cap and is not what X2 asks for [53].
+- **The worst single call** at `gpt-6-luna` is a 128,000-token answer, USD 0.064; with the output limit below, 6,144 tokens, USD 0.003 [53].
+- **What moves it.** The output length of a hosted model (pass A: 4 to 16 times the stub's, and one run does not repeat another exactly), retries (the SDK's and the library's; pass A's agents counted 2 and 7 for Microsoft GraphRAG), billing of calls the gateway voided, and reasoning left on [53].
+
+The arithmetic above was recomputed for this page from the plan's inputs and the 20 sizes in `documents.tsv`; the plan's totals, factors and the 5.4 and 3.5 headline figures reproduce [4][53].
+
+*Reading:* two points of the plan's input are weaker than its totals suggest, and both are this page's checks, not the archive's.
+
+- **The fast-graphrag row mixes two checkpoints.** Its tokens (331,955 and 124,603) are the 14-document checkpoint (176,572 and 66,278), which includes the wasted calls on document 14, multiplied by the factor for 13 documents (1.88). Scaling this page's 13-document row (154,525 and 56,380) by 1.88 gives about 290,600 input and 106,000 output tokens and a central cost near USD 0.082 against the plan's 0.095, so the central total would be about 0.61 rather than 0.625 [33][53]. The difference is small next to the output uncertainty.
+- **nano-graphrag's input is the stub's, not a measurement.** For the three builders that got to 5 documents, pass A's input ran 1.25, 1.53 and 1.81 times the stub's (arithmetic from [32][33][34] and the stub figures). nano-graphrag stopped in document 1, so the direction for it is unknown.
+
+### The ladder, and what is fixed in advance
+
+| Stage | What | Gate to the next |
+|---|---|---|
+| 0 | Free work (next section) and the owner's actions: key, hard limit, a copy of the stage-A requests | The free tests pass |
+| A | The gateway meets a real provider: at most 12 calls (a ping; one recorded request of each kind from pass A replayed; requests synthesised from the builders' source for the shapes pass A never logged; then a gateway with a tiny cap, where a call must be refused and nothing forwarded) | Every call 200; reasoning off accepted and no reasoning tokens in any response body; `json_object`, `json_schema` and `max_tokens` accepted, or the rejection recorded as the builder being incompatible; the usage object checked for cache-write fields; **the console's usage page agrees with the gateway's total to rounding**, the only independent check |
+| B | One document per builder, one builder at a time | All four finish or fail with a recorded reason; spend under its "stop at"; no answer past the output limit |
+| C | Five documents per builder, twice (independent runs, because one run does not repeat another) | The spread between the two runs is recorded, not hidden. "Passed C" for a builder means both runs finished, every call returned 200, and no stop rule fired on it |
+| D | Twenty documents per builder that passed C | Needs the second yes |
+
+Fixed for every stage, so that nothing is chosen after a result [53]:
+
+- **One ledger.** One log directory for the whole pilot; each stage starts the gateway with `--resume` and a cap of the lower of the stage limit and USD 3 minus what the log already shows spent. Builders run one at a time, in the order of decision 5. Stage 0 corrected how the cap is written: a resumed gateway compares its cap with the whole log's spend, so the cap in the gateway's config is the ledger's spend plus the run's allowance (what that run may spend), and the pre-flight returns both numbers [56].
+- **Concurrency 4** for every builder (pass A used 2). The gateway reserves the worst case for every call in flight, so Microsoft GraphRAG's default of 25 at once would hold about USD 0.09 in reservations, nearly half of stage B's limit. The account's rate limits are **unstated** in the plan. This departs from "each builder's own defaults", and the results will say so.
+- **Output limit 6,144 tokens**, injected by the gateway when the builder sets none: the value pass A used, so truncation is comparable, and above the longest answer that ended normally there (3,093).
+- **Upstream timeout 900 s** (the default 120 s would void long answers that the provider may still bill).
+- **A request shape the model rejects is a result.** The builder is recorded as incompatible with this model; nobody changes its request to make it pass.
+- **The one repeat after a fault** (the unused USD 0.60) is allowed only when a stop rule fired for a harness or provider reason, the cause is fixed and written down, and the earlier numbers are kept. Never to get a better result.
+
+**Stop rules.** Stop everything and report on any provider error other than one retried 429 or 5xx; any gateway refusal; a call whose usage is missing; reasoning tokens where none are expected; a stage's spend past its "stop at"; more than 5% of answers ended by the output limit; more than 5% of requests repeated identically; more than 3 voided calls in a stage. The plan says the percentages and the count are its author's choices, written before any run. A builder that fails by its own fault (exit not zero, the provider answered 200) is a result; the other builders of the stage continue. No run is repeated to get a better result [53]. The watchdog built in stage 0 (item F7, `3657dab`) applies these as eight rules with the same percentages and count as defaults and tolerates one 429 or 5xx per run. The code applies the two share rules (answers ended by the output limit, repeated requests) only once at least 20 answers or 20 requests have been seen, a minimum the plan's text does not state [61][53].
+
+### Free work before the first paid call
+
+At `9d61077` none of it was built. At `40fe751` the archive said the work had started and `tools/` was unchanged, so nothing was committed [55]. At `3eede85` the plan gained a section "Stage 0 status", dated 20261102 22:10 UTC, and it is unchanged at `15ccdea`. It says that builder agents built the items marked done, that the archive's author verified them (tests re-run, the new pieces driven against a real gateway process and a fake provider, deliberate breakages of the author's own), and that **nothing built here has met a real provider** [56][67]. The plan's table has not caught up with `15ccdea`, which built the stage-A script (item F3); the rows below and the next subsections describe it [65].
+
+| # | Item | Done when (the plan) | State: the plan's table (22:10 UTC), then later commits [56][65] |
+|---|---|---|---|
+| F1 | Gateway: allow `request_defaults` on a keyed upstream only when that upstream's config says so; a separate per-model output-limit key, injected as the provider's own field before the reservation is computed and named in `request_defaults_applied`; the cache-write price set from the pricing page | Tests pass, including that the reservation equals the injected limit and that a client's own limit wins; a deliberate break of each rule turns a test red | **Done**, `1e1b37c` (gateway 1.1.0, 124 tests): `allow_request_defaults` (part a), `output_limit_default` (part b) and `key_file`, added during the work so that the gateway reads the key itself. Part c, the cache-write price, is not named in the status table: **unstated** |
+| F2 | A hosted setup for the four runners (chat upstream with the key variable, real prices with source and read time, the cap, timeout 900 s, body logs on; embeddings stay local). Only the gateway process gets the key | Each runner completes against a fake paid upstream and reproduces the stub rehearsal's counts; a canary test with a distinctive fake key finds it in no environment, argument list, log, result file or stderr | **Done**, `f4c28b2`: `--hosted-profile` on the four runners; they reproduce their rehearsals through a fake paid upstream, and the canary key appears only in its key file [56][60] |
+| F3 | The stage-A replay script and a durable, owner-only copy of the roughly dozen requests it needs, outside the repository and outside the session's scratch directory | It sends nothing without the stage's cap loaded and runs against the fake upstream first | **Script built, not yet marked done.** The plan's table says "In progress" with no commit. Commit `15ccdea` (22:53 UTC) added `tools/exp/passb_stage_a.py` with 55 tests, and its message names the work "plan item F3" (see the subsections below). The program writes the requests file (mode 600, refused inside the repository); whether the owner's durable copy exists is **unstated**: the message says `extract` was run on the real pass-A logs, not where its output went [64][65] |
+| F4 | A free pre-flight that prints expected tokens times price and the cap, and refuses if the estimate exceeds the stage's "stop at" | It refuses an over-cap case in a test | **Done**, `3657dab`: it returns the run's allowance and the cumulative cap for the gateway config |
+| F5 | Provider terms: OpenAI's data page is read; Anthropic's is read before any repeat | Both quoted with read times | OpenAI's data page is read (in the plan's facts table); Anthropic's only before a repeat |
+| F6 | A dress rehearsal of the whole ladder against the fake paid upstream, including a run that hits the cap and a run where calls are voided | It stops at the cap and writes a complete log | **Not built.** The plan's table says "After F3 and F8". F3's script now exists, so by that wording the stage driver (F8) is what is still open, plus whatever F3 still lacks; the plan does not say so, this is this page's reading [56][65] |
+| F7 | A watchdog beside every paid stage that polls the gateway's summary and reads response bodies for reasoning tokens and finish reasons, and stops the runner and the gateway when a stop rule fires | A fake upstream producing each condition makes it stop within one poll | **Done**, `3657dab`: it also stops whole process groups |
+| F8 (added to the plan) | The stage driver: the pre-flight, the run profile, the runner in its own session, the watchdog beside it, reports | The plan states no test for it | **In progress**; no commit. The message of `15ccdea` does not mention it [56][65] |
+
+Source of the table: the plan's list [53], its status section [56] and the message and code of `15ccdea` [64][65]. The "Done when" column is as the plan wrote it before the work. The status section does not say item by item that each of those tests was met; it says the items marked done were verified in the way described above.
+
+What the commit messages say each change was checked against, and what they say was not tested [60][65]:
+
+- `1e1b37c` (gateway 1.1.0). The 124 tests (36 new) were re-run. The real gateway was driven by hand against a fake provider: the key arrived in the header, the body carried the reasoning switch and an output limit of 6144, a client's own limit and effort won, the recorded reservation equalled the author's formula and the cost equalled tokens times price, and no file or output held the key. The builder's 42 mutants left two survivors (one equivalent, one ineffective and redone) and the author's seven were all killed. **Not checked:** any real provider, and whether OpenAI accepts `max_tokens` null beside `max_completion_tokens`.
+- `3657dab` (watchdog and pre-flight). The 137 tests (83 and 54) were re-run, green on Python 3.11 to 3.15; the real watchdog beside the real gateway 1.1.0, a fake provider and a runner with a child process left three clean calls alone and, on a response with reasoning tokens, exited in 0.2 s with the gateway, the runner and its child gone and no response text or key in its report. The pre-flight printed USD 0.0300, 0.1175 and 0.6252 for one run of stages B, C and D, equal to the author's arithmetic; the plan's central estimates are 0.030, 0.235 for two runs of C (twice 0.1175, arithmetic) and 0.625 [53]. **Not tested:** Linux, and the watchdog beside a real runner of a builder.
+- `f4c28b2` (hosted setup). The full `tools/exp` suite (237 tests) and the gateway suite were re-run, and the author's own LightRAG validation gave 92 checks with 0 different: a run that used up its cap stopped with a recorded failure, the provider received only the forwarded calls, and spend stayed under the cap. Through a fake paid upstream, calls by kind and tokens at 1, 5 and 20 documents equal the committed rehearsals for all four runners, and the provider got the reasoning switch and the output limit on every chat call. **Not tested:** any real provider; two runs on one ledger at once; a builder sending its own `max_tokens` (nano-graphrag's 500) through the hosted path.
+- `15ccdea` (the stage-A script, item F3). Written by a builder agent; the archive's author re-ran its 55 tests, ran `extract` on the real pass-A logs and the whole `run` against a fake provider of the author's own, and scanned every output for the key and for article text. Against the fake provider the dry run created nothing and sent nothing; `--send` made 10 calls at USD 0.0016; the refusal test passed with one refused record and nothing forwarded; the provider saw `reasoning_effort` set to `none` on all 10 requests and the injected output limit on 9 (the tenth, nano-graphrag's entity summary, carries its own `max_tokens`, which wins); neither the key nor any of 11 article phrases appears in the result or the output. Of the builder's mutants, 46 of 46 were killed on the second run (four survived on the first and were fixed with new tests). **Not verified:** any real provider (the message says whether OpenAI accepts these shapes "is exactly what stage A is for") and the comparison with the provider's console, which the program cannot make and prints instructions for.
+
+Three changes to the plan came out of the work, which the status section calls all in the direction of safer: the pre-flight returns two numbers (the run's allowance and the cap for the gateway config); the watchdog takes `--since`, so that a stage's counts and spend ignore earlier stages on the shared ledger; and the run profile refuses a zero price [56]. **A residual risk, stated plainly in the plan:** the key file is readable by any process of the same user, including the builders, which run as that user. What is guaranteed is that the key is never handed to them (not in their environment, arguments, logs or results; the canary test checks this), not that a hostile builder could not open the file [56].
+
+### The stage-A procedure as built
+
+`tools/exp/passb_stage_a.py` has two subcommands and uses the standard library only. Its header says what each does; the points below are from that header and from its code at `15ccdea` [64]:
+
+- **`extract`** (free, local, no network) picks the first recorded request of each kind from the pass-A gateway logs (for Microsoft GraphRAG an extraction, not the 49-character model check that opens its log) and adds requests written from the builders' source with dummy data and no article text: a ping, nano-graphrag's entity summary with `max_tokens` 500 and its `json_object` community report, and fast-graphrag's summary with `max_tokens: null`. At most 10 requests go into a JSON file of mode 600. The program refuses a path inside the repository (a worktree's primary checkout included) and a file that already exists; under a temporary or scratch directory it only warns. The file holds article text and has to be kept in a durable private place [64][65].
+- **`run`** is a dry run unless `--send` is given: it prints each request's name, size and worst-case cost by the gateway's reservation formula, and the caps, then exits having started nothing and written nothing. With `--send` it first refuses to start unless the profile's allowance is within the stage cap (USD 0.10) and the pilot cap (USD 3 less what the ledger already holds), the worst-case total fits the allowance, and the requests file is private and outside the repository. It then starts the hosted gateway and reads its summary back, to confirm that the gateway loaded the cap this run computed, before anything is sent. The program never opens the key file [64].
+- **The calls.** Each request goes once through the gateway. A 429 or 5xx from the provider is retried once, after 5 s. The run stops at once on a 401 or 403, on any other unexpected status, on a gateway refusal, on a missing usage object, on a rejected ping, on a 429 or 5xx that persists after the retry, or when spend passes USD 0.10. A 400 or 422 on any request after the ping is a result, recorded as incompatible, and the run goes on without altering the request. At most 11 attempts are forwarded, so that the refusal test is the twelfth call. The program applies these stop conditions itself and does not use the watchdog (this page's reading: the module does not mention it) [64].
+- **The refusal test.** If the calls ended without a stop, a second gateway on a throwaway ledger, with an allowance of USD 0.0001 and an upstream that is a loopback port nothing listens on, is sent the largest request. It must answer 429 `gateway_budget_exceeded`, and the throwaway ledger must hold exactly one record: a refusal with no tokens, zero cost and not voided. A call that had been forwarded would show tokens, a cost or a void, or would fail as a 502, so a broken refusal cannot reach the provider [64].
+- **What it records.** `stage-a-result.json`, mode 600, holds per call the status, the model the provider reports, the finish reason, the token counts (reasoning tokens included), the names of the usage fields, the gateway's cost and the fields it added, and for a rejection the error type, code, parameter name and message length. Then it holds the plan's gates as booleans and lists: every call 200 or a recorded incompatibility; the reasoning switch accepted and reasoning tokens reported and zero on every answer (this page's reading of the code: an answer that lacks the field fails that gate); the injected limit present wherever the client set none; each request shape (`json_object`, `json_schema`, `max_tokens`, `max_tokens` null) with the requests accepted and rejected; usage present; whether any usage field name concerns cache writes; the refusal test; and cost within the stage cap. No request or response text, key or path is in the file. Exit status is 0 when every request was sent, the refusal test passed and no stop fired, 3 when a stop fired or the refusal test failed, and 2 when it refused to start [64].
+- **What it cannot do.** It cannot read the provider's console, which the plan makes the one check independent of the gateway; its output tells whoever runs it to compare the console's request count and total with the gateway's by hand, and that the refused call must not appear there [64][53].
+
+This page re-ran the 55 unit tests (all pass, 36 s, 20261102 23:32 to 23:33 UTC) and did not re-run the author's other checks. It could not run `extract`, because the pass-A gateway logs hold article text and are not in the repository; the archive's `pass-a/` folder holds result files only [66][64].
+
+### What the plan records, and what it cannot show
+
+It records, for every call, the gateway's record and the response body log (finish reason, usage details); per run, the builder version and pin, the model name the provider reports, the prices with source and read time, the settings and departures from defaults, and the result file as in pass A. Body logs hold article text and stay outside the repository. The provider console's totals are recorded next to the gateway's [53].
+
+It cannot show the quality of any graph, another model or the other provider, behaviour at corpus scale beyond arithmetic, anything about non-news text, or a single account's rate limits and tier (**unstated**). Because the builders keep their own chunking and prompts, its table is not like for like, and pass A's token counts only bracket the hosted model's [53].
+
+## What the experiment cannot show
+
+- **Output tokens of a hosted model.** Pass A measures two local models, quantised, with thinking off: granite (8.8 billion parameters) on four builders and gemma (12.4 billion) on LightRAG only, on two different backends. A hosted model writes differently [31].
+- **Quality.** A weaker model extracts less, so graph size and everything downstream (summaries, reports) may differ from a hosted run's. X2 has no quality measurement by design [31][51].
+- **A ranking.** Each builder runs on its own defaults, in its own chunk sizes, and nano-graphrag has no result on granite at all [20][21][22][23][35].
+- **A rate.** The rows are single draws on 20 (or 5, or 13) news articles, and the same document gave different counts on a repeat. A second model agreed within 3% at 5 documents and not at 1, so neither "a rate" nor "model-independent" is shown [31][32][36].
+- **Model against backend.** The second model changed both at once [31].
+- **Speed elsewhere.** Wall time is for one machine; speed on another machine, or while other work uses this one, is unknown, and the cap on answer length bites at an unmeasured frequency [31].
+- **Money.** No price has been measured. Every cost on this page is arithmetic: the plan's figures use a local model's token counts, scaled by characters, at prices the plan's author read [53].
+- **Anything about a real provider's endpoints.** The gateway has not met one, and nothing built for pass B has, the stage-A script included [31][53][56][65].
+- **Maintenance.** nano-graphrag's last GitHub release is 20241001 (PyPI 20241019), and fast-graphrag has no GitHub release or tag (PyPI 0.0.5, 20250404); the numbers say nothing about whether either will be updated [12][13][14][15][17][19].
+- **Query-time cost.** Only indexing is counted [20][21][22][23].
+
+## Sources
+
+1. https://huggingface.co/api/datasets/yixuantt/MultiHopRAG : dataset revision `71ac0d0b…`, licence `odc-by`, file list (read 20261102 19:41 UTC)
+2. https://huggingface.co/datasets/yixuantt/MultiHopRAG/resolve/71ac0d0bd1f951d2d6b70311f7d2ae404e1ffa82/corpus.json : file SHA-256, 609 articles, 6,297,171 characters; selection rule and totals recomputed independently (read 20261102 19:41 UTC)
+3. https://arxiv.org/abs/2401.15391 : MultiHop-RAG paper, first version 20240127 (read 20261102 19:46 UTC)
+4. [documents.tsv](../../kb-kg/experiments/x2-index-cost/documents.tsv) : the 20 URLs, sizes, categories, dates (archive file, read 20261102 19:37 UTC)
+5. [X2 README](../../kb-kg/experiments/x2-index-cost/README.md) : frozen items, groundwork tools, rehearsal table and its limits (archive page, read 20261102 19:37 UTC; status line read again 20:15 UTC at commit `66fe6c0` and 20:46 UTC at `9d61077`, where it adds a pointer to the pass-B plan; read again 22:31 UTC at `3eede85`, where its status line still says "Nothing paid has run" and describes the plan as "not approved", and its tool rows now include the pilot's tools, see Source 57; read again 20261102 23:34 UTC at `15ccdea`, where the status line is unchanged, the row for the pass-A helper gives 23 tests and no row names the stage-A script)
+6. https://raw.githubusercontent.com/HKUDS/LightRAG/28ff1b05f2ac3f3e6fa14dd2cd33656579bd0c9c/LICENSE : MIT, SHA-256 `0c169245…a1984` (read 20261102 19:40 UTC)
+7. https://raw.githubusercontent.com/microsoft/graphrag/5faaaf4f5685fa2056fa8c3bf9342cb089f2942f/LICENSE : MIT, SHA-256 `c2cfccb8…5383` (read 20261102 19:40 UTC)
+8. https://raw.githubusercontent.com/gusye1234/nano-graphrag/acb35c0/LICENSE : MIT, SHA-256 `e76d815c…959cd9` (read 20261102 19:40 UTC)
+9. https://raw.githubusercontent.com/circlemind-ai/fast-graphrag/23b3a1bef64338faf9f35c521a20465dbd09419f/LICENSE : MIT, SHA-256 `1774ff21…3875` (read 20261102 19:40 UTC)
+10. https://api.github.com/repos/HKUDS/LightRAG : releases, tags, commits and `pushed_at` of LightRAG (read 20261102 19:41 UTC)
+11. https://api.github.com/repos/microsoft/graphrag : releases, tags, commits and `pushed_at` of Microsoft GraphRAG (read 20261102 19:41 UTC)
+12. https://api.github.com/repos/gusye1234/nano-graphrag : `pushed_at` and commits of nano-graphrag (read 20261102 19:41 UTC)
+13. https://api.github.com/repos/circlemind-ai/fast-graphrag : commits, `pushed_at`, no release and no tag (read 20261102 19:41 UTC; a re-read at 20:15 UTC was refused by the API's rate limit, so item 15 stands in for the absence of a release)
+14. https://github.com/gusye1234/nano-graphrag/releases/tag/v0.0.8 : the target of `releases/latest`; released 20241001 16:00 UTC (read 20261102 20:15 UTC)
+15. https://github.com/circlemind-ai/fast-graphrag/releases : `releases/latest` redirects here and the page says there are no releases (read 20261102 20:15 UTC)
+16. https://pypi.org/pypi/lightrag-hku/json : latest PyPI version and upload time of LightRAG (read 20261102 19:41 UTC)
+17. https://pypi.org/pypi/nano-graphrag/json : latest version 0.0.8.2, uploaded 20241019 13:06 UTC (read 20261102 20:15 UTC)
+18. https://pypi.org/pypi/graphrag/json : latest PyPI version and upload time of Microsoft GraphRAG (read 20261102 19:41 UTC)
+19. https://pypi.org/pypi/fast-graphrag/json : latest version 0.0.5, uploaded 20250404 08:16 UTC (read 20261102 20:15 UTC)
+20. [LightRAG rehearsal page](../../kb-kg/experiments/x2-index-cost/rehearsal/lightrag.md) : pin, defaults, call structure, what depends on the model, install findings, limits (archive page, read 20261102 19:37 UTC)
+21. [nano-graphrag rehearsal page](../../kb-kg/experiments/x2-index-cost/rehearsal/nano-graphrag.md) : the same, for nano-graphrag (archive page, read 20261102 19:37 UTC)
+22. [Microsoft GraphRAG rehearsal page](../../kb-kg/experiments/x2-index-cost/rehearsal/microsoft-graphrag.md) : the same, for Microsoft GraphRAG (archive page, read 20261102 19:37 UTC)
+23. [fast-graphrag rehearsal page](../../kb-kg/experiments/x2-index-cost/rehearsal/fast-graphrag.md) : the same, for fast-graphrag (archive page, read 20261102 19:37 UTC)
+24. [LightRAG rehearsal result](../../kb-kg/experiments/x2-index-cost/rehearsal/lightrag.json) : stub figures of the side-by-side table and the stub rows used above (archive file, read 20261102 19:45 UTC)
+25. [nano-graphrag rehearsal result](../../kb-kg/experiments/x2-index-cost/rehearsal/nano-graphrag.json) : the same, for nano-graphrag (archive file, read 20261102 19:45 UTC)
+26. [Microsoft GraphRAG rehearsal result](../../kb-kg/experiments/x2-index-cost/rehearsal/microsoft-graphrag.json) : the same, for Microsoft GraphRAG (archive file, read 20261102 19:45 UTC)
+27. [fast-graphrag rehearsal result](../../kb-kg/experiments/x2-index-cost/rehearsal/fast-graphrag.json) : the same, for fast-graphrag (archive file, read 20261102 19:45 UTC)
+28. https://raw.githubusercontent.com/circlemind-ai/fast-graphrag/23b3a1bef64338faf9f35c521a20465dbd09419f/fast_graphrag/_services/_information_extraction.py : the gleaning call passes `format_kwargs={}` (read 20261102 19:47 UTC)
+29. https://raw.githubusercontent.com/circlemind-ai/fast-graphrag/23b3a1bef64338faf9f35c521a20465dbd09419f/fast_graphrag/_prompt.py : the system text contains `{domain}` (read 20261102 19:47 UTC)
+30. https://raw.githubusercontent.com/HKUDS/LightRAG/28ff1b05f2ac3f3e6fa14dd2cd33656579bd0c9c/lightrag/operate.py : lines 4217 to 4218, gleaning runs one time when the setting is above zero (read 20261102 19:47 UTC)
+31. [Pass A page](../../kb-kg/experiments/x2-index-cost/pass-a-local-model.md) : candidates, traps, the 14:27 thinking test, one-document results, the longer runs, the narrowing, the second model and the MLX build, limits (archive page; sections "Results of the longer runs", "A second local model" and "Where this leaves the owner" read again 20261102 20:46 UTC at `main` commit `9d61077`, and the page is byte-identical there to its state at `66fe6c0`, which an earlier read at 20:15 UTC used; a read at 19:52 UTC at commit `8f780f8` predates the second model)
+32. [pass-a/lightrag.json](../../kb-kg/experiments/x2-index-cost/pass-a/lightrag.json) : LightRAG on granite at 1, 5 and 20 documents, model parameters and capabilities, request default, and the warning counts per checkpoint (archive file, read 20261102 20:15 UTC at commit `66fe6c0`; the warning counts read 21:00 UTC at `9d61077`, where the file is unchanged)
+33. [pass-a/fast-graphrag.json](../../kb-kg/experiments/x2-index-cost/pass-a/fast-graphrag.json) : fast-graphrag on granite, checkpoints and the dropped document 14 (archive file, read 20261102 20:15 UTC at commit `66fe6c0`)
+34. [pass-a/microsoft-graphrag.json](../../kb-kg/experiments/x2-index-cost/pass-a/microsoft-graphrag.json) : Microsoft GraphRAG on granite, 1 and 5 documents; `finished_utc` 19:41 (archive file, read 20261102 20:15 UTC at commit `66fe6c0`)
+35. [pass-a/nano-graphrag.json](../../kb-kg/experiments/x2-index-cost/pass-a/nano-graphrag.json) : nano-graphrag on granite, the failure at document 1 (archive file, read 20261102 20:15 UTC at commit `66fe6c0`)
+36. [pass-a/second-model/lightrag-gemma4-12b.json](../../kb-kg/experiments/x2-index-cost/pass-a/second-model/lightrag-gemma4-12b.json) : LightRAG on gemma at 1 and 5 documents, start 19:51 and finish 20:02 UTC, warnings (archive file, read 20261102 20:15 UTC at commit `66fe6c0`; the warning counts read again 21:00 UTC at `9d61077`)
+37. https://docs.ollama.com/context-length : default context by video memory: under 24 GiB 4k, 24 to 48 GiB 32k, from 48 GiB 256k (read 20261102 20:15 UTC)
+38. https://docs.ollama.com/openai : `reasoning_effort` among supported request fields on the OpenAI-compatible endpoint (read 20261102 19:42 UTC)
+39. https://docs.ollama.com/modelfile : the Modelfile parameter list has no thinking switch (read 20261102 19:43 UTC)
+40. https://docs.ollama.com/capabilities/thinking : the native API has a `think` field (read 20261102 19:43 UTC)
+41. https://ollama.com/library/granite4.2 : 5.3 GB, 128K context, Apache 2.0, features now listing thinking (read 20261102 19:42 UTC)
+42. https://registry.ollama.ai/v2/library/granite4.2/manifests/8b : model layer 5,347,917,952 bytes; licence layer of 11,357 bytes (read 20261102 20:16 UTC)
+43. https://registry.ollama.ai/v2/library/granite4.2/blobs/sha256:58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd : the licence layer, which begins "Apache License Version 2.0, January 2004" (read 20261102 20:16 UTC)
+44. https://ollama.com/library/qwen3-embedding : 639 MB, no licence stated (read 20261102 19:43 UTC)
+45. https://registry.ollama.ai/v2/library/qwen3-embedding/manifests/0.6b : size, no licence layer (read 20261102 19:43 UTC)
+46. https://registry.ollama.ai/v2/library/gemma4/manifests/12b : plain tag, layers summing to 8.02 GB, identical to `12b-it-q4_K_M`; licence layer of 10,174 bytes (read 20261102 20:16 UTC)
+47. https://registry.ollama.ai/v2/library/gemma4/manifests/12b-mlx : layers summing to 7.71 GB (read 20261102 20:16 UTC)
+48. https://registry.ollama.ai/v2/library/gemma4/blobs/sha256:0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594 : the licence layer, which begins "Apache License Version 2.0, January 2004" (read 20261102 20:16 UTC)
+49. [DECISIONS.md](../../DECISIONS.md) : rows D-14, D-24, D-25, D-26, D-27 and D-28: experiment gating, the owner's constraints, Step 0, pass A on the first model, the narrowing, the 11 of 292 capped answers, and the second model with the MLX finding (archive file; D-14 to D-26 read 20261102 19:37 UTC, D-27 19:52 UTC, D-28 20:15 UTC at commit `66fe6c0`; rows D-25 to D-28 read again 20:46 UTC at `9d61077`, where the file is unchanged and its last row is D-28, so the pass-B plan has no row)
+50. [RESUME.md](../../RESUME.md) : the 18:28 narrowing and the run's start; says the second model on LightRAG followed at 20:02 UTC (archive file, read 20261102 19:37 and 19:52 UTC; again 20:15 UTC at commit `66fe6c0`; read again 20:46 UTC at `9d61077`, where item 2 of "Waiting on the owner" is the paid pilot: nothing approved, nothing spent, seven decisions, recommendation OpenAI `gpt-6-luna` with a cap of USD 3 and two yeses)
+51. [Experiments proposal](../../kb-kg/experiments/README.md) : the X2 question, method, data, models, cost, order and gates (archive page, read 20261102 19:37 UTC)
+52. [Eager to lazy graphs](../../kb-kg/directions/eager-to-lazy-graphs.md) : the five levers and the first gap (archive page, read 20261102 19:37 UTC)
+53. [Pass B plan](../../kb-kg/experiments/x2-index-cost/pass-b-plan.md) : the question, the seven decisions, the facts and prices it stands on, the cost arithmetic and stages, the free work, the stop rules, the Anthropic repeat and the builders excluded from it (archive page, written 20261102 20:24 UTC and revised 20:39 UTC; read 20261102 20:46 UTC at `main` commit `9d61077`, committed 20:40 UTC). Its provider facts and prices were read by the plan's author at 20:19 to 20:36 UTC and are not re-read here; its arithmetic was recomputed for this page
+54. Local `git diff --stat 66fe6c0 9d61077` in a checkout of the archive (not a public source; 20261102 20:45 UTC): only `RESUME.md`, the X2 `README.md` (3 lines added, the pointer to the plan) and `pass-b-plan.md` differ, so the pass-A page, the `pass-a/` result files, `DECISIONS.md` and `kb-kg/experiments/README.md` are the same at both commits
+55. [DECISIONS.md](../../DECISIONS.md), [RESUME.md](../../RESUME.md) and [pass-b-plan.md](../../kb-kg/experiments/x2-index-cost/pass-b-plan.md) : D-30 (the owner's reply "gpt-6-luna, USD 3", decisions 3 to 7 open, no paid call allowed, stage 0 started), item 2 of "Waiting on the owner", and the paragraph added at the head of the plan (archive files, read 20261102 21:00 UTC at `main` commit `40fe751`, committed 20:50 UTC). A local `git diff --stat 9d61077 40fe751` (not a public source, 21:00 UTC) lists only these three files
+56. [pass-b-plan.md](../../kb-kg/experiments/x2-index-cost/pass-b-plan.md) : at commit `3eede85` (committed 20261102 22:10 UTC; archive page, read 20261102 22:30 to 22:32 UTC) and again in full at `15ccdea` (committed 22:53 UTC; read 23:31 to 23:34 UTC): the header (D-30, decisions 3 to 7 open, "No paid call has been made, nothing is approved, nothing has been spent", "This is not yet the yes that starts a paid stage"), the unchanged tables of decisions, facts, costs, ladder, fixed rules and stop rules, and the section "Stage 0 status (updated 20261102 22:10 UTC)": the table of F1 to F8 with commits, the three changes to the plan, the residual risk of the key file, and "Nothing here has met a real provider". Between the two commits the only change to the file is its facts row on the gateway, corrected at `d824716`: it now reads "before stage 0 (version 1.0.0)", gives 1,024 as the default reservation for a call without a limit (the pass-A and hosted configs set 4,096) and says what version 1.1.0 adds. The status table still lists F3 as "In progress" with no commit
+57. [X2 README](../../kb-kg/experiments/x2-index-cost/README.md) : at `3eede85`, the rows for gateway 1.1.0 (124 tests), the hosted setup (45 tests, plus 23 for `passa_common.py`), the watchdog and the pre-flight (83 and 54 tests; 98 mutants plus 7, all killed; not tested on Linux) (archive page, read 20261102 22:31 UTC; read again 23:34 UTC at `15ccdea`, where the helper's row gives 23 tests after `d824716` and no row names the stage-A script)
+58. [RESUME.md](../../RESUME.md) and [DECISIONS.md](../../DECISIONS.md) : at `3eede85`, item 2 of "Waiting on the owner" (the owner chose `gpt-6-luna` with reasoning off and USD 3, D-30; article text, embeddings, builders, key with a provider-side limit and one yes or two still needed; no paid call starts before those are answered; free work under way; the other pass-A options on the pass-A page) and the tools row (archive files, read 20261102 22:31 UTC). `DECISIONS.md` is unchanged since `40fe751`. RESUME.md's header at `3eede85` still read "Last updated 20261102 20:49 UTC", older than the commit that edited it. Read again 23:34 UTC at `15ccdea`: `DECISIONS.md` is still unchanged since `40fe751`; RESUME.md's header reads "Last updated 20261102 22:48 UTC", the time of `d824716` (corrected there); item 2 of "Waiting on the owner" is unchanged and does not mention the stage-A script; the tools row lists the pass-A helper with 23 tests and no stage-A script. On the documentation branch, a later commit adds D-29 and a row about `docs/` to these two files and does not touch the X2 state; this page's statements about them are for the archive's main branch at `15ccdea`, which does not have that row
+59. [tools/metering_gateway.md](../../tools/metering_gateway.md) : at `3eede85`, version 1.1.0: `allow_request_defaults`, `output_limit_default`, `key_file`, the note that a provider may still bill a voided call, the 124 tests and the mutation check of 1.1.0, and what is unchecked (any real provider; `max_completion_tokens` beside a `null` `max_tokens`; `key_file` on macOS only); its status line is still "never used against a real provider" (archive page, read 20261102 22:31 UTC). Read again 23:34 UTC at `15ccdea`, after `d824716`: the "does not do" list now says the real key is in the gateway process's memory (from the environment or read from a `key_file`), that a `key_file` is readable by any process of that user, that the mode check refuses group and other access but does not check who owns the file, and that it was not tested as root; the unchecked list no longer says "No builder has been pointed at it" and says that pass A pointed all four builders at the gateway, against local models and with the stub; the status line is unchanged
+60. The messages of commits `1e1b37c` (committed 20261102 21:12 UTC), `3657dab` (21:40 UTC), `f4c28b2` (22:08 UTC) and `3eede85` (22:10 UTC), read with a local `git show` in a checkout of the archive (not a public source here, though the commits are in the public repository's history; read 20261102 22:31 UTC): what each change was checked against and what was not tested
+61. [tools/metering_gateway.py](../../tools/metering_gateway.py), [tools/exp/passa_common.py](../../tools/exp/passa_common.py), [tools/exp/passb_watchdog.py](../../tools/exp/passb_watchdog.py), [tools/exp/passb_preflight.py](../../tools/exp/passb_preflight.py) and [tools/exp/passb_common.py](../../tools/exp/passb_common.py) : at `3eede85`, the gateway's `default_max_output_tokens` default of 1024 and its version 1.1.0; at `15ccdea` (read 23:36 UTC; the files are unchanged since `3eede85`), the config text that `passa_common.py` and `passb_common.py` write, `default_max_output_tokens = 4096`; the watchdog's eight rules with defaults (5%, 5%, 3 voided, 1 tolerated 429 or 5xx, a minimum of 20 samples for the two share rules); the pre-flight's tables; the hosted setup's header (archive files, read 20261102 22:31 to 22:35 UTC; the thresholds and the gateway default read again 22:40 UTC)
+62. Local `python3 -B -m unittest` runs at `3eede85` (not a public source; 20261102 22:32 to 22:34 UTC): gateway 124 tests, statistics 17, stub 8, document selection 7, pass-A helper 23, hosted setup 45, pre-flight 54, watchdog 83, all OK; the cap check removed on a scratch copy turned 6 of the gateway's 124 tests red, and the unmodified copy was green. The same runs were repeated at `15ccdea`, see Source 66
+63. Local `git diff --stat 40fe751 3eede85` in a checkout of the archive (not a public source; 20261102 22:30 UTC): `RESUME.md`, the X2 `README.md`, `pass-b-plan.md`, the gateway (code, page, tests), `passa_common.py`, the four pass-A runners and the new `passb_*` files differ; `DECISIONS.md`, the pass-A page and the `pass-a/` result files do not. The plan's diff in that range is one added section; for the range to `15ccdea` see Source 67
+64. [tools/exp/passb_stage_a.py](../../tools/exp/passb_stage_a.py) and [tools/exp/test_passb_stage_a.py](../../tools/exp/test_passb_stage_a.py) : at `15ccdea` (committed 20261102 22:53 UTC), the module header (the `extract` and `run` subcommands, the dry run, the order of the `--send` steps, the refusal test, the result file, what the program cannot do, the exit statuses), the constants (stage cap USD 0.10, pilot cap USD 3, refusal allowance USD 0.0001, at most 10 requests, at most 12 calls, 11 forwarded attempts), the stop decisions (`judge`), the gates (`compute_gates`) and the refusal proof; 55 test functions (counted) (archive files, read 20261102 23:31 to 23:37 UTC)
+65. The messages of commits `d824716` (committed 20261102 22:48 UTC) and `15ccdea` (22:53 UTC), read with a local `git show` in a checkout of the archive (not a public source here, though the commits are in the public repository's history; read 20261102 23:31 UTC). `d824716` lists five corrections to the archive's own pages: the plan's default output limit (4,096 against the gateway's 1,024), the plan's facts row on the gateway (1.0), the gateway page's statement that no builder had been pointed at it and its "does not do" list without the key file, the pass-A helper's test count (13, 19 or 23; it is 23) and RESUME.md's date line. `15ccdea` is described as "plan item F3": what `extract` and `run` do, the author's checks against a fake provider (dry run; 10 calls at USD 0.0016; the refusal test; `reasoning_effort` on 10 of 10 requests and the injected limit on 9; no key and none of 11 article phrases in any output), 55 tests, 46 of 46 builder mutants killed on the second run, and what is not verified
+66. Local `python3 -B -m unittest` runs at `15ccdea` (not a public source; 20261102 23:32 to 23:35 UTC): gateway 124 tests, 9.9 s, OK; the whole `tools/exp` suite 292 tests, 70.7 s, OK (statistics 17, stub 8, document selection 7, pass-A helper 23, hosted setup 45, pre-flight 54, watchdog 83, stage-A script 55; counted test functions equal these). The stage-A script's 55 tests alone: OK in 36 s. On a scratch copy of the gateway with its tests and page, the unmodified copy ran 124 tests green, then the cap comparison replaced by `if False and ...` turned 6 of 124 red (23:35 UTC)
+67. Local `git log` and `git diff --stat` in a checkout of the archive (not a public source; 20261102 23:31 to 23:36 UTC): committed times `d824716` 22:48 UTC and `15ccdea` 22:53 UTC; from `3eede85` to `15ccdea` only `RESUME.md`, the X2 `README.md`, the pass-A page, `pass-b-plan.md`, `tools/metering_gateway.md` and the two new stage-A files differ (the gateway code, its tests and the other `tools/exp` files do not); `DECISIONS.md` last changed at `40fe751`; from `9d61077` the pass-A page differs by four lines only (the helper's test count) and the `pass-a/` result files not at all; from `40fe751` the plan differs by its status section and one facts row; `15ccdea` itself adds two files and edits none
