@@ -1,0 +1,124 @@
+repo	category	trends	note
+agiresearch/A-mem	agent-memory	agent-memory	
+robert-mcdermott/ai-knowledge-graph	core	llm-kg-construction	
+Mintplex-Labs/anything-llm	adjacent	infrastructure-and-mcp	
+basicmachines-co/basic-memory	markdown-kb	plain-file-knowledge	
+thedotmack/claude-mem	agent-memory	agent-memory	
+AgriciDaniel/claude-obsidian	markdown-kb	plain-file-knowledge	
+vitali87/code-graph-rag	adjacent	code-knowledge-graphs,graph-query-generation	
+tirth8205/code-review-graph	adjacent	code-knowledge-graphs	
+DeusData/codebase-memory-mcp	adjacent	code-knowledge-graphs	
+colbymchenry/codegraph	adjacent	code-knowledge-graphs	
+topoteretes/cognee	agent-memory	agent-memory	
+datastax/graph-rag	core	graph-based-rag	
+zjunlp/DeepKE	core	llm-kg-construction	
+langgenius/dify	adjacent	infrastructure-and-mcp	
+EverMind-AI/EverOS	agent-memory	agent-memory,plain-file-knowledge	
+FalkorDB/FalkorDB	adjacent	infrastructure-and-mcp	
+circlemind-ai/fast-graphrag	core	graph-based-rag	
+urchade/GLiNER	core	llm-kg-construction	
+LHRLAB/Graph-R1	core	learned-graph-traversal	
+Graphify-Labs/graphify	adjacent	code-knowledge-graphs,features-in-and-out	
+getzep/graphiti	agent-memory	agent-memory,features-in-and-out	
+FalkorDB/GraphRAG-SDK	core	graph-based-rag	
+deepset-ai/haystack	adjacent	infrastructure-and-mcp	
+vectorize-io/hindsight	agent-memory	agent-memory	
+OSU-NLP-Group/HippoRAG	core	graph-based-rag,agent-memory	
+plastic-labs/honcho	agent-memory	agent-memory	
+yifanfeng97/Hyper-Extract	core	llm-kg-construction	
+OpenSPG/KAG	core	graph-based-rag	
+Astro-Han/karpathy-llm-wiki	markdown-kb	plain-file-knowledge	
+khoj-ai/khoj	adjacent	infrastructure-and-mcp	
+kiwifs/kiwifs	markdown-kb	plain-file-knowledge	
+kuzudb/kuzu	adjacent	infrastructure-and-mcp,features-in-and-out	
+letta-ai/letta	agent-memory	agent-memory	
+HKUDS/LightRAG	core	graph-based-rag,features-in-and-out	
+DEEP-PolyU/LinearRAG	core	graph-based-rag	
+run-llama/llama_index	adjacent	infrastructure-and-mcp,graph-based-rag	
+neo4j-labs/llm-graph-builder	core	llm-kg-construction,graph-based-rag	
+SamurAIGPT/llm-wiki-agent	markdown-kb	plain-file-knowledge	
+atomicstrata/llm-wiki-compiler	markdown-kb	plain-file-knowledge	
+nashsu/llm_wiki	markdown-kb	plain-file-knowledge	
+lucasastorian/llmwiki	markdown-kb	plain-file-knowledge	
+chensyCN/LogicRAG	core	reasoning-over-structure	
+FlowElement-xinliuyuansu/m_flow	core	agent-memory,graph-based-rag	
+modelcontextprotocol/servers	adjacent	infrastructure-and-mcp	
+mem0ai/mem0	agent-memory	agent-memory,features-in-and-out	
+memgraph/memgraph	adjacent	infrastructure-and-mcp	
+MemMachine/MemMachine	agent-memory	agent-memory	
+MemoriLabs/Memori	agent-memory	agent-memory	
+MemTensor/MemOS	agent-memory	agent-memory	
+NevaMind-AI/memU	agent-memory	agent-memory,plain-file-knowledge	
+microsoft/graphrag	core	graph-based-rag,features-in-and-out	
+HKUDS/MiniRAG	core	graph-based-rag	
+Mirix-AI/MIRIX	agent-memory	agent-memory	
+gusye1234/nano-graphrag	core	graph-based-rag	
+neo4j/neo4j-graphrag-python	core	graph-based-rag,graph-query-generation	
+neo4j/neo4j	adjacent	infrastructure-and-mcp	
+breferrari/obsidian-mind	markdown-kb	plain-file-knowledge	
+Ar9av/obsidian-wiki	markdown-kb	plain-file-knowledge	
+okf-memory/okf-agent-memory	markdown-kb	plain-file-knowledge,agent-memory	
+monarch-initiative/ontogpt	core	llm-kg-construction	
+GoogleCloudPlatform/open-knowledge-format	markdown-kb	plain-file-knowledge	
+inkeep/open-knowledge	markdown-kb	plain-file-knowledge	
+VectifyAI/OpenKB	markdown-kb	plain-file-knowledge,reasoning-over-structure	
+volcengine/OpenViking	agent-memory	agent-memory,plain-file-knowledge	
+VectifyAI/PageIndex	core	reasoning-over-structure	
+HKUDS/RAG-Anything	core	graph-based-rag	
+infiniflow/ragflow	adjacent	infrastructure-and-mcp,reasoning-over-structure	
+semantica-agi/semantica	core	llm-kg-construction	
+supermemoryai/supermemory	agent-memory	agent-memory	
+surrealdb/surrealdb	adjacent	infrastructure-and-mcp	
+TencentCloud/TencentDB-Agent-Memory	agent-memory	agent-memory	
+tigerless-labs/agent-memory	markdown-kb	plain-file-knowledge,agent-memory	
+trustgraph-ai/trustgraph	core	llm-kg-construction	
+Egonex-AI/Understand-Anything	adjacent	code-knowledge-graphs	
+TencentCloudADP/youtu-graphrag	core	learned-graph-traversal,graph-based-rag	
+xerrors/Yuxi	core	graph-based-rag	
+getzep/zep	agent-memory	agent-memory,features-in-and-out	
+potpie-ai/potpie	adjacent	code-knowledge-graphs	
+redhat-et/ripwire	adjacent	code-knowledge-graphs	deterministic call graph
+zzet/gortex	adjacent	code-knowledge-graphs	
+pingcap/autoflow	core	graph-based-rag	pushed recently, no commits in 90 days
+raphaelmansuy/edgequake	core	graph-based-rag	
+apecloud/ApeRAG	core	graph-based-rag	multimodal
+benmaster82/Kwipu	core	graph-based-rag	
+OpenDCAI/DataMind	core	graph-based-rag	multimodal
+awslabs/graphrag-toolkit	core	graph-based-rag	vendor toolkit
+zilliztech/vector-graph-rag	core	graph-based-rag	LLM triplet extraction, no graph database
+stevereiner/flexible-graphrag	core	graph-based-rag	
+apache/hugegraph-ai	core	graph-based-rag	
+RaguTeam/RAGU	core	graph-based-rag	
+bibinprathap/VeritasGraph	core	graph-based-rag	
+yuezhiai/jonex	markdown-kb	graph-based-rag	multimodal
+FengZhenfei/carrel	core	llm-kg-construction	created 2026
+liliang-cn/cortexdb	core	llm-kg-construction	
+databrickslabs/ontobricks	core	llm-kg-construction	ontology-first
+HelixDB/helix-foundry	adjacent	llm-kg-construction	agent drafts the ontology; created 20261007
+stair-lab/kg-gen	core	llm-kg-construction	
+HKUST-KnowComp/AutoSchemaKG	core	llm-kg-construction	schema induction
+neo4j-labs/text2cypher	core	graph-query-generation	datasets and evaluations
+neo4j-contrib/neo4j-skills	core	graph-query-generation,plain-file-knowledge	
+RManLuo/gfm-rag	core	learned-graph-traversal	graph foundation model retriever
+DataArcTech/ToG	core	learned-graph-traversal	Think-on-Graph
+DataArcTech/GraphSearch	core	learned-graph-traversal	research code
+ycygit/GraphRAG-R1	core	learned-graph-traversal	research code
+PeterGriffinJin/Search-R1	core	learned-graph-traversal	plain-text baseline
+memoket/memoket-kite	agent-memory	reasoning-over-structure	vector-free
+syncable-dev/memtrace-public	agent-memory	agent-memory	bi-temporal graph, no LLM calls
+varun29ankuS/shodh-memory	agent-memory	agent-memory	LLM-free memory
+Dataojitori/nocturne_memory	agent-memory	agent-memory	
+eugeniughelbur/obsidian-second-brain	agent-memory	plain-file-knowledge	
+undefined-ui/second-brain-os	markdown-kb	plain-file-knowledge	
+crow-hq/llm-wiki-v2	markdown-kb	plain-file-knowledge	
+ussumant/llm-wiki-compiler	markdown-kb	plain-file-knowledge	
+Emmimal/wiki-compiler	markdown-kb	plain-file-knowledge	zero LLM calls
+EverMind-AI/SkillCorpus	agent-memory	plain-file-knowledge	skills
+NVIDIA/skills	adjacent	plain-file-knowledge	skills
+HelixDB/helix-db	adjacent	infrastructure-and-mcp	graph-vector database
+orneryd/NornicDB	core	infrastructure-and-mcp	
+ModernRelay/omnigraph	adjacent	infrastructure-and-mcp	
+GrafeoDB/grafeo	adjacent	infrastructure-and-mcp	
+Pometry/Raphtory	adjacent	infrastructure-and-mcp	temporal graph engine
+turing-db/turingdb	adjacent	infrastructure-and-mcp	
+namidb/namidb	core	infrastructure-and-mcp	
