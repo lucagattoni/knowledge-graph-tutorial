@@ -21,6 +21,8 @@ run.** This directory holds what is frozen before any model sees it, and later t
 | [`tools/exp/x2_select_documents.py`](../../../tools/exp/x2_select_documents.py) | Makes `documents.tsv` | 7 |
 | [`tools/exp/stub_llm.py`](../../../tools/exp/stub_llm.py) | A loopback stub of an OpenAI-compatible model server, used to count a builder's calls and prompt tokens without spending anything | 8; one of them failed on first run because the listen queue was 5 and a burst of 20 parallel calls was undercounted, and it passes only with the queue raised to 256 (breaking that on purpose turns it red again) |
 
+| [`tools/exp/exp_stats.py`](../../../tools/exp/exp_stats.py) | An exact paired sign test, Wilson intervals and a seeded paired bootstrap, for the later comparisons | 17, each checked against an independent oracle (brute-force enumeration, a root solve of the defining equation); 7 deliberate mutants, all killed in three runs. The first run let one survive (the interval's upper clamp, which a property test over 500 sample sizes now guards: 157 cases leave [0, 1] by an ulp without it) and one test was weak (a seed check that two unseeded runs could pass by chance), both fixed |
+
 What a stub count can and cannot show is in the stub's own header: prompt sizes and output-independent call counts are
 exact for the given input; anything driven by what a model says (gleaning loops, retries, summaries that trigger only
 when text grows) depends on the answers the stub gives, so it is a count *for those answers*.
