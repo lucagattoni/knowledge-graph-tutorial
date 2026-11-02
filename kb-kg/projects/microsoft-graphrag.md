@@ -61,6 +61,8 @@ general: 1 call when gleanings are 0, and up to 2 times `max_gleanings` calls wh
 more. (The July text said "2 to 3 calls per chunk at defaults" and a cost of O(chunks x (1 + 2 x
 gleanings)). Both overstate what the code on `main` does.)
 
+**Measured on a stub, 20261102 10:48 UTC (graphrag 3.3.0, PyPI wheel).** Indexing 20 news articles (47 chunks) in batch against a loopback stub that answered in place of a model made 207 chat calls and 400,764 stub-counted prompt tokens: 47 extraction calls, 47 gleaning continuation calls, no loop-check call at the default of one gleaning, 51 entity and 7 relationship description summaries, and 54 community reports (16 at level 0, 38 at level 1). The CLI also makes a one-string chat test and a one-string embedding test before the pipeline starts. Summaries and reports are corpus-level and follow the graph the stub's answers produced, so they did not grow in a straight line (9 calls for 1 document, 29 for 5, 207 for 20). With the cache on, running the same 20 documents again made one chat call, the test, because the cache absorbed every indexing call; the requests carry no `max_tokens` or temperature. An answer with no entities makes the run stop after extraction with "Graph Extraction failed. No entities detected during extraction." These are counts for the stub's answers, not a real model's [34].
+
 Where the cost concentrates: per-chunk extraction is the largest term, then description summarisation
 (proportional to entities plus relationships), then community reports (communities times levels). The
 project's own documentation estimates "graph extraction to constitute roughly 75% of indexing cost"
@@ -295,3 +297,4 @@ not code changes.
 31. https://github.com/microsoft/graphrag/blob/main/breaking-changes.md (versioning surfaces, v3 notes): read 20261030 19:00 UTC
 32. https://github.com/microsoft/graphrag/commits/main (GitHub API commit list filtered by path, since 20260718, for the nine files named above; one hit, `config/defaults.py`, commit 150c697f, whose patch adds the cache `database_name` line): run 20261030 19:05 UTC
 33. https://github.com/microsoft/graphrag/blob/main/docs/index.md (the index process and the four query modes: Global, Local, DRIFT, Basic): read 20261030 19:00 UTC
+34. [The X2 rehearsal of Microsoft GraphRAG against a stub model](../experiments/x2-index-cost/rehearsal/microsoft-graphrag.md) : a local run of the PyPI wheel 3.3.0 (published 20261008 18:27 UTC; read 20261102 10:27 UTC), nine runs under a sandbox that denies non-loopback network; licence file hash equal in the wheel and at the v3.3.0 tag (read 20261102 10:27 and 11:00 UTC). Counts are for the stub's answers, not a real model's.

@@ -1,0 +1,1692 @@
+{
+  "hand_recorded": {
+    "builder": "microsoft/graphrag (repository https://github.com/microsoft/graphrag)",
+    "slug": "microsoft-graphrag",
+    "version": "3.3.0",
+    "version_source": {
+      "github_latest_release": "v3.3.0, published 2026-10-08T18:28:43Z, not a pre-release, not a draft (gh release list and gh release view, read 20261102 10:27 UTC)",
+      "tag_commit": "5faaaf4f5685fa2056fa8c3bf9342cb089f2942f (GitHub API ref refs/tags/v3.3.0, read 20261102 10:27 UTC)",
+      "pypi": "graphrag 3.3.0, wheel uploaded 2026-10-08T18:27:13Z, requires_python '<3.14,>=3.11', license field 'MIT' (PyPI JSON API, read 20261102 10:27 UTC). Seven sibling packages pinned to the same 3.3.0: graphrag-cache, -chunking, -common, -input, -llm, -storage, -vectors."
+    },
+    "python_and_platform": "CPython 3.12.16 from uv, macOS on Apple Silicon (arm64). The package supports 3.11 to 3.13; 3.12 was chosen, 3.11 and 3.13 were not tried.",
+    "install": {
+      "command": "uv venv --python 3.12 venv; uv pip install --python venv/bin/python 'graphrag==3.3.0' tiktoken --only-binary :all:",
+      "result": "exit 0; 139 distributions installed; resolved in 0.6 s, 75 packages prepared in 2.5 s, installed in 0.3 s (uv's own timing lines, 20261102 10:27 UTC, with a warm uv cache for some packages: not a cold-install time)",
+      "wheels_vs_source": "--only-binary :all: was forced and succeeded, so every one of the 139 packages has a wheel for this Python on arm64 or universal2 or is pure Python; no source build, no compiler. Native wheels seen in the resolver log: lancedb 0.38.0 (macosx_11_0_arm64), graspologic-native 1.2.5 (universal2), numpy 2.5.4, pandas 3.1.0, pyarrow 25.0.1, spacy 3.8.18, blis 1.3.4, tiktoken 0.14.0, litellm 1.100.1.",
+      "workarounds": "One, outside the builder: tiktoken downloads its encoding tables at first use, so with no network the o200k_base table (GraphRAG's chunker, its default encoding) and cl100k_base (the stub's counter) were fetched once, by hand with network access, into a cache directory handed to the run through TIKTOKEN_CACHE_DIR and CUSTOM_TIKTOKEN_CACHE_DIR. Nothing else was needed.",
+      "runs_on_apple_silicon": "Yes: all nine runs below completed (the one that exits 1 does so by design, see shape A)."
+    },
+    "licence": {
+      "file": "LICENSE in the installed dist-info of graphrag 3.3.0 (read 20261102 10:27 UTC) and LICENSE at tag v3.3.0 (raw.githubusercontent.com, read 20261102 10:27 UTC)",
+      "first_lines": [
+        "MIT License",
+        "Copyright (c) Microsoft Corporation."
+      ],
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+      "same_file_in": "the wheel of graphrag and of all seven sibling packages, and at the v3.3.0 tag (identical SHA-256)",
+      "matches_entry": "yes: kb-kg/projects/microsoft-graphrag.md says MIT, 'MIT License, Copyright (c) Microsoft Corporation', read 20261030",
+      "caveats_noticed_not_chased": [
+        "litellm 1.100.1 (pulled in as the model client): its LICENSE says content under an enterprise/ directory has a separate licence and the rest is MIT. No directory named enterprise exists in the installed package (find, 20261102 10:50 UTC); litellm/proxy/enterprise_billing exists and was not examined.",
+        "A scan of the License / License-Expression / Classifier metadata of all 139 installed distributions (20261102 10:38 UTC) found MIT, BSD, Apache, PSF, ISC, MPL-2.0 and similar, and none that names GPL, AGPL, a commercial or a non-commercial term. This reads the declared metadata, not each LICENSE file.",
+        "No model weights are downloaded or used in these runs. The default embedding model and chat model names (text-embedding-3-large, gpt-4.1) are OpenAI hosted models; their terms were not read. The Fast method's NLP step fetches NLTK data at run time (nltk.download in resource_loader.py) and was not run."
+      ]
+    },
+    "code_path": {
+      "read_from": "the installed graphrag 3.3.0 sources, 20261102 10:28 to 10:38 UTC; paths are under graphrag/ in the package",
+      "method": "Standard (the default of `graphrag index`). The workflow order is in index/workflows/factory.py: load_input_documents, create_base_text_units, create_final_documents, extract_graph, finalize_graph, extract_covariates, create_communities, create_final_text_units, create_community_reports, generate_text_embeddings.",
+      "defaults_used": "config/defaults.py plus the settings.yaml that `graphrag init` writes: chunking by tokens, size 1200, overlap 100, encoding o200k_base; extract_graph max_gleanings 1, entity types organization/person/geo/event; summarize_descriptions max_length 500 words, max_input_tokens 4000; community_reports max_length 2000, max_input_length 8000; cluster_graph max_cluster_size 10, use_lcc true, seed 0xDEADBEEF; claim extraction disabled; embed_text batch_size 16, batch_max_tokens 8191, three fields (entity_description, community_full_content, text_unit_text); concurrent_requests 25, async_mode threaded; cache type json on file; retry exponential_backoff (class defaults max_retries 7, base_delay 2.0); no rate limit; chat model gpt-4.1 and embedding model text-embedding-3-large (names only, the stub answers).",
+      "calls": [
+        "CLI preflight (cli/index.py, index/validate_config.py): before the pipeline, one chat call 'This is an LLM connectivity test. Say Hello World' and one embedding call of one string, per configured model. `--skip-validation` skips them; graphrag.api.build_index does not make them. Measured: 1 chat call (11 prompt tokens) and 1 embedding input (9 tokens) in every run.",
+        "Extraction (index/operations/extract_graph/graph_extractor.py, GraphExtractor._process_document): one call per chunk; then for each of max_gleanings rounds one continuation call (its messages hold the whole earlier conversation: instructions, chunk, the first answer, the continue prompt), and between rounds, not after the last, a Y/N loop-check call that ends the loop on any answer other than exactly 'Y'. At the default of one gleaning that is exactly 2 calls per chunk and the loop-check is never called (measured: 47 + 47 calls for 47 chunks, 0 loop-checks). With max_gleanings g >= 2 it is 3 to 2g calls.",
+        "Description summaries (index/operations/summarize_descriptions/): after all chunks of all documents are merged, one call per entity key (title, type) and per relationship key (source, target) that has two or more distinct descriptions; a single distinct description passes through with no call. The call's input is capped at max_input_tokens (4000) less the prompt; more text means more passes for that item.",
+        "Communities (index/operations/cluster_graph.py): hierarchical Leiden on the merged graph with a fixed seed, on the largest connected component only (use_lcc true). No model call.",
+        "Community reports (index/operations/summarize_communities/): one call per community at every level, deepest level first, each asking for a JSON report through response_format (json_schema). A community's prompt holds its entity and relationship rows if they fit in max_input_length (8000 tokens); if not, they are replaced by the reports of its sub-communities. A report that fails to parse is logged and left out; there is no retry beyond the transport retry.",
+        "Embeddings (index/workflows/generate_text_embeddings.py, index/operations/embed_text/): after the graph and reports exist, three fields are embedded one after another: entity title plus description, community report full text, chunk text. A call holds at most 16 inputs and at most 8191 tokens (counted with the embedding model's tokenizer), so long chunks make smaller batches.",
+        "Cache (cache/, graphrag_llm/middleware/with_cache.py): a JSON file cache keyed on the call's arguments, on by default, covering chat and embedding calls. Measured: re-running the same 20 documents from the cache that run b-n20 left made 1 chat call and 1 embedding input in total, the two preflight calls.",
+        "Request bodies seen by the stub carry only model and messages (reports add response_format; embeddings add encoding_format float). No max_tokens, no temperature: the reply length is not capped by the client at these defaults."
+      ]
+    },
+    "corpus_level_vs_per_chunk": {
+      "per_chunk_or_per_document": [
+        "chunking",
+        "extraction and gleaning (2 calls per chunk, prompt does not depend on any other document)",
+        "chunk embeddings (one input per chunk)"
+      ],
+      "corpus_level": [
+        "merging entities and relationships across every chunk of every document, then description summaries (calls only for items seen with 2 or more distinct descriptions anywhere in the corpus)",
+        "graph finalisation and Leiden clustering on the whole graph, keeping the largest connected component only",
+        "community reports (calls = communities at all levels; prompt text depends on the graph and on lower-level reports)",
+        "entity-description embeddings and report embeddings (row counts come from the two steps above)"
+      ],
+      "consequence": "Calls at N documents are not N times the calls at 1 document. `graphrag update` (incremental) exists in the CLI and was not run."
+    },
+    "depends_on_the_model": [
+      "Gleaning loop-check calls: none at the default of one gleaning; with two or more, each depends on whether the reply is exactly 'Y'.",
+      "Prompt tokens of the continuation call: it carries the first answer, so it grows with the length of the model's first reply (measured 128,268 / 131,182 / 144,793 total prompt tokens for the same 47 continuation calls under shapes A / A2 / B).",
+      "Number of summary calls: set by how many entities and relationships the model names and how often it describes the same one in two different ways.",
+      "Number of communities and so of report calls: set by the graph the model produced (largest connected component only), at every level. Measured 3, 4 and 54 reports for 1, 5 and 20 documents under shape B, which is an effect of that shape's graph, not a rate.",
+      "Prompt tokens of report calls and the substitution of sub-community reports when a community's rows exceed 8000 tokens: never reached under these shapes (largest report prompt 2637 tokens).",
+      "Whether the run finishes: if no chunk yields any entity, or none any relationship, the pipeline stops after extraction (measured under shape A, exit 1).",
+      "Output tokens everywhere: unmeasured; the stub's completion token counts are the length of the stub's own fixed answers.",
+      "Retries and failed calls: a call that errors is retried by the transport middleware (up to 7 times at the class default); an extraction call that still fails yields an empty graph for that chunk and the run goes on. Not exercised, the stub never fails.",
+      "The first extraction call's prompt tokens and the number of extraction and gleaning calls (at the default) do not depend on any answer: 126,435 prompt tokens and 47 calls for the 47 chunks, identical under all three shapes.",
+      "Embedding inputs for chunks (47) do not depend on answers; for entities and reports they do."
+    ],
+    "tokenizer_note": "Prompt and completion tokens in `measured` are the stub's tiktoken cl100k_base counts, not any provider's. GraphRAG's own chunking and budgets use o200k_base and the litellm tokenizer; chunk sizes quoted from its output are in o200k_base tokens.",
+    "outbound_findings": {
+      "attempts_seen": "Exactly one, in the diagnostic run b-n1-sink where HTTPS_PROXY pointed at a local sink that records and refuses: CONNECT raw.githubusercontent.com:443. It is LiteLLM fetching its model price table when it is imported (log line: 'Failed to fetch remote model cost map from https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json ... Falling back to local backup'). In every run with the refusing proxy on port 9 the same single warning line appears. LITELLM_LOCAL_MODEL_COST_MAP=True turns the fetch off (litellm/litellm_core_utils/get_model_cost_map.py, read 20261102); it was left unset on purpose so the attempt would show.",
+      "telemetry": "A search of graphrag and its seven sibling packages for telemetry, posthog, appinsights and opentelemetry found nothing (case-insensitive grep over the eight packages' .py files, 20261102 10:50 UTC). Absence in the source is not proof for the dependencies' behaviour at run time; the sandbox below is what rules outbound traffic out.",
+      "enforcement": "Besides the proxy variables, each builder process ran under a macOS sandbox-exec profile denying every outbound connection except to loopback. The runner proves the profile first: loopback connects, an RFC 5737 documentation address returns PermissionError. sandbox-exec is deprecated by Apple but worked on this machine."
+    },
+    "not_verified": [
+      "Real model behaviour of every kind (see depends_on_the_model): answer lengths, graph size, gleaning and retry counts, summary and report counts, report parse failures.",
+      "Wall-clock time with a real model: the stub answers at once, so the wall seconds in `measured` are GraphRAG's own processing time only.",
+      "The Fast method (`--method fast`), `graphrag update`, claim extraction, max_gleanings above 1, prompt tuning, and any query mode.",
+      "Python 3.11 and 3.13, Intel Macs, Linux.",
+      "Running the chat calls against an Anthropic model through LiteLLM (model_provider anthropic), including whether the json_schema response_format the report step sends is accepted; and where embeddings would come from in that case. Not checked against either provider's current documentation.",
+      "That the stub's HTTP shape equals what each real provider returns (usage fields, error bodies, rate-limit headers).",
+      "Dependency licences beyond the declared metadata scan."
+    ]
+  },
+  "measured": {
+    "runner": "tools/exp/x2_microsoft_graphrag.py",
+    "graphrag_versions": {
+      "graphrag": "3.3.0",
+      "graphrag-llm": "3.3.0",
+      "graphrag-chunking": "3.3.0",
+      "graphrag-cache": "3.3.0",
+      "graphrag-storage": "3.3.0",
+      "graphrag-vectors": "3.3.0",
+      "graphrag-input": "3.3.0",
+      "graphrag-common": "3.3.0",
+      "litellm": "1.100.1",
+      "openai": "2.54.0",
+      "tiktoken": "0.14.0",
+      "lancedb": "0.38.0",
+      "pandas": "3.1.0",
+      "numpy": "2.5.4"
+    },
+    "python": "3.12.16",
+    "machine": "arm64",
+    "system": "Darwin",
+    "method": "standard (the default of `graphrag index`)",
+    "settings": "the file `graphrag init --model gpt-4.1 --embedding text-embedding-3-large` writes, plus one api_base line per model pointing at the stub",
+    "template_settings_sha256": "45d9769851027a5498885204f0e42e37e8e5eebfe84b1be950e88193b327d376",
+    "prompt_files_equal_packaged_constants": {
+      "extract_graph.txt": true,
+      "summarize_descriptions.txt": true,
+      "community_report_graph.txt": true
+    },
+    "document_input": "the `body` of each article, one .txt file each, in documents.tsv order, first N",
+    "shapes": {
+      "B": "Per chunk the first answer holds 6 entities and 5 relationships; the gleaning answer adds none (it is just the completion marker); a loop-check answer is 'N'; a description summary is a fixed one-sentence text; a community report is a fixed-size JSON report with 5 findings. Entity names are the 6 capitalised words of the chunk with the smallest SHA-256, so chunks that share words share entities. Each entity's type is one of the 4 default types picked from the hash of its name, so a repeated name always has the same type. The 5 relationships chain the 6 entities in hash order, with a weight of 5 to 9 from the hash of the pair. Every description carries the chunk's SHA-256 prefix, so the same entity or pair seen in two chunks gets two different descriptions (which is what makes GraphRAG's summarisation step fire).",
+      "A": "Every extraction and gleaning answer is the bare completion marker: no entities, no relationships. The connectivity test answer is 'Hello World'.",
+      "A2": "Supplementary, not the brief's shape A: every extraction answer is the same 2 entities and 1 relationship with identical descriptions (the smallest answer that lets this pipeline complete); the gleaning answer is the completion marker. Community reports are the same fixed-size JSON report as in shape B."
+    },
+    "child_isolation": {
+      "env": "env whitelist: PATH, HOME (a scratch dir), a dummy GRAPHRAG_API_KEY, proxy variables, TIKTOKEN_CACHE_DIR",
+      "proxy": "http://127.0.0.1:9 (refuses connections), NO_PROXY=127.0.0.1,localhost",
+      "os_level_network_block": "sandbox-exec profile: deny every outbound connection except to loopback",
+      "sandbox_selftest": {
+        "loopback": "connected",
+        "non_loopback_documentation_address": "PermissionError 1",
+        "blocks_non_loopback": true,
+        "allows_loopback": true
+      }
+    },
+    "runs": {
+      "b-n1": {
+        "stub_summary": {
+          "tokenizer": "tiktoken:cl100k_base",
+          "chat_calls": 9,
+          "chat_prompt_tokens": 17246,
+          "chat_completion_tokens": 1525,
+          "embedding_calls": 4,
+          "embedding_inputs": 17,
+          "embedding_tokens": 2198,
+          "other_calls": 0
+        },
+        "by_kind": {
+          "community_report": {
+            "calls": 3,
+            "prompt_tokens": {
+              "n": 3,
+              "sum": 6344,
+              "min": 2053,
+              "median": 2123,
+              "max": 2168
+            },
+            "completion_tokens_sum": 759
+          },
+          "embedding": {
+            "calls": 3,
+            "prompt_tokens": {
+              "n": 3,
+              "sum": 2189,
+              "min": 183,
+              "median": 516,
+              "max": 1490
+            },
+            "completion_tokens_sum": 0,
+            "inputs": 16,
+            "max_inputs_in_one_call": 11
+          },
+          "extract_gleaning_continue": {
+            "calls": 2,
+            "prompt_tokens": {
+              "n": 2,
+              "sum": 5770,
+              "min": 2408,
+              "median": 2885.0,
+              "max": 3362
+            },
+            "completion_tokens_sum": 10
+          },
+          "extract_graph": {
+            "calls": 2,
+            "prompt_tokens": {
+              "n": 2,
+              "sum": 4961,
+              "min": 1998,
+              "median": 2480.5,
+              "max": 2963
+            },
+            "completion_tokens_sum": 741
+          },
+          "preflight_connectivity_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 11,
+              "min": 11,
+              "median": 11,
+              "max": 11
+            },
+            "completion_tokens_sum": 2
+          },
+          "preflight_embedding_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 9,
+              "min": 9,
+              "median": 9,
+              "max": 9
+            },
+            "completion_tokens_sum": 0
+          },
+          "summarize_description_entity": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 160,
+              "min": 160,
+              "median": 160,
+              "max": 160
+            },
+            "completion_tokens_sum": 13
+          }
+        },
+        "embedding_by_field": {
+          "entity_description": {
+            "calls": 1,
+            "inputs": 11,
+            "rows_in_table": 11,
+            "tokens": 183
+          },
+          "community_full_content": {
+            "calls": 1,
+            "inputs": 3,
+            "rows_in_table": 3,
+            "tokens": 516
+          },
+          "text_unit_text": {
+            "calls": 1,
+            "inputs": 2,
+            "rows_in_table": 2,
+            "tokens": 1490
+          }
+        },
+        "embedding_split_matches_tables": true,
+        "unclassified_chat_calls": 0,
+        "call_multiset_sha256": "e0cb27f308e8ef8fa04e5e76f4782e7cadd61c2d3403497623637017eee738f9",
+        "documents": 1,
+        "shape": "B",
+        "cache": true,
+        "started": "20261102 10:46 UTC",
+        "command": "graphrag index --root <fresh project directory>",
+        "cache_started_from": null,
+        "exit_code": 0,
+        "wall_seconds": 4.8,
+        "output_tables": {
+          "documents": 1,
+          "text_units": 2,
+          "entities": 11,
+          "relationships": 10,
+          "communities": 3,
+          "community_reports": 3,
+          "communities_by_level": {
+            "0": 3
+          },
+          "entities_seen_in_2_or_more_chunks": 1,
+          "relationships_seen_in_2_or_more_chunks": 0,
+          "entities_in_a_level0_community": 11,
+          "chunk_tokens_o200k": {
+            "n": 2,
+            "sum": 1455,
+            "min": 255,
+            "median": 727.5,
+            "max": 1200
+          },
+          "chunks_per_document": [
+            2
+          ],
+          "graphrag_stats": {
+            "num_documents": 1,
+            "total_runtime_s": 3.111721992492676,
+            "workflow_seconds": {
+              "load_input_documents": 0.02,
+              "create_base_text_units": 0.29,
+              "create_final_documents": 0.01,
+              "extract_graph": 0.39,
+              "finalize_graph": 0.01,
+              "extract_covariates": 0.0,
+              "create_communities": 0.04,
+              "create_final_text_units": 0.01,
+              "create_community_reports": 0.36,
+              "generate_text_embeddings": 1.96
+            }
+          }
+        },
+        "known_error_line": null,
+        "proxy_or_connection_errors_in_logs": 1
+      },
+      "b-n5": {
+        "stub_summary": {
+          "tokenizer": "tiktoken:cl100k_base",
+          "chat_calls": 29,
+          "chat_prompt_tokens": 59050,
+          "chat_completion_tokens": 4418,
+          "embedding_calls": 7,
+          "embedding_inputs": 63,
+          "embedding_tokens": 8893,
+          "other_calls": 0
+        },
+        "by_kind": {
+          "community_report": {
+            "calls": 4,
+            "prompt_tokens": {
+              "n": 4,
+              "sum": 8449,
+              "min": 2045,
+              "median": 2106.5,
+              "max": 2191
+            },
+            "completion_tokens_sum": 1010
+          },
+          "embedding": {
+            "calls": 6,
+            "prompt_tokens": {
+              "n": 6,
+              "sum": 8884,
+              "min": 16,
+              "median": 265.0,
+              "max": 7401
+            },
+            "completion_tokens_sum": 0,
+            "inputs": 62,
+            "max_inputs_in_one_call": 16
+          },
+          "extract_gleaning_continue": {
+            "calls": 9,
+            "prompt_tokens": {
+              "n": 9,
+              "sum": 26607,
+              "min": 2230,
+              "median": 3231,
+              "max": 3362
+            },
+            "completion_tokens_sum": 45
+          },
+          "extract_graph": {
+            "calls": 9,
+            "prompt_tokens": {
+              "n": 9,
+              "sum": 23018,
+              "min": 1841,
+              "median": 2811,
+              "max": 2963
+            },
+            "completion_tokens_sum": 3283
+          },
+          "preflight_connectivity_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 11,
+              "min": 11,
+              "median": 11,
+              "max": 11
+            },
+            "completion_tokens_sum": 2
+          },
+          "preflight_embedding_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 9,
+              "min": 9,
+              "median": 9,
+              "max": 9
+            },
+            "completion_tokens_sum": 0
+          },
+          "summarize_description_entity": {
+            "calls": 5,
+            "prompt_tokens": {
+              "n": 5,
+              "sum": 792,
+              "min": 153,
+              "median": 159,
+              "max": 162
+            },
+            "completion_tokens_sum": 65
+          },
+          "summarize_description_relationship": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 173,
+              "min": 173,
+              "median": 173,
+              "max": 173
+            },
+            "completion_tokens_sum": 13
+          }
+        },
+        "embedding_by_field": {
+          "entity_description": {
+            "calls": 4,
+            "inputs": 49,
+            "rows_in_table": 49,
+            "tokens": 797
+          },
+          "community_full_content": {
+            "calls": 1,
+            "inputs": 4,
+            "rows_in_table": 4,
+            "tokens": 686
+          },
+          "text_unit_text": {
+            "calls": 1,
+            "inputs": 9,
+            "rows_in_table": 9,
+            "tokens": 7401
+          }
+        },
+        "embedding_split_matches_tables": true,
+        "unclassified_chat_calls": 0,
+        "call_multiset_sha256": "0ca1b325c7fe459d2e9c0cc6035c439366e7c3d44025b810dc0ab5e64f88142d",
+        "documents": 5,
+        "shape": "B",
+        "cache": true,
+        "started": "20261102 10:46 UTC",
+        "command": "graphrag index --root <fresh project directory>",
+        "cache_started_from": null,
+        "exit_code": 0,
+        "wall_seconds": 7.2,
+        "output_tables": {
+          "documents": 5,
+          "text_units": 9,
+          "entities": 49,
+          "relationships": 44,
+          "communities": 4,
+          "community_reports": 4,
+          "communities_by_level": {
+            "0": 4
+          },
+          "entities_seen_in_2_or_more_chunks": 5,
+          "relationships_seen_in_2_or_more_chunks": 1,
+          "entities_in_a_level0_community": 15,
+          "chunk_tokens_o200k": {
+            "n": 9,
+            "sum": 7338,
+            "min": 103,
+            "median": 1066,
+            "max": 1200
+          },
+          "chunks_per_document": [
+            1,
+            2,
+            2,
+            2,
+            2
+          ],
+          "graphrag_stats": {
+            "num_documents": 5,
+            "total_runtime_s": 5.511273145675659,
+            "workflow_seconds": {
+              "load_input_documents": 0.03,
+              "create_base_text_units": 0.3,
+              "create_final_documents": 0.01,
+              "extract_graph": 1.64,
+              "finalize_graph": 0.02,
+              "extract_covariates": 0.0,
+              "create_communities": 0.04,
+              "create_final_text_units": 0.01,
+              "create_community_reports": 0.43,
+              "generate_text_embeddings": 3.02
+            }
+          }
+        },
+        "known_error_line": null,
+        "proxy_or_connection_errors_in_logs": 1
+      },
+      "b-n20": {
+        "stub_summary": {
+          "tokenizer": "tiktoken:cl100k_base",
+          "chat_calls": 207,
+          "chat_prompt_tokens": 400764,
+          "chat_completion_tokens": 31371,
+          "embedding_calls": 24,
+          "embedding_inputs": 305,
+          "embedding_tokens": 57396,
+          "other_calls": 0
+        },
+        "by_kind": {
+          "community_report": {
+            "calls": 54,
+            "prompt_tokens": {
+              "n": 54,
+              "sum": 119943,
+              "min": 2041,
+              "median": 2142.0,
+              "max": 2637
+            },
+            "completion_tokens_sum": 13620
+          },
+          "embedding": {
+            "calls": 23,
+            "prompt_tokens": {
+              "n": 23,
+              "sum": 57387,
+              "min": 174,
+              "median": 270,
+              "max": 8065
+            },
+            "completion_tokens_sum": 0,
+            "inputs": 304,
+            "max_inputs_in_one_call": 16
+          },
+          "extract_gleaning_continue": {
+            "calls": 47,
+            "prompt_tokens": {
+              "n": 47,
+              "sum": 144793,
+              "min": 2230,
+              "median": 3304,
+              "max": 3362
+            },
+            "completion_tokens_sum": 235
+          },
+          "extract_graph": {
+            "calls": 47,
+            "prompt_tokens": {
+              "n": 47,
+              "sum": 126435,
+              "min": 1841,
+              "median": 2935,
+              "max": 2967
+            },
+            "completion_tokens_sum": 16760
+          },
+          "preflight_connectivity_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 11,
+              "min": 11,
+              "median": 11,
+              "max": 11
+            },
+            "completion_tokens_sum": 2
+          },
+          "preflight_embedding_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 9,
+              "min": 9,
+              "median": 9,
+              "max": 9
+            },
+            "completion_tokens_sum": 0
+          },
+          "summarize_description_entity": {
+            "calls": 51,
+            "prompt_tokens": {
+              "n": 51,
+              "sum": 8414,
+              "min": 152,
+              "median": 159,
+              "max": 212
+            },
+            "completion_tokens_sum": 663
+          },
+          "summarize_description_relationship": {
+            "calls": 7,
+            "prompt_tokens": {
+              "n": 7,
+              "sum": 1168,
+              "min": 159,
+              "median": 164,
+              "max": 179
+            },
+            "completion_tokens_sum": 91
+          }
+        },
+        "embedding_by_field": {
+          "entity_description": {
+            "calls": 13,
+            "inputs": 203,
+            "rows_in_table": 203,
+            "tokens": 3256
+          },
+          "community_full_content": {
+            "calls": 4,
+            "inputs": 54,
+            "rows_in_table": 54,
+            "tokens": 9246
+          },
+          "text_unit_text": {
+            "calls": 6,
+            "inputs": 47,
+            "rows_in_table": 47,
+            "tokens": 44885
+          }
+        },
+        "embedding_split_matches_tables": true,
+        "unclassified_chat_calls": 0,
+        "call_multiset_sha256": "1b563b87a8474e3d4069ef90a20a45e82aad2027d05c5e7f2284897556f23073",
+        "documents": 20,
+        "shape": "B",
+        "cache": true,
+        "started": "20261102 10:46 UTC",
+        "command": "graphrag index --root <fresh project directory>",
+        "cache_started_from": null,
+        "exit_code": 0,
+        "wall_seconds": 24.8,
+        "output_tables": {
+          "documents": 20,
+          "text_units": 47,
+          "entities": 203,
+          "relationships": 228,
+          "communities": 54,
+          "community_reports": 54,
+          "communities_by_level": {
+            "0": 16,
+            "1": 38
+          },
+          "entities_seen_in_2_or_more_chunks": 51,
+          "relationships_seen_in_2_or_more_chunks": 7,
+          "entities_in_a_level0_community": 185,
+          "chunk_tokens_o200k": {
+            "n": 47,
+            "sum": 44486,
+            "min": 103,
+            "median": 1200,
+            "max": 1200
+          },
+          "chunks_per_document": [
+            1,
+            1,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            3,
+            3,
+            3,
+            3,
+            4,
+            5
+          ],
+          "graphrag_stats": {
+            "num_documents": 20,
+            "total_runtime_s": 23.091245889663696,
+            "workflow_seconds": {
+              "load_input_documents": 0.04,
+              "create_base_text_units": 0.34,
+              "create_final_documents": 0.01,
+              "extract_graph": 8.97,
+              "finalize_graph": 0.05,
+              "extract_covariates": 0.0,
+              "create_communities": 0.07,
+              "create_final_text_units": 0.03,
+              "create_community_reports": 5.19,
+              "generate_text_embeddings": 8.37
+            }
+          }
+        },
+        "known_error_line": null,
+        "proxy_or_connection_errors_in_logs": 1
+      },
+      "a-n20": {
+        "stub_summary": {
+          "tokenizer": "tiktoken:cl100k_base",
+          "chat_calls": 95,
+          "chat_prompt_tokens": 254714,
+          "chat_completion_tokens": 472,
+          "embedding_calls": 1,
+          "embedding_inputs": 1,
+          "embedding_tokens": 9,
+          "other_calls": 0
+        },
+        "by_kind": {
+          "extract_gleaning_continue": {
+            "calls": 47,
+            "prompt_tokens": {
+              "n": 47,
+              "sum": 128268,
+              "min": 1880,
+              "median": 2974,
+              "max": 3006
+            },
+            "completion_tokens_sum": 235
+          },
+          "extract_graph": {
+            "calls": 47,
+            "prompt_tokens": {
+              "n": 47,
+              "sum": 126435,
+              "min": 1841,
+              "median": 2935,
+              "max": 2967
+            },
+            "completion_tokens_sum": 235
+          },
+          "preflight_connectivity_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 11,
+              "min": 11,
+              "median": 11,
+              "max": 11
+            },
+            "completion_tokens_sum": 2
+          },
+          "preflight_embedding_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 9,
+              "min": 9,
+              "median": 9,
+              "max": 9
+            },
+            "completion_tokens_sum": 0
+          }
+        },
+        "embedding_by_field": {
+          "entity_description": {
+            "calls": 0,
+            "inputs": 0,
+            "tokens": 0,
+            "note": "table not written"
+          },
+          "community_full_content": {
+            "calls": 0,
+            "inputs": 0,
+            "tokens": 0,
+            "note": "table not written"
+          },
+          "text_unit_text": {
+            "calls": 0,
+            "inputs": 0,
+            "rows_in_table": 47,
+            "tokens": 0
+          }
+        },
+        "embedding_split_matches_tables": null,
+        "unclassified_chat_calls": 0,
+        "call_multiset_sha256": "b1dd98e2a65cd1899f58bec3acd45128a0dcc36ebf40b605043a76835243a1ab",
+        "documents": 20,
+        "shape": "A",
+        "cache": true,
+        "started": "20261102 10:46 UTC",
+        "command": "graphrag index --root <fresh project directory>",
+        "cache_started_from": null,
+        "exit_code": 1,
+        "wall_seconds": 10.4,
+        "output_tables": {
+          "documents": 20,
+          "text_units": 47,
+          "chunk_tokens_o200k": {
+            "n": 47,
+            "sum": 44486,
+            "min": 103,
+            "median": 1200,
+            "max": 1200
+          },
+          "chunks_per_document": [
+            1,
+            1,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            3,
+            3,
+            3,
+            3,
+            4,
+            5
+          ],
+          "graphrag_stats": {
+            "num_documents": 20,
+            "total_runtime_s": 0,
+            "workflow_seconds": {
+              "load_input_documents": 0.04,
+              "create_base_text_units": 0.35,
+              "create_final_documents": 0.01
+            }
+          }
+        },
+        "known_error_line": "Pipeline error: Graph Extraction failed. No entities detected during extraction.",
+        "proxy_or_connection_errors_in_logs": 1
+      },
+      "a2-n20": {
+        "stub_summary": {
+          "tokenizer": "tiktoken:cl100k_base",
+          "chat_calls": 96,
+          "chat_prompt_tokens": 259617,
+          "chat_completion_tokens": 3639,
+          "embedding_calls": 9,
+          "embedding_inputs": 51,
+          "embedding_tokens": 45077,
+          "other_calls": 0
+        },
+        "by_kind": {
+          "community_report": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 1989,
+              "min": 1989,
+              "median": 1989,
+              "max": 1989
+            },
+            "completion_tokens_sum": 253
+          },
+          "embedding": {
+            "calls": 8,
+            "prompt_tokens": {
+              "n": 8,
+              "sum": 45068,
+              "min": 11,
+              "median": 7337.5,
+              "max": 8065
+            },
+            "completion_tokens_sum": 0,
+            "inputs": 50,
+            "max_inputs_in_one_call": 9
+          },
+          "extract_gleaning_continue": {
+            "calls": 47,
+            "prompt_tokens": {
+              "n": 47,
+              "sum": 131182,
+              "min": 1942,
+              "median": 3036,
+              "max": 3068
+            },
+            "completion_tokens_sum": 235
+          },
+          "extract_graph": {
+            "calls": 47,
+            "prompt_tokens": {
+              "n": 47,
+              "sum": 126435,
+              "min": 1841,
+              "median": 2935,
+              "max": 2967
+            },
+            "completion_tokens_sum": 3149
+          },
+          "preflight_connectivity_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 11,
+              "min": 11,
+              "median": 11,
+              "max": 11
+            },
+            "completion_tokens_sum": 2
+          },
+          "preflight_embedding_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 9,
+              "min": 9,
+              "median": 9,
+              "max": 9
+            },
+            "completion_tokens_sum": 0
+          }
+        },
+        "embedding_by_field": {
+          "entity_description": {
+            "calls": 1,
+            "inputs": 2,
+            "rows_in_table": 2,
+            "tokens": 11
+          },
+          "community_full_content": {
+            "calls": 1,
+            "inputs": 1,
+            "rows_in_table": 1,
+            "tokens": 172
+          },
+          "text_unit_text": {
+            "calls": 6,
+            "inputs": 47,
+            "rows_in_table": 47,
+            "tokens": 44885
+          }
+        },
+        "embedding_split_matches_tables": true,
+        "unclassified_chat_calls": 0,
+        "call_multiset_sha256": "baa8594174d0fc1fd292d54f1db4183a0f3086bcd2fa70649f50cfd325be5c6b",
+        "documents": 20,
+        "shape": "A2",
+        "cache": true,
+        "started": "20261102 10:46 UTC",
+        "command": "graphrag index --root <fresh project directory>",
+        "cache_started_from": null,
+        "exit_code": 0,
+        "wall_seconds": 14.6,
+        "output_tables": {
+          "documents": 20,
+          "text_units": 47,
+          "entities": 2,
+          "relationships": 1,
+          "communities": 1,
+          "community_reports": 1,
+          "communities_by_level": {
+            "0": 1
+          },
+          "entities_seen_in_2_or_more_chunks": 2,
+          "relationships_seen_in_2_or_more_chunks": 1,
+          "entities_in_a_level0_community": 2,
+          "chunk_tokens_o200k": {
+            "n": 47,
+            "sum": 44486,
+            "min": 103,
+            "median": 1200,
+            "max": 1200
+          },
+          "chunks_per_document": [
+            1,
+            1,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            3,
+            3,
+            3,
+            3,
+            4,
+            5
+          ],
+          "graphrag_stats": {
+            "num_documents": 20,
+            "total_runtime_s": 12.864207744598389,
+            "workflow_seconds": {
+              "load_input_documents": 0.04,
+              "create_base_text_units": 0.34,
+              "create_final_documents": 0.01,
+              "extract_graph": 8.26,
+              "finalize_graph": 0.01,
+              "extract_covariates": 0.0,
+              "create_communities": 0.03,
+              "create_final_text_units": 0.01,
+              "create_community_reports": 0.16,
+              "generate_text_embeddings": 3.99
+            }
+          }
+        },
+        "known_error_line": null,
+        "proxy_or_connection_errors_in_logs": 1
+      },
+      "b-n20-repeat": {
+        "stub_summary": {
+          "tokenizer": "tiktoken:cl100k_base",
+          "chat_calls": 207,
+          "chat_prompt_tokens": 400764,
+          "chat_completion_tokens": 31371,
+          "embedding_calls": 24,
+          "embedding_inputs": 305,
+          "embedding_tokens": 57396,
+          "other_calls": 0
+        },
+        "by_kind": {
+          "community_report": {
+            "calls": 54,
+            "prompt_tokens": {
+              "n": 54,
+              "sum": 119943,
+              "min": 2041,
+              "median": 2142.0,
+              "max": 2637
+            },
+            "completion_tokens_sum": 13620
+          },
+          "embedding": {
+            "calls": 23,
+            "prompt_tokens": {
+              "n": 23,
+              "sum": 57387,
+              "min": 174,
+              "median": 270,
+              "max": 8065
+            },
+            "completion_tokens_sum": 0,
+            "inputs": 304,
+            "max_inputs_in_one_call": 16
+          },
+          "extract_gleaning_continue": {
+            "calls": 47,
+            "prompt_tokens": {
+              "n": 47,
+              "sum": 144793,
+              "min": 2230,
+              "median": 3304,
+              "max": 3362
+            },
+            "completion_tokens_sum": 235
+          },
+          "extract_graph": {
+            "calls": 47,
+            "prompt_tokens": {
+              "n": 47,
+              "sum": 126435,
+              "min": 1841,
+              "median": 2935,
+              "max": 2967
+            },
+            "completion_tokens_sum": 16760
+          },
+          "preflight_connectivity_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 11,
+              "min": 11,
+              "median": 11,
+              "max": 11
+            },
+            "completion_tokens_sum": 2
+          },
+          "preflight_embedding_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 9,
+              "min": 9,
+              "median": 9,
+              "max": 9
+            },
+            "completion_tokens_sum": 0
+          },
+          "summarize_description_entity": {
+            "calls": 51,
+            "prompt_tokens": {
+              "n": 51,
+              "sum": 8414,
+              "min": 152,
+              "median": 159,
+              "max": 212
+            },
+            "completion_tokens_sum": 663
+          },
+          "summarize_description_relationship": {
+            "calls": 7,
+            "prompt_tokens": {
+              "n": 7,
+              "sum": 1168,
+              "min": 159,
+              "median": 164,
+              "max": 179
+            },
+            "completion_tokens_sum": 91
+          }
+        },
+        "embedding_by_field": {
+          "entity_description": {
+            "calls": 13,
+            "inputs": 203,
+            "rows_in_table": 203,
+            "tokens": 3256
+          },
+          "community_full_content": {
+            "calls": 4,
+            "inputs": 54,
+            "rows_in_table": 54,
+            "tokens": 9246
+          },
+          "text_unit_text": {
+            "calls": 6,
+            "inputs": 47,
+            "rows_in_table": 47,
+            "tokens": 44885
+          }
+        },
+        "embedding_split_matches_tables": true,
+        "unclassified_chat_calls": 0,
+        "call_multiset_sha256": "1b563b87a8474e3d4069ef90a20a45e82aad2027d05c5e7f2284897556f23073",
+        "documents": 20,
+        "shape": "B",
+        "cache": true,
+        "started": "20261102 10:47 UTC",
+        "command": "graphrag index --root <fresh project directory>",
+        "cache_started_from": null,
+        "exit_code": 0,
+        "wall_seconds": 26.3,
+        "output_tables": {
+          "documents": 20,
+          "text_units": 47,
+          "entities": 203,
+          "relationships": 228,
+          "communities": 54,
+          "community_reports": 54,
+          "communities_by_level": {
+            "0": 16,
+            "1": 38
+          },
+          "entities_seen_in_2_or_more_chunks": 51,
+          "relationships_seen_in_2_or_more_chunks": 7,
+          "entities_in_a_level0_community": 185,
+          "chunk_tokens_o200k": {
+            "n": 47,
+            "sum": 44486,
+            "min": 103,
+            "median": 1200,
+            "max": 1200
+          },
+          "chunks_per_document": [
+            1,
+            1,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            3,
+            3,
+            3,
+            3,
+            4,
+            5
+          ],
+          "graphrag_stats": {
+            "num_documents": 20,
+            "total_runtime_s": 24.458211183547974,
+            "workflow_seconds": {
+              "load_input_documents": 0.04,
+              "create_base_text_units": 0.34,
+              "create_final_documents": 0.01,
+              "extract_graph": 9.3,
+              "finalize_graph": 0.05,
+              "extract_covariates": 0.0,
+              "create_communities": 0.07,
+              "create_final_text_units": 0.04,
+              "create_community_reports": 5.4,
+              "generate_text_embeddings": 9.19
+            }
+          }
+        },
+        "known_error_line": null,
+        "proxy_or_connection_errors_in_logs": 1
+      },
+      "b-n20-nocache": {
+        "stub_summary": {
+          "tokenizer": "tiktoken:cl100k_base",
+          "chat_calls": 207,
+          "chat_prompt_tokens": 400764,
+          "chat_completion_tokens": 31371,
+          "embedding_calls": 24,
+          "embedding_inputs": 305,
+          "embedding_tokens": 57396,
+          "other_calls": 0
+        },
+        "by_kind": {
+          "community_report": {
+            "calls": 54,
+            "prompt_tokens": {
+              "n": 54,
+              "sum": 119943,
+              "min": 2041,
+              "median": 2142.0,
+              "max": 2637
+            },
+            "completion_tokens_sum": 13620
+          },
+          "embedding": {
+            "calls": 23,
+            "prompt_tokens": {
+              "n": 23,
+              "sum": 57387,
+              "min": 174,
+              "median": 270,
+              "max": 8065
+            },
+            "completion_tokens_sum": 0,
+            "inputs": 304,
+            "max_inputs_in_one_call": 16
+          },
+          "extract_gleaning_continue": {
+            "calls": 47,
+            "prompt_tokens": {
+              "n": 47,
+              "sum": 144793,
+              "min": 2230,
+              "median": 3304,
+              "max": 3362
+            },
+            "completion_tokens_sum": 235
+          },
+          "extract_graph": {
+            "calls": 47,
+            "prompt_tokens": {
+              "n": 47,
+              "sum": 126435,
+              "min": 1841,
+              "median": 2935,
+              "max": 2967
+            },
+            "completion_tokens_sum": 16760
+          },
+          "preflight_connectivity_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 11,
+              "min": 11,
+              "median": 11,
+              "max": 11
+            },
+            "completion_tokens_sum": 2
+          },
+          "preflight_embedding_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 9,
+              "min": 9,
+              "median": 9,
+              "max": 9
+            },
+            "completion_tokens_sum": 0
+          },
+          "summarize_description_entity": {
+            "calls": 51,
+            "prompt_tokens": {
+              "n": 51,
+              "sum": 8414,
+              "min": 152,
+              "median": 159,
+              "max": 212
+            },
+            "completion_tokens_sum": 663
+          },
+          "summarize_description_relationship": {
+            "calls": 7,
+            "prompt_tokens": {
+              "n": 7,
+              "sum": 1168,
+              "min": 159,
+              "median": 164,
+              "max": 179
+            },
+            "completion_tokens_sum": 91
+          }
+        },
+        "embedding_by_field": {
+          "entity_description": {
+            "calls": 13,
+            "inputs": 203,
+            "rows_in_table": 203,
+            "tokens": 3256
+          },
+          "community_full_content": {
+            "calls": 4,
+            "inputs": 54,
+            "rows_in_table": 54,
+            "tokens": 9246
+          },
+          "text_unit_text": {
+            "calls": 6,
+            "inputs": 47,
+            "rows_in_table": 47,
+            "tokens": 44885
+          }
+        },
+        "embedding_split_matches_tables": true,
+        "unclassified_chat_calls": 0,
+        "call_multiset_sha256": "1b563b87a8474e3d4069ef90a20a45e82aad2027d05c5e7f2284897556f23073",
+        "documents": 20,
+        "shape": "B",
+        "cache": false,
+        "started": "20261102 10:47 UTC",
+        "command": "graphrag index --root <fresh project directory> --no-cache",
+        "cache_started_from": null,
+        "exit_code": 0,
+        "wall_seconds": 25.3,
+        "output_tables": {
+          "documents": 20,
+          "text_units": 47,
+          "entities": 203,
+          "relationships": 228,
+          "communities": 54,
+          "community_reports": 54,
+          "communities_by_level": {
+            "0": 16,
+            "1": 38
+          },
+          "entities_seen_in_2_or_more_chunks": 51,
+          "relationships_seen_in_2_or_more_chunks": 7,
+          "entities_in_a_level0_community": 185,
+          "chunk_tokens_o200k": {
+            "n": 47,
+            "sum": 44486,
+            "min": 103,
+            "median": 1200,
+            "max": 1200
+          },
+          "chunks_per_document": [
+            1,
+            1,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            3,
+            3,
+            3,
+            3,
+            4,
+            5
+          ],
+          "graphrag_stats": {
+            "num_documents": 20,
+            "total_runtime_s": 23.356050968170166,
+            "workflow_seconds": {
+              "load_input_documents": 0.04,
+              "create_base_text_units": 0.38,
+              "create_final_documents": 0.01,
+              "extract_graph": 9.55,
+              "finalize_graph": 0.06,
+              "extract_covariates": 0.0,
+              "create_communities": 0.08,
+              "create_final_text_units": 0.04,
+              "create_community_reports": 5.66,
+              "generate_text_embeddings": 7.51
+            }
+          }
+        },
+        "known_error_line": null,
+        "proxy_or_connection_errors_in_logs": 1
+      },
+      "b-n1-sink": {
+        "stub_summary": {
+          "tokenizer": "tiktoken:cl100k_base",
+          "chat_calls": 9,
+          "chat_prompt_tokens": 17246,
+          "chat_completion_tokens": 1525,
+          "embedding_calls": 4,
+          "embedding_inputs": 17,
+          "embedding_tokens": 2198,
+          "other_calls": 0
+        },
+        "by_kind": {
+          "community_report": {
+            "calls": 3,
+            "prompt_tokens": {
+              "n": 3,
+              "sum": 6344,
+              "min": 2053,
+              "median": 2123,
+              "max": 2168
+            },
+            "completion_tokens_sum": 759
+          },
+          "embedding": {
+            "calls": 3,
+            "prompt_tokens": {
+              "n": 3,
+              "sum": 2189,
+              "min": 183,
+              "median": 516,
+              "max": 1490
+            },
+            "completion_tokens_sum": 0,
+            "inputs": 16,
+            "max_inputs_in_one_call": 11
+          },
+          "extract_gleaning_continue": {
+            "calls": 2,
+            "prompt_tokens": {
+              "n": 2,
+              "sum": 5770,
+              "min": 2408,
+              "median": 2885.0,
+              "max": 3362
+            },
+            "completion_tokens_sum": 10
+          },
+          "extract_graph": {
+            "calls": 2,
+            "prompt_tokens": {
+              "n": 2,
+              "sum": 4961,
+              "min": 1998,
+              "median": 2480.5,
+              "max": 2963
+            },
+            "completion_tokens_sum": 741
+          },
+          "preflight_connectivity_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 11,
+              "min": 11,
+              "median": 11,
+              "max": 11
+            },
+            "completion_tokens_sum": 2
+          },
+          "preflight_embedding_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 9,
+              "min": 9,
+              "median": 9,
+              "max": 9
+            },
+            "completion_tokens_sum": 0
+          },
+          "summarize_description_entity": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 160,
+              "min": 160,
+              "median": 160,
+              "max": 160
+            },
+            "completion_tokens_sum": 13
+          }
+        },
+        "embedding_by_field": {
+          "entity_description": {
+            "calls": 1,
+            "inputs": 11,
+            "rows_in_table": 11,
+            "tokens": 183
+          },
+          "community_full_content": {
+            "calls": 1,
+            "inputs": 3,
+            "rows_in_table": 3,
+            "tokens": 516
+          },
+          "text_unit_text": {
+            "calls": 1,
+            "inputs": 2,
+            "rows_in_table": 2,
+            "tokens": 1490
+          }
+        },
+        "embedding_split_matches_tables": true,
+        "unclassified_chat_calls": 0,
+        "call_multiset_sha256": "e0cb27f308e8ef8fa04e5e76f4782e7cadd61c2d3403497623637017eee738f9",
+        "documents": 1,
+        "shape": "B",
+        "cache": true,
+        "started": "20261102 10:47 UTC",
+        "command": "graphrag index --root <fresh project directory>",
+        "cache_started_from": null,
+        "exit_code": 0,
+        "wall_seconds": 5.7,
+        "output_tables": {
+          "documents": 1,
+          "text_units": 2,
+          "entities": 11,
+          "relationships": 10,
+          "communities": 3,
+          "community_reports": 3,
+          "communities_by_level": {
+            "0": 3
+          },
+          "entities_seen_in_2_or_more_chunks": 1,
+          "relationships_seen_in_2_or_more_chunks": 0,
+          "entities_in_a_level0_community": 11,
+          "chunk_tokens_o200k": {
+            "n": 2,
+            "sum": 1455,
+            "min": 255,
+            "median": 727.5,
+            "max": 1200
+          },
+          "chunks_per_document": [
+            2
+          ],
+          "graphrag_stats": {
+            "num_documents": 1,
+            "total_runtime_s": 3.5846519470214844,
+            "workflow_seconds": {
+              "load_input_documents": 0.03,
+              "create_base_text_units": 0.36,
+              "create_final_documents": 0.01,
+              "extract_graph": 0.43,
+              "finalize_graph": 0.01,
+              "extract_covariates": 0.0,
+              "create_communities": 0.04,
+              "create_final_text_units": 0.01,
+              "create_community_reports": 0.4,
+              "generate_text_embeddings": 2.26
+            }
+          }
+        },
+        "known_error_line": null,
+        "proxy_or_connection_errors_in_logs": 0,
+        "outbound_attempts_seen_by_sink_proxy": {
+          "CONNECT raw.githubusercontent.com:443": 1
+        }
+      },
+      "b-n20-rerun-cached": {
+        "stub_summary": {
+          "tokenizer": "tiktoken:cl100k_base",
+          "chat_calls": 1,
+          "chat_prompt_tokens": 11,
+          "chat_completion_tokens": 2,
+          "embedding_calls": 1,
+          "embedding_inputs": 1,
+          "embedding_tokens": 9,
+          "other_calls": 0
+        },
+        "by_kind": {
+          "preflight_connectivity_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 11,
+              "min": 11,
+              "median": 11,
+              "max": 11
+            },
+            "completion_tokens_sum": 2
+          },
+          "preflight_embedding_test": {
+            "calls": 1,
+            "prompt_tokens": {
+              "n": 1,
+              "sum": 9,
+              "min": 9,
+              "median": 9,
+              "max": 9
+            },
+            "completion_tokens_sum": 0
+          }
+        },
+        "embedding_by_field": {
+          "entity_description": {
+            "calls": 0,
+            "inputs": 0,
+            "rows_in_table": 203,
+            "tokens": 0
+          },
+          "community_full_content": {
+            "calls": 0,
+            "inputs": 0,
+            "rows_in_table": 54,
+            "tokens": 0
+          },
+          "text_unit_text": {
+            "calls": 0,
+            "inputs": 0,
+            "rows_in_table": 47,
+            "tokens": 0
+          }
+        },
+        "embedding_split_matches_tables": null,
+        "unclassified_chat_calls": 0,
+        "call_multiset_sha256": "3e752c46a7d5616df1ee645da68fd20dd5e9e734427a511b4bf3a827d78b9373",
+        "documents": 20,
+        "shape": "B",
+        "cache": true,
+        "started": "20261102 10:48 UTC",
+        "command": "graphrag index --root <fresh project directory>",
+        "cache_started_from": "b-n20",
+        "exit_code": 0,
+        "wall_seconds": 21.6,
+        "output_tables": {
+          "documents": 20,
+          "text_units": 47,
+          "entities": 203,
+          "relationships": 228,
+          "communities": 54,
+          "community_reports": 54,
+          "communities_by_level": {
+            "0": 16,
+            "1": 38
+          },
+          "entities_seen_in_2_or_more_chunks": 51,
+          "relationships_seen_in_2_or_more_chunks": 7,
+          "entities_in_a_level0_community": 185,
+          "chunk_tokens_o200k": {
+            "n": 47,
+            "sum": 44486,
+            "min": 103,
+            "median": 1200,
+            "max": 1200
+          },
+          "chunks_per_document": [
+            1,
+            1,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            3,
+            3,
+            3,
+            3,
+            4,
+            5
+          ],
+          "graphrag_stats": {
+            "num_documents": 20,
+            "total_runtime_s": 19.663842916488647,
+            "workflow_seconds": {
+              "load_input_documents": 0.05,
+              "create_base_text_units": 0.41,
+              "create_final_documents": 0.01,
+              "extract_graph": 9.45,
+              "finalize_graph": 0.06,
+              "extract_covariates": 0.0,
+              "create_communities": 0.08,
+              "create_final_text_units": 0.04,
+              "create_community_reports": 4.82,
+              "generate_text_embeddings": 4.72
+            }
+          }
+        },
+        "known_error_line": null,
+        "proxy_or_connection_errors_in_logs": 1
+      }
+    },
+    "stub_tokenizer": [
+      "tiktoken:cl100k_base"
+    ],
+    "determinism_b_n20_vs_repeat": {
+      "counts_and_tokens_identical": true,
+      "prompt_hash_multiset_identical": true,
+      "differences": []
+    },
+    "finished": "20261102 10:48 UTC"
+  }
+}
