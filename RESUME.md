@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261102 08:50 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261102 10:03 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
@@ -71,11 +71,13 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
   the scanned-PDF run costs EUR 0.43 in `STATUS.md` and `MEASUREMENT-RUN.md` but EUR 0.11 in `DESIGN.md`
   (confirmed); `STATUS.md` gives 107 411 non-transit edges at line 586 and 107 802 at line 631 for the same
   106 506 sibling edges (confirmed); not re-derived by me: no recorded result for the graph-gate re-run
-  approved 20260825, no labelled re-extraction trigger in `audit.py`, a defect count of five against six for the
+  approved 20260825 (the Pinakes session confirmed on 20261031, P1: not run as far as its repository records), no labelled re-extraction trigger in `audit.py`, a defect count of five against six for the
   deep-loop report tool.
-- **A rename in Pinakes.** A session in the Pinakes repository is renaming "the template release". This
-  repository's `pinakes/approach/PINAKES_APPROACH.md` and `pinakes/recommendations-r1-r7.md` use the old name
-  in places; re-read them against Pinakes' `STATUS.md` once the rename lands.
+- **The rename in Pinakes is landed and re-read (20261102 10:05 UTC).** Pinakes closed "the template release"
+  at 0.22.0 and named its leftover *the `sqlite-vec` tier, staged* (commits `7beac4c`, `de3e506`, merged
+  `75f71d8`). `pinakes/approach/PINAKES_APPROACH.md` has a dated update that says how its four old-wording
+  passages now read; `pinakes/experiments/README.md` has the new name in its `sqlite-vec` row; the other pages
+  hold no stale wording (`recommendations-r1-r7.md` has none, `claudekb.md` quotes a dated note correctly).
 - **Gate coverage.** `tools/check_public_safe.sh` scans the working tree, not the staged set, and cannot know a
   private name that is not in its gitignored local list.
 - **Entries edited after review.** The consistency pass (`60cab7c`) changed eleven entries and pages after they

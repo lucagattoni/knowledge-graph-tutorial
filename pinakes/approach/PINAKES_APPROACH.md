@@ -29,7 +29,24 @@ moves, so a linked page may say more than this block.
 | 10. Version mapping | overtaken: the names split and the numbers were assigned later | The graph release split in two, as the old banner said: the **links release** (0.5.0 interim, 0.6.0 final) and the **graph release** (G1 and G4 in 0.6.0, G2 in 0.7.0, G3, G5 and G6 in 0.11.0). The deep release is 0.23.0 to 0.26.0. The template release ran 0.17.0 to 0.21.0 as interim cuts and closed at 0.22.0: a second template is a no-go, the `sqlite-vec` tier is deferred behind a written trigger [S1](https://github.com/lucagattoni/pinakes/blob/main/docs/STATUS.md). The graph release, staged (PPR, `[ner]`) is gates only and not scheduled. The links-and-graph plan sequences both and wins wherever it and this document disagree; its APPROACH amendments table lists nine departures, five touching §5 [S5](https://github.com/lucagattoni/pinakes/blob/main/plans/20260729_0256-links-and-graph.md#approach-amendments). The first table row lists `pnk link` under the graph release; it shipped in the links release, 0.6.0. |
 | 11. Summary | research only | By adjective, as of the date above. Smart: expansion built and off, PPR and `mentions` not built. Budget-friendly: the free path is unchanged and `pnk ask --deep` is priced and capped before its first call. Tunable: the `graph_channel` gate and the per-operation cap are built; seed schemas are not. Agent-driven: `pinakes_links` and `--deep` are built. Lazy: `--deep` prints suggested links and never writes them. |
 
-**Sources.** All read 20261030 18:58 to 20261030 19:03 UTC, from the public repository's `main`.
+**Update 20261102 10:02 UTC: the template release was renamed away in Pinakes.** The body below is kept as
+written, so its "template release" wording is out of date in four places. On 20261030, before 19:40 UTC, Pinakes'
+owner ruled that 0.22.0 was the template release's final cut; its one leftover, the `sqlite-vec` tier, now has
+a name of its own, *the `sqlite-vec` tier, staged* [S8][S9]. Read the four places like this:
+
+| In the body | July wording | Read it now as |
+|---|---|---|
+| §4, ranking chunk neighbours | "the template release `sqlite-vec` tier instead fetches the bounded frontier's vectors" | *The `sqlite-vec` tier, staged*: not built, "gated behind a written trigger, never scheduled" (a queried KB past about 50,000 chunks with felt latency); a manifest naming it is refused at load [S9]. |
+| §4, seeding | "the future `sqlite-vec` tier (the template release)", "a template-release concern; when it lands" | The same tier. "When it lands" becomes "if its trigger ever fires": nothing is scheduled, so the worry about seeding from the top-N only applies then. |
+| §8, sequencing | "the automated `pnk adopt` command is template-release work (§10)" | The template release is closed and `pnk adopt` has no owner. It does not exist (no `"adopt"` in `src/` at `dee3f04`, searched 20261102 10:01 UTC), and Pinakes' docs/README still calls its owning release unanswered [S9]. |
+| §10, the "template release ⚠️" row and its note | the note says the name "remains in `CLAUDE.md`'s unbuilt-work table only because T6 is deferred" | **No longer true.** The name left that table at 0.22.0; the table now lists *the `sqlite-vec` tier, staged* and says it is "not *the template release*". The note's other claims stand: `pnk adopt` does not exist, and the closed release did not deliver it [S8][S9]. |
+
+Nothing else in this page changed. The status block's statement that the template release "closed at 0.22.0"
+already agreed with the rename, and the latest release is still 0.32.8 (STATUS, last reviewed 20261029 18:57; tag
+`v0.32.8`), read 20261102 10:02 UTC.
+
+**Sources.** S1 to S7 were read 20261030 18:58 to 20261030 19:03 UTC, from the public repository's `main`. S8 and S9
+were read 20261102 10:00 to 10:02 UTC, at Pinakes commit `dee3f04`.
 
 | # | Document |
 |---|---|
@@ -40,6 +57,8 @@ moves, so a linked page may say more than this block.
 | S5 | [plans/20260729_0256-links-and-graph.md](https://github.com/lucagattoni/pinakes/blob/main/plans/20260729_0256-links-and-graph.md) |
 | S6 | [plans/20260804_1016-staged-channel-gates.md](https://github.com/lucagattoni/pinakes/blob/main/plans/20260804_1016-staged-channel-gates.md) |
 | S7 | [plans/20260811_1358-deep-release.md](https://github.com/lucagattoni/pinakes/blob/main/plans/20260811_1358-deep-release.md) |
+| S8 | Pinakes commits [7beac4c](https://github.com/lucagattoni/pinakes/commit/7beac4c) "The template release leaves the unbuilt-work table at its final cut, 0.22.0" and [de3e506](https://github.com/lucagattoni/pinakes/commit/de3e506) "Rename review pass 1", merged as [75f71d8](https://github.com/lucagattoni/pinakes/commit/75f71d8); the messages read in a local clone |
+| S9 | `docs/STATUS.md` (the unbuilt-work table, the `sqlite-vec` row, "Latest release"), `docs/README.md` (the `pnk adopt` row) and `CLAUDE.md` (the unbuilt-work table), all at commit `dee3f04`; and a search of `src/` for `"adopt"` |
 
 **Status:** proposed approach · **Date:** 20260726 08:59 · review-revised 20260726 09:11, 09:17, 09:23, 09:28, 09:34 (five adversarial passes; commit times)
 **Builds on:** [`GRAPH_RAG.md`](../recommendations-r1-r7.md) (R1–R7) and the investigation docs under
