@@ -45,7 +45,10 @@ pinakes/
   precedent/           earlier in-house work
   experiments/         what Pinakes tests, and what it measured
 tools/                 snapshot, projects-index and snapshot-description scripts, and the public-safety gate
+docs-site/             staging script, MkDocs hook and assets for the documentation site (config: mkdocs.yml)
 ```
+
+The same Markdown is published as a site at <https://lucagattoni.github.io/knowledge-graph-tutorial/>, built by `.github/workflows/docs.yml`. How the site is built, previewed and kept in step with these files: [`docs-site/README.md`](docs-site/README.md).
 
 ## Licence
 

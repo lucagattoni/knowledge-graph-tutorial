@@ -1,0 +1,71 @@
+name: docs
+
+# Build the MkDocs site on every PR (--strict, so a broken internal link or anchor fails the check),
+# and deploy it to GitHub Pages on push to main.
+#
+# Path-filtered on purpose: the site is a view over the Markdown in README.md, DECISIONS.md, kb-kg/
+# and pinakes/, so a change to tools/ or RESUME.md cannot break it. docs-site/ holds the staging
+# script and the hook that decides how anchors are slugged and links are rewritten, which is what
+# --strict validates.
+on:
+  push:
+    branches: [main]
+    paths:
+      - README.md
+      - DECISIONS.md
+      - kb-kg/**
+      - pinakes/**
+      - mkdocs.yml
+      - docs-site/**
+      - .github/workflows/docs.yml
+  pull_request:
+    paths:
+      - README.md
+      - DECISIONS.md
+      - kb-kg/**
+      - pinakes/**
+      - mkdocs.yml
+      - docs-site/**
+      - .github/workflows/docs.yml
+
+permissions:
+  contents: read
+
+# One deploy at a time. `cancel-in-progress: false` so a queued deploy finishes rather than being
+# dropped: a cancelled Pages deploy leaves the site on the previous commit with no failure shown.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: docs-site/requirements.txt
+      - run: uv run python -m unittest discover -s docs-site
+      - run: uv run docs-site/stage_docs.py
+      # uv provisions Python + an ephemeral env from requirements.txt, then builds. mkdocs is not a
+      # project dependency: this repository has no Python project to install it into.
+      - run: uv run --no-project --with-requirements docs-site/requirements.txt mkdocs build --strict
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    # Only publish from main, never from a PR.
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,99 @@
+site_name: Knowledge bases and knowledge graphs
+site_description: How the ideas of knowledge base (KB) and knowledge graph (KG) have evolved, what the state of the art is, and which directions are being tried, with a focus on using LLMs and agents to build and query them.
+site_url: https://lucagattoni.github.io/knowledge-graph-tutorial/
+site_author: Luca Gattoni
+
+repo_url: https://github.com/lucagattoni/knowledge-graph-tutorial
+repo_name: lucagattoni/knowledge-graph-tutorial
+edit_uri: edit/main/
+
+# docs-src/ is a copy of the repository's Markdown, made by docs-site/stage_docs.py with every path
+# kept (MkDocs refuses a docs_dir that holds its own config file, and the content lives at the repo
+# root). The site is a view over those files, never a second copy; README.md is the home page.
+docs_dir: docs-src
+site_dir: site
+use_directory_urls: true
+
+# Broken internal links and anchors fail the build (`--strict` in CI). Relative links that GitHub
+# resolves but MkDocs does not (folders, files the site does not publish) are rewritten by the hook
+# before validation, so what is left here is a real defect.
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
+
+theme:
+  name: material
+  language: en
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    # Light
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: deep orange
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    # Dark
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: deep orange
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    # Left column: collapsible nav
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - navigation.footer
+    - navigation.indexes
+    # Right column: on-this-page TOC (kept separate, NOT integrated, so it stays a 3rd column)
+    - toc.follow
+    # Search + code ergonomics
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.action.edit
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - footnotes
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  # The slugifier is installed by the hook, not named here: see docs-site/mkdocs_hooks.py.
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+
+# Loaded by file path relative to this config. It also generates the nav from the staged tree, so
+# there is no `nav:` here.
+hooks:
+  - docs-site/mkdocs_hooks.py
+
+# Copied into docs-src/ by stage_docs.py from docs-site/.
+extra_css:
+  - stylesheets/external-links.css
+  - stylesheets/chapter-sections.css
+
+extra_javascript:
+  - javascripts/external-links.js
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/lucagattoni/knowledge-graph-tutorial
