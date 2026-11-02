@@ -15,7 +15,7 @@ The first full pass is written, reviewed and pushed. Nothing is running.
 | `kb-kg/landscape/` | two snapshots (19:13 and 19:54 UTC, 20261030) and the approved selection |
 | `kb-kg/directions/` | nine pages and an overview, first drafts |
 | `kb-kg/experiments/` | five proposals; X1 run, the other four not started |
-| `pinakes/` | approach record, recommendations R1 to R7, 12 takeaways, ClaudeKB precedent, what Pinakes has measured, four proposals for what to measure next (P1 answered, the P4 pilot run, P2 blocked, P3 not started) |
+| `pinakes/` | approach record, recommendations R1 to R7, 12 takeaways, ClaudeKB precedent, what Pinakes has measured, four proposals for what to measure next (P1 answered, the P4 pilot run, P2 blocked, P3's free-path half in the public benchmark repository, described on its own page) |
 | `tools/` | `gh_snapshot.py` (57 tests), `build_projects_index.py` (12 tests), `check_public_safe.sh` |
 
 Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wave B about 5.9M, wave C about
@@ -29,11 +29,9 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
 2. **The *historical* banner and link on Pinakes' `docs/graph/`.** The link now resolves. It is a separate
    change in the Pinakes repository: the assistant messages the Pinakes session with the file list first and
    needs the owner's go.
-3. **The benchmark repository** now reports public (20261102). Read its README, then add the link and a
-   description on the `pinakes/experiments/` page.
-4. **`CLAUDE.md`** still says "This repository will be public". An edit to any `CLAUDE.md` is the owner's call.
-5. **Experiments.** X2, X3, X4, X5 and P3 are not started and each needs its own yes (D-14). A larger P4 would
-   be a new proposal. The `NOTICE` copyright line uses the git author name "Luca Gattoni"; the owner may change it.
+3. **Experiments.** X2, X3, X4 and X5 are not started and each needs its own yes (D-14). A larger P4 would be a
+   new proposal; a BM25-alone arm for P3 would be a request to the benchmark repository's owner. The `NOTICE`
+   copyright line uses the git author name "Luca Gattoni"; the owner may change it.
 
 ## Done since the first pass
 
@@ -46,6 +44,9 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
   transcripts are in the session scratchpad and are not committed; whether to keep them is the owner's call.
 - **P4 key file** deleted 20261102 at the owner's request.
 - **Full content check** over all 60 commits, then **the repository made public** 20261102 08:46 UTC (D-22).
+- **`CLAUDE.md`** now says the repository is public (the owner's yes, 20261102 08:57 UTC).
+- **Benchmark repository** described and linked: [`pinakes/experiments/datasets-benchmark.md`](pinakes/experiments/datasets-benchmark.md),
+  at its commit `9941f58`, with its limits kept; the owning session confirmed the framing.
 
 ## Next, once the owner answers
 

@@ -1,7 +1,7 @@
 # What Pinakes should measure next
 
-**Status: P1 answered; the P4 pilot ran on 20261101 (results in [p4-deep-pilot.md](p4-deep-pilot.md)); P2 is blocked and
-P3 has not started.** Each needs the owner's explicit yes, one at a time. This
+**Status: P1 answered; the P4 pilot ran on 20261101 (results in [p4-deep-pilot.md](p4-deep-pilot.md)); P3's
+free-path half exists in the public [benchmark repository](datasets-benchmark.md); P2 is blocked.** Each needs the owner's explicit yes, one at a time. This
 page continues [what Pinakes has measured](README.md): it takes the items Pinakes' own documents leave
 approved, gated or unmeasured, and says what each would cost. Field-neutral experiments are in
 [`../../kb-kg/experiments/README.md`](../../kb-kg/experiments/README.md).
@@ -15,7 +15,7 @@ Pinakes repository, so I would tell it the exact files before touching anything 
 |---|---|---|---|
 | P1 | Did the approved graph-gate re-run on a corpus with sections happen? | None | Approved 20260825 18:16; no result found |
 | P2 | `[ner]` and `mentions` edges (Gate 2) | **Blocked** | Precondition N2: a licensed channel |
-| P3 | Public-dataset baselines for the free retrieval path | Free CPU | The benchmark harness the owner is building |
+| P3 | Public-dataset baselines for the free retrieval path | Free CPU | The [benchmark repository](datasets-benchmark.md), now public; its free-path half exists, a BM25-alone arm is unstated |
 | P4 | Pilot of `pnk ask --deep` on 3 of the 20 frozen multi-hop questions | **Ran 20261101: EUR 0.3084 in all** | No accuracy result on that set found; three questions support none |
 
 ## P1: Ask whether the sections re-run happened
@@ -46,11 +46,14 @@ LLM; its model-weight licences were not verified by the writer. Cost today: none
 
 The owner described a harness that benchmarks Pinakes retrieval against public datasets with ground-truth
 evidence, starting with MultiHop-RAG (2,556 queries with evidence in 2 to 4 documents, per the
-[papers page](../../kb-kg/papers-benchmarks/README.md)). That repository does not report itself public, so I do
-not name or link it. A first run would be Pinakes' free path (BM25, local embeddings and reranking) against
-BM25 alone. **Cost: free local CPU**; time is unstated until a run. **Models: local only.** The dataset's licence
-is unstated in what I read and would be read first. The result would give the free path a number on a public
-set, which Pinakes does not have today. It would be run in that repository, not here.
+[papers page](../../kb-kg/papers-benchmarks/README.md)). A first run would be Pinakes' free path (BM25, local
+embeddings and reranking) against BM25 alone. **Cost: free local CPU**; **models: local only.**
+
+**Update 20261102 08:56 UTC: that repository is now public and has run the free path on MultiHop-RAG.** It is
+[described on its own page](datasets-benchmark.md), with its figures marked as first-party and its limits kept.
+The half of P3 that gave the free path a number on a public set exists; a **BM25-alone arm is unstated** in its
+README, so the comparison named here is not shown there. The dataset's licence is ODC-By 1.0 per that repository.
+Anything further would be run in that repository, not here, and is its owner's call.
 
 ## P4: `pnk ask --deep` on the 20 frozen multi-hop questions
 
@@ -81,5 +84,5 @@ exceeds its per-operation cap. This uses Pinakes as built and changes none of it
 
 ## What I need from you
 
-P3 still needs your yes before it starts. A larger P4 (more of the 20 questions, or a calibrated KB) would be a new
+Nothing in P3 needs doing here; a BM25-alone arm would be a request to the benchmark repository's owner. A larger P4 (more of the 20 questions, or a calibrated KB) would be a new
 proposal with its own estimate and cap; none is scheduled. P2 waits for a licensed channel.

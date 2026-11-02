@@ -49,5 +49,5 @@ These follow from the decisions above; the owner can overrule any of them.
 | ~~Licence for this repository's text~~ | done: D-17 (the copyright line in `NOTICE` uses the git author name "Luca Gattoni"; the owner may change it) | |
 | ~~Full content check, then the explicit yes to make the repository public~~ | done: D-22 | |
 | Pinakes side: *historical* banner and link on the 16 files in `docs/graph/` | owner's go, then a separate change in the Pinakes repository under its own rules | nothing here; the link now resolves because the repository is public |
-| Link to the benchmark repository | it reports public as of 20261102; read its README, then add the link and a description | the `pinakes/experiments/` benchmark page |
-| ~~A project `CLAUDE.md` for this repository~~ | done: added at the owner's yes. Its heading still says "will be public"; an edit to it is the owner's call | |
+| ~~Link to the benchmark repository~~ | done 20261102: [`pinakes/experiments/datasets-benchmark.md`](pinakes/experiments/datasets-benchmark.md) | |
+| ~~A project `CLAUDE.md` for this repository~~ | done: added at the owner's yes; its heading changed to "is public" at the owner's yes on 20261102 | |

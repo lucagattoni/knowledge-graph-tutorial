@@ -8,6 +8,7 @@ also the shortest honest answer to "how does Pinakes decide what to build?"
 checkout of `lucagattoni/pinakes` at commit `b1bad68` (see [Sources](#6-sources)). Pinakes' own
 [`STATUS.md`](https://github.com/lucagattoni/pinakes/blob/main/docs/STATUS.md) says its latest release
 is 0.32.8, last reviewed 20261029 18:57 [1]. Where this page and that file disagree, that file wins.
+The figures of the separate public benchmark repository are not on this page; they have [their own](datasets-benchmark.md).
 
 Conventions for this page:
 
