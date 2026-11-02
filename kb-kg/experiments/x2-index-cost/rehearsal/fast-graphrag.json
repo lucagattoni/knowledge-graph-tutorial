@@ -1,0 +1,5865 @@
+{
+ "builder": "fast-graphrag",
+ "repository": "https://github.com/circlemind-ai/fast-graphrag",
+ "documents": {
+  "count": 20,
+  "source": "documents.tsv",
+  "total_chars": 191571
+ },
+ "inputs_given_to_the_builder": {
+  "domain": "Analyze news articles and identify the organizations, people, products, places and events they report on, and how these relate to each other.",
+  "example_queries": [
+   "Which company announced the product described in the article?",
+   "Who is quoted in the article, and what organization do they belong to?",
+   "What event does the article report, and where and when did it take place?"
+  ],
+  "entity_types": [
+   "Organization",
+   "Person",
+   "Product",
+   "Place",
+   "Event"
+  ]
+ },
+ "minimal_environment_variable_names": [
+  "ALL_PROXY",
+  "HOME",
+  "HTTPS_PROXY",
+  "HTTP_PROXY",
+  "NO_PROXY",
+  "OPENAI_API_KEY",
+  "PATH",
+  "PYTHONDONTWRITEBYTECODE",
+  "TIKTOKEN_CACHE_DIR",
+  "TMPDIR",
+  "all_proxy",
+  "http_proxy",
+  "https_proxy",
+  "no_proxy"
+ ],
+ "proxy_setting": "http://127.0.0.1:9",
+ "source": {
+  "commit": "23b3a1bef64338faf9f35c521a20465dbd09419f",
+  "commit_date": "2025-11-01T20:45:24Z",
+  "commit_subject": "Update README formatting and remove cost-saving details",
+  "pyproject_version": "0.0.5",
+  "license_first_lines": [
+   "MIT License",
+   "",
+   "Copyright (c) 2024 circlemind-ai"
+  ],
+  "license_sha256": "1774ff2102ad79d99d731ed90e1f64116695115133efd78c29a73d2939033875"
+ },
+ "installed": {
+  "python": "3.12.16",
+  "machine": "arm64",
+  "system": "Darwin",
+  "fast_graphrag_version": "0.0.5",
+  "distributions": [
+   [
+    "Jinja2",
+    "3.1.6"
+   ],
+   [
+    "MarkupSafe",
+    "3.0.4"
+   ],
+   [
+    "PyYAML",
+    "6.0.3"
+   ],
+   [
+    "Pygments",
+    "2.21.0"
+   ],
+   [
+    "aiohappyeyeballs",
+    "2.7.1"
+   ],
+   [
+    "aiohttp",
+    "3.14.5"
+   ],
+   [
+    "aiolimiter",
+    "1.3.0"
+   ],
+   [
+    "aiosignal",
+    "1.4.0"
+   ],
+   [
+    "annotated-doc",
+    "0.0.5"
+   ],
+   [
+    "annotated-types",
+    "0.8.0"
+   ],
+   [
+    "anyio",
+    "4.16.0"
+   ],
+   [
+    "attrs",
+    "26.1.0"
+   ],
+   [
+    "certifi",
+    "2026.10.23"
+   ],
+   [
+    "cffi",
+    "2.1.1"
+   ],
+   [
+    "cfgv",
+    "3.5.0"
+   ],
+   [
+    "charset-normalizer",
+    "3.5.2"
+   ],
+   [
+    "click",
+    "8.5.0"
+   ],
+   [
+    "cloudpickle",
+    "3.1.2"
+   ],
+   [
+    "cryptography",
+    "50.0.2"
+   ],
+   [
+    "diskcache",
+    "5.6.3"
+   ],
+   [
+    "distlib",
+    "0.4.4"
+   ],
+   [
+    "distro",
+    "1.9.0"
+   ],
+   [
+    "docstring_parser",
+    "0.18.0"
+   ],
+   [
+    "fast-graphrag",
+    "0.0.5"
+   ],
+   [
+    "ffmpeg-python",
+    "0.2.0"
+   ],
+   [
+    "filelock",
+    "4.2.6"
+   ],
+   [
+    "frozenlist",
+    "1.8.0"
+   ],
+   [
+    "fsspec",
+    "2026.9.0"
+   ],
+   [
+    "future",
+    "1.0.0"
+   ],
+   [
+    "google-api-core",
+    "2.33.0"
+   ],
+   [
+    "google-auth",
+    "2.62.0"
+   ],
+   [
+    "google-cloud-aiplatform",
+    "1.71.1"
+   ],
+   [
+    "google-cloud-bigquery",
+    "3.47.0"
+   ],
+   [
+    "google-cloud-core",
+    "2.8.0"
+   ],
+   [
+    "google-cloud-resource-manager",
+    "1.18.0"
+   ],
+   [
+    "google-cloud-storage",
+    "2.19.0"
+   ],
+   [
+    "google-crc32c",
+    "1.9.0"
+   ],
+   [
+    "google-genai",
+    "1.75.0"
+   ],
+   [
+    "google-resumable-media",
+    "2.11.0"
+   ],
+   [
+    "googleapis-common-protos",
+    "1.75.0"
+   ],
+   [
+    "grpc-google-iam-v1",
+    "0.14.4"
+   ],
+   [
+    "grpcio",
+    "1.85.1"
+   ],
+   [
+    "grpcio-status",
+    "1.71.2"
+   ],
+   [
+    "h11",
+    "0.16.0"
+   ],
+   [
+    "hf-xet",
+    "1.8.0"
+   ],
+   [
+    "hnswlib",
+    "0.8.0"
+   ],
+   [
+    "httpcore",
+    "1.0.9"
+   ],
+   [
+    "httpcore2",
+    "2.16.0"
+   ],
+   [
+    "httpx",
+    "0.28.1"
+   ],
+   [
+    "httpx2",
+    "2.16.0"
+   ],
+   [
+    "huggingface_hub",
+    "2.4.0"
+   ],
+   [
+    "identify",
+    "2.6.20"
+   ],
+   [
+    "idna",
+    "3.20"
+   ],
+   [
+    "igraph",
+    "0.11.9"
+   ],
+   [
+    "instructor",
+    "1.12.0"
+   ],
+   [
+    "jiter",
+    "0.10.0"
+   ],
+   [
+    "joblib",
+    "1.6.0"
+   ],
+   [
+    "json_repair",
+    "0.39.1"
+   ],
+   [
+    "jsonpatch",
+    "1.39"
+   ],
+   [
+    "jsonpointer",
+    "3.7"
+   ],
+   [
+    "langchain-core",
+    "1.7.3"
+   ],
+   [
+    "langchain-protocol",
+    "0.0.20"
+   ],
+   [
+    "langchain-text-splitters",
+    "1.1.3"
+   ],
+   [
+    "langsmith",
+    "0.14.17"
+   ],
+   [
+    "markdown-it-py",
+    "4.2.0"
+   ],
+   [
+    "mdurl",
+    "0.1.2"
+   ],
+   [
+    "multidict",
+    "7.2.1"
+   ],
+   [
+    "narwhals",
+    "2.28.0"
+   ],
+   [
+    "nodeenv",
+    "1.12.0"
+   ],
+   [
+    "numpy",
+    "2.5.4"
+   ],
+   [
+    "numpy-typing-compat",
+    "20260602.2.5"
+   ],
+   [
+    "openai",
+    "1.109.1"
+   ],
+   [
+    "optype",
+    "0.19.0"
+   ],
+   [
+    "orjson",
+    "3.13.0"
+   ],
+   [
+    "packaging",
+    "26.3"
+   ],
+   [
+    "pillow",
+    "13.0.0"
+   ],
+   [
+    "platformdirs",
+    "4.14.3"
+   ],
+   [
+    "pre_commit",
+    "4.7.0"
+   ],
+   [
+    "propcache",
+    "0.5.4"
+   ],
+   [
+    "proto-plus",
+    "1.28.2"
+   ],
+   [
+    "protobuf",
+    "5.29.6"
+   ],
+   [
+    "pyasn1",
+    "0.6.5"
+   ],
+   [
+    "pyasn1_modules",
+    "0.4.2"
+   ],
+   [
+    "pycparser",
+    "3.12"
+   ],
+   [
+    "pydantic",
+    "2.14.2"
+   ],
+   [
+    "pydantic_core",
+    "2.50.2"
+   ],
+   [
+    "python-dateutil",
+    "2.9.0.post0"
+   ],
+   [
+    "python-discovery",
+    "1.9.0"
+   ],
+   [
+    "python-dotenv",
+    "1.2.4"
+   ],
+   [
+    "regex",
+    "2026.9.29"
+   ],
+   [
+    "requests",
+    "2.34.2"
+   ],
+   [
+    "requests-toolbelt",
+    "1.0.0"
+   ],
+   [
+    "rich",
+    "14.3.4"
+   ],
+   [
+    "scikit-learn",
+    "1.9.1"
+   ],
+   [
+    "scipy",
+    "1.18.1"
+   ],
+   [
+    "scipy-stubs",
+    "1.18.1.1"
+   ],
+   [
+    "sentencepiece",
+    "0.2.2"
+   ],
+   [
+    "shapely",
+    "2.2.0"
+   ],
+   [
+    "shellingham",
+    "1.5.4"
+   ],
+   [
+    "six",
+    "1.17.0"
+   ],
+   [
+    "sniffio",
+    "1.3.1"
+   ],
+   [
+    "tenacity",
+    "9.1.4"
+   ],
+   [
+    "texttable",
+    "1.7.2"
+   ],
+   [
+    "threadpoolctl",
+    "3.7.0"
+   ],
+   [
+    "tiktoken",
+    "0.8.0"
+   ],
+   [
+    "tokenizers",
+    "0.23.3"
+   ],
+   [
+    "tqdm",
+    "4.70.1"
+   ],
+   [
+    "truststore",
+    "0.10.5"
+   ],
+   [
+    "typer",
+    "0.27.3"
+   ],
+   [
+    "typing-inspection",
+    "0.4.4"
+   ],
+   [
+    "typing_extensions",
+    "4.16.0"
+   ],
+   [
+    "urllib3",
+    "2.8.0"
+   ],
+   [
+    "uuid_utils",
+    "0.19.0"
+   ],
+   [
+    "vertexai",
+    "1.71.1"
+   ],
+   [
+    "virtualenv",
+    "21.15.2"
+   ],
+   [
+    "voyageai",
+    "0.3.7"
+   ],
+   [
+    "websockets",
+    "16.1.1"
+   ],
+   [
+    "xxhash",
+    "3.8.2"
+   ],
+   [
+    "yarl",
+    "1.25.1"
+   ],
+   [
+    "zstandard",
+    "0.25.0"
+   ]
+  ],
+  "license_files_in_distribution": [
+   "fast_graphrag-0.0.5.dist-info/licenses/LICENSE"
+  ],
+  "license_first_lines": [
+   "MIT License",
+   "",
+   "Copyright (c) 2024 circlemind-ai"
+  ],
+  "license_sha256": "1774ff2102ad79d99d731ed90e1f64116695115133efd78c29a73d2939033875"
+ },
+ "started_utc": "20261102 10:47:39",
+ "finished_utc": "20261102 10:48:10",
+ "runs": {
+  "shape_B_run1": {
+   "run": "shape_B_run1",
+   "shape": "B",
+   "gleaning_steps": 0,
+   "started_utc": "20261102 10:47:39",
+   "documents": [
+    {
+     "n": 1,
+     "rank": 1,
+     "url_sha256_16": "0068586b43cf2f56",
+     "chars": 6341,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1233,
+     "chunk_chars_max": 3056,
+     "graph_totals_after": {
+      "entities": 17,
+      "relations": 15,
+      "chunks": 3
+     },
+     "seconds_against_stub": 0.08,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6831,
+      "completion_tokens": 932
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6831,
+       "completion_tokens": 932
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 17,
+      "tokens": 317,
+      "tokens_sum_of_inputs": 317,
+      "inputs_per_request": {
+       "17": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 2,
+     "rank": 2,
+     "url_sha256_16": "01648ca159300692",
+     "chars": 6005,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 680,
+     "chunk_chars_max": 3146,
+     "graph_totals_after": {
+      "entities": 33,
+      "relations": 30,
+      "chunks": 6
+     },
+     "seconds_against_stub": 0.043,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6620,
+      "completion_tokens": 952
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6620,
+       "completion_tokens": 952
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 16,
+      "tokens": 309,
+      "tokens_sum_of_inputs": 309,
+      "inputs_per_request": {
+       "16": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 3,
+     "rank": 3,
+     "url_sha256_16": "019b1ddf6f78fa7e",
+     "chars": 5112,
+     "chunks_by_library_chunker": 2,
+     "chunk_chars_min": 2674,
+     "chunk_chars_max": 2694,
+     "graph_totals_after": {
+      "entities": 43,
+      "relations": 40,
+      "chunks": 8
+     },
+     "seconds_against_stub": 0.029,
+     "chat": {
+      "calls": 2,
+      "prompt_tokens": 4662,
+      "completion_tokens": 621
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 2,
+       "retry_calls": 0,
+       "prompt_tokens": 4662,
+       "completion_tokens": 621
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 10,
+      "tokens": 188,
+      "tokens_sum_of_inputs": 188,
+      "inputs_per_request": {
+       "10": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 4,
+     "rank": 4,
+     "url_sha256_16": "024c021da3256374",
+     "chars": 6374,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1055,
+     "chunk_chars_max": 2896,
+     "graph_totals_after": {
+      "entities": 58,
+      "relations": 55,
+      "chunks": 11
+     },
+     "seconds_against_stub": 0.043,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6874,
+      "completion_tokens": 936
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6874,
+       "completion_tokens": 936
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 15,
+      "tokens": 285,
+      "tokens_sum_of_inputs": 285,
+      "inputs_per_request": {
+       "15": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 5,
+     "rank": 5,
+     "url_sha256_16": "02e889122ba12a26",
+     "chars": 8626,
+     "chunks_by_library_chunker": 4,
+     "chunk_chars_min": 836,
+     "chunk_chars_max": 3191,
+     "graph_totals_after": {
+      "entities": 73,
+      "relations": 75,
+      "chunks": 15
+     },
+     "seconds_against_stub": 0.045,
+     "chat": {
+      "calls": 4,
+      "prompt_tokens": 9138,
+      "completion_tokens": 1229
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 4,
+       "retry_calls": 0,
+       "prompt_tokens": 9138,
+       "completion_tokens": 1229
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 15,
+      "tokens": 325,
+      "tokens_sum_of_inputs": 325,
+      "inputs_per_request": {
+       "15": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 6,
+     "rank": 6,
+     "url_sha256_16": "02ecfbdc00c2bc17",
+     "chars": 6083,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1051,
+     "chunk_chars_max": 3054,
+     "graph_totals_after": {
+      "entities": 89,
+      "relations": 90,
+      "chunks": 18
+     },
+     "seconds_against_stub": 0.059,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6746,
+      "completion_tokens": 896
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6746,
+       "completion_tokens": 896
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 18,
+      "tokens": 339,
+      "tokens_sum_of_inputs": 339,
+      "inputs_per_request": {
+       "18": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 7,
+     "rank": 7,
+     "url_sha256_16": "0343487a677b62d3",
+     "chars": 14982,
+     "chunks_by_library_chunker": 6,
+     "chunk_chars_min": 1714,
+     "chunk_chars_max": 3098,
+     "graph_totals_after": {
+      "entities": 116,
+      "relations": 120,
+      "chunks": 24
+     },
+     "seconds_against_stub": 0.082,
+     "chat": {
+      "calls": 6,
+      "prompt_tokens": 14035,
+      "completion_tokens": 1880
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 6,
+       "retry_calls": 0,
+       "prompt_tokens": 14035,
+       "completion_tokens": 1880
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 28,
+      "tokens": 559,
+      "tokens_sum_of_inputs": 559,
+      "inputs_per_request": {
+       "28": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 8,
+     "rank": 8,
+     "url_sha256_16": "0370fe5c0dcecb48",
+     "chars": 6237,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1074,
+     "chunk_chars_max": 2984,
+     "graph_totals_after": {
+      "entities": 131,
+      "relations": 135,
+      "chunks": 27
+     },
+     "seconds_against_stub": 0.058,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6784,
+      "completion_tokens": 955
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6784,
+       "completion_tokens": 955
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 16,
+      "tokens": 321,
+      "tokens_sum_of_inputs": 321,
+      "inputs_per_request": {
+       "16": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 9,
+     "rank": 9,
+     "url_sha256_16": "037f37fc8794dabc",
+     "chars": 11756,
+     "chunks_by_library_chunker": 5,
+     "chunk_chars_min": 1238,
+     "chunk_chars_max": 3130,
+     "graph_totals_after": {
+      "entities": 149,
+      "relations": 160,
+      "chunks": 32
+     },
+     "seconds_against_stub": 0.066,
+     "chat": {
+      "calls": 5,
+      "prompt_tokens": 11724,
+      "completion_tokens": 1496
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 5,
+       "retry_calls": 0,
+       "prompt_tokens": 11724,
+       "completion_tokens": 1496
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 19,
+      "tokens": 411,
+      "tokens_sum_of_inputs": 411,
+      "inputs_per_request": {
+       "19": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 10,
+     "rank": 10,
+     "url_sha256_16": "038eabdb237efe3f",
+     "chars": 10120,
+     "chunks_by_library_chunker": 4,
+     "chunk_chars_min": 2178,
+     "chunk_chars_max": 3070,
+     "graph_totals_after": {
+      "entities": 165,
+      "relations": 180,
+      "chunks": 36
+     },
+     "seconds_against_stub": 0.052,
+     "chat": {
+      "calls": 4,
+      "prompt_tokens": 9550,
+      "completion_tokens": 1229
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 4,
+       "retry_calls": 0,
+       "prompt_tokens": 9550,
+       "completion_tokens": 1229
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 16,
+      "tokens": 342,
+      "tokens_sum_of_inputs": 342,
+      "inputs_per_request": {
+       "16": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 11,
+     "rank": 11,
+     "url_sha256_16": "03a4ece0fb5cb7f9",
+     "chars": 8275,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 2696,
+     "chunk_chars_max": 3089,
+     "graph_totals_after": {
+      "entities": 178,
+      "relations": 195,
+      "chunks": 39
+     },
+     "seconds_against_stub": 0.101,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 7377,
+      "completion_tokens": 928
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 7377,
+       "completion_tokens": 928
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 15,
+      "tokens": 311,
+      "tokens_sum_of_inputs": 311,
+      "inputs_per_request": {
+       "15": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 12,
+     "rank": 12,
+     "url_sha256_16": "03c3ac59773da075",
+     "chars": 5601,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 292,
+     "chunk_chars_max": 3120,
+     "graph_totals_after": {
+      "entities": 194,
+      "relations": 210,
+      "chunks": 42
+     },
+     "seconds_against_stub": 0.061,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6551,
+      "completion_tokens": 912
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6551,
+       "completion_tokens": 912
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 17,
+      "tokens": 313,
+      "tokens_sum_of_inputs": 313,
+      "inputs_per_request": {
+       "17": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 13,
+     "rank": 13,
+     "url_sha256_16": "0476f8f8472ce475",
+     "chars": 6359,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1184,
+     "chunk_chars_max": 2983,
+     "graph_totals_after": {
+      "entities": 212,
+      "relations": 225,
+      "chunks": 45
+     },
+     "seconds_against_stub": 0.06,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6907,
+      "completion_tokens": 1016
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6907,
+       "completion_tokens": 1016
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 18,
+      "tokens": 338,
+      "tokens_sum_of_inputs": 338,
+      "inputs_per_request": {
+       "18": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 14,
+     "rank": 14,
+     "url_sha256_16": "04ccbc6009a196f8",
+     "chars": 9754,
+     "chunks_by_library_chunker": 4,
+     "chunk_chars_min": 1834,
+     "chunk_chars_max": 3154,
+     "graph_totals_after": {
+      "entities": 231,
+      "relations": 245,
+      "chunks": 49
+     },
+     "seconds_against_stub": 0.063,
+     "chat": {
+      "calls": 4,
+      "prompt_tokens": 9237,
+      "completion_tokens": 1200
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 4,
+       "retry_calls": 0,
+       "prompt_tokens": 9237,
+       "completion_tokens": 1200
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 19,
+      "tokens": 365,
+      "tokens_sum_of_inputs": 365,
+      "inputs_per_request": {
+       "19": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 15,
+     "rank": 15,
+     "url_sha256_16": "04fd1826153b3083",
+     "chars": 13179,
+     "chunks_by_library_chunker": 5,
+     "chunk_chars_min": 2403,
+     "chunk_chars_max": 3135,
+     "graph_totals_after": {
+      "entities": 252,
+      "relations": 270,
+      "chunks": 54
+     },
+     "seconds_against_stub": 0.087,
+     "chat": {
+      "calls": 5,
+      "prompt_tokens": 12112,
+      "completion_tokens": 1524
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 5,
+       "retry_calls": 0,
+       "prompt_tokens": 12112,
+       "completion_tokens": 1524
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 22,
+      "tokens": 452,
+      "tokens_sum_of_inputs": 452,
+      "inputs_per_request": {
+       "22": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 16,
+     "rank": 16,
+     "url_sha256_16": "0501457d04bf9f55",
+     "chars": 22011,
+     "chunks_by_library_chunker": 9,
+     "chunk_chars_min": 628,
+     "chunk_chars_max": 3132,
+     "graph_totals_after": {
+      "entities": 281,
+      "relations": 315,
+      "chunks": 63
+     },
+     "seconds_against_stub": 0.214,
+     "chat": {
+      "calls": 9,
+      "prompt_tokens": 21574,
+      "completion_tokens": 2732
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 9,
+       "retry_calls": 0,
+       "prompt_tokens": 21574,
+       "completion_tokens": 2732
+      }
+     },
+     "embedding": {
+      "requests": 2,
+      "inputs": 38,
+      "tokens": 902,
+      "tokens_sum_of_inputs": 902,
+      "inputs_per_request": {
+       "32": 1,
+       "6": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 17,
+     "rank": 17,
+     "url_sha256_16": "054b706b1f216197",
+     "chars": 16351,
+     "chunks_by_library_chunker": 6,
+     "chunk_chars_min": 2800,
+     "chunk_chars_max": 3184,
+     "graph_totals_after": {
+      "entities": 305,
+      "relations": 345,
+      "chunks": 69
+     },
+     "seconds_against_stub": 0.095,
+     "chat": {
+      "calls": 6,
+      "prompt_tokens": 14673,
+      "completion_tokens": 1828
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 6,
+       "retry_calls": 0,
+       "prompt_tokens": 14673,
+       "completion_tokens": 1828
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 25,
+      "tokens": 558,
+      "tokens_sum_of_inputs": 558,
+      "inputs_per_request": {
+       "25": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 18,
+     "rank": 18,
+     "url_sha256_16": "0559abf992d9f2f2",
+     "chars": 7683,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 2500,
+     "chunk_chars_max": 3146,
+     "graph_totals_after": {
+      "entities": 319,
+      "relations": 360,
+      "chunks": 72
+     },
+     "seconds_against_stub": 0.067,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 7522,
+      "completion_tokens": 962
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 7522,
+       "completion_tokens": 962
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 15,
+      "tokens": 304,
+      "tokens_sum_of_inputs": 304,
+      "inputs_per_request": {
+       "15": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 19,
+     "rank": 19,
+     "url_sha256_16": "05cd6a49a650e655",
+     "chars": 12684,
+     "chunks_by_library_chunker": 5,
+     "chunk_chars_min": 2072,
+     "chunk_chars_max": 3046,
+     "graph_totals_after": {
+      "entities": 332,
+      "relations": 385,
+      "chunks": 77
+     },
+     "seconds_against_stub": 0.214,
+     "chat": {
+      "calls": 5,
+      "prompt_tokens": 11759,
+      "completion_tokens": 1522
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 5,
+       "retry_calls": 0,
+       "prompt_tokens": 11759,
+       "completion_tokens": 1522
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 18,
+      "tokens": 485,
+      "tokens_sum_of_inputs": 485,
+      "inputs_per_request": {
+       "18": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 20,
+     "rank": 20,
+     "url_sha256_16": "06bc8ec253404962",
+     "chars": 8038,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 2763,
+     "chunk_chars_max": 3117,
+     "graph_totals_after": {
+      "entities": 349,
+      "relations": 400,
+      "chunks": 80
+     },
+     "seconds_against_stub": 0.064,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 7107,
+      "completion_tokens": 954
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 7107,
+       "completion_tokens": 954
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 17,
+      "tokens": 313,
+      "tokens_sum_of_inputs": 313,
+      "inputs_per_request": {
+       "17": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    }
+   ],
+   "snapshots": {
+    "1": {
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 3,
+      "chat_prompt_tokens": 6831,
+      "chat_completion_tokens": 932,
+      "embedding_calls": 1,
+      "embedding_inputs": 17,
+      "embedding_tokens": 317,
+      "other_calls": 0
+     },
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6831,
+      "completion_tokens": 932
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6831,
+       "completion_tokens": 932
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 17,
+      "tokens": 317,
+      "tokens_sum_of_inputs": 317,
+      "inputs_per_request": {
+       "17": 1
+      }
+     }
+    },
+    "5": {
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 15,
+      "chat_prompt_tokens": 34125,
+      "chat_completion_tokens": 4670,
+      "embedding_calls": 5,
+      "embedding_inputs": 73,
+      "embedding_tokens": 1424,
+      "other_calls": 0
+     },
+     "chat": {
+      "calls": 15,
+      "prompt_tokens": 34125,
+      "completion_tokens": 4670
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 15,
+       "retry_calls": 0,
+       "prompt_tokens": 34125,
+       "completion_tokens": 4670
+      }
+     },
+     "embedding": {
+      "requests": 5,
+      "inputs": 73,
+      "tokens": 1424,
+      "tokens_sum_of_inputs": 1424,
+      "inputs_per_request": {
+       "17": 1,
+       "16": 1,
+       "10": 1,
+       "15": 2
+      }
+     }
+    },
+    "20": {
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 80,
+      "chat_prompt_tokens": 187783,
+      "chat_completion_tokens": 24704,
+      "embedding_calls": 21,
+      "embedding_inputs": 374,
+      "embedding_tokens": 7737,
+      "other_calls": 0
+     },
+     "chat": {
+      "calls": 80,
+      "prompt_tokens": 187783,
+      "completion_tokens": 24704
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 80,
+       "retry_calls": 0,
+       "prompt_tokens": 187783,
+       "completion_tokens": 24704
+      }
+     },
+     "embedding": {
+      "requests": 21,
+      "inputs": 374,
+      "tokens": 7737,
+      "tokens_sum_of_inputs": 7737,
+      "inputs_per_request": {
+       "17": 3,
+       "16": 3,
+       "10": 1,
+       "15": 4,
+       "18": 3,
+       "28": 1,
+       "19": 2,
+       "22": 1,
+       "32": 1,
+       "6": 1,
+       "25": 1
+      }
+     }
+    }
+   },
+   "tokenizer": "tiktoken:cl100k_base",
+   "fast_graphrag_version": "0.0.5",
+   "defaults_seen": {
+    "llm_class": "DefaultLLMService",
+    "llm_model": "gpt-4o-mini",
+    "llm_max_requests_concurrent": 1024,
+    "llm_rate_limit_per_minute_enabled": false,
+    "embedding_model": "text-embedding-3-small",
+    "embedding_dim": 1536,
+    "embedding_max_elements_per_request": 32,
+    "embedding_rate_limit_per_minute_enabled": true,
+    "max_gleaning_steps": 0,
+    "chunk_token_size": 800,
+    "chunk_token_overlap": 100,
+    "chunk_size_chars": 3200,
+    "chunk_overlap_chars": 400,
+    "max_node_description_size": 512,
+    "edge_merge_threshold": 5,
+    "insert_similarity_score_threshold": 0.9
+   },
+   "wall_seconds_all_documents": 1.591,
+   "final_stub_summary": {
+    "tokenizer": "tiktoken:cl100k_base",
+    "chat_calls": 80,
+    "chat_prompt_tokens": 187783,
+    "chat_completion_tokens": 24704,
+    "embedding_calls": 21,
+    "embedding_inputs": 374,
+    "embedding_tokens": 7737,
+    "other_calls": 0
+   },
+   "first_request_of_each_kind": {
+    "extract": {
+     "path": "/v1/chat/completions",
+     "request_body_keys": [
+      "messages",
+      "model",
+      "response_format"
+     ],
+     "n_messages": 2,
+     "roles": [
+      "system",
+      "user"
+     ],
+     "response_format": {
+      "type": "json_object"
+     },
+     "model": "gpt-4o-mini",
+     "max_tokens": "absent",
+     "dimensions": "absent",
+     "stream": false
+    },
+    "embeddings": {
+     "path": "/v1/embeddings",
+     "request_body_keys": [
+      "dimensions",
+      "encoding_format",
+      "input",
+      "model"
+     ],
+     "n_messages": 0,
+     "roles": [],
+     "response_format": null,
+     "model": "text-embedding-3-small",
+     "max_tokens": "absent",
+     "dimensions": 1536,
+     "stream": false
+    }
+   },
+   "extraction_prompts": {
+    "first_attempt_calls": 80,
+    "tokens_of_the_chunk_text_alone": 46421,
+    "note": "arithmetic: prompt tokens minus chunk-text tokens is the fixed part (instructions, example, JSON schema) plus join effects of the tokenizer"
+   },
+   "shape_b_entities_per_chunk": {
+    "min": 6,
+    "max": 6,
+    "mean": 6.0,
+    "chunks": 80
+   },
+   "finished_utc": "20261102 10:47:42",
+   "outbound_attempts": [
+    {
+     "t": "20261102 10:47:40",
+     "kind": "connect-to-closed-proxy-port",
+     "target": "127.0.0.1:9",
+     "innermost_library_frames": [
+      "urllib3/util/connection.py:73:create_connection",
+      "urllib3/connection.py:239:_new_conn",
+      "urllib3/connection.py:827:connect",
+      "urllib3/connectionpool.py:1074:_prepare_proxy",
+      "urllib3/connectionpool.py:779:urlopen",
+      "requests/adapters.py:696:send",
+      "requests/sessions.py:784:send",
+      "requests/sessions.py:651:request",
+      "requests/api.py:71:request",
+      "requests/api.py:87:get"
+     ]
+    }
+   ],
+   "openai_sdk_retries_logged": 0,
+   "tokenizer_download_failures_logged_by_library": [
+    "LLM: failed to load tokenizer for model 'gpt-4o-mini' (HTTPSConnectionPool(host='openaipublic.blob.core.windows.net', port=443): Max retries exceeded with url: /encodings/o200k_base.tiktoken (Caused by ProxyError('Unable to connect to proxy', NewConnectionError(\"HTTPSConnection(host='127.0.0.1', por"
+   ],
+   "error_log_lines": {
+    "count": 0,
+    "first_five": []
+   },
+   "environment_variable_names": [
+    "ALL_PROXY",
+    "HOME",
+    "HTTPS_PROXY",
+    "HTTP_PROXY",
+    "LC_CTYPE",
+    "NO_PROXY",
+    "OPENAI_API_KEY",
+    "OPENAI_BASE_URL",
+    "PATH",
+    "PYTHONDONTWRITEBYTECODE",
+    "TIKTOKEN_CACHE_DIR",
+    "TMPDIR",
+    "__CF_USER_TEXT_ENCODING",
+    "all_proxy",
+    "http_proxy",
+    "https_proxy",
+    "no_proxy"
+   ],
+   "files_in_working_dir": [
+    "chunks_kv_data.pkl",
+    "entities_hnsw_index_1536.bin",
+    "entities_hnsw_metadata.pkl",
+    "graph_igraph_data.pklz",
+    "map_e2r_blob_data.pkl",
+    "map_r2c_blob_data.pkl"
+   ]
+  },
+  "shape_A1_one_entity": {
+   "run": "shape_A1_one_entity",
+   "shape": "A1",
+   "gleaning_steps": 0,
+   "started_utc": "20261102 10:47:42",
+   "documents": [
+    {
+     "n": 1,
+     "rank": 1,
+     "url_sha256_16": "0068586b43cf2f56",
+     "chars": 6341,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1233,
+     "chunk_chars_max": 3056,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 3
+     },
+     "seconds_against_stub": 0.047,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6831,
+      "completion_tokens": 93
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6831,
+       "completion_tokens": 93
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 13,
+      "tokens_sum_of_inputs": 13,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 2,
+     "rank": 2,
+     "url_sha256_16": "01648ca159300692",
+     "chars": 6005,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 680,
+     "chunk_chars_max": 3146,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 6
+     },
+     "seconds_against_stub": 0.013,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6620,
+      "completion_tokens": 93
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6620,
+       "completion_tokens": 93
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 16,
+      "tokens_sum_of_inputs": 16,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 3,
+     "rank": 3,
+     "url_sha256_16": "019b1ddf6f78fa7e",
+     "chars": 5112,
+     "chunks_by_library_chunker": 2,
+     "chunk_chars_min": 2674,
+     "chunk_chars_max": 2694,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 8
+     },
+     "seconds_against_stub": 0.01,
+     "chat": {
+      "calls": 2,
+      "prompt_tokens": 4662,
+      "completion_tokens": 62
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 2,
+       "retry_calls": 0,
+       "prompt_tokens": 4662,
+       "completion_tokens": 62
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 18,
+      "tokens_sum_of_inputs": 18,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 4,
+     "rank": 4,
+     "url_sha256_16": "024c021da3256374",
+     "chars": 6374,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1055,
+     "chunk_chars_max": 2896,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 11
+     },
+     "seconds_against_stub": 0.011,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6874,
+      "completion_tokens": 93
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6874,
+       "completion_tokens": 93
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 21,
+      "tokens_sum_of_inputs": 21,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 5,
+     "rank": 5,
+     "url_sha256_16": "02e889122ba12a26",
+     "chars": 8626,
+     "chunks_by_library_chunker": 4,
+     "chunk_chars_min": 836,
+     "chunk_chars_max": 3191,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 15
+     },
+     "seconds_against_stub": 0.013,
+     "chat": {
+      "calls": 4,
+      "prompt_tokens": 9138,
+      "completion_tokens": 124
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 4,
+       "retry_calls": 0,
+       "prompt_tokens": 9138,
+       "completion_tokens": 124
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 25,
+      "tokens_sum_of_inputs": 25,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 6,
+     "rank": 6,
+     "url_sha256_16": "02ecfbdc00c2bc17",
+     "chars": 6083,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1051,
+     "chunk_chars_max": 3054,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 18
+     },
+     "seconds_against_stub": 0.011,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6746,
+      "completion_tokens": 93
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6746,
+       "completion_tokens": 93
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 28,
+      "tokens_sum_of_inputs": 28,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 7,
+     "rank": 7,
+     "url_sha256_16": "0343487a677b62d3",
+     "chars": 14982,
+     "chunks_by_library_chunker": 6,
+     "chunk_chars_min": 1714,
+     "chunk_chars_max": 3098,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 24
+     },
+     "seconds_against_stub": 0.017,
+     "chat": {
+      "calls": 6,
+      "prompt_tokens": 14035,
+      "completion_tokens": 186
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 6,
+       "retry_calls": 0,
+       "prompt_tokens": 14035,
+       "completion_tokens": 186
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 34,
+      "tokens_sum_of_inputs": 34,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 8,
+     "rank": 8,
+     "url_sha256_16": "0370fe5c0dcecb48",
+     "chars": 6237,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1074,
+     "chunk_chars_max": 2984,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 27
+     },
+     "seconds_against_stub": 0.011,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6784,
+      "completion_tokens": 93
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6784,
+       "completion_tokens": 93
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 37,
+      "tokens_sum_of_inputs": 37,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 9,
+     "rank": 9,
+     "url_sha256_16": "037f37fc8794dabc",
+     "chars": 11756,
+     "chunks_by_library_chunker": 5,
+     "chunk_chars_min": 1238,
+     "chunk_chars_max": 3130,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 32
+     },
+     "seconds_against_stub": 0.016,
+     "chat": {
+      "calls": 5,
+      "prompt_tokens": 11724,
+      "completion_tokens": 155
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 5,
+       "retry_calls": 0,
+       "prompt_tokens": 11724,
+       "completion_tokens": 155
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 42,
+      "tokens_sum_of_inputs": 42,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 10,
+     "rank": 10,
+     "url_sha256_16": "038eabdb237efe3f",
+     "chars": 10120,
+     "chunks_by_library_chunker": 4,
+     "chunk_chars_min": 2178,
+     "chunk_chars_max": 3070,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 36
+     },
+     "seconds_against_stub": 0.013,
+     "chat": {
+      "calls": 4,
+      "prompt_tokens": 9550,
+      "completion_tokens": 124
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 4,
+       "retry_calls": 0,
+       "prompt_tokens": 9550,
+       "completion_tokens": 124
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 46,
+      "tokens_sum_of_inputs": 46,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 11,
+     "rank": 11,
+     "url_sha256_16": "03a4ece0fb5cb7f9",
+     "chars": 8275,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 2696,
+     "chunk_chars_max": 3089,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 39
+     },
+     "seconds_against_stub": 0.012,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 7377,
+      "completion_tokens": 93
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 7377,
+       "completion_tokens": 93
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 49,
+      "tokens_sum_of_inputs": 49,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 12,
+     "rank": 12,
+     "url_sha256_16": "03c3ac59773da075",
+     "chars": 5601,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 292,
+     "chunk_chars_max": 3120,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 42
+     },
+     "seconds_against_stub": 0.011,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6551,
+      "completion_tokens": 93
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6551,
+       "completion_tokens": 93
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 52,
+      "tokens_sum_of_inputs": 52,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 13,
+     "rank": 13,
+     "url_sha256_16": "0476f8f8472ce475",
+     "chars": 6359,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1184,
+     "chunk_chars_max": 2983,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 45
+     },
+     "seconds_against_stub": 0.012,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6907,
+      "completion_tokens": 93
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6907,
+       "completion_tokens": 93
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 55,
+      "tokens_sum_of_inputs": 55,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 14,
+     "rank": 14,
+     "url_sha256_16": "04ccbc6009a196f8",
+     "chars": 9754,
+     "chunks_by_library_chunker": 4,
+     "chunk_chars_min": 1834,
+     "chunk_chars_max": 3154,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 49
+     },
+     "seconds_against_stub": 0.014,
+     "chat": {
+      "calls": 4,
+      "prompt_tokens": 9237,
+      "completion_tokens": 124
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 4,
+       "retry_calls": 0,
+       "prompt_tokens": 9237,
+       "completion_tokens": 124
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 59,
+      "tokens_sum_of_inputs": 59,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 15,
+     "rank": 15,
+     "url_sha256_16": "04fd1826153b3083",
+     "chars": 13179,
+     "chunks_by_library_chunker": 5,
+     "chunk_chars_min": 2403,
+     "chunk_chars_max": 3135,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 54
+     },
+     "seconds_against_stub": 0.016,
+     "chat": {
+      "calls": 5,
+      "prompt_tokens": 12112,
+      "completion_tokens": 155
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 5,
+       "retry_calls": 0,
+       "prompt_tokens": 12112,
+       "completion_tokens": 155
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 64,
+      "tokens_sum_of_inputs": 64,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 16,
+     "rank": 16,
+     "url_sha256_16": "0501457d04bf9f55",
+     "chars": 22011,
+     "chunks_by_library_chunker": 9,
+     "chunk_chars_min": 628,
+     "chunk_chars_max": 3132,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 63
+     },
+     "seconds_against_stub": 0.024,
+     "chat": {
+      "calls": 9,
+      "prompt_tokens": 21574,
+      "completion_tokens": 279
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 9,
+       "retry_calls": 0,
+       "prompt_tokens": 21574,
+       "completion_tokens": 279
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 73,
+      "tokens_sum_of_inputs": 73,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 17,
+     "rank": 17,
+     "url_sha256_16": "054b706b1f216197",
+     "chars": 16351,
+     "chunks_by_library_chunker": 6,
+     "chunk_chars_min": 2800,
+     "chunk_chars_max": 3184,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 69
+     },
+     "seconds_against_stub": 0.018,
+     "chat": {
+      "calls": 6,
+      "prompt_tokens": 14673,
+      "completion_tokens": 186
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 6,
+       "retry_calls": 0,
+       "prompt_tokens": 14673,
+       "completion_tokens": 186
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 79,
+      "tokens_sum_of_inputs": 79,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 18,
+     "rank": 18,
+     "url_sha256_16": "0559abf992d9f2f2",
+     "chars": 7683,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 2500,
+     "chunk_chars_max": 3146,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 72
+     },
+     "seconds_against_stub": 0.012,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 7522,
+      "completion_tokens": 93
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 7522,
+       "completion_tokens": 93
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 82,
+      "tokens_sum_of_inputs": 82,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 19,
+     "rank": 19,
+     "url_sha256_16": "05cd6a49a650e655",
+     "chars": 12684,
+     "chunks_by_library_chunker": 5,
+     "chunk_chars_min": 2072,
+     "chunk_chars_max": 3046,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 77
+     },
+     "seconds_against_stub": 0.016,
+     "chat": {
+      "calls": 5,
+      "prompt_tokens": 11759,
+      "completion_tokens": 155
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 5,
+       "retry_calls": 0,
+       "prompt_tokens": 11759,
+       "completion_tokens": 155
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 87,
+      "tokens_sum_of_inputs": 87,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 20,
+     "rank": 20,
+     "url_sha256_16": "06bc8ec253404962",
+     "chars": 8038,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 2763,
+     "chunk_chars_max": 3117,
+     "graph_totals_after": {
+      "entities": 1,
+      "relations": 0,
+      "chunks": 80
+     },
+     "seconds_against_stub": 0.012,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 7107,
+      "completion_tokens": 93
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 7107,
+       "completion_tokens": 93
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 90,
+      "tokens_sum_of_inputs": 90,
+      "inputs_per_request": {
+       "1": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    }
+   ],
+   "snapshots": {
+    "1": {
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 3,
+      "chat_prompt_tokens": 6831,
+      "chat_completion_tokens": 93,
+      "embedding_calls": 1,
+      "embedding_inputs": 1,
+      "embedding_tokens": 13,
+      "other_calls": 0
+     },
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6831,
+      "completion_tokens": 93
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6831,
+       "completion_tokens": 93
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 1,
+      "tokens": 13,
+      "tokens_sum_of_inputs": 13,
+      "inputs_per_request": {
+       "1": 1
+      }
+     }
+    },
+    "5": {
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 15,
+      "chat_prompt_tokens": 34125,
+      "chat_completion_tokens": 465,
+      "embedding_calls": 5,
+      "embedding_inputs": 5,
+      "embedding_tokens": 93,
+      "other_calls": 0
+     },
+     "chat": {
+      "calls": 15,
+      "prompt_tokens": 34125,
+      "completion_tokens": 465
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 15,
+       "retry_calls": 0,
+       "prompt_tokens": 34125,
+       "completion_tokens": 465
+      }
+     },
+     "embedding": {
+      "requests": 5,
+      "inputs": 5,
+      "tokens": 93,
+      "tokens_sum_of_inputs": 93,
+      "inputs_per_request": {
+       "1": 5
+      }
+     }
+    },
+    "20": {
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 80,
+      "chat_prompt_tokens": 187783,
+      "chat_completion_tokens": 2480,
+      "embedding_calls": 20,
+      "embedding_inputs": 20,
+      "embedding_tokens": 970,
+      "other_calls": 0
+     },
+     "chat": {
+      "calls": 80,
+      "prompt_tokens": 187783,
+      "completion_tokens": 2480
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 80,
+       "retry_calls": 0,
+       "prompt_tokens": 187783,
+       "completion_tokens": 2480
+      }
+     },
+     "embedding": {
+      "requests": 20,
+      "inputs": 20,
+      "tokens": 970,
+      "tokens_sum_of_inputs": 970,
+      "inputs_per_request": {
+       "1": 20
+      }
+     }
+    }
+   },
+   "tokenizer": "tiktoken:cl100k_base",
+   "fast_graphrag_version": "0.0.5",
+   "defaults_seen": {
+    "llm_class": "DefaultLLMService",
+    "llm_model": "gpt-4o-mini",
+    "llm_max_requests_concurrent": 1024,
+    "llm_rate_limit_per_minute_enabled": false,
+    "embedding_model": "text-embedding-3-small",
+    "embedding_dim": 1536,
+    "embedding_max_elements_per_request": 32,
+    "embedding_rate_limit_per_minute_enabled": true,
+    "max_gleaning_steps": 0,
+    "chunk_token_size": 800,
+    "chunk_token_overlap": 100,
+    "chunk_size_chars": 3200,
+    "chunk_overlap_chars": 400,
+    "max_node_description_size": 512,
+    "edge_merge_threshold": 5,
+    "insert_similarity_score_threshold": 0.9
+   },
+   "wall_seconds_all_documents": 0.314,
+   "final_stub_summary": {
+    "tokenizer": "tiktoken:cl100k_base",
+    "chat_calls": 80,
+    "chat_prompt_tokens": 187783,
+    "chat_completion_tokens": 2480,
+    "embedding_calls": 20,
+    "embedding_inputs": 20,
+    "embedding_tokens": 970,
+    "other_calls": 0
+   },
+   "first_request_of_each_kind": {
+    "extract": {
+     "path": "/v1/chat/completions",
+     "request_body_keys": [
+      "messages",
+      "model",
+      "response_format"
+     ],
+     "n_messages": 2,
+     "roles": [
+      "system",
+      "user"
+     ],
+     "response_format": {
+      "type": "json_object"
+     },
+     "model": "gpt-4o-mini",
+     "max_tokens": "absent",
+     "dimensions": "absent",
+     "stream": false
+    },
+    "embeddings": {
+     "path": "/v1/embeddings",
+     "request_body_keys": [
+      "dimensions",
+      "encoding_format",
+      "input",
+      "model"
+     ],
+     "n_messages": 0,
+     "roles": [],
+     "response_format": null,
+     "model": "text-embedding-3-small",
+     "max_tokens": "absent",
+     "dimensions": 1536,
+     "stream": false
+    }
+   },
+   "extraction_prompts": {
+    "first_attempt_calls": 80,
+    "tokens_of_the_chunk_text_alone": 46421,
+    "note": "arithmetic: prompt tokens minus chunk-text tokens is the fixed part (instructions, example, JSON schema) plus join effects of the tokenizer"
+   },
+   "finished_utc": "20261102 10:47:44",
+   "outbound_attempts": [
+    {
+     "t": "20261102 10:47:44",
+     "kind": "connect-to-closed-proxy-port",
+     "target": "127.0.0.1:9",
+     "innermost_library_frames": [
+      "urllib3/util/connection.py:73:create_connection",
+      "urllib3/connection.py:239:_new_conn",
+      "urllib3/connection.py:827:connect",
+      "urllib3/connectionpool.py:1074:_prepare_proxy",
+      "urllib3/connectionpool.py:779:urlopen",
+      "requests/adapters.py:696:send",
+      "requests/sessions.py:784:send",
+      "requests/sessions.py:651:request",
+      "requests/api.py:71:request",
+      "requests/api.py:87:get"
+     ]
+    }
+   ],
+   "openai_sdk_retries_logged": 0,
+   "tokenizer_download_failures_logged_by_library": [
+    "LLM: failed to load tokenizer for model 'gpt-4o-mini' (HTTPSConnectionPool(host='openaipublic.blob.core.windows.net', port=443): Max retries exceeded with url: /encodings/o200k_base.tiktoken (Caused by ProxyError('Unable to connect to proxy', NewConnectionError(\"HTTPSConnection(host='127.0.0.1', por"
+   ],
+   "error_log_lines": {
+    "count": 0,
+    "first_five": []
+   },
+   "environment_variable_names": [
+    "ALL_PROXY",
+    "HOME",
+    "HTTPS_PROXY",
+    "HTTP_PROXY",
+    "LC_CTYPE",
+    "NO_PROXY",
+    "OPENAI_API_KEY",
+    "OPENAI_BASE_URL",
+    "PATH",
+    "PYTHONDONTWRITEBYTECODE",
+    "TIKTOKEN_CACHE_DIR",
+    "TMPDIR",
+    "__CF_USER_TEXT_ENCODING",
+    "all_proxy",
+    "http_proxy",
+    "https_proxy",
+    "no_proxy"
+   ],
+   "files_in_working_dir": [
+    "chunks_kv_data.pkl",
+    "entities_hnsw_index_1536.bin",
+    "entities_hnsw_metadata.pkl",
+    "graph_igraph_data.pklz",
+    "map_e2r_blob_data.pkl",
+    "map_r2c_blob_data.pkl"
+   ]
+  },
+  "shape_B_run2_clean_dir": {
+   "run": "shape_B_run2_clean_dir",
+   "shape": "B",
+   "gleaning_steps": 0,
+   "started_utc": "20261102 10:47:45",
+   "documents": [
+    {
+     "n": 1,
+     "rank": 1,
+     "url_sha256_16": "0068586b43cf2f56",
+     "chars": 6341,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1233,
+     "chunk_chars_max": 3056,
+     "graph_totals_after": {
+      "entities": 17,
+      "relations": 15,
+      "chunks": 3
+     },
+     "seconds_against_stub": 0.077,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6831,
+      "completion_tokens": 932
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6831,
+       "completion_tokens": 932
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 17,
+      "tokens": 317,
+      "tokens_sum_of_inputs": 317,
+      "inputs_per_request": {
+       "17": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 2,
+     "rank": 2,
+     "url_sha256_16": "01648ca159300692",
+     "chars": 6005,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 680,
+     "chunk_chars_max": 3146,
+     "graph_totals_after": {
+      "entities": 33,
+      "relations": 30,
+      "chunks": 6
+     },
+     "seconds_against_stub": 0.043,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6620,
+      "completion_tokens": 952
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6620,
+       "completion_tokens": 952
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 16,
+      "tokens": 309,
+      "tokens_sum_of_inputs": 309,
+      "inputs_per_request": {
+       "16": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 3,
+     "rank": 3,
+     "url_sha256_16": "019b1ddf6f78fa7e",
+     "chars": 5112,
+     "chunks_by_library_chunker": 2,
+     "chunk_chars_min": 2674,
+     "chunk_chars_max": 2694,
+     "graph_totals_after": {
+      "entities": 43,
+      "relations": 40,
+      "chunks": 8
+     },
+     "seconds_against_stub": 0.031,
+     "chat": {
+      "calls": 2,
+      "prompt_tokens": 4662,
+      "completion_tokens": 621
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 2,
+       "retry_calls": 0,
+       "prompt_tokens": 4662,
+       "completion_tokens": 621
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 10,
+      "tokens": 188,
+      "tokens_sum_of_inputs": 188,
+      "inputs_per_request": {
+       "10": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 4,
+     "rank": 4,
+     "url_sha256_16": "024c021da3256374",
+     "chars": 6374,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1055,
+     "chunk_chars_max": 2896,
+     "graph_totals_after": {
+      "entities": 58,
+      "relations": 55,
+      "chunks": 11
+     },
+     "seconds_against_stub": 0.041,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6874,
+      "completion_tokens": 936
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6874,
+       "completion_tokens": 936
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 15,
+      "tokens": 285,
+      "tokens_sum_of_inputs": 285,
+      "inputs_per_request": {
+       "15": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 5,
+     "rank": 5,
+     "url_sha256_16": "02e889122ba12a26",
+     "chars": 8626,
+     "chunks_by_library_chunker": 4,
+     "chunk_chars_min": 836,
+     "chunk_chars_max": 3191,
+     "graph_totals_after": {
+      "entities": 73,
+      "relations": 75,
+      "chunks": 15
+     },
+     "seconds_against_stub": 0.049,
+     "chat": {
+      "calls": 4,
+      "prompt_tokens": 9138,
+      "completion_tokens": 1229
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 4,
+       "retry_calls": 0,
+       "prompt_tokens": 9138,
+       "completion_tokens": 1229
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 15,
+      "tokens": 325,
+      "tokens_sum_of_inputs": 325,
+      "inputs_per_request": {
+       "15": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 6,
+     "rank": 6,
+     "url_sha256_16": "02ecfbdc00c2bc17",
+     "chars": 6083,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1051,
+     "chunk_chars_max": 3054,
+     "graph_totals_after": {
+      "entities": 89,
+      "relations": 90,
+      "chunks": 18
+     },
+     "seconds_against_stub": 0.057,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6746,
+      "completion_tokens": 896
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6746,
+       "completion_tokens": 896
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 18,
+      "tokens": 339,
+      "tokens_sum_of_inputs": 339,
+      "inputs_per_request": {
+       "18": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 7,
+     "rank": 7,
+     "url_sha256_16": "0343487a677b62d3",
+     "chars": 14982,
+     "chunks_by_library_chunker": 6,
+     "chunk_chars_min": 1714,
+     "chunk_chars_max": 3098,
+     "graph_totals_after": {
+      "entities": 116,
+      "relations": 120,
+      "chunks": 24
+     },
+     "seconds_against_stub": 0.086,
+     "chat": {
+      "calls": 6,
+      "prompt_tokens": 14035,
+      "completion_tokens": 1880
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 6,
+       "retry_calls": 0,
+       "prompt_tokens": 14035,
+       "completion_tokens": 1880
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 28,
+      "tokens": 559,
+      "tokens_sum_of_inputs": 559,
+      "inputs_per_request": {
+       "28": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 8,
+     "rank": 8,
+     "url_sha256_16": "0370fe5c0dcecb48",
+     "chars": 6237,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1074,
+     "chunk_chars_max": 2984,
+     "graph_totals_after": {
+      "entities": 131,
+      "relations": 135,
+      "chunks": 27
+     },
+     "seconds_against_stub": 0.055,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6784,
+      "completion_tokens": 955
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6784,
+       "completion_tokens": 955
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 16,
+      "tokens": 321,
+      "tokens_sum_of_inputs": 321,
+      "inputs_per_request": {
+       "16": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 9,
+     "rank": 9,
+     "url_sha256_16": "037f37fc8794dabc",
+     "chars": 11756,
+     "chunks_by_library_chunker": 5,
+     "chunk_chars_min": 1238,
+     "chunk_chars_max": 3130,
+     "graph_totals_after": {
+      "entities": 149,
+      "relations": 160,
+      "chunks": 32
+     },
+     "seconds_against_stub": 0.062,
+     "chat": {
+      "calls": 5,
+      "prompt_tokens": 11724,
+      "completion_tokens": 1496
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 5,
+       "retry_calls": 0,
+       "prompt_tokens": 11724,
+       "completion_tokens": 1496
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 19,
+      "tokens": 411,
+      "tokens_sum_of_inputs": 411,
+      "inputs_per_request": {
+       "19": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 10,
+     "rank": 10,
+     "url_sha256_16": "038eabdb237efe3f",
+     "chars": 10120,
+     "chunks_by_library_chunker": 4,
+     "chunk_chars_min": 2178,
+     "chunk_chars_max": 3070,
+     "graph_totals_after": {
+      "entities": 165,
+      "relations": 180,
+      "chunks": 36
+     },
+     "seconds_against_stub": 0.053,
+     "chat": {
+      "calls": 4,
+      "prompt_tokens": 9550,
+      "completion_tokens": 1229
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 4,
+       "retry_calls": 0,
+       "prompt_tokens": 9550,
+       "completion_tokens": 1229
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 16,
+      "tokens": 342,
+      "tokens_sum_of_inputs": 342,
+      "inputs_per_request": {
+       "16": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 11,
+     "rank": 11,
+     "url_sha256_16": "03a4ece0fb5cb7f9",
+     "chars": 8275,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 2696,
+     "chunk_chars_max": 3089,
+     "graph_totals_after": {
+      "entities": 178,
+      "relations": 195,
+      "chunks": 39
+     },
+     "seconds_against_stub": 0.1,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 7377,
+      "completion_tokens": 928
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 7377,
+       "completion_tokens": 928
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 15,
+      "tokens": 311,
+      "tokens_sum_of_inputs": 311,
+      "inputs_per_request": {
+       "15": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 12,
+     "rank": 12,
+     "url_sha256_16": "03c3ac59773da075",
+     "chars": 5601,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 292,
+     "chunk_chars_max": 3120,
+     "graph_totals_after": {
+      "entities": 194,
+      "relations": 210,
+      "chunks": 42
+     },
+     "seconds_against_stub": 0.058,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6551,
+      "completion_tokens": 912
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6551,
+       "completion_tokens": 912
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 17,
+      "tokens": 313,
+      "tokens_sum_of_inputs": 313,
+      "inputs_per_request": {
+       "17": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 13,
+     "rank": 13,
+     "url_sha256_16": "0476f8f8472ce475",
+     "chars": 6359,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1184,
+     "chunk_chars_max": 2983,
+     "graph_totals_after": {
+      "entities": 212,
+      "relations": 225,
+      "chunks": 45
+     },
+     "seconds_against_stub": 0.055,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6907,
+      "completion_tokens": 1016
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6907,
+       "completion_tokens": 1016
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 18,
+      "tokens": 338,
+      "tokens_sum_of_inputs": 338,
+      "inputs_per_request": {
+       "18": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 14,
+     "rank": 14,
+     "url_sha256_16": "04ccbc6009a196f8",
+     "chars": 9754,
+     "chunks_by_library_chunker": 4,
+     "chunk_chars_min": 1834,
+     "chunk_chars_max": 3154,
+     "graph_totals_after": {
+      "entities": 231,
+      "relations": 245,
+      "chunks": 49
+     },
+     "seconds_against_stub": 0.063,
+     "chat": {
+      "calls": 4,
+      "prompt_tokens": 9237,
+      "completion_tokens": 1200
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 4,
+       "retry_calls": 0,
+       "prompt_tokens": 9237,
+       "completion_tokens": 1200
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 19,
+      "tokens": 365,
+      "tokens_sum_of_inputs": 365,
+      "inputs_per_request": {
+       "19": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 15,
+     "rank": 15,
+     "url_sha256_16": "04fd1826153b3083",
+     "chars": 13179,
+     "chunks_by_library_chunker": 5,
+     "chunk_chars_min": 2403,
+     "chunk_chars_max": 3135,
+     "graph_totals_after": {
+      "entities": 252,
+      "relations": 270,
+      "chunks": 54
+     },
+     "seconds_against_stub": 0.086,
+     "chat": {
+      "calls": 5,
+      "prompt_tokens": 12112,
+      "completion_tokens": 1524
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 5,
+       "retry_calls": 0,
+       "prompt_tokens": 12112,
+       "completion_tokens": 1524
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 22,
+      "tokens": 452,
+      "tokens_sum_of_inputs": 452,
+      "inputs_per_request": {
+       "22": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 16,
+     "rank": 16,
+     "url_sha256_16": "0501457d04bf9f55",
+     "chars": 22011,
+     "chunks_by_library_chunker": 9,
+     "chunk_chars_min": 628,
+     "chunk_chars_max": 3132,
+     "graph_totals_after": {
+      "entities": 281,
+      "relations": 315,
+      "chunks": 63
+     },
+     "seconds_against_stub": 0.22,
+     "chat": {
+      "calls": 9,
+      "prompt_tokens": 21574,
+      "completion_tokens": 2732
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 9,
+       "retry_calls": 0,
+       "prompt_tokens": 21574,
+       "completion_tokens": 2732
+      }
+     },
+     "embedding": {
+      "requests": 2,
+      "inputs": 38,
+      "tokens": 902,
+      "tokens_sum_of_inputs": 902,
+      "inputs_per_request": {
+       "32": 1,
+       "6": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 17,
+     "rank": 17,
+     "url_sha256_16": "054b706b1f216197",
+     "chars": 16351,
+     "chunks_by_library_chunker": 6,
+     "chunk_chars_min": 2800,
+     "chunk_chars_max": 3184,
+     "graph_totals_after": {
+      "entities": 305,
+      "relations": 345,
+      "chunks": 69
+     },
+     "seconds_against_stub": 0.094,
+     "chat": {
+      "calls": 6,
+      "prompt_tokens": 14673,
+      "completion_tokens": 1828
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 6,
+       "retry_calls": 0,
+       "prompt_tokens": 14673,
+       "completion_tokens": 1828
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 25,
+      "tokens": 558,
+      "tokens_sum_of_inputs": 558,
+      "inputs_per_request": {
+       "25": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 18,
+     "rank": 18,
+     "url_sha256_16": "0559abf992d9f2f2",
+     "chars": 7683,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 2500,
+     "chunk_chars_max": 3146,
+     "graph_totals_after": {
+      "entities": 319,
+      "relations": 360,
+      "chunks": 72
+     },
+     "seconds_against_stub": 0.067,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 7522,
+      "completion_tokens": 962
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 7522,
+       "completion_tokens": 962
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 15,
+      "tokens": 304,
+      "tokens_sum_of_inputs": 304,
+      "inputs_per_request": {
+       "15": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 19,
+     "rank": 19,
+     "url_sha256_16": "05cd6a49a650e655",
+     "chars": 12684,
+     "chunks_by_library_chunker": 5,
+     "chunk_chars_min": 2072,
+     "chunk_chars_max": 3046,
+     "graph_totals_after": {
+      "entities": 332,
+      "relations": 385,
+      "chunks": 77
+     },
+     "seconds_against_stub": 0.215,
+     "chat": {
+      "calls": 5,
+      "prompt_tokens": 11759,
+      "completion_tokens": 1522
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 5,
+       "retry_calls": 0,
+       "prompt_tokens": 11759,
+       "completion_tokens": 1522
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 18,
+      "tokens": 485,
+      "tokens_sum_of_inputs": 485,
+      "inputs_per_request": {
+       "18": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 20,
+     "rank": 20,
+     "url_sha256_16": "06bc8ec253404962",
+     "chars": 8038,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 2763,
+     "chunk_chars_max": 3117,
+     "graph_totals_after": {
+      "entities": 349,
+      "relations": 400,
+      "chunks": 80
+     },
+     "seconds_against_stub": 0.061,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 7107,
+      "completion_tokens": 954
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 7107,
+       "completion_tokens": 954
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 17,
+      "tokens": 313,
+      "tokens_sum_of_inputs": 313,
+      "inputs_per_request": {
+       "17": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    }
+   ],
+   "snapshots": {
+    "1": {
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 3,
+      "chat_prompt_tokens": 6831,
+      "chat_completion_tokens": 932,
+      "embedding_calls": 1,
+      "embedding_inputs": 17,
+      "embedding_tokens": 317,
+      "other_calls": 0
+     },
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6831,
+      "completion_tokens": 932
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6831,
+       "completion_tokens": 932
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 17,
+      "tokens": 317,
+      "tokens_sum_of_inputs": 317,
+      "inputs_per_request": {
+       "17": 1
+      }
+     }
+    },
+    "5": {
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 15,
+      "chat_prompt_tokens": 34125,
+      "chat_completion_tokens": 4670,
+      "embedding_calls": 5,
+      "embedding_inputs": 73,
+      "embedding_tokens": 1424,
+      "other_calls": 0
+     },
+     "chat": {
+      "calls": 15,
+      "prompt_tokens": 34125,
+      "completion_tokens": 4670
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 15,
+       "retry_calls": 0,
+       "prompt_tokens": 34125,
+       "completion_tokens": 4670
+      }
+     },
+     "embedding": {
+      "requests": 5,
+      "inputs": 73,
+      "tokens": 1424,
+      "tokens_sum_of_inputs": 1424,
+      "inputs_per_request": {
+       "17": 1,
+       "16": 1,
+       "10": 1,
+       "15": 2
+      }
+     }
+    },
+    "20": {
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 80,
+      "chat_prompt_tokens": 187783,
+      "chat_completion_tokens": 24704,
+      "embedding_calls": 21,
+      "embedding_inputs": 374,
+      "embedding_tokens": 7737,
+      "other_calls": 0
+     },
+     "chat": {
+      "calls": 80,
+      "prompt_tokens": 187783,
+      "completion_tokens": 24704
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 80,
+       "retry_calls": 0,
+       "prompt_tokens": 187783,
+       "completion_tokens": 24704
+      }
+     },
+     "embedding": {
+      "requests": 21,
+      "inputs": 374,
+      "tokens": 7737,
+      "tokens_sum_of_inputs": 7737,
+      "inputs_per_request": {
+       "17": 3,
+       "16": 3,
+       "10": 1,
+       "15": 4,
+       "18": 3,
+       "28": 1,
+       "19": 2,
+       "22": 1,
+       "32": 1,
+       "6": 1,
+       "25": 1
+      }
+     }
+    }
+   },
+   "tokenizer": "tiktoken:cl100k_base",
+   "fast_graphrag_version": "0.0.5",
+   "defaults_seen": {
+    "llm_class": "DefaultLLMService",
+    "llm_model": "gpt-4o-mini",
+    "llm_max_requests_concurrent": 1024,
+    "llm_rate_limit_per_minute_enabled": false,
+    "embedding_model": "text-embedding-3-small",
+    "embedding_dim": 1536,
+    "embedding_max_elements_per_request": 32,
+    "embedding_rate_limit_per_minute_enabled": true,
+    "max_gleaning_steps": 0,
+    "chunk_token_size": 800,
+    "chunk_token_overlap": 100,
+    "chunk_size_chars": 3200,
+    "chunk_overlap_chars": 400,
+    "max_node_description_size": 512,
+    "edge_merge_threshold": 5,
+    "insert_similarity_score_threshold": 0.9
+   },
+   "wall_seconds_all_documents": 1.581,
+   "final_stub_summary": {
+    "tokenizer": "tiktoken:cl100k_base",
+    "chat_calls": 80,
+    "chat_prompt_tokens": 187783,
+    "chat_completion_tokens": 24704,
+    "embedding_calls": 21,
+    "embedding_inputs": 374,
+    "embedding_tokens": 7737,
+    "other_calls": 0
+   },
+   "first_request_of_each_kind": {
+    "extract": {
+     "path": "/v1/chat/completions",
+     "request_body_keys": [
+      "messages",
+      "model",
+      "response_format"
+     ],
+     "n_messages": 2,
+     "roles": [
+      "system",
+      "user"
+     ],
+     "response_format": {
+      "type": "json_object"
+     },
+     "model": "gpt-4o-mini",
+     "max_tokens": "absent",
+     "dimensions": "absent",
+     "stream": false
+    },
+    "embeddings": {
+     "path": "/v1/embeddings",
+     "request_body_keys": [
+      "dimensions",
+      "encoding_format",
+      "input",
+      "model"
+     ],
+     "n_messages": 0,
+     "roles": [],
+     "response_format": null,
+     "model": "text-embedding-3-small",
+     "max_tokens": "absent",
+     "dimensions": 1536,
+     "stream": false
+    }
+   },
+   "extraction_prompts": {
+    "first_attempt_calls": 80,
+    "tokens_of_the_chunk_text_alone": 46421,
+    "note": "arithmetic: prompt tokens minus chunk-text tokens is the fixed part (instructions, example, JSON schema) plus join effects of the tokenizer"
+   },
+   "shape_b_entities_per_chunk": {
+    "min": 6,
+    "max": 6,
+    "mean": 6.0,
+    "chunks": 80
+   },
+   "finished_utc": "20261102 10:47:48",
+   "outbound_attempts": [
+    {
+     "t": "20261102 10:47:46",
+     "kind": "connect-to-closed-proxy-port",
+     "target": "127.0.0.1:9",
+     "innermost_library_frames": [
+      "urllib3/util/connection.py:73:create_connection",
+      "urllib3/connection.py:239:_new_conn",
+      "urllib3/connection.py:827:connect",
+      "urllib3/connectionpool.py:1074:_prepare_proxy",
+      "urllib3/connectionpool.py:779:urlopen",
+      "requests/adapters.py:696:send",
+      "requests/sessions.py:784:send",
+      "requests/sessions.py:651:request",
+      "requests/api.py:71:request",
+      "requests/api.py:87:get"
+     ]
+    }
+   ],
+   "openai_sdk_retries_logged": 0,
+   "tokenizer_download_failures_logged_by_library": [
+    "LLM: failed to load tokenizer for model 'gpt-4o-mini' (HTTPSConnectionPool(host='openaipublic.blob.core.windows.net', port=443): Max retries exceeded with url: /encodings/o200k_base.tiktoken (Caused by ProxyError('Unable to connect to proxy', NewConnectionError(\"HTTPSConnection(host='127.0.0.1', por"
+   ],
+   "error_log_lines": {
+    "count": 0,
+    "first_five": []
+   },
+   "environment_variable_names": [
+    "ALL_PROXY",
+    "HOME",
+    "HTTPS_PROXY",
+    "HTTP_PROXY",
+    "LC_CTYPE",
+    "NO_PROXY",
+    "OPENAI_API_KEY",
+    "OPENAI_BASE_URL",
+    "PATH",
+    "PYTHONDONTWRITEBYTECODE",
+    "TIKTOKEN_CACHE_DIR",
+    "TMPDIR",
+    "__CF_USER_TEXT_ENCODING",
+    "all_proxy",
+    "http_proxy",
+    "https_proxy",
+    "no_proxy"
+   ],
+   "files_in_working_dir": [
+    "chunks_kv_data.pkl",
+    "entities_hnsw_index_1536.bin",
+    "entities_hnsw_metadata.pkl",
+    "graph_igraph_data.pklz",
+    "map_e2r_blob_data.pkl",
+    "map_r2c_blob_data.pkl"
+   ]
+  },
+  "probe_shape_A_empty": {
+   "run": "probe_shape_A_empty",
+   "shape": "A",
+   "gleaning_steps": 0,
+   "started_utc": "20261102 10:47:48",
+   "documents": [
+    {
+     "n": 1,
+     "rank": 1,
+     "url_sha256_16": "0068586b43cf2f56",
+     "chars": 6341,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1233,
+     "chunk_chars_max": 3056,
+     "graph_totals_after": {
+      "entities": null,
+      "relations": null,
+      "chunks": null
+     },
+     "seconds_against_stub": 0.044,
+     "insert_failed": "RuntimeError: Wrong dimensionality of the vectors",
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6831,
+      "completion_tokens": 45
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6831,
+       "completion_tokens": 45
+      }
+     },
+     "embedding": {
+      "requests": 0,
+      "inputs": 0,
+      "tokens": 0,
+      "tokens_sum_of_inputs": 0,
+      "inputs_per_request": {}
+     },
+     "extraction_calls_equal_chunker_count": true
+    }
+   ],
+   "snapshots": {
+    "1": {
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 3,
+      "chat_prompt_tokens": 6831,
+      "chat_completion_tokens": 45,
+      "embedding_calls": 0,
+      "embedding_inputs": 0,
+      "embedding_tokens": 0,
+      "other_calls": 0
+     },
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6831,
+      "completion_tokens": 45
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6831,
+       "completion_tokens": 45
+      }
+     },
+     "embedding": {
+      "requests": 0,
+      "inputs": 0,
+      "tokens": 0,
+      "tokens_sum_of_inputs": 0,
+      "inputs_per_request": {}
+     }
+    }
+   },
+   "tokenizer": "tiktoken:cl100k_base",
+   "fast_graphrag_version": "0.0.5",
+   "defaults_seen": {
+    "llm_class": "DefaultLLMService",
+    "llm_model": "gpt-4o-mini",
+    "llm_max_requests_concurrent": 1024,
+    "llm_rate_limit_per_minute_enabled": false,
+    "embedding_model": "text-embedding-3-small",
+    "embedding_dim": 1536,
+    "embedding_max_elements_per_request": 32,
+    "embedding_rate_limit_per_minute_enabled": true,
+    "max_gleaning_steps": 0,
+    "chunk_token_size": 800,
+    "chunk_token_overlap": 100,
+    "chunk_size_chars": 3200,
+    "chunk_overlap_chars": 400,
+    "max_node_description_size": 512,
+    "edge_merge_threshold": 5,
+    "insert_similarity_score_threshold": 0.9
+   },
+   "stopped_at_document": 1,
+   "wall_seconds_all_documents": 0.044,
+   "final_stub_summary": {
+    "tokenizer": "tiktoken:cl100k_base",
+    "chat_calls": 3,
+    "chat_prompt_tokens": 6831,
+    "chat_completion_tokens": 45,
+    "embedding_calls": 0,
+    "embedding_inputs": 0,
+    "embedding_tokens": 0,
+    "other_calls": 0
+   },
+   "first_request_of_each_kind": {
+    "extract": {
+     "path": "/v1/chat/completions",
+     "request_body_keys": [
+      "messages",
+      "model",
+      "response_format"
+     ],
+     "n_messages": 2,
+     "roles": [
+      "system",
+      "user"
+     ],
+     "response_format": {
+      "type": "json_object"
+     },
+     "model": "gpt-4o-mini",
+     "max_tokens": "absent",
+     "dimensions": "absent",
+     "stream": false
+    }
+   },
+   "extraction_prompts": {
+    "first_attempt_calls": 3,
+    "tokens_of_the_chunk_text_alone": 1530,
+    "note": "arithmetic: prompt tokens minus chunk-text tokens is the fixed part (instructions, example, JSON schema) plus join effects of the tokenizer"
+   },
+   "finished_utc": "20261102 10:47:50",
+   "outbound_attempts": [
+    {
+     "t": "20261102 10:47:49",
+     "kind": "connect-to-closed-proxy-port",
+     "target": "127.0.0.1:9",
+     "innermost_library_frames": [
+      "urllib3/util/connection.py:73:create_connection",
+      "urllib3/connection.py:239:_new_conn",
+      "urllib3/connection.py:827:connect",
+      "urllib3/connectionpool.py:1074:_prepare_proxy",
+      "urllib3/connectionpool.py:779:urlopen",
+      "requests/adapters.py:696:send",
+      "requests/sessions.py:784:send",
+      "requests/sessions.py:651:request",
+      "requests/api.py:71:request",
+      "requests/api.py:87:get"
+     ]
+    }
+   ],
+   "openai_sdk_retries_logged": 0,
+   "tokenizer_download_failures_logged_by_library": [
+    "LLM: failed to load tokenizer for model 'gpt-4o-mini' (HTTPSConnectionPool(host='openaipublic.blob.core.windows.net', port=443): Max retries exceeded with url: /encodings/o200k_base.tiktoken (Caused by ProxyError('Unable to connect to proxy', NewConnectionError(\"HTTPSConnection(host='127.0.0.1', por"
+   ],
+   "error_log_lines": {
+    "count": 1,
+    "first_five": [
+     {
+      "logger": "graphrag",
+      "message_start": "Error during insertion: Wrong dimensionality of the vectors"
+     }
+    ]
+   },
+   "environment_variable_names": [
+    "ALL_PROXY",
+    "HOME",
+    "HTTPS_PROXY",
+    "HTTP_PROXY",
+    "LC_CTYPE",
+    "NO_PROXY",
+    "OPENAI_API_KEY",
+    "OPENAI_BASE_URL",
+    "PATH",
+    "PYTHONDONTWRITEBYTECODE",
+    "TIKTOKEN_CACHE_DIR",
+    "TMPDIR",
+    "__CF_USER_TEXT_ENCODING",
+    "all_proxy",
+    "http_proxy",
+    "https_proxy",
+    "no_proxy"
+   ],
+   "files_in_working_dir": []
+  },
+  "probe_shape_BL_long_descriptions": {
+   "run": "probe_shape_BL_long_descriptions",
+   "shape": "BL",
+   "gleaning_steps": 0,
+   "started_utc": "20261102 10:47:50",
+   "documents": [
+    {
+     "n": 1,
+     "rank": 1,
+     "url_sha256_16": "0068586b43cf2f56",
+     "chars": 6341,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1233,
+     "chunk_chars_max": 3056,
+     "graph_totals_after": {
+      "entities": 17,
+      "relations": 15,
+      "chunks": 3
+     },
+     "seconds_against_stub": 0.081,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6831,
+      "completion_tokens": 1545
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6831,
+       "completion_tokens": 1545
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 17,
+      "tokens": 940,
+      "tokens_sum_of_inputs": 929,
+      "inputs_per_request": {
+       "17": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 2,
+     "rank": 2,
+     "url_sha256_16": "01648ca159300692",
+     "chars": 6005,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 680,
+     "chunk_chars_max": 3146,
+     "graph_totals_after": {
+      "entities": 33,
+      "relations": 30,
+      "chunks": 6
+     },
+     "seconds_against_stub": 0.044,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6620,
+      "completion_tokens": 1570
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6620,
+       "completion_tokens": 1570
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 16,
+      "tokens": 939,
+      "tokens_sum_of_inputs": 926,
+      "inputs_per_request": {
+       "16": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 3,
+     "rank": 3,
+     "url_sha256_16": "019b1ddf6f78fa7e",
+     "chars": 5112,
+     "chunks_by_library_chunker": 2,
+     "chunk_chars_min": 2674,
+     "chunk_chars_max": 2694,
+     "graph_totals_after": {
+      "entities": 43,
+      "relations": 40,
+      "chunks": 8
+     },
+     "seconds_against_stub": 0.03,
+     "chat": {
+      "calls": 2,
+      "prompt_tokens": 4662,
+      "completion_tokens": 1025
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 2,
+       "retry_calls": 0,
+       "prompt_tokens": 4662,
+       "completion_tokens": 1025
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 10,
+      "tokens": 597,
+      "tokens_sum_of_inputs": 591,
+      "inputs_per_request": {
+       "10": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 4,
+     "rank": 4,
+     "url_sha256_16": "024c021da3256374",
+     "chars": 6374,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1055,
+     "chunk_chars_max": 2896,
+     "graph_totals_after": {
+      "entities": 58,
+      "relations": 55,
+      "chunks": 11
+     },
+     "seconds_against_stub": 0.044,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6874,
+      "completion_tokens": 1563
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6874,
+       "completion_tokens": 1563
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 15,
+      "tokens": 926,
+      "tokens_sum_of_inputs": 912,
+      "inputs_per_request": {
+       "15": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 5,
+     "rank": 5,
+     "url_sha256_16": "02e889122ba12a26",
+     "chars": 8626,
+     "chunks_by_library_chunker": 4,
+     "chunk_chars_min": 836,
+     "chunk_chars_max": 3191,
+     "graph_totals_after": {
+      "entities": 73,
+      "relations": 75,
+      "chunks": 15
+     },
+     "seconds_against_stub": 0.048,
+     "chat": {
+      "calls": 6,
+      "prompt_tokens": 9717,
+      "completion_tokens": 2174
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 4,
+       "retry_calls": 0,
+       "prompt_tokens": 9138,
+       "completion_tokens": 2058
+      },
+      "summarize_description": {
+       "calls": 2,
+       "retry_calls": 0,
+       "prompt_tokens": 579,
+       "completion_tokens": 116
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 15,
+      "tokens": 1024,
+      "tokens_sum_of_inputs": 1014,
+      "inputs_per_request": {
+       "15": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 6,
+     "rank": 6,
+     "url_sha256_16": "02ecfbdc00c2bc17",
+     "chars": 6083,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1051,
+     "chunk_chars_max": 3054,
+     "graph_totals_after": {
+      "entities": 89,
+      "relations": 90,
+      "chunks": 18
+     },
+     "seconds_against_stub": 0.063,
+     "chat": {
+      "calls": 4,
+      "prompt_tokens": 7028,
+      "completion_tokens": 1521
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6746,
+       "completion_tokens": 1467
+      },
+      "summarize_description": {
+       "calls": 1,
+       "retry_calls": 0,
+       "prompt_tokens": 282,
+       "completion_tokens": 54
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 18,
+      "tokens": 951,
+      "tokens_sum_of_inputs": 938,
+      "inputs_per_request": {
+       "18": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 7,
+     "rank": 7,
+     "url_sha256_16": "0343487a677b62d3",
+     "chars": 14982,
+     "chunks_by_library_chunker": 6,
+     "chunk_chars_min": 1714,
+     "chunk_chars_max": 3098,
+     "graph_totals_after": {
+      "entities": 116,
+      "relations": 120,
+      "chunks": 24
+     },
+     "seconds_against_stub": 0.094,
+     "chat": {
+      "calls": 8,
+      "prompt_tokens": 14617,
+      "completion_tokens": 3239
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 6,
+       "retry_calls": 0,
+       "prompt_tokens": 14035,
+       "completion_tokens": 3125
+      },
+      "summarize_description": {
+       "calls": 2,
+       "retry_calls": 0,
+       "prompt_tokens": 582,
+       "completion_tokens": 114
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 28,
+      "tokens": 1709,
+      "tokens_sum_of_inputs": 1687,
+      "inputs_per_request": {
+       "28": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 8,
+     "rank": 8,
+     "url_sha256_16": "0370fe5c0dcecb48",
+     "chars": 6237,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1074,
+     "chunk_chars_max": 2984,
+     "graph_totals_after": {
+      "entities": 131,
+      "relations": 135,
+      "chunks": 27
+     },
+     "seconds_against_stub": 0.062,
+     "chat": {
+      "calls": 4,
+      "prompt_tokens": 7057,
+      "completion_tokens": 1615
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6784,
+       "completion_tokens": 1563
+      },
+      "summarize_description": {
+       "calls": 1,
+       "retry_calls": 0,
+       "prompt_tokens": 273,
+       "completion_tokens": 52
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 16,
+      "tokens": 911,
+      "tokens_sum_of_inputs": 897,
+      "inputs_per_request": {
+       "16": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 9,
+     "rank": 9,
+     "url_sha256_16": "037f37fc8794dabc",
+     "chars": 11756,
+     "chunks_by_library_chunker": 5,
+     "chunk_chars_min": 1238,
+     "chunk_chars_max": 3130,
+     "graph_totals_after": {
+      "entities": 149,
+      "relations": 160,
+      "chunks": 32
+     },
+     "seconds_against_stub": 0.078,
+     "chat": {
+      "calls": 8,
+      "prompt_tokens": 12582,
+      "completion_tokens": 2661
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 5,
+       "retry_calls": 0,
+       "prompt_tokens": 11724,
+       "completion_tokens": 2493
+      },
+      "summarize_description": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 858,
+       "completion_tokens": 168
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 19,
+      "tokens": 1256,
+      "tokens_sum_of_inputs": 1242,
+      "inputs_per_request": {
+       "19": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 10,
+     "rank": 10,
+     "url_sha256_16": "038eabdb237efe3f",
+     "chars": 10120,
+     "chunks_by_library_chunker": 4,
+     "chunk_chars_min": 2178,
+     "chunk_chars_max": 3070,
+     "graph_totals_after": {
+      "entities": 165,
+      "relations": 180,
+      "chunks": 36
+     },
+     "seconds_against_stub": 0.063,
+     "chat": {
+      "calls": 7,
+      "prompt_tokens": 10441,
+      "completion_tokens": 2218
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 4,
+       "retry_calls": 0,
+       "prompt_tokens": 9550,
+       "completion_tokens": 2035
+      },
+      "summarize_description": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 891,
+       "completion_tokens": 183
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 16,
+      "tokens": 939,
+      "tokens_sum_of_inputs": 929,
+      "inputs_per_request": {
+       "16": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 11,
+     "rank": 11,
+     "url_sha256_16": "03a4ece0fb5cb7f9",
+     "chars": 8275,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 2696,
+     "chunk_chars_max": 3089,
+     "graph_totals_after": {
+      "entities": 178,
+      "relations": 195,
+      "chunks": 39
+     },
+     "seconds_against_stub": 0.108,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 7377,
+      "completion_tokens": 1536
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 7377,
+       "completion_tokens": 1536
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 15,
+      "tokens": 994,
+      "tokens_sum_of_inputs": 982,
+      "inputs_per_request": {
+       "15": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 12,
+     "rank": 12,
+     "url_sha256_16": "03c3ac59773da075",
+     "chars": 5601,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 292,
+     "chunk_chars_max": 3120,
+     "graph_totals_after": {
+      "entities": 194,
+      "relations": 210,
+      "chunks": 42
+     },
+     "seconds_against_stub": 0.062,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6551,
+      "completion_tokens": 1508
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6551,
+       "completion_tokens": 1508
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 17,
+      "tokens": 955,
+      "tokens_sum_of_inputs": 944,
+      "inputs_per_request": {
+       "17": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 13,
+     "rank": 13,
+     "url_sha256_16": "0476f8f8472ce475",
+     "chars": 6359,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1184,
+     "chunk_chars_max": 2983,
+     "graph_totals_after": {
+      "entities": 212,
+      "relations": 225,
+      "chunks": 45
+     },
+     "seconds_against_stub": 0.059,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6907,
+      "completion_tokens": 1668
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6907,
+       "completion_tokens": 1668
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 18,
+      "tokens": 999,
+      "tokens_sum_of_inputs": 988,
+      "inputs_per_request": {
+       "18": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 14,
+     "rank": 14,
+     "url_sha256_16": "04ccbc6009a196f8",
+     "chars": 9754,
+     "chunks_by_library_chunker": 4,
+     "chunk_chars_min": 1834,
+     "chunk_chars_max": 3154,
+     "graph_totals_after": {
+      "entities": 231,
+      "relations": 245,
+      "chunks": 49
+     },
+     "seconds_against_stub": 0.069,
+     "chat": {
+      "calls": 6,
+      "prompt_tokens": 9807,
+      "completion_tokens": 2089
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 4,
+       "retry_calls": 0,
+       "prompt_tokens": 9237,
+       "completion_tokens": 1978
+      },
+      "summarize_description": {
+       "calls": 2,
+       "retry_calls": 0,
+       "prompt_tokens": 570,
+       "completion_tokens": 111
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 19,
+      "tokens": 1023,
+      "tokens_sum_of_inputs": 1007,
+      "inputs_per_request": {
+       "19": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 15,
+     "rank": 15,
+     "url_sha256_16": "04fd1826153b3083",
+     "chars": 13179,
+     "chunks_by_library_chunker": 5,
+     "chunk_chars_min": 2403,
+     "chunk_chars_max": 3135,
+     "graph_totals_after": {
+      "entities": 252,
+      "relations": 270,
+      "chunks": 54
+     },
+     "seconds_against_stub": 0.104,
+     "chat": {
+      "calls": 8,
+      "prompt_tokens": 12982,
+      "completion_tokens": 2707
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 5,
+       "retry_calls": 0,
+       "prompt_tokens": 12112,
+       "completion_tokens": 2538
+      },
+      "summarize_description": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 870,
+       "completion_tokens": 169
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 22,
+      "tokens": 1296,
+      "tokens_sum_of_inputs": 1279,
+      "inputs_per_request": {
+       "22": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 16,
+     "rank": 16,
+     "url_sha256_16": "0501457d04bf9f55",
+     "chars": 22011,
+     "chunks_by_library_chunker": 9,
+     "chunk_chars_min": 628,
+     "chunk_chars_max": 3132,
+     "graph_totals_after": {
+      "entities": 281,
+      "relations": 315,
+      "chunks": 63
+     },
+     "seconds_against_stub": 0.239,
+     "chat": {
+      "calls": 20,
+      "prompt_tokens": 24807,
+      "completion_tokens": 5226
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 9,
+       "retry_calls": 0,
+       "prompt_tokens": 21574,
+       "completion_tokens": 4585
+      },
+      "summarize_description": {
+       "calls": 11,
+       "retry_calls": 0,
+       "prompt_tokens": 3233,
+       "completion_tokens": 641
+      }
+     },
+     "embedding": {
+      "requests": 2,
+      "inputs": 38,
+      "tokens": 2365,
+      "tokens_sum_of_inputs": 2337,
+      "inputs_per_request": {
+       "32": 1,
+       "6": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 17,
+     "rank": 17,
+     "url_sha256_16": "054b706b1f216197",
+     "chars": 16351,
+     "chunks_by_library_chunker": 6,
+     "chunk_chars_min": 2800,
+     "chunk_chars_max": 3184,
+     "graph_totals_after": {
+      "entities": 305,
+      "relations": 345,
+      "chunks": 69
+     },
+     "seconds_against_stub": 0.112,
+     "chat": {
+      "calls": 11,
+      "prompt_tokens": 16138,
+      "completion_tokens": 3306
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 6,
+       "retry_calls": 0,
+       "prompt_tokens": 14673,
+       "completion_tokens": 3023
+      },
+      "summarize_description": {
+       "calls": 5,
+       "retry_calls": 0,
+       "prompt_tokens": 1465,
+       "completion_tokens": 283
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 25,
+      "tokens": 1463,
+      "tokens_sum_of_inputs": 1449,
+      "inputs_per_request": {
+       "25": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 18,
+     "rank": 18,
+     "url_sha256_16": "0559abf992d9f2f2",
+     "chars": 7683,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 2500,
+     "chunk_chars_max": 3146,
+     "graph_totals_after": {
+      "entities": 319,
+      "relations": 360,
+      "chunks": 72
+     },
+     "seconds_against_stub": 0.073,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 7522,
+      "completion_tokens": 1586
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 7522,
+       "completion_tokens": 1586
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 15,
+      "tokens": 975,
+      "tokens_sum_of_inputs": 962,
+      "inputs_per_request": {
+       "15": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 19,
+     "rank": 19,
+     "url_sha256_16": "05cd6a49a650e655",
+     "chars": 12684,
+     "chunks_by_library_chunker": 5,
+     "chunk_chars_min": 2072,
+     "chunk_chars_max": 3046,
+     "graph_totals_after": {
+      "entities": 332,
+      "relations": 385,
+      "chunks": 77
+     },
+     "seconds_against_stub": 0.155,
+     "chat": {
+      "calls": 13,
+      "prompt_tokens": 14144,
+      "completion_tokens": 2983
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 5,
+       "retry_calls": 0,
+       "prompt_tokens": 11759,
+       "completion_tokens": 2527
+      },
+      "summarize_description": {
+       "calls": 8,
+       "retry_calls": 0,
+       "prompt_tokens": 2385,
+       "completion_tokens": 456
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 18,
+      "tokens": 1125,
+      "tokens_sum_of_inputs": 1110,
+      "inputs_per_request": {
+       "18": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    },
+    {
+     "n": 20,
+     "rank": 20,
+     "url_sha256_16": "06bc8ec253404962",
+     "chars": 8038,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 2763,
+     "chunk_chars_max": 3117,
+     "graph_totals_after": {
+      "entities": 349,
+      "relations": 400,
+      "chunks": 80
+     },
+     "seconds_against_stub": 0.065,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 7107,
+      "completion_tokens": 1569
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 7107,
+       "completion_tokens": 1569
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 17,
+      "tokens": 940,
+      "tokens_sum_of_inputs": 926,
+      "inputs_per_request": {
+       "17": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    }
+   ],
+   "snapshots": {
+    "1": {
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 3,
+      "chat_prompt_tokens": 6831,
+      "chat_completion_tokens": 1545,
+      "embedding_calls": 1,
+      "embedding_inputs": 17,
+      "embedding_tokens": 940,
+      "other_calls": 0
+     },
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6831,
+      "completion_tokens": 1545
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6831,
+       "completion_tokens": 1545
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 17,
+      "tokens": 940,
+      "tokens_sum_of_inputs": 929,
+      "inputs_per_request": {
+       "17": 1
+      }
+     }
+    },
+    "5": {
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 17,
+      "chat_prompt_tokens": 34704,
+      "chat_completion_tokens": 7877,
+      "embedding_calls": 5,
+      "embedding_inputs": 73,
+      "embedding_tokens": 4426,
+      "other_calls": 0
+     },
+     "chat": {
+      "calls": 17,
+      "prompt_tokens": 34704,
+      "completion_tokens": 7877
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 15,
+       "retry_calls": 0,
+       "prompt_tokens": 34125,
+       "completion_tokens": 7761
+      },
+      "summarize_description": {
+       "calls": 2,
+       "retry_calls": 0,
+       "prompt_tokens": 579,
+       "completion_tokens": 116
+      }
+     },
+     "embedding": {
+      "requests": 5,
+      "inputs": 73,
+      "tokens": 4426,
+      "tokens_sum_of_inputs": 4372,
+      "inputs_per_request": {
+       "17": 1,
+       "16": 1,
+       "10": 1,
+       "15": 2
+      }
+     }
+    },
+    "20": {
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 121,
+      "chat_prompt_tokens": 199771,
+      "chat_completion_tokens": 43309,
+      "embedding_calls": 21,
+      "embedding_inputs": 374,
+      "embedding_tokens": 22327,
+      "other_calls": 0
+     },
+     "chat": {
+      "calls": 121,
+      "prompt_tokens": 199771,
+      "completion_tokens": 43309
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 80,
+       "retry_calls": 0,
+       "prompt_tokens": 187783,
+       "completion_tokens": 40962
+      },
+      "summarize_description": {
+       "calls": 41,
+       "retry_calls": 0,
+       "prompt_tokens": 11988,
+       "completion_tokens": 2347
+      }
+     },
+     "embedding": {
+      "requests": 21,
+      "inputs": 374,
+      "tokens": 22327,
+      "tokens_sum_of_inputs": 22049,
+      "inputs_per_request": {
+       "17": 3,
+       "16": 3,
+       "10": 1,
+       "15": 4,
+       "18": 3,
+       "28": 1,
+       "19": 2,
+       "22": 1,
+       "32": 1,
+       "6": 1,
+       "25": 1
+      }
+     }
+    }
+   },
+   "tokenizer": "tiktoken:cl100k_base",
+   "fast_graphrag_version": "0.0.5",
+   "defaults_seen": {
+    "llm_class": "DefaultLLMService",
+    "llm_model": "gpt-4o-mini",
+    "llm_max_requests_concurrent": 1024,
+    "llm_rate_limit_per_minute_enabled": false,
+    "embedding_model": "text-embedding-3-small",
+    "embedding_dim": 1536,
+    "embedding_max_elements_per_request": 32,
+    "embedding_rate_limit_per_minute_enabled": true,
+    "max_gleaning_steps": 0,
+    "chunk_token_size": 800,
+    "chunk_token_overlap": 100,
+    "chunk_size_chars": 3200,
+    "chunk_overlap_chars": 400,
+    "max_node_description_size": 512,
+    "edge_merge_threshold": 5,
+    "insert_similarity_score_threshold": 0.9
+   },
+   "wall_seconds_all_documents": 1.667,
+   "final_stub_summary": {
+    "tokenizer": "tiktoken:cl100k_base",
+    "chat_calls": 121,
+    "chat_prompt_tokens": 199771,
+    "chat_completion_tokens": 43309,
+    "embedding_calls": 21,
+    "embedding_inputs": 374,
+    "embedding_tokens": 22327,
+    "other_calls": 0
+   },
+   "first_request_of_each_kind": {
+    "extract": {
+     "path": "/v1/chat/completions",
+     "request_body_keys": [
+      "messages",
+      "model",
+      "response_format"
+     ],
+     "n_messages": 2,
+     "roles": [
+      "system",
+      "user"
+     ],
+     "response_format": {
+      "type": "json_object"
+     },
+     "model": "gpt-4o-mini",
+     "max_tokens": "absent",
+     "dimensions": "absent",
+     "stream": false
+    },
+    "embeddings": {
+     "path": "/v1/embeddings",
+     "request_body_keys": [
+      "dimensions",
+      "encoding_format",
+      "input",
+      "model"
+     ],
+     "n_messages": 0,
+     "roles": [],
+     "response_format": null,
+     "model": "text-embedding-3-small",
+     "max_tokens": "absent",
+     "dimensions": 1536,
+     "stream": false
+    },
+    "summarize_description": {
+     "path": "/v1/chat/completions",
+     "request_body_keys": [
+      "max_tokens",
+      "messages",
+      "model",
+      "response_format"
+     ],
+     "n_messages": 2,
+     "roles": [
+      "system",
+      "user"
+     ],
+     "response_format": {
+      "type": "json_object"
+     },
+     "model": "gpt-4o-mini",
+     "max_tokens": null,
+     "dimensions": "absent",
+     "stream": false
+    }
+   },
+   "extraction_prompts": {
+    "first_attempt_calls": 80,
+    "tokens_of_the_chunk_text_alone": 46421,
+    "note": "arithmetic: prompt tokens minus chunk-text tokens is the fixed part (instructions, example, JSON schema) plus join effects of the tokenizer"
+   },
+   "shape_b_entities_per_chunk": {
+    "min": 6,
+    "max": 6,
+    "mean": 6.0,
+    "chunks": 80
+   },
+   "finished_utc": "20261102 10:47:53",
+   "outbound_attempts": [
+    {
+     "t": "20261102 10:47:51",
+     "kind": "connect-to-closed-proxy-port",
+     "target": "127.0.0.1:9",
+     "innermost_library_frames": [
+      "urllib3/util/connection.py:73:create_connection",
+      "urllib3/connection.py:239:_new_conn",
+      "urllib3/connection.py:827:connect",
+      "urllib3/connectionpool.py:1074:_prepare_proxy",
+      "urllib3/connectionpool.py:779:urlopen",
+      "requests/adapters.py:696:send",
+      "requests/sessions.py:784:send",
+      "requests/sessions.py:651:request",
+      "requests/api.py:71:request",
+      "requests/api.py:87:get"
+     ]
+    }
+   ],
+   "openai_sdk_retries_logged": 0,
+   "tokenizer_download_failures_logged_by_library": [
+    "LLM: failed to load tokenizer for model 'gpt-4o-mini' (HTTPSConnectionPool(host='openaipublic.blob.core.windows.net', port=443): Max retries exceeded with url: /encodings/o200k_base.tiktoken (Caused by ProxyError('Unable to connect to proxy', NewConnectionError(\"HTTPSConnection(host='127.0.0.1', por"
+   ],
+   "error_log_lines": {
+    "count": 0,
+    "first_five": []
+   },
+   "environment_variable_names": [
+    "ALL_PROXY",
+    "HOME",
+    "HTTPS_PROXY",
+    "HTTP_PROXY",
+    "LC_CTYPE",
+    "NO_PROXY",
+    "OPENAI_API_KEY",
+    "OPENAI_BASE_URL",
+    "PATH",
+    "PYTHONDONTWRITEBYTECODE",
+    "TIKTOKEN_CACHE_DIR",
+    "TMPDIR",
+    "__CF_USER_TEXT_ENCODING",
+    "all_proxy",
+    "http_proxy",
+    "https_proxy",
+    "no_proxy"
+   ],
+   "files_in_working_dir": [
+    "chunks_kv_data.pkl",
+    "entities_hnsw_index_1536.bin",
+    "entities_hnsw_metadata.pkl",
+    "graph_igraph_data.pklz",
+    "map_e2r_blob_data.pkl",
+    "map_r2c_blob_data.pkl"
+   ]
+  },
+  "probe_shape_E6_six_edges_one_pair": {
+   "run": "probe_shape_E6_six_edges_one_pair",
+   "shape": "E6",
+   "gleaning_steps": 0,
+   "started_utc": "20261102 10:47:54",
+   "documents": [
+    {
+     "n": 1,
+     "rank": 1,
+     "url_sha256_16": "0068586b43cf2f56",
+     "chars": 6341,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1233,
+     "chunk_chars_max": 3056,
+     "graph_totals_after": {
+      "entities": 2,
+      "relations": 18,
+      "chunks": 3
+     },
+     "seconds_against_stub": 0.053,
+     "chat": {
+      "calls": 4,
+      "prompt_tokens": 7446,
+      "completion_tokens": 587
+     },
+     "chat_by_kind": {
+      "edge_grouping": {
+       "calls": 1,
+       "retry_calls": 0,
+       "prompt_tokens": 615,
+       "completion_tokens": 8
+      },
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6831,
+       "completion_tokens": 579
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 2,
+      "tokens": 25,
+      "tokens_sum_of_inputs": 25,
+      "inputs_per_request": {
+       "2": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    }
+   ],
+   "snapshots": {
+    "1": {
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 4,
+      "chat_prompt_tokens": 7446,
+      "chat_completion_tokens": 587,
+      "embedding_calls": 1,
+      "embedding_inputs": 2,
+      "embedding_tokens": 25,
+      "other_calls": 0
+     },
+     "chat": {
+      "calls": 4,
+      "prompt_tokens": 7446,
+      "completion_tokens": 587
+     },
+     "chat_by_kind": {
+      "edge_grouping": {
+       "calls": 1,
+       "retry_calls": 0,
+       "prompt_tokens": 615,
+       "completion_tokens": 8
+      },
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6831,
+       "completion_tokens": 579
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 2,
+      "tokens": 25,
+      "tokens_sum_of_inputs": 25,
+      "inputs_per_request": {
+       "2": 1
+      }
+     }
+    }
+   },
+   "tokenizer": "tiktoken:cl100k_base",
+   "fast_graphrag_version": "0.0.5",
+   "defaults_seen": {
+    "llm_class": "DefaultLLMService",
+    "llm_model": "gpt-4o-mini",
+    "llm_max_requests_concurrent": 1024,
+    "llm_rate_limit_per_minute_enabled": false,
+    "embedding_model": "text-embedding-3-small",
+    "embedding_dim": 1536,
+    "embedding_max_elements_per_request": 32,
+    "embedding_rate_limit_per_minute_enabled": true,
+    "max_gleaning_steps": 0,
+    "chunk_token_size": 800,
+    "chunk_token_overlap": 100,
+    "chunk_size_chars": 3200,
+    "chunk_overlap_chars": 400,
+    "max_node_description_size": 512,
+    "edge_merge_threshold": 5,
+    "insert_similarity_score_threshold": 0.9
+   },
+   "wall_seconds_all_documents": 0.054,
+   "final_stub_summary": {
+    "tokenizer": "tiktoken:cl100k_base",
+    "chat_calls": 4,
+    "chat_prompt_tokens": 7446,
+    "chat_completion_tokens": 587,
+    "embedding_calls": 1,
+    "embedding_inputs": 2,
+    "embedding_tokens": 25,
+    "other_calls": 0
+   },
+   "first_request_of_each_kind": {
+    "extract": {
+     "path": "/v1/chat/completions",
+     "request_body_keys": [
+      "messages",
+      "model",
+      "response_format"
+     ],
+     "n_messages": 2,
+     "roles": [
+      "system",
+      "user"
+     ],
+     "response_format": {
+      "type": "json_object"
+     },
+     "model": "gpt-4o-mini",
+     "max_tokens": "absent",
+     "dimensions": "absent",
+     "stream": false
+    },
+    "edge_grouping": {
+     "path": "/v1/chat/completions",
+     "request_body_keys": [
+      "messages",
+      "model",
+      "response_format"
+     ],
+     "n_messages": 2,
+     "roles": [
+      "system",
+      "user"
+     ],
+     "response_format": {
+      "type": "json_object"
+     },
+     "model": "gpt-4o-mini",
+     "max_tokens": "absent",
+     "dimensions": "absent",
+     "stream": false
+    },
+    "embeddings": {
+     "path": "/v1/embeddings",
+     "request_body_keys": [
+      "dimensions",
+      "encoding_format",
+      "input",
+      "model"
+     ],
+     "n_messages": 0,
+     "roles": [],
+     "response_format": null,
+     "model": "text-embedding-3-small",
+     "max_tokens": "absent",
+     "dimensions": 1536,
+     "stream": false
+    }
+   },
+   "extraction_prompts": {
+    "first_attempt_calls": 3,
+    "tokens_of_the_chunk_text_alone": 1530,
+    "note": "arithmetic: prompt tokens minus chunk-text tokens is the fixed part (instructions, example, JSON schema) plus join effects of the tokenizer"
+   },
+   "finished_utc": "20261102 10:47:56",
+   "outbound_attempts": [
+    {
+     "t": "20261102 10:47:55",
+     "kind": "connect-to-closed-proxy-port",
+     "target": "127.0.0.1:9",
+     "innermost_library_frames": [
+      "urllib3/util/connection.py:73:create_connection",
+      "urllib3/connection.py:239:_new_conn",
+      "urllib3/connection.py:827:connect",
+      "urllib3/connectionpool.py:1074:_prepare_proxy",
+      "urllib3/connectionpool.py:779:urlopen",
+      "requests/adapters.py:696:send",
+      "requests/sessions.py:784:send",
+      "requests/sessions.py:651:request",
+      "requests/api.py:71:request",
+      "requests/api.py:87:get"
+     ]
+    }
+   ],
+   "openai_sdk_retries_logged": 0,
+   "tokenizer_download_failures_logged_by_library": [
+    "LLM: failed to load tokenizer for model 'gpt-4o-mini' (HTTPSConnectionPool(host='openaipublic.blob.core.windows.net', port=443): Max retries exceeded with url: /encodings/o200k_base.tiktoken (Caused by ProxyError('Unable to connect to proxy', NewConnectionError(\"HTTPSConnection(host='127.0.0.1', por"
+   ],
+   "error_log_lines": {
+    "count": 0,
+    "first_five": []
+   },
+   "environment_variable_names": [
+    "ALL_PROXY",
+    "HOME",
+    "HTTPS_PROXY",
+    "HTTP_PROXY",
+    "LC_CTYPE",
+    "NO_PROXY",
+    "OPENAI_API_KEY",
+    "OPENAI_BASE_URL",
+    "PATH",
+    "PYTHONDONTWRITEBYTECODE",
+    "TIKTOKEN_CACHE_DIR",
+    "TMPDIR",
+    "__CF_USER_TEXT_ENCODING",
+    "all_proxy",
+    "http_proxy",
+    "https_proxy",
+    "no_proxy"
+   ],
+   "files_in_working_dir": [
+    "chunks_kv_data.pkl",
+    "entities_hnsw_index_1536.bin",
+    "entities_hnsw_metadata.pkl",
+    "graph_igraph_data.pklz",
+    "map_e2r_blob_data.pkl",
+    "map_r2c_blob_data.pkl"
+   ]
+  },
+  "probe_gleaning_1": {
+   "run": "probe_gleaning_1",
+   "shape": "B",
+   "gleaning_steps": 1,
+   "started_utc": "20261102 10:47:56",
+   "documents": [
+    {
+     "n": 1,
+     "rank": 1,
+     "url_sha256_16": "0068586b43cf2f56",
+     "chars": 6341,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1233,
+     "chunk_chars_max": 3056,
+     "graph_totals_after": {
+      "entities": 17,
+      "relations": 15,
+      "chunks": 3
+     },
+     "seconds_against_stub": 0.081,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6831,
+      "completion_tokens": 932
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6831,
+       "completion_tokens": 932
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 17,
+      "tokens": 317,
+      "tokens_sum_of_inputs": 317,
+      "inputs_per_request": {
+       "17": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    }
+   ],
+   "snapshots": {
+    "1": {
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 3,
+      "chat_prompt_tokens": 6831,
+      "chat_completion_tokens": 932,
+      "embedding_calls": 1,
+      "embedding_inputs": 17,
+      "embedding_tokens": 317,
+      "other_calls": 0
+     },
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6831,
+      "completion_tokens": 932
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6831,
+       "completion_tokens": 932
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 17,
+      "tokens": 317,
+      "tokens_sum_of_inputs": 317,
+      "inputs_per_request": {
+       "17": 1
+      }
+     }
+    }
+   },
+   "tokenizer": "tiktoken:cl100k_base",
+   "fast_graphrag_version": "0.0.5",
+   "defaults_seen": {
+    "llm_class": "DefaultLLMService",
+    "llm_model": "gpt-4o-mini",
+    "llm_max_requests_concurrent": 1024,
+    "llm_rate_limit_per_minute_enabled": false,
+    "embedding_model": "text-embedding-3-small",
+    "embedding_dim": 1536,
+    "embedding_max_elements_per_request": 32,
+    "embedding_rate_limit_per_minute_enabled": true,
+    "max_gleaning_steps": 1,
+    "chunk_token_size": 800,
+    "chunk_token_overlap": 100,
+    "chunk_size_chars": 3200,
+    "chunk_overlap_chars": 400,
+    "max_node_description_size": 512,
+    "edge_merge_threshold": 5,
+    "insert_similarity_score_threshold": 0.9
+   },
+   "wall_seconds_all_documents": 0.081,
+   "final_stub_summary": {
+    "tokenizer": "tiktoken:cl100k_base",
+    "chat_calls": 3,
+    "chat_prompt_tokens": 6831,
+    "chat_completion_tokens": 932,
+    "embedding_calls": 1,
+    "embedding_inputs": 17,
+    "embedding_tokens": 317,
+    "other_calls": 0
+   },
+   "first_request_of_each_kind": {
+    "extract": {
+     "path": "/v1/chat/completions",
+     "request_body_keys": [
+      "messages",
+      "model",
+      "response_format"
+     ],
+     "n_messages": 2,
+     "roles": [
+      "system",
+      "user"
+     ],
+     "response_format": {
+      "type": "json_object"
+     },
+     "model": "gpt-4o-mini",
+     "max_tokens": "absent",
+     "dimensions": "absent",
+     "stream": false
+    },
+    "embeddings": {
+     "path": "/v1/embeddings",
+     "request_body_keys": [
+      "dimensions",
+      "encoding_format",
+      "input",
+      "model"
+     ],
+     "n_messages": 0,
+     "roles": [],
+     "response_format": null,
+     "model": "text-embedding-3-small",
+     "max_tokens": "absent",
+     "dimensions": 1536,
+     "stream": false
+    }
+   },
+   "extraction_prompts": {
+    "first_attempt_calls": 3,
+    "tokens_of_the_chunk_text_alone": 1530,
+    "note": "arithmetic: prompt tokens minus chunk-text tokens is the fixed part (instructions, example, JSON schema) plus join effects of the tokenizer"
+   },
+   "shape_b_entities_per_chunk": {
+    "min": 6,
+    "max": 6,
+    "mean": 6.0,
+    "chunks": 3
+   },
+   "finished_utc": "20261102 10:47:57",
+   "outbound_attempts": [
+    {
+     "t": "20261102 10:47:57",
+     "kind": "connect-to-closed-proxy-port",
+     "target": "127.0.0.1:9",
+     "innermost_library_frames": [
+      "urllib3/util/connection.py:73:create_connection",
+      "urllib3/connection.py:239:_new_conn",
+      "urllib3/connection.py:827:connect",
+      "urllib3/connectionpool.py:1074:_prepare_proxy",
+      "urllib3/connectionpool.py:779:urlopen",
+      "requests/adapters.py:696:send",
+      "requests/sessions.py:784:send",
+      "requests/sessions.py:651:request",
+      "requests/api.py:71:request",
+      "requests/api.py:87:get"
+     ]
+    }
+   ],
+   "openai_sdk_retries_logged": 0,
+   "tokenizer_download_failures_logged_by_library": [
+    "LLM: failed to load tokenizer for model 'gpt-4o-mini' (HTTPSConnectionPool(host='openaipublic.blob.core.windows.net', port=443): Max retries exceeded with url: /encodings/o200k_base.tiktoken (Caused by ProxyError('Unable to connect to proxy', NewConnectionError(\"HTTPSConnection(host='127.0.0.1', por"
+   ],
+   "error_log_lines": {
+    "count": 3,
+    "first_five": [
+     {
+      "logger": "graphrag",
+      "message_start": "Error during gleaning: 'domain'"
+     },
+     {
+      "logger": "graphrag",
+      "message_start": "Error during gleaning: 'domain'"
+     },
+     {
+      "logger": "graphrag",
+      "message_start": "Error during gleaning: 'domain'"
+     }
+    ]
+   },
+   "environment_variable_names": [
+    "ALL_PROXY",
+    "HOME",
+    "HTTPS_PROXY",
+    "HTTP_PROXY",
+    "LC_CTYPE",
+    "NO_PROXY",
+    "OPENAI_API_KEY",
+    "OPENAI_BASE_URL",
+    "PATH",
+    "PYTHONDONTWRITEBYTECODE",
+    "TIKTOKEN_CACHE_DIR",
+    "TMPDIR",
+    "__CF_USER_TEXT_ENCODING",
+    "all_proxy",
+    "http_proxy",
+    "https_proxy",
+    "no_proxy"
+   ],
+   "files_in_working_dir": [
+    "chunks_kv_data.pkl",
+    "entities_hnsw_index_1536.bin",
+    "entities_hnsw_metadata.pkl",
+    "graph_igraph_data.pklz",
+    "map_e2r_blob_data.pkl",
+    "map_r2c_blob_data.pkl"
+   ]
+  },
+  "probe_gleaning_2": {
+   "run": "probe_gleaning_2",
+   "shape": "B",
+   "gleaning_steps": 2,
+   "started_utc": "20261102 10:47:58",
+   "documents": [
+    {
+     "n": 1,
+     "rank": 1,
+     "url_sha256_16": "0068586b43cf2f56",
+     "chars": 6341,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1233,
+     "chunk_chars_max": 3056,
+     "graph_totals_after": {
+      "entities": 17,
+      "relations": 15,
+      "chunks": 3
+     },
+     "seconds_against_stub": 0.09,
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6831,
+      "completion_tokens": 932
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6831,
+       "completion_tokens": 932
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 17,
+      "tokens": 317,
+      "tokens_sum_of_inputs": 317,
+      "inputs_per_request": {
+       "17": 1
+      }
+     },
+     "extraction_calls_equal_chunker_count": true
+    }
+   ],
+   "snapshots": {
+    "1": {
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 3,
+      "chat_prompt_tokens": 6831,
+      "chat_completion_tokens": 932,
+      "embedding_calls": 1,
+      "embedding_inputs": 17,
+      "embedding_tokens": 317,
+      "other_calls": 0
+     },
+     "chat": {
+      "calls": 3,
+      "prompt_tokens": 6831,
+      "completion_tokens": 932
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 3,
+       "retry_calls": 0,
+       "prompt_tokens": 6831,
+       "completion_tokens": 932
+      }
+     },
+     "embedding": {
+      "requests": 1,
+      "inputs": 17,
+      "tokens": 317,
+      "tokens_sum_of_inputs": 317,
+      "inputs_per_request": {
+       "17": 1
+      }
+     }
+    }
+   },
+   "tokenizer": "tiktoken:cl100k_base",
+   "fast_graphrag_version": "0.0.5",
+   "defaults_seen": {
+    "llm_class": "DefaultLLMService",
+    "llm_model": "gpt-4o-mini",
+    "llm_max_requests_concurrent": 1024,
+    "llm_rate_limit_per_minute_enabled": false,
+    "embedding_model": "text-embedding-3-small",
+    "embedding_dim": 1536,
+    "embedding_max_elements_per_request": 32,
+    "embedding_rate_limit_per_minute_enabled": true,
+    "max_gleaning_steps": 2,
+    "chunk_token_size": 800,
+    "chunk_token_overlap": 100,
+    "chunk_size_chars": 3200,
+    "chunk_overlap_chars": 400,
+    "max_node_description_size": 512,
+    "edge_merge_threshold": 5,
+    "insert_similarity_score_threshold": 0.9
+   },
+   "wall_seconds_all_documents": 0.09,
+   "final_stub_summary": {
+    "tokenizer": "tiktoken:cl100k_base",
+    "chat_calls": 3,
+    "chat_prompt_tokens": 6831,
+    "chat_completion_tokens": 932,
+    "embedding_calls": 1,
+    "embedding_inputs": 17,
+    "embedding_tokens": 317,
+    "other_calls": 0
+   },
+   "first_request_of_each_kind": {
+    "extract": {
+     "path": "/v1/chat/completions",
+     "request_body_keys": [
+      "messages",
+      "model",
+      "response_format"
+     ],
+     "n_messages": 2,
+     "roles": [
+      "system",
+      "user"
+     ],
+     "response_format": {
+      "type": "json_object"
+     },
+     "model": "gpt-4o-mini",
+     "max_tokens": "absent",
+     "dimensions": "absent",
+     "stream": false
+    },
+    "embeddings": {
+     "path": "/v1/embeddings",
+     "request_body_keys": [
+      "dimensions",
+      "encoding_format",
+      "input",
+      "model"
+     ],
+     "n_messages": 0,
+     "roles": [],
+     "response_format": null,
+     "model": "text-embedding-3-small",
+     "max_tokens": "absent",
+     "dimensions": 1536,
+     "stream": false
+    }
+   },
+   "extraction_prompts": {
+    "first_attempt_calls": 3,
+    "tokens_of_the_chunk_text_alone": 1530,
+    "note": "arithmetic: prompt tokens minus chunk-text tokens is the fixed part (instructions, example, JSON schema) plus join effects of the tokenizer"
+   },
+   "shape_b_entities_per_chunk": {
+    "min": 6,
+    "max": 6,
+    "mean": 6.0,
+    "chunks": 3
+   },
+   "finished_utc": "20261102 10:48:00",
+   "outbound_attempts": [
+    {
+     "t": "20261102 10:47:59",
+     "kind": "connect-to-closed-proxy-port",
+     "target": "127.0.0.1:9",
+     "innermost_library_frames": [
+      "urllib3/util/connection.py:73:create_connection",
+      "urllib3/connection.py:239:_new_conn",
+      "urllib3/connection.py:827:connect",
+      "urllib3/connectionpool.py:1074:_prepare_proxy",
+      "urllib3/connectionpool.py:779:urlopen",
+      "requests/adapters.py:696:send",
+      "requests/sessions.py:784:send",
+      "requests/sessions.py:651:request",
+      "requests/api.py:71:request",
+      "requests/api.py:87:get"
+     ]
+    }
+   ],
+   "openai_sdk_retries_logged": 0,
+   "tokenizer_download_failures_logged_by_library": [
+    "LLM: failed to load tokenizer for model 'gpt-4o-mini' (HTTPSConnectionPool(host='openaipublic.blob.core.windows.net', port=443): Max retries exceeded with url: /encodings/o200k_base.tiktoken (Caused by ProxyError('Unable to connect to proxy', NewConnectionError(\"HTTPSConnection(host='127.0.0.1', por"
+   ],
+   "error_log_lines": {
+    "count": 3,
+    "first_five": [
+     {
+      "logger": "graphrag",
+      "message_start": "Error during gleaning: 'domain'"
+     },
+     {
+      "logger": "graphrag",
+      "message_start": "Error during gleaning: 'domain'"
+     },
+     {
+      "logger": "graphrag",
+      "message_start": "Error during gleaning: 'domain'"
+     }
+    ]
+   },
+   "environment_variable_names": [
+    "ALL_PROXY",
+    "HOME",
+    "HTTPS_PROXY",
+    "HTTP_PROXY",
+    "LC_CTYPE",
+    "NO_PROXY",
+    "OPENAI_API_KEY",
+    "OPENAI_BASE_URL",
+    "PATH",
+    "PYTHONDONTWRITEBYTECODE",
+    "TIKTOKEN_CACHE_DIR",
+    "TMPDIR",
+    "__CF_USER_TEXT_ENCODING",
+    "all_proxy",
+    "http_proxy",
+    "https_proxy",
+    "no_proxy"
+   ],
+   "files_in_working_dir": [
+    "chunks_kv_data.pkl",
+    "entities_hnsw_index_1536.bin",
+    "entities_hnsw_metadata.pkl",
+    "graph_igraph_data.pklz",
+    "map_e2r_blob_data.pkl",
+    "map_r2c_blob_data.pkl"
+   ]
+  },
+  "probe_unparseable_answer": {
+   "run": "probe_unparseable_answer",
+   "shape": "malformed",
+   "gleaning_steps": 0,
+   "started_utc": "20261102 10:48:00",
+   "documents": [
+    {
+     "n": 1,
+     "rank": 1,
+     "url_sha256_16": "0068586b43cf2f56",
+     "chars": 6341,
+     "chunks_by_library_chunker": 3,
+     "chunk_chars_min": 1233,
+     "chunk_chars_max": 3056,
+     "graph_totals_after": {
+      "entities": 0,
+      "relations": 0,
+      "chunks": 0
+     },
+     "seconds_against_stub": 8.062,
+     "chat": {
+      "calls": 9,
+      "prompt_tokens": 24294,
+      "completion_tokens": 72
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 9,
+       "retry_calls": 6,
+       "prompt_tokens": 24294,
+       "completion_tokens": 72
+      }
+     },
+     "embedding": {
+      "requests": 0,
+      "inputs": 0,
+      "tokens": 0,
+      "tokens_sum_of_inputs": 0,
+      "inputs_per_request": {}
+     },
+     "extraction_calls_equal_chunker_count": true
+    }
+   ],
+   "snapshots": {
+    "1": {
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 9,
+      "chat_prompt_tokens": 24294,
+      "chat_completion_tokens": 72,
+      "embedding_calls": 0,
+      "embedding_inputs": 0,
+      "embedding_tokens": 0,
+      "other_calls": 0
+     },
+     "chat": {
+      "calls": 9,
+      "prompt_tokens": 24294,
+      "completion_tokens": 72
+     },
+     "chat_by_kind": {
+      "extract": {
+       "calls": 9,
+       "retry_calls": 6,
+       "prompt_tokens": 24294,
+       "completion_tokens": 72
+      }
+     },
+     "embedding": {
+      "requests": 0,
+      "inputs": 0,
+      "tokens": 0,
+      "tokens_sum_of_inputs": 0,
+      "inputs_per_request": {}
+     }
+    }
+   },
+   "tokenizer": "tiktoken:cl100k_base",
+   "fast_graphrag_version": "0.0.5",
+   "defaults_seen": {
+    "llm_class": "DefaultLLMService",
+    "llm_model": "gpt-4o-mini",
+    "llm_max_requests_concurrent": 1024,
+    "llm_rate_limit_per_minute_enabled": false,
+    "embedding_model": "text-embedding-3-small",
+    "embedding_dim": 1536,
+    "embedding_max_elements_per_request": 32,
+    "embedding_rate_limit_per_minute_enabled": true,
+    "max_gleaning_steps": 0,
+    "chunk_token_size": 800,
+    "chunk_token_overlap": 100,
+    "chunk_size_chars": 3200,
+    "chunk_overlap_chars": 400,
+    "max_node_description_size": 512,
+    "edge_merge_threshold": 5,
+    "insert_similarity_score_threshold": 0.9
+   },
+   "wall_seconds_all_documents": 8.063,
+   "final_stub_summary": {
+    "tokenizer": "tiktoken:cl100k_base",
+    "chat_calls": 9,
+    "chat_prompt_tokens": 24294,
+    "chat_completion_tokens": 72,
+    "embedding_calls": 0,
+    "embedding_inputs": 0,
+    "embedding_tokens": 0,
+    "other_calls": 0
+   },
+   "first_request_of_each_kind": {
+    "extract": {
+     "path": "/v1/chat/completions",
+     "request_body_keys": [
+      "messages",
+      "model",
+      "response_format"
+     ],
+     "n_messages": 2,
+     "roles": [
+      "system",
+      "user"
+     ],
+     "response_format": {
+      "type": "json_object"
+     },
+     "model": "gpt-4o-mini",
+     "max_tokens": "absent",
+     "dimensions": "absent",
+     "stream": false
+    }
+   },
+   "extraction_prompts": {
+    "first_attempt_calls": 3,
+    "tokens_of_the_chunk_text_alone": 1530,
+    "note": "arithmetic: prompt tokens minus chunk-text tokens is the fixed part (instructions, example, JSON schema) plus join effects of the tokenizer"
+   },
+   "finished_utc": "20261102 10:48:09",
+   "outbound_attempts": [
+    {
+     "t": "20261102 10:48:01",
+     "kind": "connect-to-closed-proxy-port",
+     "target": "127.0.0.1:9",
+     "innermost_library_frames": [
+      "urllib3/util/connection.py:73:create_connection",
+      "urllib3/connection.py:239:_new_conn",
+      "urllib3/connection.py:827:connect",
+      "urllib3/connectionpool.py:1074:_prepare_proxy",
+      "urllib3/connectionpool.py:779:urlopen",
+      "requests/adapters.py:696:send",
+      "requests/sessions.py:784:send",
+      "requests/sessions.py:651:request",
+      "requests/api.py:71:request",
+      "requests/api.py:87:get"
+     ]
+    }
+   ],
+   "openai_sdk_retries_logged": 0,
+   "tokenizer_download_failures_logged_by_library": [
+    "LLM: failed to load tokenizer for model 'gpt-4o-mini' (HTTPSConnectionPool(host='openaipublic.blob.core.windows.net', port=443): Max retries exceeded with url: /encodings/o200k_base.tiktoken (Caused by ProxyError('Unable to connect to proxy', NewConnectionError(\"HTTPSConnection(host='127.0.0.1', por"
+   ],
+   "error_log_lines": {
+    "count": 4,
+    "first_five": [
+     {
+      "logger": "graphrag",
+      "message_start": "An error occurred:"
+     },
+     {
+      "logger": "graphrag",
+      "message_start": "Error during information extraction from document: <failed_attempts>\n\n<generation number=\"1\">\n<exception>\n    1 validati"
+     },
+     {
+      "logger": "graphrag",
+      "message_start": "An error occurred:"
+     },
+     {
+      "logger": "graphrag",
+      "message_start": "An error occurred:"
+     }
+    ]
+   },
+   "environment_variable_names": [
+    "ALL_PROXY",
+    "HOME",
+    "HTTPS_PROXY",
+    "HTTP_PROXY",
+    "LC_CTYPE",
+    "NO_PROXY",
+    "OPENAI_API_KEY",
+    "OPENAI_BASE_URL",
+    "PATH",
+    "PYTHONDONTWRITEBYTECODE",
+    "TIKTOKEN_CACHE_DIR",
+    "TMPDIR",
+    "__CF_USER_TEXT_ENCODING",
+    "all_proxy",
+    "http_proxy",
+    "https_proxy",
+    "no_proxy"
+   ],
+   "files_in_working_dir": [
+    "chunks_kv_data.pkl",
+    "entities_hnsw_index_1536.bin",
+    "entities_hnsw_metadata.pkl",
+    "graph_igraph_data.pklz",
+    "map_e2r_blob_data.pkl",
+    "map_r2c_blob_data.pkl"
+   ]
+  }
+ },
+ "recorded_by_hand": {
+  "note": "Written by hand by the agent that ran the rehearsal; the runner copies it unchanged.",
+  "pin": {
+   "chosen": "commit 23b3a1bef64338faf9f35c521a20465dbd09419f of the default branch (main), committed 2025-11-01T20:45:24Z, 'Update README formatting and remove cost-saving details'",
+   "why": "the latest PyPI release (0.0.5, 2025-04-04) is about 19 months old and there is no GitHub release or tag; brief rule for a package with no recent release is the latest commit of the default branch",
+   "read_utc": "20261102 10:27",
+   "sources": [
+    "https://api.github.com/repos/circlemind-ai/fast-graphrag (pushed_at 2025-11-01T20:45:25Z, archived false, license field MIT)",
+    "https://api.github.com/repos/circlemind-ai/fast-graphrag/commits?per_page=3",
+    "https://api.github.com/repos/circlemind-ai/fast-graphrag/tags and /releases (both empty lists)",
+    "https://pypi.org/pypi/fast-graphrag/json (latest 0.0.5, uploaded 2025-04-04T08:16:22Z, requires_python <3.13,>=3.10, license field null, re-read 20261102 10:43)"
+   ]
+  },
+  "pypi_wheel_vs_main": {
+   "checked_utc": "20261102 10:35",
+   "result": "fast-graphrag==0.0.5 installed from PyPI into a second throwaway environment; diff -rq of its fast_graphrag/ against the pinned commit differs in one file, _graphrag.py (query path only: an optional response_model argument). All indexing files are byte-identical. LICENSE in the wheel is byte-identical to the one at the pinned commit.",
+   "rehearsal_on_wheel": "the same runner was run on the PyPI 0.0.5 environment (output kept in scratch, not committed); calls by kind, prompt tokens and embedding requests/inputs were identical to the pinned-commit run in every run (20261102 10:40 UTC)"
+  },
+  "install": {
+   "tool": "uv 0.13.6 (uv venv --python 3.12; uv pip install <path to the checkout at the pinned commit>)",
+   "python": "CPython 3.12.16, macOS arm64 (Darwin)",
+   "resolved_packages": 120,
+   "time": "6.2 s wall clock for the install command (uv cache state not recorded)",
+   "source_builds": [
+    "hnswlib==0.8.0 (built from its sdist with the Xcode command line tools' clang; no workaround needed)",
+    "fast-graphrag itself (poetry-core build backend)"
+   ],
+   "everything_else": "binary wheels",
+   "workarounds": "none",
+   "warnings": "uv: the package google-cloud-aiplatform==1.71.1 does not have an extra named 'all' (harmless)",
+   "unused_but_installed": "the package requires google-genai, vertexai and voyageai SDKs whether or not they are used"
+  }
+ },
+ "determinism": {
+  "runs": [
+   "shape_B_run1",
+   "shape_B_run2_clean_dir"
+  ],
+  "calls_and_prompt_tokens_by_kind_identical": true,
+  "embedding_identical": true,
+  "per_document_identical": true,
+  "documents_identical": 20,
+  "multiset_of_prompt_sha256_identical": true,
+  "graph_totals_identical": true,
+  "identical": true
+ }
+}

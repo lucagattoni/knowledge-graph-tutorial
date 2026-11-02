@@ -35,7 +35,7 @@ extraction prompts [14][19]. The package version is 0.0.5 [6].
 - **Chunking** (`_services/_chunk_extraction.py`). A regex splits the text on separators (paragraph breaks and
   sentence punctuation, including Chinese and full-width marks). Chunks are character windows sized from
   `chunk_token_size=800` and `chunk_token_overlap=100`, multiplied by `TOKEN_TO_CHAR_RATIO` (the ratio's
-  value is in `_utils.py`, which was not read: **unstated**). A text no longer than one window stays one
+  value is in `_utils.py`, which was not read on 20261030: **unstated** then; read 20261102 10:28 UTC: it is 4, so a window is 3,200 characters with 400 overlap [30]). A text no longer than one window stays one
   chunk [13].
 - **Chunk identity.** `id = xxhash.xxh3_64_intdigest(chunk) // 2`. It is a content hash, halved so it fits a
   signed 64-bit integer [13]. A commit titled "Fix signed 64 bit overflow" exists in the history [4].
@@ -54,7 +54,7 @@ extraction prompts [14][19]. The package version is 0.0.5 [6].
   step, one `entity_relationship_gleaning_done_extraction` call: 2n calls per chunk in total. The early-stop
   test is `gleaning_status.status == Literal["done"]`, which compares a string with a `typing.Literal`
   object. In Python that comparison is `False` (checked 20261030 19:00 UTC), so, as read, the loop always
-  runs all n steps. This is a reading of the code, not an end-to-end run [12].
+  runs all n steps. This was a reading of the code, not an end-to-end run [12]. **Corrected 20261102 10:48 UTC by a stub run:** with `max_gleaning_steps` at 1 and at 2 no extra call was made (the call count stayed equal to the chunk count). Each chunk logged `Error during gleaning: 'domain'`: the continuation prompt is formatted with no arguments while its system text needs `{domain}`. The `KeyError` is caught, `_gleaning` returns `None`, and the caller keeps the first extraction (`_information_extraction.py`, lines 135 to 137 at the pinned commit, re-read 20261102 10:55 UTC). So at that commit gleaning cannot add a call whatever the setting [30].
 - **Per-document merge, then global merge.** Each document's chunk graphs are first merged into a small
   igraph graph with `DefaultGraphUpsertPolicy` (node policy `NodeUpsertPolicy_SummarizeDescription`, edge
   policy `EdgeUpsertPolicy_UpsertIfValidNodes`) [12][15]. The state manager then upserts that into the main
@@ -120,7 +120,7 @@ README's examples cover a custom OpenAI-compatible LLM, checkpoints and query pa
 
 | Aspect | Reading | Source |
 |---|---|---|
-| Index-time LLM calls | 1 extraction call per new chunk by default (gleaning off), 2n per chunk if gleaning is set to n; plus node-description summaries past 512 characters and edge grouping past 5 parallel edges | [12][16][11] |
+| Index-time LLM calls | 1 extraction call per new chunk by default (gleaning off), 2n per chunk if gleaning is set to n (as read; measured 20261102: gleaning adds no call at that commit [30]); plus node-description summaries past 512 characters and edge grouping past 5 parallel edges. A stub rehearsal on 20 news articles made 80 extraction calls for 80 chunks and 187,783 stub-counted prompt tokens, with no summary call for short descriptions and 41 for 200-character ones; those counts are for the stub's answers [30] | [12][16][11] |
 | Index-time embeddings | Entities only (chunks are not embedded) | [8] |
 | Query-time LLM calls | 2: query entity extraction, then answer generation (1 with `only_context=True`). PPR and the matrix cascade run locally | [14][8] |
 | Query-time embeddings | One call covering the named entities, generic entities and the query | [8] |
@@ -291,7 +291,7 @@ The July notes were written on 20260725 15:30 UTC. Checked 20261030 18:58 to 19:
   says "Backed by Y Combinator". Headcount is unstated by the sources [6][24].
 - **Corrected in the body above (July claims that were wrong or stale):**
   - July: "2 to 1+2·n LLM calls per chunk" and "2+ extraction LLM calls" per new chunk. Correct: 1 by default
-    (`max_gleaning_steps=0`); 2n with gleaning; the early stop never fires [12][16].
+    (`max_gleaning_steps=0`); 2n with gleaning, as read; **measured 20261102: gleaning adds no call at that commit [30]**; the early stop never fires [12][16].
   - July: ranking defaults `threshold=0.05`, `top_k=10`. Those are the class defaults; the library's actual
     defaults are 0.005 for entities, `TopK(64)` for relations and `TopK(8)` for chunks, and the Elbow policy
     is not used by default [10][15].
@@ -341,3 +341,4 @@ All repository sources were read on 20261030 UTC; times are the time of the read
 27. https://arxiv.org/abs/2506.05690 : GraphRAG-Bench, Tables 3, 4, 9 to 11 and 15 (read 20261030 19:02 UTC, via the alphaXiv PDF reader)
 28. https://arxiv.org/abs/2511.05549 : AGRAG, Table II and baseline settings (read 20261030 19:02 UTC, via the alphaXiv PDF reader)
 29. The July 2026 investigation notes for this project (internal, written 20260725 15:30 UTC, superseded by this entry; no URL). Cited only for what July recorded, and for the July analysis marked as unverified above (read 20261030 18:58 UTC)
+30. [The X2 rehearsal of fast-graphrag against a stub model](../experiments/x2-index-cost/rehearsal/fast-graphrag.md) : a local run of commit `23b3a1b` (no release or tag exists; read 20261102 10:27 UTC) and of the PyPI 0.0.5 wheel, whose indexing files are byte-identical; licence file hash equal at the commit, in the dist and in the wheel (read 20261102 10:36 and 10:54 UTC). Counts are for the stub's answers, not a real model's.
