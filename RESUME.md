@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261102 10:16 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261102 11:59 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
@@ -14,25 +14,27 @@ The first full pass is written, reviewed and pushed. Nothing is running.
 | `kb-kg/projects/` | 77 entries (22 deep, 55 cards) and a generated index (`tools/build_projects_index.py`) |
 | `kb-kg/landscape/` | two snapshots (19:13 and 19:54 UTC, 20261030) and the approved selection |
 | `kb-kg/directions/` | nine pages and an overview, first drafts |
-| `kb-kg/experiments/` | five proposals; X1 run, the other four not started; order and gates written 20261102 |
+| `kb-kg/experiments/` | five proposals; X1 run; **Step 0 of the order and gates built 20261102** (D-25); X2 to X5 not started |
 | `pinakes/` | approach record, recommendations R1 to R7, 12 takeaways, ClaudeKB precedent, what Pinakes has measured, four proposals for what to measure next (P1 answered, the P4 pilot run, P2 blocked, P3's free-path half in the public benchmark repository, described on its own page) |
-| `tools/` | `gh_snapshot.py` (57 tests), `build_projects_index.py` (12 tests), `check_public_safe.sh` |
+| `tools/` | `gh_snapshot.py` (57 tests), `build_projects_index.py` (12 tests), `check_public_safe.sh`; `tools/exp/` (stub model server, document selection, statistics, four builder rehearsal runners, two SDK end-to-end checks; 32 tests plus the runners); `metering_gateway.py` (78 tests) |
 
 Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wave B about 5.9M, wave C about
-1.5M; about 11.5M in all.
+1.5M; about 11.5M in all. Step 0's seven agents: about 1.84M (my sum of their totals).
 
 ## Waiting on the owner
 
 1. **Whether to rotate the P4 key.** The key file was deleted at the owner's request on 20261102. The
    variable may still be exported in the owner's own terminal tab (`unset PINAKES_ANTHROPIC_API_KEY` clears it
    there). Its value was once malformed; rotating or revoking the key is the owner's call.
-2. **Experiments: a yes to Step 0.** The slim plan (D-24, [order and gates](kb-kg/experiments/README.md#order-and-gates))
-   recommends X2, X4, X3, X5 after free groundwork: a metering gateway for either provider, the builders in
-   throwaway environments, frozen question sets, and a stub-model rehearsal. Step 0 costs nothing but needs the
-   owner's yes before it is built. None of X2 to X5 is started and each paid step needs its own yes with model,
-   provider and cap (D-14). Pinakes follow-ups (a BM25-alone arm request, a calibrated deep run) are in
-   [`pinakes/experiments/next.md`](pinakes/experiments/next.md#order-for-the-follow-ups). The `NOTICE` copyright
-   line uses the git author name "Luca Gattoni"; the owner may change it.
+2. **The first paid step, X2 pilot (D-24, D-25).** Step 0 is built and pushed. The next move is the owner's: which
+   local chat model to pull for pass A (free, measures output tokens), and later, for pass B, a hosted model, a new
+   key and a cap. Options and a recommendation were given in the closing report of 20261102. None of X2 to X5 is
+   started and each paid step needs its own yes with model, provider and cap (D-14). Pinakes follow-ups (a BM25-alone
+   arm request, a calibrated deep run) are in [`pinakes/experiments/next.md`](pinakes/experiments/next.md#order-for-the-follow-ups).
+   The `NOTICE` copyright line uses the git author name "Luca Gattoni"; the owner may change it.
+3. **Whether the safety gate should fail when its private-name list is missing.** A new worktree has no copy of the
+   gitignored list; the gate warns but still exits 0, so it passes without checking private names. Asked on 20261102;
+   unanswered.
 
 ## Done since the first pass
 
@@ -45,6 +47,11 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
   transcripts are in the session scratchpad and are not committed; whether to keep them is the owner's call.
 - **P4 key file** deleted 20261102 at the owner's request.
 - **Full content check** over all 60 commits, then **the repository made public** 20261102 08:46 UTC (D-22).
+- **Step 0 of the experiments** built 20261102 (D-25): the 20 X2 documents and 20 X4 questions frozen; a stub model
+  server; a statistics helper; rehearsals of LightRAG, nano-graphrag, Microsoft GraphRAG and fast-graphrag against the
+  stub ([side by side](kb-kg/experiments/x2-index-cost/README.md#the-rehearsals-side-by-side)); a metering gateway
+  for both providers with SDK end-to-end checks. No model was called and no key was used. The scratch environments
+  and raw logs live in the session scratchpad and are not committed.
 - **Pinakes' `docs/graph/` marked historical** with links here, landed in Pinakes as `dee3f04` on 20261102 (D-23);
   its CI and docs workflows succeeded and the published site shows the banner.
 - **`CLAUDE.md`** now says the repository is public (the owner's yes, 20261102 08:57 UTC).
