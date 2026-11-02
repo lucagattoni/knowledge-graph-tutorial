@@ -9,6 +9,7 @@ Run from the repository root:
 
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 import tempfile
@@ -205,6 +206,92 @@ class LocalGatewayTests(unittest.TestCase):
         self.assertEqual(s["by_kind"]["b"]["ok"], 0)
         self.assertEqual(s["by_kind"]["no_body"]["calls"], 1)
         self.assertEqual(s["total"]["calls"], 4)
+
+
+class ResponseFactsTests(unittest.TestCase):
+    def chat(self, finish, out, **message) -> dict:
+        return {"route": "/v1/chat/completions", "output_tokens": out,
+                "response": {"choices": [{"finish_reason": finish, "message": {"content": "x", **message}}]}}
+
+    def test_finish_reasons_reasoning_text_longest_answer_and_unparsed_bodies_are_counted(self) -> None:
+        calls = [self.chat("stop", 100), self.chat("length", 6144), self.chat("stop", 50, reasoning="because"),
+                 self.chat("stop", 10, reasoning=""), self.chat("stop", 20, reasoning_content="thought"),
+                 {"route": "/v1/chat/completions", "output_tokens": 999, "response": "data: streamed"},
+                 {"route": "/v1/chat/completions", "output_tokens": 5, "response": {"choices": []}},
+                 {"route": "/v1/embeddings", "output_tokens": 0, "response": {"data": []}}]
+        self.assertEqual(pc.response_facts(calls), {"chat_calls": 7, "finish_reasons": {"stop": 4, "length": 1},
+                                                     "answers_with_reasoning_text": 2, "unparsed_or_streamed": 2,
+                                                     "longest_answer_output_tokens": 6144})
+
+    def test_a_finished_runs_gateway_directory_gives_the_same_calls_as_the_live_gateway(self) -> None:
+        with stub_llm.Stub(lambda call: "hello") as stub, tempfile.TemporaryDirectory() as d:
+            with pc.LocalGateway(d, stub.base_url, ["chat-test"], REPO) as gw:
+                req = urllib.request.Request(gw.base_url + "/chat/completions", data=json.dumps(
+                    {"model": "chat-test", "messages": [{"role": "user", "content": "go"}]}).encode(),
+                    headers={"Content-Type": "application/json"})
+                urllib.request.urlopen(req, timeout=30).read()
+                live = gw.calls()
+            self.assertEqual(pc.calls_in(d), live)
+            self.assertEqual(pc.response_facts(pc.calls_in(d))["finish_reasons"], {"stop": 1})
+            self.assertEqual(pc.calls_in(Path(d) / "missing"), [])
+
+
+class RequestDefaultsTests(unittest.TestCase):
+    def test_toml_values_for_each_json_type_and_a_nested_table(self) -> None:
+        self.assertEqual(pc.toml_value("none"), '"none"')
+        self.assertEqual(pc.toml_value('a "quoted" \\ caf\u00e9'), '"a \\"quoted\\" \\\\ caf\u00e9"')
+        self.assertEqual((pc.toml_value(True), pc.toml_value(False), pc.toml_value(7), pc.toml_value(0.5)),
+                         ("true", "false", "7", "0.5"))
+        self.assertEqual(pc.toml_value({"type": "disabled", "n": 2}), '{ type = "disabled", n = 2 }')
+        self.assertEqual(pc.toml_value({}), "{}")
+
+    def test_values_toml_cannot_hold_or_the_gateway_would_misread_are_refused(self) -> None:
+        for bad in (None, [1], float("nan"), float("inf"), {"bad key": 1}, {1: 2}, {"a": None}, object()):
+            with self.assertRaises(pc.PassAError, msg=repr(bad)):
+                pc.toml_value(bad)
+
+    def parse(self, *items: str) -> dict:
+        parser = argparse.ArgumentParser()
+        pc.add_chat_default_argument(parser)
+        return pc.chat_defaults(parser.parse_args([x for item in items for x in ("--chat-default", item)]))
+
+    def test_the_option_reads_json_when_it_parses_and_a_plain_string_otherwise(self) -> None:
+        self.assertEqual(self.parse(), {})
+        self.assertEqual(self.parse("reasoning_effort=none", "seed=7", "flag=true", 'thinking={"type": "disabled"}', "s=\"7\""),
+                         {"reasoning_effort": "none", "seed": 7, "flag": True, "thinking": {"type": "disabled"}, "s": "7"})
+        self.assertEqual(self.parse("a=1", "a=2"), {"a": 2})
+        self.assertEqual(self.parse("note=a=b"), {"note": "a=b"})
+
+    def test_a_malformed_option_is_refused(self) -> None:
+        for bad in ("novalue", "=1", "bad name=1", 'q"=1'):
+            with self.assertRaises(pc.PassAError, msg=bad):
+                self.parse(bad)
+
+    def test_the_defaults_reach_the_upstream_only_for_the_model_they_were_given_to_and_the_record_names_them(self) -> None:
+        with stub_llm.Stub(lambda call: "ok") as stub, tempfile.TemporaryDirectory() as d:
+            defaults = {"chat-test": {"reasoning_effort": "none", "thinking": {"type": "disabled"}, "seed": 7}}
+            with pc.LocalGateway(d, stub.base_url, ["chat-test", "embed-test"], REPO, request_defaults=defaults) as gw:
+                def post(path: str, payload: dict) -> None:
+                    req = urllib.request.Request(gw.base_url + path, data=json.dumps(payload).encode(),
+                                                 headers={"Content-Type": "application/json"})
+                    urllib.request.urlopen(req, timeout=30).read()
+                post("/chat/completions", {"model": "chat-test", "messages": [{"role": "user", "content": "hi"}]})
+                post("/chat/completions", {"model": "chat-test", "seed": 0, "reasoning_effort": "low",
+                                           "messages": [{"role": "user", "content": "hi"}]})
+                post("/embeddings", {"model": "embed-test", "input": ["a"]})
+                calls = gw.calls()
+            first, second, third = stub.calls
+            self.assertEqual((first.raw["reasoning_effort"], first.raw["thinking"], first.raw["seed"]),
+                             ("none", {"type": "disabled"}, 7))
+            self.assertEqual((second.raw["reasoning_effort"], second.raw["seed"]), ("low", 0))
+            self.assertNotIn("reasoning_effort", third.raw)
+            self.assertEqual([c["request_defaults_applied"] for c in calls], [["reasoning_effort", "thinking", "seed"], ["thinking"], []])
+            self.assertNotIn("reasoning_effort", calls[0]["request"])           # the body log keeps what the builder sent
+
+    def test_defaults_for_a_model_the_gateway_does_not_serve_are_refused_before_anything_starts(self) -> None:
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaisesRegex(pc.PassAError, "do not serve|does not serve"):
+                pc.LocalGateway(d, "http://127.0.0.1:9/v1", ["m"], REPO, request_defaults={"other": {"seed": 1}}).start()
 
 
 if __name__ == "__main__":

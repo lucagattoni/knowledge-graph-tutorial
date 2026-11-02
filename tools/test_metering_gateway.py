@@ -1301,6 +1301,139 @@ class ChunkedUpstreamTests(unittest.TestCase):
         self.assertEqual(rec["error"], "stream_interrupted")
 
 
+# --------------------------------------------------------------------------- request defaults
+
+
+LOCAL_MODELS = """
+[models."fake-local"]
+upstream = "fake-openai"
+input_per_mtok = 1
+output_per_mtok = 2
+source_url = "https://example.invalid/pricing/fake-local"
+read_at = "20261102 10:00"
+
+[models."fake-local".request_defaults]
+reasoning_effort = "none"
+seed = 7
+
+[models."fake-claude-local"]
+upstream = "fake-anthropic"
+input_per_mtok = 0
+output_per_mtok = 0
+source_url = "https://example.invalid/pricing/fake-claude-local"
+read_at = "20261102 10:00"
+
+[models."fake-claude-local".request_defaults]
+thinking = { type = "disabled" }
+"""
+
+
+class RequestDefaultsTests(unittest.TestCase):
+    def rig(self, **kwargs):
+        return Rig(self, dry_run=True, models_extra=LOCAL_MODELS, **kwargs)
+
+    def test_a_default_fills_a_missing_field_and_the_call_record_names_it(self):
+        rig = self.rig()
+        client = chat_req(model="fake-local")
+        status, _, _ = rig.chat(client)
+        self.assertEqual(status, 200)
+        forwarded = json.loads(rig.openai.requests[0]["body"])
+        self.assertEqual(forwarded["reasoning_effort"], "none")
+        self.assertEqual(forwarded["seed"], 7)
+        self.assertEqual({k: v for k, v in forwarded.items() if k not in ("reasoning_effort", "seed")}, client)
+        (rec,) = rig.records()
+        self.assertEqual(rec["request_defaults_applied"], ["reasoning_effort", "seed"])
+        # the hash and the size are of what the client sent, and the reservation is of what was forwarded
+        self.assertEqual(rec["request_sha256"], hashlib.sha256(encoded(client)).hexdigest())
+        self.assertEqual(rec["bytes_in"], len(encoded(client)))
+        self.assertEqual(Decimal(rec["reserve"]), expect_reserve(len(rig.openai.requests[0]["body"]), "1", "2", 1000))
+
+    def test_a_model_without_defaults_is_forwarded_byte_for_byte_and_its_record_says_none(self):
+        rig = self.rig()
+        client = encoded(chat_req())
+        rig.chat(raw=client)
+        self.assertEqual(rig.openai.requests[0]["body"], client)
+        self.assertEqual(rig.records()[0]["request_defaults_applied"], [])
+
+    def test_a_field_the_client_sent_wins_and_only_the_missing_ones_are_added(self):
+        rig = self.rig()
+        rig.chat(chat_req(model="fake-local", reasoning_effort="high"))
+        rig.chat(chat_req(model="fake-local", reasoning_effort="low", seed=1))
+        rig.chat(chat_req(model="fake-local", seed=0))
+        first, second, third = (json.loads(r["body"]) for r in rig.openai.requests)
+        self.assertEqual((first["reasoning_effort"], first["seed"]), ("high", 7))
+        self.assertEqual((second["reasoning_effort"], second["seed"]), ("low", 1))
+        self.assertEqual((third["reasoning_effort"], third["seed"]), ("none", 0))  # a falsy value the client sent still wins
+        self.assertEqual([r["request_defaults_applied"] for r in rig.wait_records(3)],
+                         [["seed"], [], ["reasoning_effort"]])
+
+    def test_defaults_and_the_injected_stream_options_both_reach_the_upstream(self):
+        events = openai_sse(prompt=700, completion=40)
+        rig = self.rig(openai=FakeUpstream(lambda req, h: send_sse(h, events)))
+        status, _, body = rig.chat(chat_req(model="fake-local", stream=True))
+        self.assertEqual(status, 200)
+        self.assertEqual(body, b"".join(events))
+        forwarded = json.loads(rig.openai.requests[0]["body"])
+        self.assertEqual(forwarded["stream_options"], {"include_usage": True})
+        self.assertEqual((forwarded["reasoning_effort"], forwarded["seed"]), ("none", 7))
+        self.assertEqual(rig.records()[0]["request_defaults_applied"], ["reasoning_effort", "seed"])
+
+    def test_a_nested_default_works_on_the_anthropic_protocol(self):
+        rig = self.rig()
+        status, _, _ = rig.messages(claude_req(model="fake-claude-local"))
+        self.assertEqual(status, 200)
+        self.assertEqual(json.loads(rig.anthropic.requests[0]["body"])["thinking"], {"type": "disabled"})
+        self.assertEqual(rig.records()[0]["request_defaults_applied"], ["thinking"])
+
+    def test_the_body_log_keeps_what_the_client_sent_and_the_manifest_keeps_the_defaults(self):
+        rig = self.rig(gateway_extra="log_bodies = true")
+        client = chat_req(model="fake-local")
+        rig.chat(client)
+        (entry,) = (json.loads(line) for line in Path(rig.cfg.body_log_file).read_text().splitlines())
+        self.assertEqual(json.loads(entry["request"]), client)
+        manifest = json.loads(Path(rig.gw.manifest_path).read_text())
+        self.assertEqual(manifest["models"]["fake-local"]["request_defaults"], {"reasoning_effort": "none", "seed": 7})
+        self.assertEqual(manifest["models"]["fake-small"]["request_defaults"], {})
+
+    def test_a_refused_call_records_no_defaults(self):
+        rig = self.rig()
+        rig.chat({"model": "fake-unpriced", "messages": []})
+        self.assertEqual(rig.records()[0]["request_defaults_applied"], [])
+
+    @staticmethod
+    def local_model(extra: str) -> str:
+        return ("\n[models.\"fake-local\"]\nupstream = \"fake-openai\"\ninput_per_mtok = 1\noutput_per_mtok = 2\n"
+                "source_url = \"https://example.invalid/pricing/fake-local\"\nread_at = \"20261102 10:00\"\n" + extra)
+
+    def parse(self, models_extra: str, *, dry_run: bool):
+        text = toml_config("m.jsonl", "https://api.example.invalid/v1", "https://api.example.invalid/v1", dry_run=dry_run,
+                           models_extra=models_extra)
+        return mg.parse_config(text, ENVIRON)
+
+    def test_defaults_are_refused_on_a_paid_upstream_and_an_empty_table_is_not(self):
+        with_defaults = self.local_model("\n[models.\"fake-local\".request_defaults]\nseed = 7\n")
+        with self.assertRaisesRegex(mg.ConfigError, "only on a dry_run upstream"):
+            self.parse(with_defaults, dry_run=False)
+        self.assertEqual(self.parse(with_defaults, dry_run=True).models["fake-local"].request_defaults, {"seed": 7})
+        empty = self.local_model("\n[models.\"fake-local\".request_defaults]\n")
+        self.assertEqual(self.parse(empty, dry_run=False).models["fake-local"].request_defaults, {})
+
+    def test_defaults_may_not_set_a_field_that_decides_the_request_or_its_reservation(self):
+        self.assertEqual(mg.PROTECTED_REQUEST_FIELDS, {"model", "messages", "input", "stream", "stream_options", "n",
+                                                       "max_tokens", "max_completion_tokens"})
+        for name in sorted(mg.PROTECTED_REQUEST_FIELDS):
+            text = self.local_model(f"\n[models.\"fake-local\".request_defaults]\n{name} = 5\n")
+            with self.assertRaisesRegex(mg.ConfigError, f"may not set.*{name}"):
+                self.parse(text, dry_run=True)
+
+    def test_defaults_must_be_a_table_of_json_values(self):
+        with self.assertRaisesRegex(mg.ConfigError, "must be a table"):
+            self.parse(self.local_model("request_defaults = 3\n"), dry_run=True)
+        dated = self.local_model("\n[models.\"fake-local\".request_defaults]\nwhen = 2026-11-02T10:00:00Z\n")
+        with self.assertRaisesRegex(mg.ConfigError, "JSON values"):
+            self.parse(dated, dry_run=True)
+
+
 # --------------------------------------------------------------------------- the documentation stays true
 
 

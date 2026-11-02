@@ -33,7 +33,7 @@ import threading
 import time
 import tomllib
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from decimal import Decimal
 from http.client import HTTPConnection, HTTPException, HTTPSConnection
@@ -53,6 +53,10 @@ REDACTED = b"[redacted]"
 DATE_RE = re.compile(r"^\d{8} \d{2}:\d{2}$")
 ENV_NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]{0,63}$")
 NAME_RE = re.compile(r"^[A-Za-z0-9._:/-]{1,100}$")
+# Fields a request_defaults table may not set: they decide what is asked for, how much output is reserved, or how the
+# reply comes back, and the reservation is computed from the client's own request.
+PROTECTED_REQUEST_FIELDS = frozenset({"model", "messages", "input", "stream", "stream_options", "n",
+                                      "max_tokens", "max_completion_tokens"})
 
 # --------------------------------------------------------------------------- money
 # Every sum and product runs in a context that raises instead of rounding, so a figure is exact or the call fails.
@@ -132,6 +136,7 @@ class Model:
     name: str
     upstream: str
     price: Price
+    request_defaults: Mapping[str, Any] = field(default_factory=dict)  # fields added to a request that lacks them
 
 
 @dataclass(frozen=True)
@@ -286,10 +291,23 @@ def parse_config(text: str, environ: Mapping[str, str]) -> Config:
         if not NAME_RE.match(name) or not isinstance(table, dict):
             raise ConfigError(f"{where}: bad name or not a table")
         _only(table, {"upstream", "input_per_mtok", "output_per_mtok", "cached_input_per_mtok",
-                      "cache_write_per_mtok", "source_url", "read_at"}, where)
+                      "cache_write_per_mtok", "source_url", "read_at", "request_defaults"}, where)
         upstream = _string(table, "upstream", where)
         if upstream not in upstreams:
             raise ConfigError(f"{where}: upstream {upstream!r} is not configured")
+        defaults = table.get("request_defaults", {})
+        if not isinstance(defaults, dict):
+            raise ConfigError(f"{where}: request_defaults must be a table")
+        if defaults and not upstreams[upstream].dry_run:
+            raise ConfigError(f"{where}: request_defaults is allowed only on a dry_run upstream (a field added to a paid "
+                              "call can change what it costs)")
+        protected = sorted(set(defaults) & PROTECTED_REQUEST_FIELDS)
+        if protected:
+            raise ConfigError(f"{where}: request_defaults may not set {protected}")
+        try:
+            json.dumps(defaults)
+        except (TypeError, ValueError):
+            raise ConfigError(f"{where}: request_defaults must hold only JSON values") from None
         for required in ("input_per_mtok", "output_per_mtok"):
             if required not in table:
                 raise ConfigError(f"{where}: {required} is required (a model with no price is refused)")
@@ -306,7 +324,7 @@ def parse_config(text: str, environ: Mapping[str, str]) -> Config:
             _decimal(table["output_per_mtok"], f"{where} output_per_mtok"),
             optional["cached_input_per_mtok"], optional["cache_write_per_mtok"], source_url, read_at,
         )
-        models[name] = Model(name, upstream, price)
+        models[name] = Model(name, upstream, price, defaults)
     if not models:
         raise ConfigError("config: no model priced (no prices, no start)")
 
@@ -520,10 +538,10 @@ class Totals:
         self.calls += 1
         self.voided += bool(rec["voided"])
         self.usage_missing += bool(rec["usage_missing"])
-        for field, attr in (("input_tokens", "input_tokens"), ("output_tokens", "output_tokens"),
-                            ("cached_input_tokens", "cached_input_tokens")):
-            if rec.get(field) is not None:
-                setattr(self, attr, getattr(self, attr) + rec[field])
+        for key, attr in (("input_tokens", "input_tokens"), ("output_tokens", "output_tokens"),
+                          ("cached_input_tokens", "cached_input_tokens")):
+            if rec.get(key) is not None:
+                setattr(self, attr, getattr(self, attr) + rec[key])
         with exact():
             cost = Decimal(rec["cost"])
             self.spent += cost
@@ -709,6 +727,7 @@ class Call:
     done: bool = False
     request_body: bytes = b""
     response_body: bytes = b""
+    defaults_applied: list = field(default_factory=list)
 
     def record(self, currency: str) -> dict[str, Any]:
         return {
@@ -721,6 +740,7 @@ class Call:
             "request_sha256": self.request_sha256, "bytes_in": self.bytes_in, "bytes_out": self.bytes_out,
             "refusal": self.refusal, "error": self.error, "reserve_exceeded": self.reserve_exceeded,
             "cache_creation_input_tokens": self.cache_creation_input_tokens,
+            "request_defaults_applied": list(self.defaults_applied),
         }
 
 
@@ -767,6 +787,7 @@ class Gateway:
             "upstreams": {n: {"protocol": u.protocol, "base_url": u.base_url, "key_env": u.key_env, "dry_run": u.dry_run}
                           for n, u in cfg.upstreams.items()},
             "models": {n: {"upstream": m.upstream, "source_url": m.price.source_url, "read_at": m.price.read_at,
+                           "request_defaults": dict(m.request_defaults),
                            "input_per_mtok": money_text(m.price.input_per_mtok),
                            "output_per_mtok": money_text(m.price.output_per_mtok),
                            "cached_input_per_mtok": None if m.price.cached_input_per_mtok is None
@@ -853,8 +874,13 @@ class Gateway:
         except HttpError as exc:
             return refuse(exc.status, exc.code, exc.message)
 
-        stream = request.get("stream") is True
         forward_body = body
+        added = [k for k in model.request_defaults if k not in request]
+        if added:  # a configured default fills a field the client left out; a field the client sent always wins
+            request.update({k: model.request_defaults[k] for k in added})
+            forward_body = json.dumps(request).encode("utf-8")
+        call.defaults_applied = added
+        stream = request.get("stream") is True
         if stream and route.kind == "chat":
             options = request.get("stream_options")
             if options is None or (isinstance(options, dict) and "include_usage" not in options):

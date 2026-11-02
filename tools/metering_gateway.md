@@ -61,7 +61,7 @@ log_bodies = false                  # true: request and response bodies go to a 
 protocol = "openai"                 # "openai" or "anthropic"
 base_url = "https://api.example.invalid/v1"        # includes the version prefix, for both protocols
 key_env = "GATEWAY_OPENAI_KEY"      # the NAME of an environment variable, never the key itself
-# dry_run = true                    # no key needed and none is sent; for fake upstreams
+# dry_run = true                    # no key needed and none is sent; for fake upstreams and a local model server
 
 [upstreams.anthropic-main]
 protocol = "anthropic"
@@ -100,6 +100,15 @@ read_at = "20261102 10:00"
 - A model's `upstream` must speak the route's protocol: `openai` upstreams serve `/v1/chat/completions` and
   `/v1/embeddings`, `anthropic` upstreams serve `/v1/messages`.
 - Plain `http://` is accepted only for a loopback upstream (otherwise the real key would travel in clear).
+- `request_defaults` (optional, one table per model: `[models."name".request_defaults]`, for example
+  `reasoning_effort = "none"`) lists JSON fields the gateway adds to a request for that model **when the client did
+  not send them**; a field the client sent, even a falsy one, always wins. It exists for a local model server whose
+  model behaves differently from what the builder assumes (a model that "thinks" unless asked not to, which a builder
+  cannot ask). It is refused on any upstream that is not `dry_run` (a field added to a paid call can change what it
+  costs), and it may not set `model`, `messages`, `input`, `stream`, `stream_options`, `n`, `max_tokens` or
+  `max_completion_tokens`. The call's log record names the fields that were added (`request_defaults_applied`), the
+  manifest holds each model's table, and the body log keeps the request **as the client sent it**; the hash and the
+  size in the record are of that request too, while the reservation is made from what was forwarded.
 
 ## Point a builder at it
 
@@ -214,12 +223,13 @@ float. Bodies and the client's headers are never in this file.
 | `error` | short code such as `upstream_status`, `upstream_timeout`, `stream_interrupted`, or null |
 | `latency_ms` | request received until the call was settled |
 | `request_sha256`, `bytes_in`, `bytes_out` | SHA-256 and size of the body the client sent; bytes sent back to the client |
+| `request_defaults_applied` | the names of the `request_defaults` fields the gateway added to this request (an empty list when none) |
 
 Other files, next to `log_file`:
 
 - `log_file.manifest-<UTC YYYYMMDD_HHMMSS_microseconds>.json`, written at every start: gateway version, SHA-256 of
   the config, cap, currency, spend carried over from a log being resumed, the upstreams (with the *names* of the key
-  variables) and every model's prices with their `source_url` and `read_at`.
+  variables) and every model's prices with their `source_url` and `read_at`, and its `request_defaults`.
 - `log_bodies = true` writes `{call_id, request, response}` per call to the body log (mode 600). Bodies can hold
   third-party text and must not be committed; keep that file outside the repository.
 

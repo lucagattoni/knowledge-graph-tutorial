@@ -13,21 +13,25 @@ the usage field of each response); the gateway writes them to one log whatever t
 Prices are zero (a local model costs nothing), so the cap can never refuse. The gateway's job here is the uniform record.
 The body log holds third-party article text: keep the working directory outside the repository and never commit it.
 
+A finished run can be read back with `python passa_common.py facts WORKDIR/gateway`.
+
 Standard library only.
 """
 
 from __future__ import annotations
 
 import json
+import math
 import re
 import subprocess
 import sys
 import time
+from collections import Counter
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Mapping
 
 CONFIG_TEMPLATE = """[gateway]
 currency = "LOCAL-ZERO"
@@ -58,6 +62,45 @@ read_at = "{read_at}"
 
 class PassAError(RuntimeError):
     pass
+
+
+KEY_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+
+
+def toml_value(value: Any) -> str:
+    """A JSON-style value (bool, number, string, nested dict of those) as a TOML value for the gateway config."""
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if isinstance(value, int):
+        return str(value)
+    if isinstance(value, float) and math.isfinite(value):
+        return repr(value)
+    if isinstance(value, str):
+        return json.dumps(value, ensure_ascii=False)
+    if isinstance(value, dict) and all(isinstance(k, str) and KEY_RE.match(k) for k in value):
+        return "{ " + ", ".join(f"{k} = {toml_value(v)}" for k, v in value.items()) + " }" if value else "{}"
+    raise PassAError(f"cannot write {value!r} as a request default (use booleans, numbers, strings and tables of them)")
+
+
+def add_chat_default_argument(parser: Any) -> None:
+    """The `--chat-default NAME=VALUE` option the four pass-A runners share (repeatable)."""
+    parser.add_argument("--chat-default", action="append", default=[], metavar="NAME=VALUE",
+                        help="a field the gateway adds to every chat request that lacks it, for example reasoning_effort=none; "
+                             "VALUE is read as JSON when it parses (7, true, {\"a\": 1}) and as a plain string otherwise")
+
+
+def chat_defaults(args: Any) -> dict[str, Any]:
+    """The `--chat-default` options as {name: value}. A name given twice keeps the last."""
+    out: dict[str, Any] = {}
+    for item in args.chat_default:
+        name, sep, raw = item.partition("=")
+        if not sep or not KEY_RE.match(name):
+            raise PassAError(f"--chat-default {item!r}: write NAME=VALUE, the name made of letters, digits, _ and -")
+        try:
+            out[name] = json.loads(raw)
+        except json.JSONDecodeError:
+            out[name] = raw
+    return out
 
 
 def _http_json(url: str, payload: dict | None = None, timeout: float = 60.0) -> Any:
@@ -139,8 +182,10 @@ class LocalGateway:
     """The metering gateway as a subprocess, pointed at a local OpenAI-compatible server."""
 
     def __init__(self, workdir: str | Path, upstream_base_url: str, models: Iterable[str], repo_root: str | Path,
-                 *, timeout_s: int = 1800, source_url: str = "https://ollama.com/library"):
+                 *, timeout_s: int = 1800, source_url: str = "https://ollama.com/library",
+                 request_defaults: Mapping[str, Mapping[str, Any]] | None = None):
         self.workdir = Path(workdir)
+        self.request_defaults = {m: dict(d) for m, d in (request_defaults or {}).items() if d}
         self.repo_root = Path(repo_root)
         self.upstream = upstream_base_url
         self.models = list(models)
@@ -162,7 +207,14 @@ class LocalGateway:
         self.workdir.mkdir(parents=True, exist_ok=True)
         read_at = datetime.now(timezone.utc).strftime("%Y%m%d %H:%M")
         text = CONFIG_TEMPLATE.format(timeout=self.timeout_s, log=self.log_path.as_posix(), upstream=self.upstream)
-        text += "".join(MODEL_TEMPLATE.format(name=m, source=self.source_url, read_at=read_at) for m in self.models)
+        for m in self.models:
+            text += MODEL_TEMPLATE.format(name=m, source=self.source_url, read_at=read_at)
+            if self.request_defaults.get(m):
+                text += f'\n[models."{m}".request_defaults]\n'
+                text += "".join(f"{k} = {toml_value(v)}\n" for k, v in self.request_defaults[m].items())
+        unknown = sorted(set(self.request_defaults) - set(self.models))
+        if unknown:
+            raise PassAError(f"request defaults given for models the gateway does not serve: {unknown}")
         cfg = self.workdir / "gateway.toml"
         cfg.write_text(text)
         return cfg
@@ -204,13 +256,42 @@ class LocalGateway:
 
     def calls(self) -> list[dict]:
         """One dict per call, in arrival order: the log record, plus the request and response from the body log."""
-        records = _read_jsonl(self.log_path)
-        bodies = {b["call_id"]: b for b in _read_jsonl(self.body_path)}
-        out = []
-        for r in records:
-            b = bodies.get(r["call_id"], {})
-            out.append({**r, "request": _maybe_json(b.get("request")), "response": _maybe_json(b.get("response"))})
-        return out
+        return calls_in(self.workdir)
+
+
+def calls_in(gateway_dir: str | Path) -> list[dict]:
+    """The same list from a finished run's gateway directory (`meter.jsonl` and its body log)."""
+    gateway_dir = Path(gateway_dir)
+    records = _read_jsonl(gateway_dir / "meter.jsonl")
+    bodies = {b["call_id"]: b for b in _read_jsonl(gateway_dir / "meter.jsonl.bodies.jsonl")}
+    out = []
+    for r in records:
+        b = bodies.get(r["call_id"], {})
+        out.append({**r, "request": _maybe_json(b.get("request")), "response": _maybe_json(b.get("response"))})
+    return out
+
+
+def response_facts(calls: Iterable[dict]) -> dict:
+    """What the chat answers looked like, from the body log: why each stopped, whether any carried reasoning text, the
+    longest. A `length` stop means the model hit the output cap (its answer is cut off); reasoning text means the model
+    thought before answering. Streamed or unparsable bodies are counted apart, not guessed at."""
+    finish: Counter = Counter()
+    reasoning = unparsed = chat = longest = 0
+    for c in calls:
+        if not str(c.get("route", "")).endswith("chat/completions"):
+            continue
+        chat += 1
+        resp = c.get("response")
+        choices = resp.get("choices") if isinstance(resp, dict) else None
+        if not choices:
+            unparsed += 1
+            continue
+        finish[str(choices[0].get("finish_reason"))] += 1
+        message = choices[0].get("message") or {}
+        reasoning += 1 if (message.get("reasoning") or message.get("reasoning_content")) else 0
+        longest = max(longest, c.get("output_tokens") or 0)
+    return {"chat_calls": chat, "finish_reasons": dict(finish), "answers_with_reasoning_text": reasoning,
+            "unparsed_or_streamed": unparsed, "longest_answer_output_tokens": longest}
 
 
 def _maybe_json(text: Any) -> Any:
@@ -243,3 +324,10 @@ def summarize(calls: Iterable[dict], classify) -> dict:
         k["latency_ms"] += c.get("latency_ms") or 0
     total = {key: sum(v[key] for v in kinds.values()) for key in ("calls", "ok", "input_tokens", "output_tokens", "latency_ms")}
     return {"by_kind": kinds, "total": total}
+
+
+if __name__ == "__main__":
+    if len(sys.argv) == 3 and sys.argv[1] == "facts":
+        print(json.dumps(response_facts(calls_in(sys.argv[2])), indent=1))
+    else:
+        sys.exit("usage: python passa_common.py facts WORKDIR/gateway   (why each chat answer stopped, reasoning text, longest answer)")
