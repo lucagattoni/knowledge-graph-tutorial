@@ -14,6 +14,7 @@ page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md).
 
 | Part | State |
 |---|---|
+| `docs/` (and `plans/`) | **a new documentation, written from scratch** (D-29): 293 pages in eight chapters and an A to Z index, first edition written 20261102 on the branch `worktree-20261102_1805-docs-restructure-proposal`; built and checked in a worktree, **not merged, not reviewed by the owner**; the old pages stay as the Archive tab. How it is kept: [`README.md`](README.md); the decisions, lists and evidence: [`plans/`](plans/) |
 | `kb-kg/primer/`, `llm-era/`, `literature/`, `papers-benchmarks/` | first drafts |
 | `kb-kg/projects/` | 77 entries (22 deep, 55 cards) and a generated index (`tools/build_projects_index.py`) |
 | `kb-kg/landscape/` | two snapshots (19:13 and 19:54 UTC, 20261030) and the approved selection |
