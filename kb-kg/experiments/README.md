@@ -1,7 +1,7 @@
 # Experiments worth running next
 
-**Status: proposals only. Nothing here has run.** Each experiment needs the owner's explicit yes, one at a
-time (decision D-14 in [`DECISIONS.md`](../../DECISIONS.md)). Every proposal states its cost, models and data
+**Status: X1 has run; X2 to X5 are proposals and nothing in them has run.** Each experiment needs the owner's
+explicit yes, one at a time (decision D-14 in [`DECISIONS.md`](../../DECISIONS.md)). Every proposal states its cost, models and data
 first. Where a cost cannot be known before a pilot, the proposal says so and asks for a **cap on the pilot**,
 not for a budget on the whole experiment.
 
@@ -15,12 +15,67 @@ Each proposal answers a question the [direction pages](../directions/README.md) 
 | X4 | Does a code graph help an agent beyond saving tokens? | A model for an agent, the owner's key | **Unknown until a pilot** | 3 questions in 2 conditions on 2 repositories, a cap |
 | X5 | At what size does an index-only wiki stop working? | A model to navigate | **Unknown until a pilot** | Last; the heaviest |
 
+## Order and gates
+
+**Decided 20261102: a slim plan, not a full one.** Each proposal below already states its question, method, data
+and risks, and each paid one gets its own pre-registered plan, written before its first paid call (the pattern of the
+first paid pilot), once the owner has approved its cost, model and data. A long plan now would restate that with
+numbers nobody has measured yet. What was missing was the order, the shared groundwork and how to test the
+instruments. That is this section.
+
+**Constraints from the owner (20261102).** Runs happen only on the owner's Apple Silicon Macs: this Mac by default,
+another one only through an `ssh` command the owner approves each time, and no cloud or rented hardware. The
+repository is public but is the owner's own notebook, so there is no packaging for outside replication; the
+records below are enough for the owner to repeat a run, and the public-safety rules still apply. Hosted models are
+acceptable, both OpenAI's and Anthropic's, and the experiments must be able to run on either. **One model per
+comparison:** builders compared on different models are confounded, so a repeat on the other provider is a separate,
+labelled run with its own yes. The exact model and its prices are read from the provider's pages when a run is
+approved, not taken from memory. The free alternative is a local model: this Mac (Apple Silicon, 32 GB, 12 cores)
+has Ollama with only an embedding model pulled (read 20261102 10:14 UTC), so a local chat model would first have to
+be chosen and downloaded.
+
+| Step | What | Money | Why it comes here |
+|---|---|---|---|
+| 0 | **Free groundwork.** (a) A local metering gateway that every hosted call passes through, for either provider: it logs the provider's usage fields per call, puts them in one common record, and refuses a call past a cap. Most builders speak the OpenAI protocol, so running one on an Anthropic model needs either a provider-side compatibility layer or a translation in the gateway; the rehearsal finds out which, per builder, from the provider's current documentation. (b) The candidate builders installed in throwaway environments, versions pinned, licences read from the `LICENSE` files. (c) Question sets and answer keys frozen before any model sees them. (d) A dress rehearsal of X2 against a stub model, which counts calls and prompt tokens per document. | None | Every paid step reuses it. The rehearsal removes the biggest unknown (calls and input tokens per document) before money is asked for. |
+| 1 | **X2 pilot,** in two passes: A on a local model (free), B on a hosted small model under the owner's cap. | The owner's cap | The cheapest and most repeatable. It fills the first gap on the [eager-to-lazy page](../directions/eager-to-lazy-graphs.md), and its per-document figure prices X3. |
+| 2 | **X4 pilot** (3 questions, 2 conditions, 2 repositories). | The owner's cap | Independent of X2 and small (6 agent runs). Agent runs vary from run to run, so a pilot measures cost and feasibility, not a result. |
+| 3 | **X3.** | Set from X2 | It needs X2's per-document cost and a baseline that uses BM25 alone. It is the largest of the runs that bear on a decision. |
+| 4 | **X5.** | Set from X2 and X4 | The heaviest: it scales with corpus size times questions. |
+
+**Gates between steps.** After each step I report the measured cost and what the instrument could not show. The next
+step starts only on the owner's explicit yes (D-14), stating cost, model and data first. A step does not start just
+because the one before it worked.
+
+**How the instruments are tested before any money is spent.**
+- *The gateway,* against a stub upstream: counted usage equals the stub's reported usage; the call that would pass the
+  cap is refused and nothing is forwarded; an upstream error or a 401 counts as zero; a builder configured with only
+  the gateway's address and a dummy key cannot reach the provider another way. Then break the cap check on purpose;
+  the test must turn red.
+- *The builders,* against the stub: calls and prompt tokens per document are identical across two runs; each
+  installs and runs on Apple Silicon. Output tokens cannot be known from a stub and stay unmeasured until pass A or B.
+- *The scoring,* before any model run: the answer keys are derived by hand; a perfect answerer scores 100% and a
+  random one lands near chance; the paired sign test matches a known table.
+- *Lessons from the first paid pilot, built in:* read the free pre-flight estimate first; check the key's shape
+  (one key, not two pasted together) without printing it; run long jobs in the background with a log; stop at the
+  first failure and report it.
+
+**What this does not decide:** which builders (the entries suggest [LightRAG](../projects/lightrag.md) and
+[Microsoft GraphRAG](../projects/microsoft-graphrag.md), whose latest releases are dated 20260902 and 20261008;
+[nano-graphrag](../projects/nano-graphrag.md)'s last GitHub release is dated 20241001 and
+[fast-graphrag](../projects/fast-graphrag.md)'s last push was 363 days before 20261030, so the rehearsal decides
+whether they are worth a paid pass); which model, provider or cap; the agent client for X4, chosen when its pilot is
+approved. All four builders are MIT per their `LICENSE` files, read 20261030. A new key is needed for any hosted run:
+the one used for the first paid pilot was deleted at the owner's request, and each run's key is separate and, if the
+provider's console offers a per-project spend limit, limited there as well as at the gateway.
+
 ## Rules that apply to every experiment
 
 - **Third-party code is untrusted.** Each experiment runs other projects' code. I would install it in a
-  throwaway environment under the scratch directory, with only the one scoped API key the owner names set in
-  that process's environment, never written to a file. Projects under GPL, AGPL or non-commercial terms are
-  run for measurement only; no code from them enters this repository.
+  throwaway environment under the scratch directory. A hosted run gives that code only a dummy key and the
+  gateway's address; the real key stays with the gateway process and is never written into this repository or
+  printed (if it is kept in a file, that file has mode 600 and sits outside any repository, as in decision D-20).
+  Projects under GPL, AGPL or non-commercial terms are run for measurement only; no code from them enters this
+  repository.
 - **Costs are measured, not estimated.** Token counts come from the provider's usage fields, recorded per
   call. A figure derived from them is labelled as arithmetic.
 - **Everything is recorded.** Tool versions and commit hashes, the model name as the provider reports it, the
@@ -58,8 +113,10 @@ Each proposal answers a question the [direction pages](../directions/README.md) 
 - **Data.** The documents of MultiHop-RAG, a public news dataset (2,556 queries; evidence in 2 to 4 documents,
   per the [papers page](../papers-benchmarks/README.md)). Its licence is **unstated in what I read**: I would
   read it before downloading anything.
-- **Models.** One small model, the owner's choice. Whether a local model is available on the owner's machine is
-  **unstated**; a local model would make the pilot free in money and slower in time.
+- **Models.** One small model, the owner's choice; OpenAI and Anthropic models are both acceptable (owner,
+  20261102), one per comparison. A local model
+  would make the pilot free in money and slower in time: this Mac runs Ollama but holds only an embedding model
+  today (read 20261102 10:14 UTC).
 - **Cost.** **Unknown before the pilot.** That is the point of it. The pilot is 20 documents times a few
   builders. The cap is the owner's number; I will not propose one without a measured per-document figure.
 - **Output.** `kb-kg/experiments/x2-index-cost/`: raw usage logs, a table of calls and tokens per document,
@@ -106,5 +163,6 @@ Each proposal answers a question the [direction pages](../directions/README.md) 
 
 ## What I need from you
 
-Which of X1, X2 and X4 to start (X3 and X5 wait), which model and provider each may use (and whether a local
-model is available), the cap for each pilot, and a yes for each one separately.
+A yes to Step 0, the free groundwork, which costs nothing. Then, only after its rehearsal has produced numbers: which
+local chat model to pull, if any; and for each paid step, its own yes with the model, the provider and the cap
+(D-14).

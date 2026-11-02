@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261102 10:03 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261102 10:16 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
@@ -14,7 +14,7 @@ The first full pass is written, reviewed and pushed. Nothing is running.
 | `kb-kg/projects/` | 77 entries (22 deep, 55 cards) and a generated index (`tools/build_projects_index.py`) |
 | `kb-kg/landscape/` | two snapshots (19:13 and 19:54 UTC, 20261030) and the approved selection |
 | `kb-kg/directions/` | nine pages and an overview, first drafts |
-| `kb-kg/experiments/` | five proposals; X1 run, the other four not started |
+| `kb-kg/experiments/` | five proposals; X1 run, the other four not started; order and gates written 20261102 |
 | `pinakes/` | approach record, recommendations R1 to R7, 12 takeaways, ClaudeKB precedent, what Pinakes has measured, four proposals for what to measure next (P1 answered, the P4 pilot run, P2 blocked, P3's free-path half in the public benchmark repository, described on its own page) |
 | `tools/` | `gh_snapshot.py` (57 tests), `build_projects_index.py` (12 tests), `check_public_safe.sh` |
 
@@ -26,9 +26,13 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
 1. **Whether to rotate the P4 key.** The key file was deleted at the owner's request on 20261102. The
    variable may still be exported in the owner's own terminal tab (`unset PINAKES_ANTHROPIC_API_KEY` clears it
    there). Its value was once malformed; rotating or revoking the key is the owner's call.
-2. **Experiments.** X2, X3, X4 and X5 are not started and each needs its own yes (D-14). A larger P4 would be a
-   new proposal; a BM25-alone arm for P3 would be a request to the benchmark repository's owner. The `NOTICE`
-   copyright line uses the git author name "Luca Gattoni"; the owner may change it.
+2. **Experiments: a yes to Step 0.** The slim plan (D-24, [order and gates](kb-kg/experiments/README.md#order-and-gates))
+   recommends X2, X4, X3, X5 after free groundwork: a metering gateway for either provider, the builders in
+   throwaway environments, frozen question sets, and a stub-model rehearsal. Step 0 costs nothing but needs the
+   owner's yes before it is built. None of X2 to X5 is started and each paid step needs its own yes with model,
+   provider and cap (D-14). Pinakes follow-ups (a BM25-alone arm request, a calibrated deep run) are in
+   [`pinakes/experiments/next.md`](pinakes/experiments/next.md#order-for-the-follow-ups). The `NOTICE` copyright
+   line uses the git author name "Luca Gattoni"; the owner may change it.
 
 ## Done since the first pass
 

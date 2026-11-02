@@ -82,6 +82,21 @@ estimator over-reserved by 22 to 51 times in those measurements, so the ceiling 
 3 questions**, then set the cap from what they cost. Pinakes would still refuse any single run whose estimate
 exceeds its per-operation cap. This uses Pinakes as built and changes none of its code.
 
+## Order for the follow-ups
+
+These do not wait for the field-neutral experiments (their [order and gates](../../kb-kg/experiments/README.md#order-and-gates)
+are on their own page); they are listed here so the order across both is in one place.
+
+1. **A BM25-alone arm in the benchmark repository** (the P3 gap). Free, and the matched-cost comparison X3 needs it
+   as its baseline, so the request goes first. It is the benchmark owner's to accept; nothing is built here.
+2. **A calibrated deep run,** the one follow-up to P4 worth proposing now. All three pilot runs used the full three
+   rounds because the KB has no calibration ("the run could not stop at sufficiency"), and each run printed the
+   remedy, `python -m pinakes.calibrate <kb>`, which is free local CPU. A calibrated run on the same three questions
+   would be a new, labelled experiment, not a re-run of the pilot. It needs a new key (the pilot's was deleted) and its
+   own yes; its cost is **unstated** until calibration changes how many rounds are used.
+3. **A wider P4** on more of the 20 questions comes after 2, because the cost per question depends on whether the
+   loop can stop early.
+
 ## What I need from you
 
 Nothing in P3 needs doing here; a BM25-alone arm would be a request to the benchmark repository's owner. A larger P4 (more of the 20 questions, or a calibrated KB) would be a new
