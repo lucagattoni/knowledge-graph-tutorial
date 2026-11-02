@@ -26,10 +26,7 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
 1. **Whether to rotate the P4 key.** The key file was deleted at the owner's request on 20261102. The
    variable may still be exported in the owner's own terminal tab (`unset PINAKES_ANTHROPIC_API_KEY` clears it
    there). Its value was once malformed; rotating or revoking the key is the owner's call.
-2. **The *historical* banner and link on Pinakes' `docs/graph/`.** The link now resolves. It is a separate
-   change in the Pinakes repository: the assistant messages the Pinakes session with the file list first and
-   needs the owner's go.
-3. **Experiments.** X2, X3, X4 and X5 are not started and each needs its own yes (D-14). A larger P4 would be a
+2. **Experiments.** X2, X3, X4 and X5 are not started and each needs its own yes (D-14). A larger P4 would be a
    new proposal; a BM25-alone arm for P3 would be a request to the benchmark repository's owner. The `NOTICE`
    copyright line uses the git author name "Luca Gattoni"; the owner may change it.
 
@@ -44,6 +41,8 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
   transcripts are in the session scratchpad and are not committed; whether to keep them is the owner's call.
 - **P4 key file** deleted 20261102 at the owner's request.
 - **Full content check** over all 60 commits, then **the repository made public** 20261102 08:46 UTC (D-22).
+- **Pinakes' `docs/graph/` marked historical** with links here, landed in Pinakes as `dee3f04` on 20261102 (D-23);
+  its CI and docs workflows succeeded and the published site shows the banner.
 - **`CLAUDE.md`** now says the repository is public (the owner's yes, 20261102 08:57 UTC).
 - **Benchmark repository** described and linked: [`pinakes/experiments/datasets-benchmark.md`](pinakes/experiments/datasets-benchmark.md),
   at its commit `9941f58`, with its limits kept; the owning session confirmed the framing.
