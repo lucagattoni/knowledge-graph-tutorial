@@ -43,6 +43,11 @@ The navigation is generated from the folder tree: a new page appears under its s
 edit here. Only the order of sections (`SECTION_ORDER`) and a few short section titles
 (`SECTION_LABELS`) are written down in `mkdocs_hooks.py`; a page's nav label is its first `# ` heading.
 
+The nav numbers the chapters and the sections inside them (`1.`, `1.2`), and
+`javascripts/title-numbering.js` shows that number in front of the page title (`1.2 - The LLM era: …`).
+It is done in the browser so the Markdown and its anchors stay as GitHub renders them. Pages below
+those two levels, such as one project entry, are not numbered, and neither are the headings inside a page.
+
 ## Preview and test
 
 ```bash
