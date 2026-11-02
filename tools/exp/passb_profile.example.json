@@ -1,0 +1,15 @@
+{
+  "base_url": "https://api.openai.com/v1",
+  "key_file": "KEY_FILE_PATH_HERE",
+  "ledger_dir": "LEDGER_DIR_HERE",
+  "allowance_usd": "0.10",
+  "upstream_timeout_s": 900,
+  "input_per_mtok": "0.10",
+  "output_per_mtok": "0.50",
+  "cached_input_per_mtok": "0.01",
+  "cache_write_per_mtok": "0.125",
+  "source_url": "https://developers.openai.com/api/docs/pricing",
+  "read_at": "20261102 20:20",
+  "output_limit_default": 6144,
+  "request_defaults": {"reasoning_effort": "none"}
+}

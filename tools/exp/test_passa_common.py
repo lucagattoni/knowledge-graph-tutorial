@@ -220,8 +220,37 @@ class ResponseFactsTests(unittest.TestCase):
                  {"route": "/v1/chat/completions", "output_tokens": 5, "response": {"choices": []}},
                  {"route": "/v1/embeddings", "output_tokens": 0, "response": {"data": []}}]
         self.assertEqual(pc.response_facts(calls), {"chat_calls": 7, "finish_reasons": {"stop": 4, "length": 1},
-                                                     "answers_with_reasoning_text": 2, "unparsed_or_streamed": 2,
-                                                     "longest_answer_output_tokens": 6144})
+                                                     "answers_with_reasoning_text": 2, "reasoning_tokens_total": 0,
+                                                     "unparsed_or_streamed": 2, "longest_answer_output_tokens": 6144})
+
+    def with_reasoning_tokens(self, finish: str, out: int, reasoning_tokens) -> dict:
+        call = self.chat(finish, out)
+        call["response"]["usage"] = {"completion_tokens": out, "completion_tokens_details": {"reasoning_tokens": reasoning_tokens}}
+        return call
+
+    def test_reasoning_tokens_are_summed_over_parsed_chat_answers_and_an_absent_field_counts_zero(self) -> None:
+        no_details = self.chat("stop", 5)
+        no_details["response"]["usage"] = {"completion_tokens": 5}                      # no completion_tokens_details at all
+        empty_details = self.chat("stop", 5)
+        empty_details["response"]["usage"] = {"completion_tokens_details": {}}          # details without the field
+        calls = [self.with_reasoning_tokens("stop", 100, 40), self.with_reasoning_tokens("length", 200, 2),
+                 no_details, empty_details, self.chat("stop", 9),                       # no usage object
+                 self.with_reasoning_tokens("stop", 7, 0),
+                 self.with_reasoning_tokens("stop", 7, "12"),                           # not a whole number: ignored
+                 self.with_reasoning_tokens("stop", 7, True),                           # a boolean is not a count
+                 {"route": "/v1/chat/completions", "output_tokens": 3, "response": "data: streamed"},   # not parsed
+                 {"route": "/v1/embeddings", "output_tokens": 0,                                       # not a chat answer
+                  "response": {"usage": {"completion_tokens_details": {"reasoning_tokens": 500}}}}]
+        facts = pc.response_facts(calls)
+        self.assertEqual(facts["reasoning_tokens_total"], 42)
+        self.assertEqual(facts["chat_calls"], 9)
+        self.assertEqual(pc.response_facts([])["reasoning_tokens_total"], 0)
+
+    def test_a_parsed_answer_without_choices_still_counts_its_reasoning_tokens(self) -> None:
+        call = {"route": "/v1/chat/completions", "output_tokens": 5,
+                "response": {"choices": [], "usage": {"completion_tokens_details": {"reasoning_tokens": 11}}}}
+        facts = pc.response_facts([call])
+        self.assertEqual((facts["reasoning_tokens_total"], facts["unparsed_or_streamed"]), (11, 1))
 
     def test_a_finished_runs_gateway_directory_gives_the_same_calls_as_the_live_gateway(self) -> None:
         with stub_llm.Stub(lambda call: "hello") as stub, tempfile.TemporaryDirectory() as d:

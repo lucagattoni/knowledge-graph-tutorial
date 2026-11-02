@@ -4,11 +4,20 @@
         --upstream-url http://127.0.0.1:PORT/v1 --model CHAT_MODEL --embed-model EMBED_MODEL \\
         --workdir NEW_EMPTY_DIR --out RESULT_JSON [--checkpoints 1,5,20] [--tiktoken-cache DIR]
         [--preflight-min-ctx N] [--llm-max-async N] [--llm-timeout SECONDS] [--embedding-use-base64 true|false]
+        [--hosted-profile PROFILE_JSON]
 
 The stub rehearsal (`x2_lightrag.py`) counted what LightRAG sends to a loopback stub. This runner sends the same calls
 through `tools/metering_gateway.py` (started here, via `passa_common.LocalGateway`) to whatever answers at
 `--upstream-url`: the stub (free; validates the plumbing) or a local Ollama (a real model). The program is the same for
 both. LightRAG only ever talks to the gateway, with a dummy key; the gateway's log is the record of every call.
+
+Pass B (`--hosted-profile PROFILE_JSON`, see `passb_common.py` and `passb_profile.example.json`): the CHAT model (`--model`) is
+served by a hosted provider through the same gateway, which holds the key (it reads the file the profile names; this program
+never does) and refuses past the cap; `--upstream-url` and `--embed-model` stay the LOCAL embedding upstream. Only the embedding
+model is checked in Ollama. The JSON gains a `hosted` block (cost, prices with their source, model name as the provider reports
+it, the shared ledger's size before the run; never the key file's path or the ledger's) and a `cost_usd` per checkpoint. The
+gateway log is the profile's shared ledger, and `gw.calls()` returns only this run's records, so every count below is this
+run's. Without the option nothing in this program changes.
 
 Run it with the LightRAG virtual environment's Python (`lightrag-hku`, `openai` and `tiktoken` installed), in a minimal
 environment, for example
@@ -74,6 +83,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 import passa_common as pc
+import passb_common as pb
 import x2_lightrag as rehearsal  # its prompt classifier, document loader and audit hook are reused, not copied
 
 RUNNER = "x2_passa_lightrag.py"
@@ -425,6 +435,7 @@ async def build_and_index(args: argparse.Namespace, docs: list[dict], gw: pc.Loc
                 "embedding_inputs": delta["as_stub_summary"]["embedding_inputs"],
                 "latency_ms_total": delta["latency_ms_total"],
                 "non_200_calls": sum(n for s, n in delta["http_status"].items() if s != "200"),
+                **({"cost_usd": pb.cost_usd(new)} if args.profile is not None else {}),
             })
             if failure is not None:
                 failure["document"] = i
@@ -442,6 +453,8 @@ async def build_and_index(args: argparse.Namespace, docs: list[dict], gw: pc.Loc
                         "lightrag_warning_counts": dict(warn.count),
                     },
                 }
+                if args.profile is not None:
+                    result["checkpoints"][key]["cost_usd"] = pb.cost_usd(calls)     # cumulative since indexing began
             if failure is not None:
                 break
     finally:
@@ -457,14 +470,19 @@ def execute(args: argparse.Namespace, docs: list[dict], result: dict) -> None:
     # load_dotenv(".env")), which could bring settings or credentials from wherever the runner was started into the
     # builder. The new, empty working directory has none, so go there before anything is imported.
     os.chdir(workdir)
-    gw = pc.LocalGateway(workdir / "gateway", args.upstream_url, [args.model, args.embed_model], args.repo_root,
-                             request_defaults={args.model: pc.chat_defaults(args)})
+    gw = pb.make_gateway(args.profile, workdir / "gateway", args.upstream_url, [args.model, args.embed_model], args.repo_root,
+                         request_defaults={args.model: pc.chat_defaults(args)})
     gw.start()
     audit = None
     try:
         result["gateway"] = {"base_url": gw.base_url, "models": [args.model, args.embed_model],
-                             "upstream_timeout_s": gw.timeout_s, "metering": "prices are zero; the cap cannot refuse"}
-        if args.preflight_min_ctx:
+                             "upstream_timeout_s": gw.timeout_s,
+                             "metering": ("prices are zero; the cap cannot refuse" if args.profile is None else
+                                          "the chat model is hosted and priced; the gateway refuses past the cap "
+                                          "(the ledger's spend plus the profile's allowance)")}
+        if args.profile is not None:
+            result["preflight"] = pb.embedding_preflight(args.upstream_url, args.embed_model)
+        elif args.preflight_min_ctx:
             root = args.upstream_url.rstrip("/").removesuffix("/v1")
             result["preflight"] = pc.preflight(root, args.model, min_ctx=args.preflight_min_ctx, embed_model=args.embed_model)
 
@@ -497,6 +515,8 @@ def execute(args: argparse.Namespace, docs: list[dict], result: dict) -> None:
         gw.stop()
         with contextlib.suppress(Exception):
             record_gateway_log(gw, result)
+        if args.profile is not None:
+            result["hosted"] = pb.hosted_block_for(gw)
 
 
 def record_gateway_log(gw: pc.LocalGateway, result: dict) -> None:
@@ -549,6 +569,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     ap.add_argument("--model", required=True, help="chat model name, sent exactly as given")
     ap.add_argument("--embed-model", required=True, help="embedding model name, sent exactly as given")
     pc.add_chat_default_argument(ap)
+    pb.add_hosted_argument(ap)
     ap.add_argument("--workdir", required=True,
                     help="new empty directory outside the repository (LightRAG storage, gateway log and body log)")
     ap.add_argument("--out", required=True, help="result JSON to write")
@@ -577,6 +598,13 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     host = urllib.parse.urlsplit(args.upstream_url).hostname
     if host not in LOOPBACK_HOSTS:
         ap.error(f"--upstream-url must be a loopback address, not {host!r}: pass A never leaves the machine")
+    try:
+        args.profile = pb.profile_from_args(args)  # read now: the run changes directory later
+    except pc.PassAError as exc:
+        ap.error(str(exc))
+    if args.profile is not None and args.preflight_min_ctx:
+        ap.error("--preflight-min-ctx checks the chat model in Ollama, and with --hosted-profile the chat model is hosted "
+                 "(only the embedding model is checked)")
     for field in ("corpus", "documents", "repo_root", "workdir", "out"):  # the run changes directory, so fix paths first
         setattr(args, field, str(Path(getattr(args, field)).resolve()))
     if Path(args.workdir).is_relative_to(Path(args.repo_root)):
@@ -596,6 +624,8 @@ def main(argv: list[str] | None = None) -> int:
     if max(args.checkpoint_list) > len(docs):
         raise SystemExit(f"--checkpoints asks for {max(args.checkpoint_list)} documents, the list has {len(docs)}")
     local_paths = {args.workdir, args.repo_root, str(Path.home()), os.path.dirname(args.out)}
+    if args.profile is not None:
+        local_paths |= {args.profile.ledger_dir, args.profile.key_file}     # never written, and replaced if one ever got in
     scrub_prefixes = tuple(sorted(local_paths, key=len, reverse=True))
     result: dict = {
         "runner": RUNNER,

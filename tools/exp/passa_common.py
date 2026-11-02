@@ -271,17 +271,29 @@ def calls_in(gateway_dir: str | Path) -> list[dict]:
     return out
 
 
+def reasoning_tokens_of(resp: Any) -> int:
+    """`usage.completion_tokens_details.reasoning_tokens` of one parsed chat answer; 0 when any link of the chain is absent
+    or is not a whole number (a provider that does not report it, or an error body)."""
+    usage = resp.get("usage") if isinstance(resp, dict) else None
+    details = usage.get("completion_tokens_details") if isinstance(usage, dict) else None
+    value = details.get("reasoning_tokens") if isinstance(details, dict) else None
+    return value if isinstance(value, int) and not isinstance(value, bool) and value > 0 else 0
+
+
 def response_facts(calls: Iterable[dict]) -> dict:
     """What the chat answers looked like, from the body log: why each stopped, whether any carried reasoning text, the
-    longest. A `length` stop means the model hit the output cap (its answer is cut off); reasoning text means the model
-    thought before answering. Streamed or unparsable bodies are counted apart, not guessed at."""
+    longest, and how many reasoning tokens the provider says it generated. A `length` stop means the model hit the output
+    cap (its answer is cut off); reasoning text means the model thought before answering; `reasoning_tokens_total` is
+    the sum of `usage.completion_tokens_details.reasoning_tokens` over the parsed chat answers (an absent field counts 0,
+    and a streamed body is not parsed, so it adds nothing). Streamed or unparsable bodies are counted apart, not guessed at."""
     finish: Counter = Counter()
-    reasoning = unparsed = chat = longest = 0
+    reasoning = unparsed = chat = longest = reasoning_tokens = 0
     for c in calls:
         if not str(c.get("route", "")).endswith("chat/completions"):
             continue
         chat += 1
         resp = c.get("response")
+        reasoning_tokens += reasoning_tokens_of(resp)
         choices = resp.get("choices") if isinstance(resp, dict) else None
         if not choices:
             unparsed += 1
@@ -291,7 +303,8 @@ def response_facts(calls: Iterable[dict]) -> dict:
         reasoning += 1 if (message.get("reasoning") or message.get("reasoning_content")) else 0
         longest = max(longest, c.get("output_tokens") or 0)
     return {"chat_calls": chat, "finish_reasons": dict(finish), "answers_with_reasoning_text": reasoning,
-            "unparsed_or_streamed": unparsed, "longest_answer_output_tokens": longest}
+            "reasoning_tokens_total": reasoning_tokens, "unparsed_or_streamed": unparsed,
+            "longest_answer_output_tokens": longest}
 
 
 def _maybe_json(text: Any) -> Any:

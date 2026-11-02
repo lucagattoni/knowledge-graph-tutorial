@@ -11,6 +11,16 @@ builder's prompt templates as the stub runner) and the builder's own graph sizes
         --upstream-url http://127.0.0.1:PORT/v1 --model CHAT_MODEL --embed-model EMBED_MODEL \\
         --workdir NEW_EMPTY_DIR --out RESULT_JSON [--checkpoints 1,5,20] [--tiktoken-cache DIR]
 
+Pass B (`--hosted-profile PROFILE_JSON`, see `passb_common.py` and `passb_profile.example.json`): the CHAT model (`--model`, for
+both of the builder's model slots) is served by a hosted provider through the same gateway, which holds the key (it reads the
+file the profile names; this program never does) and refuses past the cap. `--upstream-url` and `--embed-model` stay the LOCAL
+embedding upstream (`--stub-shape` is refused: the stub would not see the chat calls, so the comparison with it would be
+meaningless); `--preflight` then checks only that the embedding model is installed. The JSON gains a `hosted` block (cost, prices
+with their source, the model name as the provider reports it, the shared ledger's size before the run; never the key file's path
+or the ledger's) and a `cost_usd` on every checkpoint, failure snapshot and document row; `OUT.calls.jsonl` lines gain `cost`.
+The gateway log is the profile's shared ledger and `gw.calls()` returns only this run's records. The gateway's timeout is the
+profile's. Without the option nothing in this program changes.
+
 Free check of the plumbing (no model, no key): add `--stub-shape B` instead of `--upstream-url`. The runner then hosts
 the stub model server of `stub_llm.py` itself, with the SAME responder (shape A or B) as `x2_nano_graphrag.py`, and
 compares, at every checkpoint, the counts the gateway logged with the counts the stub saw directly. A difference is
@@ -92,6 +102,7 @@ if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
 import passa_common as pc  # noqa: E402  (standard library only)
+import passb_common as pb  # noqa: E402  (standard library only)
 import x2_nano_graphrag as base  # noqa: E402  (the stub runner: corpus loading, network guard, classifier, shape-B responder)
 
 RUNNER_FILE = "tools/exp/x2_passa_nano_graphrag.py"
@@ -278,10 +289,10 @@ def request_multiset_digest(calls: list[dict], classify_call) -> str:
     return hashlib.sha256(json.dumps(rows).encode("utf-8")).hexdigest()
 
 
-def sanitized_call_rows(calls: list[dict], classify_call) -> list[dict]:
+def sanitized_call_rows(calls: list[dict], classify_call, extra_keys: tuple[str, ...] = ()) -> list[dict]:
     keep = ("ts", "route", "model_requested", "model_reported", "http_status", "input_tokens", "output_tokens",
             "cached_input_tokens", "latency_ms", "voided", "usage_missing", "streamed", "refusal", "error",
-            "request_sha256", "bytes_in", "bytes_out")
+            "request_sha256", "bytes_in", "bytes_out") + extra_keys
     return [{"seq": i, "kind": classify_call(c) if c.get("request") is not None else "no_body", **{k: c.get(k) for k in keep}}
             for i, c in enumerate(calls, start=1)]
 
@@ -436,7 +447,10 @@ def run(args: argparse.Namespace) -> int:
     upstream_url = args.upstream_url
     if upstream_url:
         try:
-            result["preflight"] = run_preflight(args.preflight, upstream_url, args.model, args.embed_model, args.min_ctx)
+            if args.profile is not None:     # the chat model is hosted: only the embedding model can be checked in Ollama
+                result["preflight"] = pb.embedding_preflight(upstream_url, args.embed_model, args.preflight)
+            else:
+                result["preflight"] = run_preflight(args.preflight, upstream_url, args.model, args.embed_model, args.min_ctx)
         except pc.PassAError as exc:
             result.update(status="failed", finished_utc=utc_now())
             failures.append("preflight refused to start")
@@ -469,8 +483,9 @@ def run(args: argparse.Namespace) -> int:
             result["runner"]["stub_shape"] = args.stub_shape
             result["runner"]["stub_dims"] = args.stub_dims
 
-        gw = pc.LocalGateway(workdir / "gateway", upstream_url, [args.model, args.embed_model], repo_root,
-                                request_defaults={args.model: pc.chat_defaults(args)}).start()
+        gw = pb.make_gateway(args.profile, workdir / "gateway", upstream_url, [args.model, args.embed_model], repo_root,
+                             request_defaults={args.model: pc.chat_defaults(args)})
+        gw.start()
         guard.stub_port = gw.port
         os.environ["OPENAI_BASE_URL"] = gw.base_url
 
@@ -536,6 +551,8 @@ def run(args: argparse.Namespace) -> int:
                 "client_side_retries": settled,
                 "request_multiset_sha256": request_multiset_digest(calls, classify_call),
             }
+            if args.profile is not None:
+                snap["cost_usd"] = pb.cost_usd(calls)                       # cumulative since indexing began
             try:
                 snap["graph"] = graph_state(rag)
             except Exception as exc:  # noqa: BLE001 - a half-built graph must not hide the call counts
@@ -571,7 +588,8 @@ def run(args: argparse.Namespace) -> int:
             row_kinds = by_kind_from_gateway(new_calls, classify_call)
             result["per_document"].append({
                 "rank": d["rank"], "url_sha256_16": d["url_sha256_16"], "chars": d["chars"], "seconds": round(seconds, 2),
-                "by_kind": row_kinds["by_kind"], "total": row_kinds["total"], "graph_after": graph_state(rag)})
+                "by_kind": row_kinds["by_kind"], "total": row_kinds["total"], "graph_after": graph_state(rag),
+                **({"cost_usd": pb.cost_usd(new_calls)} if args.profile is not None else {})})
             if i in checkpoints:
                 result["checkpoints"][str(i)] = snapshot(i, index_seconds)
             print(f"[{utc_now()}] document {i}/{planned} indexed in {seconds:.1f} s; "
@@ -639,7 +657,7 @@ def run(args: argparse.Namespace) -> int:
             "nano_graphrag_version": getattr(nano_graphrag, "__version__", "unstated"),
             "packages": {p: md.version(p) for p in ("openai", "tiktoken", "networkx", "graspologic", "nano-vectordb", "numpy",
                                                    "tenacity", "httpx")}}
-        gw_rows = sanitized_call_rows(final_calls, classify_call)
+        gw_rows = sanitized_call_rows(final_calls, classify_call, ("cost",) if args.profile is not None else ())
     except KeyboardInterrupt as exc:
         result["status"] = "interrupted"
         failures.append(f"interrupted ({exc})")
@@ -656,6 +674,8 @@ def run(args: argparse.Namespace) -> int:
             gw.stop()
         if stub is not None:
             stub.stop()
+    if args.profile is not None and gw is not None:
+        result["hosted"] = pb.hosted_block_for(gw)
 
     if gw_rows is not None:
         calls_text = "".join(json.dumps(r, sort_keys=True) + "\n" for r in gw_rows)
@@ -685,6 +705,7 @@ def main() -> None:
     ap.add_argument("--model", required=True, help="chat model name; the builder sends exactly this for both its model slots")
     ap.add_argument("--embed-model", required=True, help="embedding model name; the builder sends exactly this")
     pc.add_chat_default_argument(ap)
+    pb.add_hosted_argument(ap)
     ap.add_argument("--workdir", required=True, help="new or empty directory: the gateway's logs and the builder's storage (hold article text)")
     ap.add_argument("--out", required=True, help="result JSON (rewritten after every document); OUT.calls.jsonl is written beside it")
     ap.add_argument("--checkpoints", default="1,5,20", help="document counts at which to record; indexing stops after the largest (default 1,5,20)")
@@ -702,6 +723,13 @@ def main() -> None:
     args = ap.parse_args()
     if not args.stub_shape and not args.upstream_url:
         ap.error("give --upstream-url (or --stub-shape for the free check)")
+    try:
+        args.profile = pb.profile_from_args(args)
+    except pc.PassAError as exc:
+        ap.error(str(exc))
+    if args.profile is not None and args.stub_shape:
+        ap.error("--stub-shape cannot be combined with --hosted-profile: the stub would never see the chat calls; give "
+                 "--upstream-url (the local embedding upstream)")
     sys.exit(run(args))
 
 

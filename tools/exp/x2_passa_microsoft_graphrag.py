@@ -33,6 +33,16 @@ connections with loopback excluded, and on macOS a `sandbox-exec` profile that d
 loopback (the gateway and the upstream are on 127.0.0.1). The article text goes only into files under --workdir (the project
 input, the gateway's body log, GraphRAG's logs); the JSON written to --out holds counts, sizes and hashes, never text.
 
+Pass B (`--hosted-profile PROFILE_JSON`, see `passb_common.py` and `passb_profile.example.json`). The CHAT model (`--model`) is
+served by a hosted provider through the same gateway, which holds the key (it reads the file the profile names; neither this
+program nor GraphRAG ever does) and refuses past the cap; `--upstream-url` and `--embed-model` stay the LOCAL embedding upstream,
+and only the embedding model is checked in Ollama. The JSON gains a `hosted` block (cost, prices with their source, the model
+name as the provider reports it, the shared ledger's size before the run; never the key file's path or the ledger's) and, on
+every checkpoint, `cost_usd` (that checkpoint's own run) and `cost_usd_cumulative_in_this_run` (everything this run has spent so
+far, the dimension probe and the smaller checkpoints included). The gateway log is the profile's shared ledger and `gw.calls()`
+returns only this run's records. The gateway's own timeout is the profile's, not `--upstream-timeout-s`. Without the option
+nothing in this program changes.
+
 Optional knobs for a slow local model (each defaults to the builder's own default, so the counts stay comparable with the
 rehearsal): --concurrency (GraphRAG `concurrent_requests`, 25), --request-timeout-s (the client's per-request timeout, set
 as `call_args.timeout` on both models), --child-timeout-s (limit for one `graphrag index` run), --upstream-timeout-s (the
@@ -68,6 +78,7 @@ sys.dont_write_bytecode = True  # keep the repository free of .pyc files
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import passa_common  # noqa: E402
+import passb_common as pb  # noqa: E402
 import x2_microsoft_graphrag as rehearsal  # noqa: E402  the stub rehearsal's classifier, loader and table reader
 from stub_llm import message_text  # noqa: E402
 
@@ -207,8 +218,8 @@ def summarise_calls(calls: list[dict], classify, tables: dict) -> dict:
     }
 
 
-def call_rows(checkpoint: int, calls: list[dict], classify) -> list[dict]:
-    """One line per call for calls.jsonl: no text, only what the gateway logged and the kind."""
+def call_rows(checkpoint: int, calls: list[dict], classify, *, cost: bool = False) -> list[dict]:
+    """One line per call for calls.jsonl: no text, only what the gateway logged and the kind (and, in pass B, the cost)."""
     rows = []
     for i, c in enumerate(calls):
         rows.append({
@@ -220,6 +231,7 @@ def call_rows(checkpoint: int, calls: list[dict], classify) -> list[dict]:
             "n_inputs": len(as_stub_call(c).inputs) if str(c.get("route", "")).endswith("/embeddings") else None,
             "voided": c.get("voided"), "usage_missing": c.get("usage_missing"), "streamed": c.get("streamed"),
             "refusal": c.get("refusal"), "error": c.get("error"),
+            **({"cost": c.get("cost")} if cost else {}),
         })
     return rows
 
@@ -322,6 +334,9 @@ def run_checkpoint(n: int, args, dim: int, docs, template, gw, classify, scrub) 
     calls = gw.calls()[before:]
     tables = rehearsal.read_tables(run_dir)
     result = summarise_calls(calls, classify, tables)
+    if args.profile is not None:
+        result["cost_usd"] = pb.cost_usd(calls)                                    # this checkpoint's own run
+        result["cost_usd_cumulative_in_this_run"] = pb.cost_usd(gw.calls())        # the probe and the smaller checkpoints too
     log_files = [run_dir / "run.log", run_dir / "logs" / "indexing-engine.log"]
     log_text = "\n".join(p.read_text(errors="replace") for p in log_files if p.exists())
     markers = count_markers(log_text)
@@ -351,7 +366,7 @@ def run_checkpoint(n: int, args, dim: int, docs, template, gw, classify, scrub) 
         picked = [ln for ln in lines if re.search(r"Failed to validate|Traceback|Error", ln)][:3] + lines[-2:]
         result["run_log_excerpt_scrubbed"] = [scrub(ln[:200]) for ln in picked]
         result["run_log_excerpt_note"] = "may hold model output; read before publishing"
-    return result, call_rows(n, calls, classify)
+    return result, call_rows(n, calls, classify, cost=args.profile is not None)
 
 
 # ---- main ------------------------------------------------------------------------------------------------------------
@@ -364,6 +379,7 @@ def parse_args(argv=None) -> argparse.Namespace:
     ap.add_argument("--model", required=True, help="chat model name, sent verbatim")
     ap.add_argument("--embed-model", required=True, help="embedding model name, sent verbatim")
     passa_common.add_chat_default_argument(ap)
+    pb.add_hosted_argument(ap)
     ap.add_argument("--workdir", type=Path, required=True, help="a new, empty scratch directory (not in the repository)")
     ap.add_argument("--out", type=Path, required=True, help="result JSON; must not exist")
     ap.add_argument("--checkpoints", default="1,5,20", help="comma-separated document counts, ascending, at most 20")
@@ -406,6 +422,11 @@ def main(argv=None) -> int:
     if args.model == args.embed_model:
         print("--model and --embed-model must differ", file=sys.stderr)
         return 2
+    try:
+        args.profile = pb.profile_from_args(args)
+    except passa_common.PassAError as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
     cache = args.tiktoken_cache or (Path(os.environ["TIKTOKEN_CACHE_DIR"]) if "TIKTOKEN_CACHE_DIR" in os.environ else None)
     if cache is None or not cache.is_dir():
         print("give --tiktoken-cache (or set TIKTOKEN_CACHE_DIR): the sandboxed child cannot download its tokenizer tables", file=sys.stderr)
@@ -425,7 +446,7 @@ def main(argv=None) -> int:
         for real, label in ((str(args.workdir), "<workdir>"), (str(repo_root), "<repo>"), (str(Path.home()), "<home>"),
                             (str(Path(sys.prefix).resolve()), "<venv>"), (str(args.tiktoken_cache), "<tiktoken-cache>")):
             text = text.replace(real, label)
-        return text
+        return text if args.profile is None else args.profile.redact(text)
 
     docs = rehearsal.load_documents(args.corpus, args.documents)
     if len(docs) != 20:
@@ -464,7 +485,11 @@ def main(argv=None) -> int:
         "started_utc": started_utc, "finished_utc": None, "status": "running",
     }
 
+    holder: dict = {}   # the hosted gateway, once it exists, so every write of the result carries its block
+
     def write_result() -> None:
+        if args.profile is not None and holder.get("gateway") is not None:
+            result["hosted"] = pb.hosted_block_for(holder["gateway"])
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
 
@@ -481,16 +506,23 @@ def main(argv=None) -> int:
             print("the sandbox profile does not behave as intended", file=sys.stderr)
             return finish("sandbox self-test failed", 1)
 
-    result["preflight"] = maybe_ollama_preflight(args.upstream_url, args.model, args.embed_model)
+    if args.profile is not None:     # the chat model is hosted: only the embedding model can be checked in Ollama
+        try:
+            result["preflight"] = pb.embedding_preflight(args.upstream_url, args.embed_model)
+        except passa_common.PassAError as exc:
+            result["preflight"] = {"ran": True, "error": str(exc)}
+    else:
+        result["preflight"] = maybe_ollama_preflight(args.upstream_url, args.model, args.embed_model)
     if result["preflight"].get("error"):
         result["preflight"]["error"] = scrub(result["preflight"]["error"])
         return finish("preflight refused", 1)
 
     all_rows: list[dict] = []
     try:
-        with passa_common.LocalGateway(args.workdir / "gateway", args.upstream_url, [args.model, args.embed_model],
-                                       repo_root, timeout_s=args.upstream_timeout_s,
-                                       request_defaults={args.model: passa_common.chat_defaults(args)}) as gw:
+        holder["gateway"] = pb.make_gateway(args.profile, args.workdir / "gateway", args.upstream_url,
+                                            [args.model, args.embed_model], repo_root, timeout_s=args.upstream_timeout_s,
+                                            request_defaults={args.model: passa_common.chat_defaults(args)})
+        with holder["gateway"] as gw:
             try:
                 dim = probe_embedding_dimension(gw.base_url, args.embed_model)
             except passa_common.PassAError as exc:
@@ -503,7 +535,8 @@ def main(argv=None) -> int:
                 "input_tokens": probe_calls[0].get("input_tokens"),
                 "note": "logged by the gateway, belongs to no checkpoint",
             }
-            all_rows += [{**r, "checkpoint": 0, "kind": "dimension_probe"} for r in call_rows(0, probe_calls, classify)]
+            all_rows += [{**r, "checkpoint": 0, "kind": "dimension_probe"}
+                         for r in call_rows(0, probe_calls, classify, cost=args.profile is not None)]
             template = args.workdir / "template"
             init = subprocess.run([str(args.graphrag), "init", "--root", str(template), "--model", "gpt-4.1",
                                    "--embedding", "text-embedding-3-large"],
@@ -534,9 +567,14 @@ def main(argv=None) -> int:
                 if not cp["indexed_all_documents"]:
                     result["stopped_after_failed_checkpoint"] = n
                     break
-            result["gateway"] = {"log": "<workdir>/gateway/meter.jsonl, and meter.jsonl.bodies.jsonl (holds article text; never commit)",
-                                 "prices": "zero (a local model costs nothing); the gateway's job here is the uniform record",
-                                 "upstream_timeout_s": args.upstream_timeout_s}
+            if args.profile is None:
+                result["gateway"] = {"log": "<workdir>/gateway/meter.jsonl, and meter.jsonl.bodies.jsonl (holds article text; never commit)",
+                                     "prices": "zero (a local model costs nothing); the gateway's job here is the uniform record",
+                                     "upstream_timeout_s": args.upstream_timeout_s}
+            else:
+                result["gateway"] = {"log": "the profile's shared ledger (meter.jsonl and meter.jsonl.bodies.jsonl; holds article text; never commit)",
+                                     "prices": "the chat model's are the profile's (see `hosted`); the embedding model's are zero",
+                                     "upstream_timeout_s": args.profile.upstream_timeout_s}
     except passa_common.PassAError as exc:
         result["gateway_error"] = scrub(str(exc))
         return finish("gateway failed", 1)

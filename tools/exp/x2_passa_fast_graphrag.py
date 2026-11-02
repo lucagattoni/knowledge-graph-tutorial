@@ -6,6 +6,7 @@
         --upstream-url http://127.0.0.1:PORT/v1 --model CHAT_MODEL --embed-model EMBED_MODEL \\
         --workdir NEW_EMPTY_DIR --out RESULT_JSON [--checkpoints 1,5,20] [--tiktoken-cache DIR] \\
         [--preflight-min-ctx 16384] [--llm-timeout-s 1800] [--llm-concurrency N] [--continue-after-failure]
+        [--hosted-profile PROFILE_JSON]
 
 VENV_PYTHON is the python of the throwaway environment that holds fast-graphrag (the same one the stub rehearsal
 `x2_fast_graphrag.py` uses). The upstream is whatever speaks the OpenAI protocol at `--upstream-url`: the stub
@@ -19,6 +20,15 @@ fast-graphrag at the gateway with the REAL model names, builds `GraphRAG` with t
 indexes the documents one at a time with `GraphRAG.insert`, on the library's configuration. It changes only what is
 named under `builder_settings.changed_from_library_defaults` in the output. After the child exits, the parent reads
 the gateway's own log (the provider's usage as logged) and builds the checkpoints from it.
+
+Pass B (`--hosted-profile PROFILE_JSON`, see `passb_common.py` and `passb_profile.example.json`). The CHAT model (`--model`) is
+served by a hosted provider through the same gateway, which holds the key (it reads the file the profile names; neither this
+parent nor the child ever does) and refuses past the cap; `--upstream-url` and `--embed-model` stay the LOCAL embedding
+upstream, and only the embedding model is checked in Ollama. The output gains a `hosted` block (cost, prices with their source,
+the model name as the provider reports it, the shared ledger's size before the run; never the key file's path or the ledger's)
+and a `cost_usd` on every checkpoint and document row. The gateway log is the profile's shared ledger and `gw.calls()` returns
+only this run's records, so every number below is this run's. The gateway's own timeout is the profile's. Without the option
+nothing in this program changes.
 
 What the numbers are. Calls by kind, HTTP statuses, `input_tokens`, `output_tokens` and `latency_ms` are the
 gateway's record of each call: the tokens are the provider's own usage fields (for the stub, what the stub counted).
@@ -89,7 +99,8 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 import x2_fast_graphrag as rehearsal  # noqa: E402  (standard library only at import: classifier, inputs, guard, loader)
-from passa_common import LocalGateway, PassAError, add_chat_default_argument, chat_defaults, preflight, summarize  # noqa: E402
+import passb_common as pb  # noqa: E402
+from passa_common import PassAError, add_chat_default_argument, chat_defaults, preflight, summarize  # noqa: E402
 
 RUNNER = "x2_passa_fast_graphrag.py"
 DUMMY_KEY = "dummy-not-a-key"
@@ -468,6 +479,8 @@ def build_output(args, docs, preflight_facts, dim, child, calls, before, per_doc
             if key in row:
                 entry[key] = row[key]
         entry.update(w)
+        if args.profile is not None:
+            entry["cost_usd"] = pb.cost_usd(per_doc[k])
         per_document.append(entry)
     checkpoints: dict = {}
     stop = child.get("stopped_at_document") if child else None
@@ -477,6 +490,8 @@ def build_output(args, docs, preflight_facts, dim, child, calls, before, per_doc
     for m in marks:
         w = window([c for k in range(m) for c in per_doc[k]])
         w["documents_run"] = m
+        if args.profile is not None:
+            w["cost_usd"] = pb.cost_usd([c for k in range(m) for c in per_doc[k]])         # cumulative, documents 1..m
         w["documents_indexed"] = sum(1 for r in rows[:m] if r["indexed"])
         w["sdk_retries_logged"] = sum(r["sdk_retries_logged_in_document"] for r in rows[:m])
         w["graph_totals"] = rows[m - 1]["graph_totals_after"]
@@ -585,10 +600,13 @@ def run_parent(args: argparse.Namespace) -> int:
     started = utc_now()
 
     preflight_facts = None
-    if args.preflight_min_ctx:
+    if args.preflight_min_ctx or args.profile is not None:
         ollama_url = re.sub(r"/v1/?$", "", args.upstream_url.rstrip("/"))
         try:
-            preflight_facts = preflight(ollama_url, args.model, min_ctx=args.preflight_min_ctx, embed_model=args.embed_model)
+            if args.profile is not None:   # the chat model is hosted: only the embedding model can be checked in Ollama
+                preflight_facts = pb.embedding_preflight(args.upstream_url, args.embed_model)
+            else:
+                preflight_facts = preflight(ollama_url, args.model, min_ctx=args.preflight_min_ctx, embed_model=args.embed_model)
         except PassAError as exc:
             out = {"runner": RUNNER, "builder": "fast-graphrag", "upstream_url": args.upstream_url, "model": args.model,
                    "embed_model": args.embed_model, "ok": False, "preflight": {"refused": scrub(exc, 400)},
@@ -601,8 +619,8 @@ def run_parent(args: argparse.Namespace) -> int:
     run_dir = workdir / "child"
     run_dir.mkdir()
     result_path = run_dir / "child_result.json"
-    gw = LocalGateway(workdir / "gateway", args.upstream_url, [args.model, args.embed_model], repo_root,
-                      request_defaults={args.model: chat_defaults(args)})
+    gw = pb.make_gateway(args.profile, workdir / "gateway", args.upstream_url, [args.model, args.embed_model], repo_root,
+                         request_defaults={args.model: chat_defaults(args)})
     child_exit, child_stderr, child, dim, t_spawn, setup_error = None, "", None, None, time.time(), None
     env = rehearsal.minimal_env(run_dir, args.tiktoken_cache)
     try:
@@ -641,9 +659,12 @@ def run_parent(args: argparse.Namespace) -> int:
                                  "output_tokens": c.get("output_tokens"), "latency_ms": c.get("latency_ms"),
                                  "request_sha256": c.get("request_sha256"), "voided": c.get("voided"),
                                  "usage_missing": c.get("usage_missing"), "refusal": c.get("refusal"),
-                                 "error": c.get("error")}) + "\n")
+                                 "error": c.get("error"),
+                                 **({"cost": c.get("cost")} if args.profile is not None else {})}) + "\n")
     out = build_output(args, docs, preflight_facts, dim, child, calls, before, per_doc, after, sorted(env), child_exit,
                        child_stderr, started, calls_sha)
+    if args.profile is not None:
+        out["hosted"] = pb.hosted_block_for(gw)
     if setup_error:
         out["ok"] = False
         out["setup_failed"] = setup_error
@@ -663,6 +684,7 @@ def main() -> None:
     ap.add_argument("--model", required=True)
     ap.add_argument("--embed-model", required=True)
     add_chat_default_argument(ap)
+    pb.add_hosted_argument(ap)
     ap.add_argument("--workdir")
     ap.add_argument("--out")
     ap.add_argument("--checkpoints", default="1,5,20")
@@ -685,12 +707,20 @@ def main() -> None:
     args = ap.parse_args()
     if (args.llm_concurrency is not None and args.llm_concurrency < 1) or args.llm_timeout_s <= 0:
         ap.error("--llm-concurrency must be at least 1 and --llm-timeout-s positive")
+    args.profile = None   # the child is given no profile: it only ever sees the gateway's address and a dummy key
     if args.child:
         run_child(args)
         return
     missing = [name for name in ("repo_root", "upstream_url", "workdir", "out") if not getattr(args, name)]
     if missing:
         ap.error("required: " + ", ".join("--" + m.replace("_", "-") for m in missing))
+    try:
+        args.profile = pb.profile_from_args(args)
+    except PassAError as exc:
+        ap.error(str(exc))
+    if args.profile is not None and args.preflight_min_ctx:
+        ap.error("--preflight-min-ctx checks the chat model in Ollama, and with --hosted-profile the chat model is hosted "
+                 "(only the embedding model is checked)")
     try:
         code = run_parent(args)
     except PassAError as exc:
