@@ -27,13 +27,14 @@ out; nothing here is inferred.
 | D-19 | A paid pilot (20261031) | P4 (the deep loop on 3 of the 20 frozen multi-hop questions) approved with a hosted model and a **total cap of EUR 10**. The owner sets the API key in their own terminal; no secrets file is read. X2, X4 and P3 are not started. |
 | D-20 | Where the P4 key lives (20261031) | The owner chose to keep the API key in a file only they can read, outside any repository, so a terminal tab opened by the assistant can use it. This replaces the "set in the terminal only" part of D-19. The assistant never opens the file; the run script reads one line into its own process and refuses a file others can read. The owner deletes the file when P4 ends and may rotate the key. |
 | D-21 | The P4 runs go ahead without a typed confirmation (20261101) | After two confirmation prompts went unanswered (the tabs were closed before anything was confirmed, so nothing was reserved or spent), the owner authorised the assistant in writing to run all three P4 questions itself with `--yes`, one at a time. Pinakes' budget windows (EUR 2.00 an operation, EUR 10.00 a day and a month) still refuse any run over them. The assistant re-reads each estimate for free before its run and stops on the first failure or refusal, with no retry for a better answer. The authorisation covers these three questions only. |
+| D-22 | The repository goes public (20261102) | The owner said "repo public OK" and "full content check OK". The assistant did the check itself over all 60 commits and found nothing: no secret-shaped string, no private repository name (the 13 private repositories of the owner's account and the local list were all searched), no local path, no machine name, no mailbox address in content, no blob over 500 KB except the two public GitHub snapshots. The author address in the commits is already public in the Pinakes repository's history. The branch was fast-forwarded onto `main` (it held only `.gitignore`), then the visibility changed at 08:46 UTC. The P4 key file was deleted at the owner's request first. |
 
 ## Working rules adopted for this repository
 
 These follow from the decisions above; the owner can overrule any of them.
 
-- **Public from the first line.** The repository will become public, and a visibility change
-  publishes its whole git history. So every commit is written as if public already: no private
+- **Public from the first line.** The repository has been public since 20261102 (D-22), and the visibility
+  change published its whole git history. Every commit is written as public: no private
   repository names, no local paths, no mailbox addresses, no keys. `tools/check_public_safe.sh`
   runs before every commit.
 - **English** throughout, because every source document and the owner's other repositories are English.
@@ -46,7 +47,7 @@ These follow from the decisions above; the owner can overrule any of them.
 | Item | Owner | Blocks |
 |---|---|---|
 | ~~Licence for this repository's text~~ | done: D-17 (the copyright line in `NOTICE` uses the git author name "Luca Gattoni"; the owner may change it) | |
-| Full content check, then the explicit yes to make the repository public | owner | the pointer from Pinakes |
-| Pinakes side: *historical* banner and link on the 16 files in `docs/graph/` | owner's go, then a separate change in the Pinakes repository under its own rules | nothing here; do it after the visibility change so the link does not dangle |
-| Link to the benchmark repository | verify it reports public first | the `pinakes/experiments/` benchmark page |
-| A project `CLAUDE.md` for this repository | owner's yes | nothing |
+| ~~Full content check, then the explicit yes to make the repository public~~ | done: D-22 | |
+| Pinakes side: *historical* banner and link on the 16 files in `docs/graph/` | owner's go, then a separate change in the Pinakes repository under its own rules | nothing here; the link now resolves because the repository is public |
+| Link to the benchmark repository | it reports public as of 20261102; read its README, then add the link and a description | the `pinakes/experiments/` benchmark page |
+| ~~A project `CLAUDE.md` for this repository~~ | done: added at the owner's yes. Its heading still says "will be public"; an edit to it is the owner's call | |

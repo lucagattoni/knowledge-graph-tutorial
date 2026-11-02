@@ -1,8 +1,8 @@
 # Resume
 
-Last updated 20261101 22:43 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). Branch:
-`worktree-20261030_1852-kb-kg-docs-scaffold` (private remote; nothing is on `main` yet). The last content
-commit before this update is `8d127cb`.
+Last updated 20261102 08:50 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
+`worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
 ## State
 
@@ -23,17 +23,17 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
 
 ## Waiting on the owner
 
-1. **Delete the P4 key file, and decide whether to rotate the key.** The pilot is finished, so the file the
-   owner created for it (D-20) is no longer needed. Its value was once malformed (two key-shaped strings
-   joined); the file was not edited and no character of it was printed. Deleting a file holding a secret is the
-   owner's call; the assistant asks before doing it. X2, X3, X4, X5 and P3 are not started and each still needs
-   its own yes (D-14); a larger P4 would be a new proposal.
-2. **A full content check, then the explicit yes to make the repository public.** The gate and the checks run
-   so far do not replace that review. The licence is chosen (D-17: Apache-2.0); the copyright line in `NOTICE`
-   uses the git author name "Luca Gattoni" and the owner may change it.
-3. **After the flip only:** the *historical* banner and link on Pinakes' `docs/graph/`.
-4. **The benchmark repository.** Describe it; link it only once the API reports it public (it did not at
-   20261030 18:52 UTC).
+1. **Whether to rotate the P4 key.** The key file was deleted at the owner's request on 20261102. The
+   variable may still be exported in the owner's own terminal tab (`unset PINAKES_ANTHROPIC_API_KEY` clears it
+   there). Its value was once malformed; rotating or revoking the key is the owner's call.
+2. **The *historical* banner and link on Pinakes' `docs/graph/`.** The link now resolves. It is a separate
+   change in the Pinakes repository: the assistant messages the Pinakes session with the file list first and
+   needs the owner's go.
+3. **The benchmark repository** now reports public (20261102). Read its README, then add the link and a
+   description on the `pinakes/experiments/` page.
+4. **`CLAUDE.md`** still says "This repository will be public". An edit to any `CLAUDE.md` is the owner's call.
+5. **Experiments.** X2, X3, X4, X5 and P3 are not started and each needs its own yes (D-14). A larger P4 would
+   be a new proposal. The `NOTICE` copyright line uses the git author name "Luca Gattoni"; the owner may change it.
 
 ## Done since the first pass
 
@@ -44,6 +44,8 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
   of estimates, each run using all 3 rounds. Plan, results and my labelled readings:
   [`pinakes/experiments/p4-deep-pilot.md`](pinakes/experiments/p4-deep-pilot.md). The raw logs and Pinakes'
   transcripts are in the session scratchpad and are not committed; whether to keep them is the owner's call.
+- **P4 key file** deleted 20261102 at the owner's request.
+- **Full content check** over all 60 commits, then **the repository made public** 20261102 08:46 UTC (D-22).
 
 ## Next, once the owner answers
 
@@ -81,7 +83,8 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
 
 ## Not to do
 
-- Do not make the repository public, or touch the Pinakes repository, without the owner's explicit yes at that
-  step.
+- Do not touch the Pinakes repository without the owner's explicit yes at that step.
+- The repository is public: run `tools/check_public_safe.sh` before every commit, and never write a private
+  name, a path or a key into it.
 - Do not name private repositories anywhere in this repository.
 - Do not start an experiment, or any paid run, without the owner's yes for that experiment.

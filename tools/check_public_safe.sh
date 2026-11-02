@@ -5,8 +5,8 @@
 #   tools/public-safe-patterns.txt        generic patterns, committed
 #   tools/public-safe-patterns.local.txt  specific private names, gitignored and never committed
 #
-# This repository is to become public and a visibility change publishes its whole history, so run
-# this before every commit.
+# This repository is public, so every commit is published with its whole history. Run this before
+# every commit.
 set -u
 
 cd "$(git rev-parse --show-toplevel)" || exit 2
