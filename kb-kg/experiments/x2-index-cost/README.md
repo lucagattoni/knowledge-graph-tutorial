@@ -9,6 +9,9 @@ documents, fast-graphrag and Microsoft GraphRAG to 5, nano-graphrag failed on do
 ran LightRAG to 5 documents and came within about 3% of the first model's output. The
 page has the candidates, the traps, the tables and the options for what comes next.
 
+**Pass B (the paid pilot): [a plan](pass-b-plan.md), written 20261102 and not approved.** One hosted small model, a stage ladder with caps,
+the free work to do first, stop rules fixed in advance, and the decisions it needs from the owner (D-14). Nothing paid has run.
+
 ## What is frozen
 
 | Item | Value |
