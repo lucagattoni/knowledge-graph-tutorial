@@ -1,11 +1,12 @@
 # X2: the measured index cost of cheap graph builders
 
-**Status: Step 0 groundwork (the [order and gates](../README.md#order-and-gates)) is done, and so is pass A on one local model
+**Status: Step 0 groundwork (the [order and gates](../README.md#order-and-gates)) is done, and so is pass A on two local models
 (20261102). Nothing paid has run.** This directory holds what is frozen before any model sees it, the rehearsal results, the
 [pass-A results](pass-a) and later the pilot results.
 
 **Pass A: [a local model answers the builders](pass-a-local-model.md).** `granite4.2:8b` ran all four through the gateway: LightRAG to 20
-documents, fast-graphrag and Microsoft GraphRAG to 5, nano-graphrag failed on document 1. Output tokens were 4 to 16 times the stub's. The
+documents, fast-graphrag and Microsoft GraphRAG to 5, nano-graphrag failed on document 1. Output tokens were 4 to 16 times the stub's. A second model (`gemma4:12b`, installed as an MLX build)
+ran LightRAG to 5 documents and came within about 3% of the first model's output. The
 page has the candidates, the traps, the tables and the options for what comes next.
 
 ## What is frozen

@@ -1,9 +1,10 @@
 # X2 pass A: a local model answers the builders
 
-**Status (20261102 19:45 UTC): done for this model. `granite4.2:8b` ran all four builders on the frozen documents through the
-gateway, free. The owner chose every builder to 20 documents, then narrowed the rest to 5 ("5 docs only"). Results:
-LightRAG to 20 documents, fast-graphrag to 5 (a 14th document was dropped by the library), Microsoft GraphRAG to 5,
-nano-graphrag failed on document 1. Result files are in [`pass-a/`](pass-a). Nothing paid ran.**
+**Status (20261102 20:20 UTC): done for two local models. `granite4.2:8b` ran all four builders through the gateway, free: the owner
+chose every builder to 20 documents, then narrowed the rest to 5 ("5 docs only"); LightRAG reached 20, fast-graphrag 5 (its 14th
+document was dropped by the library), Microsoft GraphRAG 5, and nano-graphrag failed on document 1. Then, at the owner's
+"Second local model", `gemma4:12b` (which Ollama installed as an MLX build) ran LightRAG to 5 documents: its output tokens came
+about 3% from granite's. Result files are in [`pass-a/`](pass-a). Nothing paid ran.**
 The stub [rehearsals](README.md) counted what each builder sends. Pass A lets a real local model answer, through the [metering gateway](../../../tools/metering_gateway.md),
 so that output tokens, retries and the calls that depend on the model's text become measurable. It costs no money. Its
 numbers are for one small local model, not for a hosted one; what it can and cannot show is at the end.
@@ -34,7 +35,9 @@ pages (read 14:00 UTC); the licence is the text of the licence layer, whose open
 | `lfm2.5:8b` | 5.2 GB | 125K | tools, thinking | "LFM Open License v1.0"; not read beyond its opening | |
 | `nemotron-3-nano:30b-a3b` | 24.3 GB (its page says 18 GB; the manifest sums to 24.3) | 256K | tools, thinking | "NVIDIA Open Model License Agreement" (24 October 2025); not read beyond its opening | too large for comfort |
 
-The labels in this column come from the library pages and, as the next section shows, one of them was wrong for the model
+Download sizes and formats above are those of each tag's registry manifest. They are not always what a pull on this Mac
+fetches: `ollama pull gemma4:12b` installed a 7.7 GB MLX build (safetensors, NVFP4) where the tag's manifest lists the 8.02 GB
+GGUF build (see "A second local model"). The labels in this column come from the library pages and, as the next section shows, one of them was wrong for the model
 that was installed. Only `ollama show` (the `/api/show` capability list) on an installed model is a source for what that
 model does; none of the other eight has been installed.
 
@@ -66,7 +69,9 @@ Both are from Ollama's own pages (read 20261102 14:01 UTC), and both would silen
    | OpenAI endpoint, `reasoning_effort: "medium"` | 22.7 s | 598 | 2,219 characters | `53,59,61` |
    | OpenAI endpoint, `reasoning_effort: "high"` | 9.5 s | 253 | 863 characters | `53,59,61` |
 
-   One question, one run each: the pattern (none and low short, medium and high long) is not a measurement of how much
+   A second model, `gemma4:12b` (installed as an MLX build), also reports `thinking` and behaved the same way on the same question
+(20261102 19:50 UTC): 243 tokens and 14.2 s by default, 10 tokens and 0.6 s with `reasoning_effort: "none"`, and 207 to 262
+tokens with `low`, `medium` or `high`. One question, one run each: the pattern (none and low short, medium and high long) is not a measurement of how much
    it thinks on real work. The model's chat template (read from `/api/show`) has an `enable_thinking` switch and a branch for
    `reasoning_effort` equal to `low`; how Ollama turns `none` into the first is not something I read, only what the
    answers above show. Remedy used here: the [gateway](../../../tools/metering_gateway.md)
@@ -209,6 +214,58 @@ My arithmetic (written before the full run, scaling the one-document wall times)
 Within a factor of two in every case, in both directions. LightRAG ran 1.6 times longer than estimated at 20 documents, and
 I raised the estimate for the rest of option B from 10.5 to about 16 hours; the owner then asked for 5 documents only.
 
+## A second local model
+
+The owner chose "Second local model" (option A of the earlier list: the cheapest builder, LightRAG, to 1 and 5 documents, free).
+I picked `gemma4:12b`: a different family from granite (Google, not IBM), 12.4 billion parameters, Apache 2.0 (the opening of
+the licence layer, read 19:47 UTC), and small enough to sit beside the embedding model in 32 GiB. The 26b-a4b tag would have been
+18.7 GB with under 19 GiB of memory free at the time. Pulled 19:48 UTC; a derived copy `gemma4-12b-16k-cap` with the same four
+Modelfile parameters as granite's (`num_ctx 16384`, `num_predict 6144`, `temperature 0`, `seed 42`), the same
+`--chat-default reasoning_effort=none`, and the same LightRAG arguments as before.
+
+**What was installed is the MLX build, not the GGUF build the tag lists.** Evidence, 20261102 UTC:
+
+| Source | What it says |
+|---|---|
+| `ollama show` (19:50) | `gemma4:12b`: format safetensors, NVFP4, 12.4B parameters, `"runner": "mlx"`, 7.7 GB. For `granite4.2:8b`: format gguf, Q4_K_M, `"runner": "llamacpp"` |
+| Registry manifests (20:01) | The plain tag `gemma4:12b` is the GGUF Q4_K_M build (8.02 GB), the same manifest as `12b-it-q4_K_M`; the MLX build (7.71 GB) is the manifest of `12b-mlx` and `12b-nvfp4`. Others: `12b-mxfp8` (13.30 GB) and `12b-mlx-bf16` (24.83 GB) |
+| Ollama server log (19:50) | "starting mlx runner subprocess", then "MLX engine initialized" (MLX 0.32.4, device gpu) |
+| Library tags (20:01) | `granite4.2` has 49 tags and none names MLX, NVFP4 or MXFP, so granite has no MLX build in Ollama |
+
+Why the pull chose the MLX build is not something I read; the client did it, and the sizes and the log show it. Consequences:
+(1) the two models differ in model and in backend at once (llama.cpp on Metal for granite, MLX for gemma), so a difference between them
+is not only the model; (2) the MLX runner logged "Structured output is unavailable" (it could not find `libollama_xgrammar.dylib`,
+19:50:36 UTC). LightRAG sends no `response_format`, so this run is unaffected, but Microsoft GraphRAG's community reports and
+fast-graphrag's `json_object` format ask for one, so those builders should not be run on an MLX build without checking what the
+runner does with it; (3) the Modelfile's `num_predict` cap is honoured by the MLX runner: two answers ended with `finish_reason:
+length` at exactly 6,144 tokens although LightRAG sends no `max_tokens`.
+
+LightRAG, 1 and 5 documents (one pass, 19:51 to 20:02 UTC; result file: `pass-a/second-model/lightrag-gemma4-12b.json`):
+
+| | granite4.2:8b (llama.cpp, Q4_K_M) | gemma4:12b (MLX, NVFP4) |
+|---|---|---|
+| 1 document: chat calls / prompt / output tokens | 4 / 14,595 / 3,296 | 4 / 18,673 / 7,788 |
+| 5 documents: chat calls | 18 | 18 |
+| 5 documents: prompt tokens | 66,543 | 72,098 |
+| 5 documents: output tokens | 24,290 | 25,070 |
+| 5 documents: output in first extraction / in gleaning | 13,176 / 11,114 | 19,401 / 5,669 |
+| 5 documents: entities / relationships stored | 203 / 186 | 271 / 218 |
+| Answers that hit the 6,144 cap, of 18 | not counted at 5 documents (3 of 100 at 20) | 2 |
+| Wall time, 5 documents | 19.3 min | 11.1 min |
+| Generation speed from the probe | 26.8 tokens/s | 30.5 tokens/s |
+
+Reading it (one draw each, and the two differ in backend):
+
+- **Output volume agrees at 5 documents, about 3% apart** (25,070 against 24,290), and the call count is the same, although the models
+  split their output differently: gemma wrote longer first answers and shorter gleaning answers, and stored more entities.
+- **One document does not agree:** gemma's output was 2.4 times granite's (7,788 against 3,296), because two of its first
+  answers were long. A small run is noisy, as the repeated-run differences above also showed.
+- **Format errors differ in kind.** gemma logged 5 relation lines with the wrong number of fields and 2 truncations in 5 documents;
+  granite logged 338 wrong-field lines over 20 documents, which cannot be compared at 5 documents because the builder's warnings are
+  not split by checkpoint.
+- **For planning a paid LightRAG run,** the two models give about 4,900 to 5,000 output tokens and 13,300 to 14,400 prompt tokens per
+  document at 5 documents; granite at 20 documents gave 6,800 and 20,100. A hosted model will differ from both. This is only LightRAG.
+
 ## How the full run was launched
 
 Decision of 20261102 15:37 UTC (option B). One builder at a time, in this order: nano-graphrag (it is expected to stop at
@@ -238,15 +295,17 @@ therefore exists for LightRAG alone.
 ## Where this leaves the owner
 
 Pass A was meant to show what the stub could not: output tokens, retries, and the calls that depend on the model's text. It
-did, for one small model: output was 4 to 16 times the stub's, call counts moved with the model's text (Microsoft GraphRAG 3
+did, for two small models: output was 4 to 16 times the stub's, call counts moved with the model's text (Microsoft GraphRAG 3
 times the stub's calls at 5 documents), one builder could not run at all, another dropped a document, and the same run did
-not repeat exactly. What it cannot do is price a hosted run: that model writes differently. Next steps, none started:
+not repeat exactly. For LightRAG the second model came within about 3% of the first at 5 documents. What pass A cannot do is price a
+hosted run: that model writes differently. Next steps, none started:
 
 | Option | Machine time or money | What it gives | Cost |
 |---|---|---|---|
-| A. A second local model on the cheapest builder (LightRAG, 1 and 5 documents) | pull time plus about 20 min | How much of the above is this model and how much the builders; a free sensitivity check before any paid run | One more model's pull; thinking models need the same switch check |
-| B. The paid pilot (pass B) with a hosted model | a cap you set, plus a new key | The numbers a cost estimate needs | Needs model, provider, cap and key (D-14); no 20-document local figure for three builders |
-| C. Stop X2 here and move to X4 | none | The scoring program and the agent client are the next unbuilt pieces of the order | X2's cost question stays unanswered |
+| A. The same gemma model on the llama.cpp backend (`gemma4:12b-it-q4_K_M`, 8.02 GB), LightRAG to 5 documents | Free; pull plus about 25 min | Separates the model from the backend, which the last round could not | Another 8 GB of disk; the answer may be "no difference" |
+| B. Plan the paid pilot (pass B): model, provider, cap, key | Nothing until you approve a cap | A written plan with measured token ranges per document (LightRAG about 5,000 output and 14,000 prompt tokens per document at 5 documents on two local models) | Only LightRAG has two models behind it; the other builders have one |
+| C. Another builder on gemma, with the structured-output hazard checked first | Free; about 30 to 60 min each | Whether the other builders' figures are model-specific | Needs a check that the MLX runner copes with `response_format`; GraphRAG's community reports may fail |
+| D. Move on to X4 | none | The scoring program and agent client are the next unbuilt pieces | X2's cost question stays open |
 
 ## What pass A cannot show
 
@@ -257,6 +316,12 @@ not repeat exactly. What it cannot do is price a hosted run: that model writes d
 - Anything about the Anthropic or OpenAI endpoints themselves: the gateway still has not met a real provider.
 
 ## Sources
+
+Added 20261102 (UTC) for the second model: `ollama show` on both models and the Ollama server log (19:50 to 20:01); the registry
+manifests and licence layer of `gemma4:12b`, `12b-mlx`, `12b-nvfp4`, `12b-mxfp8`, `12b-mlx-bf16` and `12b-it-q4_K_M`
+(`https://registry.ollama.ai/v2/library/gemma4/manifests/<tag>`, 19:47 and 20:01); the tags pages
+`https://ollama.com/library/gemma4/tags` and `https://ollama.com/library/granite4.2/tags` (20:01).
+
 
 Read 20261102 (UTC): the Ollama library page `https://ollama.com/library` (13:59); the tags page of each candidate,
 `https://ollama.com/library/<name>/tags` (14:00); the registry manifests and licence layers,
