@@ -1,0 +1,24 @@
+# X2 pilot documents: the n articles whose SHA-256 of the URL, as lowercase hex, is smallest.
+# corpus: MultiHop-RAG corpus.json, revision 71ac0d0bd1f951d2d6b70311f7d2ae404e1ffa82, sha256 20b61b5ab84de84a927420c5d265b7ec8d859ae49980699958a787ade9e4d28f
+# corpus size: 609 articles, 6297171 characters of body text
+rank	url_sha256_16	chars	words	category	source	published_at	url
+1	0068586b43cf2f56	6341	1054	technology	TechCrunch	2023-11-07T17:08:04+00:00	https://techcrunch.com/2023/11/07/spill-toasts-one-year-with-a-2-7m-seed-extension-kerry-washington-and-champagne/
+2	01648ca159300692	6005	962	science	Advanced Science News	2023-11-01T08:00:00+00:00	https://www.advancedsciencenews.com/cavefish-provide-clues-to-the-keto-diets-effect-on-autism-like-behavior/
+3	019b1ddf6f78fa7e	5112	910	sports	Essentially Sports	2023-09-28T21:31:48+00:00	https://www.essentiallysports.com/nascar-news-kyle-larson-breaks-down-his-sprint-car-series-journey-and-how-he-partnered-up-with-dale-earnhardt-jr-former-pupil/
+4	024c021da3256374	6374	1083	sports	Sporting News	2023-10-04T22:42:00+00:00	https://www.sportingnews.com/us/soccer/news/usa-squad-october-friendlies-usmnt-roster-germany-ghana/5b2416befc50de6d0cedace8
+5	02e889122ba12a26	8626	1456	entertainment	Polygon	2023-10-19T19:00:00+00:00	https://www.polygon.com/23922313/legend-of-zelda-tears-kingdom-totk-queer-gender-link
+6	02ecfbdc00c2bc17	6083	1028	sports	TalkSport	2023-10-20T21:34:28+00:00	https://talksport.com/football/1608383/liverpool-everton-chelsea-arsenal-england-saturday-sport/
+7	0343487a677b62d3	14982	2469	entertainment	Polygon	2023-10-19T16:01:20+00:00	https://www.polygon.com/23920138/twitch-streamer-fortnite-tfue-pokimane-burnout
+8	0370fe5c0dcecb48	6237	1020	science	Science News For Students	2023-12-01T11:30:00+00:00	https://www.snexplores.org/article/jellyfish-learn-without-brains
+9	037f37fc8794dabc	11756	2095	technology	Engadget	2023-12-19T15:00:38+00:00	https://www.engadget.com/teenage-engineerings-ko-ii-sampler-review-150038528.html?src=rss
+10	038eabdb237efe3f	10120	1682	technology	The Verge	2023-10-28T00:12:41+00:00	https://www.theverge.com/2023/10/27/23935683/sam-bankman-fried-ftx-fraud-direct-testimony-jury
+11	03a4ece0fb5cb7f9	8275	1427	entertainment	FOX News - Lifestyle	2023-10-28T11:00:24+00:00	https://www.foxnews.com/lifestyle/connecticut-moms-prowl-neighborhood-zombies-raise-money-breast-cancer-research
+12	03c3ac59773da075	5601	930	business	Business Line	2023-10-14T15:20:36+00:00	https://www.thehindubusinessline.com/portfolio/personal-finance/dissecting-impact-of-israel-hamas-conflict-on-markets/article67413157.ece
+13	0476f8f8472ce475	6359	1081	sports	The Guardian	2023-12-09T20:46:25+00:00	https://www.theguardian.com/football/2023/dec/09/european-football-eintracht-frankfurt-hit-bayern-for-five-in-famous-thrashing
+14	04ccbc6009a196f8	9754	1580	science	Live Science: The Most Interesting Articles	2023-12-24T14:00:00+00:00	https://www.livescience.com/space/the-sun/10-scorching-hot-discoveries-made-about-the-sun-in-2023
+15	04fd1826153b3083	13179	2188	technology	The Verge	2023-12-18T23:14:07+00:00	https://www.theverge.com/23964428/kids-teens-gifts-unique-ideas-2023-presents-children-tech-gadgets
+16	0501457d04bf9f55	22011	3854	technology	Engadget	2023-11-24T14:30:56+00:00	https://www.engadget.com/best-black-friday-headphone-deals-from-sony-apple-bose-beats-143056062.html?src=rss
+17	054b706b1f216197	16351	2882	sports	The New York Times	2023-12-15T21:32:52+00:00	https://theathletic.com/5133811/2023/12/14/buffalo-bills-jordan-poyer-ayahuasca/
+18	0559abf992d9f2f2	7683	1349	sports	Sporting News	2023-10-07T21:21:03+00:00	https://www.sportingnews.com/us/ncaa-football/news/colorado-arizona-state-live-score-highlights-college-football/1beca22ee6a97c73b88d3a89
+19	05cd6a49a650e655	12684	2148	technology	The Verge	2023-11-05T11:00:00+00:00	https://www.theverge.com/23944251/epic-google-antitrust-trial-explainer-monopoly
+20	06bc8ec253404962	8038	1255	business	Business World	2023-11-12T16:04:21+00:00	https://www.bworldonline.com/opinion/2023/11/13/556961/from-fape-peac-to-philed/
