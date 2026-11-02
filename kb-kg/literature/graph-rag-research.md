@@ -6,7 +6,7 @@
 field is heading. Field-neutral.
 
 How to read the marks. Every load-bearing figure from the July text is listed in the
-[verification ledger](#verification-ledger) with one of three marks:
+[verification ledger](#5-verification-ledger) with one of three marks:
 
 | Mark | Meaning |
 |---|---|
