@@ -1,5 +1,7 @@
 # Knowledge bases and knowledge graphs: a reference
 
+**Documentation site:** <https://lucagattoni.github.io/knowledge-graph-tutorial/>
+
 How the ideas of *knowledge base* (KB) and *knowledge graph* (KG) have evolved, what the state of
 the art is, and which directions are being tried, with a focus on using LLMs and agents to build and
 query them.
@@ -48,7 +50,7 @@ tools/                 snapshot, projects-index and snapshot-description scripts
 docs-site/             staging script, MkDocs hook and assets for the documentation site (config: mkdocs.yml)
 ```
 
-The same Markdown is published as a site at <https://lucagattoni.github.io/knowledge-graph-tutorial/>, built by `.github/workflows/docs.yml`. How the site is built, previewed and kept in step with these files: [`docs-site/README.md`](docs-site/README.md).
+The same Markdown is published as the documentation site linked at the top, built by `.github/workflows/docs.yml`. How the site is built, previewed and kept in step with these files: [`docs-site/README.md`](docs-site/README.md).
 
 ## Licence
 
