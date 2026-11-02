@@ -74,10 +74,15 @@ function signatures of `kg_query` at the snapshot still take `entities_vdb`, `re
    hash, a document-status queue) and processes them with `apipeline_process_enqueue_documents` [8][14].
    In July the chunking was fixed-token [14]. That is stale: since May 2026 four chunking strategies exist, `Fixed-length (F)`, `Recursive
    character (R)`, `Vector semantic (V)` and `Paragraph semantic (P)`, and the parser engines are MinerU,
-   Docling and a native engine [4]. Which strategy is the default is unstated in what was read.
+   Docling and a native engine [4]. Which strategy is the default is unstated in what was read. **Update 20261102
+   10:42 UTC:** for `ainsert` the chunker is fixed-token (the method's own docstring), with 1,200-token chunks and 100
+   overlap in a stub rehearsal of 1.5.7 [17]; the server path's default is still unread.
 2. **Extraction.** `extract_entities` (`operate.py`, line 3942 at the snapshot) makes **one LLM call per
-   chunk** with the `entity_extraction` prompt (delimiter format or JSON mode), then up to
-   `entity_extract_max_gleaning` further "please continue" calls per chunk. Defaults in
+   chunk** with the `entity_extraction` prompt (delimiter format or JSON mode), then one further "please continue" call
+   per chunk when `entity_extract_max_gleaning` is above 0. (**Corrected 20261102 10:42 UTC.** This entry first said "up
+   to `entity_extract_max_gleaning` further calls". In 1.5.7 `operate.py` lines 4217 to 4218 run a single gleaning pass
+   whatever the setting, and a stub run with the setting at 1, 2 and 3 made 2 gleaning calls each for the first
+   document's 2 chunks [17].) Defaults in
    `lightrag/constants.py` at the snapshot: `DEFAULT_MAX_GLEANING = 1`, `DEFAULT_MAX_EXTRACT_INPUT_TOKENS = 20480`,
    `DEFAULT_MAX_EXTRACTION_RECORDS = 100`, `DEFAULT_MAX_EXTRACTION_ENTITIES = 40` [6][7][8].
 3. **Merge.** `_merge_nodes_then_upsert` and `_merge_edges_then_upsert` look entities up **by name**, after
@@ -160,7 +165,8 @@ in the sources read. Token counts for LightRAG from other projects' benchmark ru
 
 | Phase | What it spends |
 |---|---|
-| Index time (the expensive side) | 1 extraction call plus up to 1 gleaning call per chunk (so N to 2N calls for N chunks at the defaults), periodic LLM merge-summaries, and embedding calls for chunks, entities and relations. A corpus of a few thousand chunks therefore means thousands of LLM calls before the first query [7][8][14]. |
+| Index time (the expensive side) | 1 extraction call plus up to 1 gleaning call per chunk (so N to 2N calls for N chunks at the defaults; a stub rehearsal on 20 news articles made exactly 98 calls for 49 chunks, no
+summary call, 299,901 stub-counted prompt tokens [17]), periodic LLM merge-summaries, and embedding calls for chunks, entities and relations. A corpus of a few thousand chunks therefore means thousands of LLM calls before the first query [7][8][14]. |
 | Query time | 1 keyword-extraction LLM call (cached by query hash; skipped when the caller passes keywords), 1 answer LLM call, 1 batched embedding call, and an optional rerank request. `naive` mode skips the keyword call [7][14]. The README says reranking typically adds a delay of 1 to 2 seconds [4]. |
 | Caching | `llm_response_cache` covers extraction, keywords and query responses (`enable_llm_cache=True`, `enable_llm_cache_for_entity_extract=True`). It is what makes a delete-and-rebuild cheap, but it lives in internal storage keyed by prompt hash, not in a user-visible or committable form [8][14]. A migration tool for it exists (`lightrag/tools/migrate_llm_cache.py`) [4][16]. |
 | Budget controls | Token budgets for context exist everywhere. No spend ledger, cost cap or "free path" was found in the sources read; this is an absence in what was read, not a proven absence [14]. Since May 2026 four role-specific LLMs (`EXTRACT`, `QUERY`, `KEYWORD`, `VLM`) can be set independently, so extraction can point at a cheaper model; the README advises a fast non-thinking model for extraction and a stronger one for answers [4]. |
@@ -304,3 +310,7 @@ The investigation is dated 20260725 15:29 UTC [14]. Everything below was read 20
     19:02 UTC)
 16. https://github.com/HKUDS/LightRAG/tree/main/lightrag and its `kg/`, `api/`, `tools/` folders, and
     https://github.com/HKUDS/LightRAG/tree/main/docs : directory listings (read 20261030 19:01 to 19:02 UTC)
+17. [The X2 rehearsal of LightRAG 1.5.7 against a stub model](../experiments/x2-index-cost/rehearsal/lightrag.md) : a
+    local run of the installed package (PyPI wheel 1.5.7, read 20261102 10:27 UTC), whose `operate.py` was read and whose
+    licence file hashes equal at the v1.5.7 tag and in the wheel (read 20261102 10:35 and 10:42 UTC). Counts are for the
+    stub's answers, not a real model's.

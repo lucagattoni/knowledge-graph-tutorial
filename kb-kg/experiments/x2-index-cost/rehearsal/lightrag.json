@@ -1,0 +1,1335 @@
+{
+ "builder": "LightRAG",
+ "package": "lightrag-hku",
+ "version": "1.5.7",
+ "python": "3.12.16",
+ "machine": "arm64",
+ "system": "Darwin",
+ "tokenizer_of_the_stub": "tiktoken:cl100k_base",
+ "corpus_sha256": "20b61b5ab84de84a927420c5d265b7ec8d859ae49980699958a787ade9e4d28f",
+ "documents": 20,
+ "started_utc": "20261102 10:40:33",
+ "finished_utc": "20261102 10:40:46",
+ "scenarios": {
+  "B1": {
+   "scenario": "B1",
+   "shape": "B",
+   "started_utc": "20261102 10:40:33",
+   "finished_utc": "20261102 10:40:36",
+   "wall_seconds": 2.8,
+   "lightrag_version": "1.5.7",
+   "config_as_constructed": {
+    "chunk_token_size": 1200,
+    "chunk_overlap_token_size": 100,
+    "entity_extract_max_gleaning": 1,
+    "force_llm_summary_on_merge": 8,
+    "summary_max_tokens": 1200,
+    "summary_context_size": 12000,
+    "llm_model_max_async": 4,
+    "max_parallel_insert": 3,
+    "embedding_batch_num": 10,
+    "embedding_func_max_async": 8,
+    "entity_extraction_use_json": false,
+    "enable_llm_cache": true,
+    "enable_llm_cache_for_entity_extract": true,
+    "tiktoken_model_name": "gpt-4o-mini",
+    "llm_model_name": "gpt-4o-mini",
+    "chunking": "fixed-token (ainsert always uses it)"
+   },
+   "snapshots": {
+    "1": {
+     "documents": 1,
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 4,
+      "chat_prompt_tokens": 11558,
+      "chat_completion_tokens": 798,
+      "embedding_calls": 3,
+      "embedding_inputs": 20,
+      "embedding_tokens": 1969,
+      "other_calls": 0
+     },
+     "chat_by_kind": {
+      "extraction_initial": {
+       "calls": 2,
+       "prompt_tokens": 4988,
+       "completion_tokens": 788
+      },
+      "extraction_gleaning": {
+       "calls": 2,
+       "prompt_tokens": 6570,
+       "completion_tokens": 10
+      }
+     },
+     "embeddings_by_kind": {
+      "chunks": {
+       "calls": 1,
+       "inputs": 2,
+       "tokens": 1490
+      },
+      "entities": {
+       "calls": 1,
+       "inputs": 9,
+       "tokens": 207
+      },
+      "relationships": {
+       "calls": 1,
+       "inputs": 9,
+       "tokens": 272
+      }
+     }
+    },
+    "5": {
+     "documents": 5,
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 18,
+      "chat_prompt_tokens": 53448,
+      "chat_completion_tokens": 3636,
+      "embedding_calls": 15,
+      "embedding_inputs": 91,
+      "embedding_tokens": 9590,
+      "other_calls": 0
+     },
+     "chat_by_kind": {
+      "extraction_initial": {
+       "calls": 9,
+       "prompt_tokens": 23142,
+       "completion_tokens": 3591
+      },
+      "extraction_gleaning": {
+       "calls": 9,
+       "prompt_tokens": 30306,
+       "completion_tokens": 45
+      }
+     },
+     "embeddings_by_kind": {
+      "chunks": {
+       "calls": 5,
+       "inputs": 9,
+       "tokens": 7400
+      },
+      "entities": {
+       "calls": 5,
+       "inputs": 41,
+       "tokens": 950
+      },
+      "relationships": {
+       "calls": 5,
+       "inputs": 41,
+       "tokens": 1240
+      }
+     }
+    },
+    "20": {
+     "documents": 20,
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 98,
+      "chat_prompt_tokens": 299901,
+      "chat_completion_tokens": 19371,
+      "embedding_calls": 80,
+      "embedding_inputs": 497,
+      "embedding_tokens": 56967,
+      "other_calls": 0
+     },
+     "chat_by_kind": {
+      "extraction_initial": {
+       "calls": 49,
+       "prompt_tokens": 130661,
+       "completion_tokens": 19126
+      },
+      "extraction_gleaning": {
+       "calls": 49,
+       "prompt_tokens": 169240,
+       "completion_tokens": 245
+      }
+     },
+     "embeddings_by_kind": {
+      "chunks": {
+       "calls": 20,
+       "inputs": 49,
+       "tokens": 44957
+      },
+      "entities": {
+       "calls": 32,
+       "inputs": 223,
+       "tokens": 5391
+      },
+      "relationships": {
+       "calls": 28,
+       "inputs": 225,
+       "tokens": 6619
+      }
+     }
+    }
+   },
+   "per_document": [
+    {
+     "doc_rank": 1,
+     "chars": 6341,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11558,
+     "embedding_inputs": 20
+    },
+    {
+     "doc_rank": 2,
+     "chars": 6005,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11221,
+     "embedding_inputs": 16
+    },
+    {
+     "doc_rank": 3,
+     "chars": 5112,
+     "chat_calls": 2,
+     "chat_prompt_tokens": 6432,
+     "embedding_inputs": 12
+    },
+    {
+     "doc_rank": 4,
+     "chars": 6374,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11779,
+     "embedding_inputs": 22
+    },
+    {
+     "doc_rank": 5,
+     "chars": 8626,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 12458,
+     "embedding_inputs": 21
+    },
+    {
+     "doc_rank": 6,
+     "chars": 6083,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11355,
+     "embedding_inputs": 23
+    },
+    {
+     "doc_rank": 7,
+     "chars": 14982,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 19431,
+     "embedding_inputs": 32
+    },
+    {
+     "doc_rank": 8,
+     "chars": 6237,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11515,
+     "embedding_inputs": 23
+    },
+    {
+     "doc_rank": 9,
+     "chars": 11756,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 18420,
+     "embedding_inputs": 26
+    },
+    {
+     "doc_rank": 10,
+     "chars": 10120,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 17675,
+     "embedding_inputs": 29
+    },
+    {
+     "doc_rank": 11,
+     "chars": 8275,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 12662,
+     "embedding_inputs": 22
+    },
+    {
+     "doc_rank": 12,
+     "chars": 5601,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 10614,
+     "embedding_inputs": 15
+    },
+    {
+     "doc_rank": 13,
+     "chars": 6359,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11757,
+     "embedding_inputs": 24
+    },
+    {
+     "doc_rank": 14,
+     "chars": 9754,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 12727,
+     "embedding_inputs": 23
+    },
+    {
+     "doc_rank": 15,
+     "chars": 13179,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 19223,
+     "embedding_inputs": 32
+    },
+    {
+     "doc_rank": 16,
+     "chars": 22011,
+     "chat_calls": 10,
+     "chat_prompt_tokens": 32474,
+     "embedding_inputs": 54
+    },
+    {
+     "doc_rank": 17,
+     "chars": 16351,
+     "chat_calls": 8,
+     "chat_prompt_tokens": 25164,
+     "embedding_inputs": 39
+    },
+    {
+     "doc_rank": 18,
+     "chars": 7683,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 12807,
+     "embedding_inputs": 19
+    },
+    {
+     "doc_rank": 19,
+     "chars": 12684,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 18603,
+     "embedding_inputs": 26
+    },
+    {
+     "doc_rank": 20,
+     "chars": 8038,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 12026,
+     "embedding_inputs": 19
+    }
+   ],
+   "stored": {
+    "chunks": 49,
+    "chunk_tokens_sum_lightrag_tokenizer": 44560,
+    "entities": 207,
+    "relationships": 224,
+    "graph_nodes": 207,
+    "graph_edges": 224
+   },
+   "responder_unclassified_calls": 0,
+   "lightrag_warning_counts": {},
+   "outbound": {
+    "connections_not_to_stub": {},
+    "name_lookups_not_loopback": {},
+    "subprocess_starts": [
+     "subprocess.Popen:uname from subprocess < platform < functools < platform < openai._base_client < concurrent.futures.thread",
+     "subprocess.Popen:uname from subprocess < platform < functools < platform < openai._base_client < concurrent.futures.thread",
+     "subprocess.Popen:file from subprocess < platform < openai._base_client < concurrent.futures.thread < threading",
+     "subprocess.Popen:file from subprocess < platform < openai._base_client < concurrent.futures.thread < threading"
+    ]
+   },
+   "tripwire_selftest_recorded_a_connect_to_127.0.0.1:9": true,
+   "openai_api_base_was_set_to_stub": true,
+   "dependency_versions": {
+    "lightrag-hku": "1.5.7",
+    "openai": "3.42.1",
+    "tiktoken": "0.14.0",
+    "nano-vectordb": "0.0.4.3",
+    "networkx": "3.7",
+    "numpy": "2.5.4",
+    "tenacity": "9.1.4",
+    "pipmaster": "1.2.2"
+   },
+   "calls_jsonl_sha256": "ff8d2e031a2d8dd76cae14a3ec433b8fe13ee910c70917c11adbbb9396ff226e",
+   "calls_multiset_sha256": "e33ae41f7fcbbbedd6e12b5f9d5e3c56955bb30fffe6903db9babfa384d6f588"
+  },
+  "A": {
+   "scenario": "A",
+   "shape": "A",
+   "started_utc": "20261102 10:40:37",
+   "finished_utc": "20261102 10:40:38",
+   "wall_seconds": 1.3,
+   "lightrag_version": "1.5.7",
+   "config_as_constructed": {
+    "chunk_token_size": 1200,
+    "chunk_overlap_token_size": 100,
+    "entity_extract_max_gleaning": 1,
+    "force_llm_summary_on_merge": 8,
+    "summary_max_tokens": 1200,
+    "summary_context_size": 12000,
+    "llm_model_max_async": 4,
+    "max_parallel_insert": 3,
+    "embedding_batch_num": 10,
+    "embedding_func_max_async": 8,
+    "entity_extraction_use_json": false,
+    "enable_llm_cache": true,
+    "enable_llm_cache_for_entity_extract": true,
+    "tiktoken_model_name": "gpt-4o-mini",
+    "llm_model_name": "gpt-4o-mini",
+    "chunking": "fixed-token (ainsert always uses it)"
+   },
+   "snapshots": {
+    "1": {
+     "documents": 1,
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 4,
+      "chat_prompt_tokens": 10780,
+      "chat_completion_tokens": 20,
+      "embedding_calls": 1,
+      "embedding_inputs": 2,
+      "embedding_tokens": 1490,
+      "other_calls": 0
+     },
+     "chat_by_kind": {
+      "extraction_initial": {
+       "calls": 2,
+       "prompt_tokens": 4988,
+       "completion_tokens": 10
+      },
+      "extraction_gleaning": {
+       "calls": 2,
+       "prompt_tokens": 5792,
+       "completion_tokens": 10
+      }
+     },
+     "embeddings_by_kind": {
+      "chunks": {
+       "calls": 1,
+       "inputs": 2,
+       "tokens": 1490
+      }
+     }
+    },
+    "5": {
+     "documents": 5,
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 18,
+      "chat_prompt_tokens": 49902,
+      "chat_completion_tokens": 90,
+      "embedding_calls": 5,
+      "embedding_inputs": 9,
+      "embedding_tokens": 7400,
+      "other_calls": 0
+     },
+     "chat_by_kind": {
+      "extraction_initial": {
+       "calls": 9,
+       "prompt_tokens": 23142,
+       "completion_tokens": 45
+      },
+      "extraction_gleaning": {
+       "calls": 9,
+       "prompt_tokens": 26760,
+       "completion_tokens": 45
+      }
+     },
+     "embeddings_by_kind": {
+      "chunks": {
+       "calls": 5,
+       "inputs": 9,
+       "tokens": 7400
+      }
+     }
+    },
+    "20": {
+     "documents": 20,
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 98,
+      "chat_prompt_tokens": 281020,
+      "chat_completion_tokens": 490,
+      "embedding_calls": 20,
+      "embedding_inputs": 49,
+      "embedding_tokens": 44957,
+      "other_calls": 0
+     },
+     "chat_by_kind": {
+      "extraction_initial": {
+       "calls": 49,
+       "prompt_tokens": 130661,
+       "completion_tokens": 245
+      },
+      "extraction_gleaning": {
+       "calls": 49,
+       "prompt_tokens": 150359,
+       "completion_tokens": 245
+      }
+     },
+     "embeddings_by_kind": {
+      "chunks": {
+       "calls": 20,
+       "inputs": 49,
+       "tokens": 44957
+      }
+     }
+    }
+   },
+   "per_document": [
+    {
+     "doc_rank": 1,
+     "chars": 6341,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 10780,
+     "embedding_inputs": 2
+    },
+    {
+     "doc_rank": 2,
+     "chars": 6005,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 10416,
+     "embedding_inputs": 2
+    },
+    {
+     "doc_rank": 3,
+     "chars": 5112,
+     "chat_calls": 2,
+     "chat_prompt_tokens": 6052,
+     "embedding_inputs": 1
+    },
+    {
+     "doc_rank": 4,
+     "chars": 6374,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 10990,
+     "embedding_inputs": 2
+    },
+    {
+     "doc_rank": 5,
+     "chars": 8626,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11664,
+     "embedding_inputs": 2
+    },
+    {
+     "doc_rank": 6,
+     "chars": 6083,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 10576,
+     "embedding_inputs": 2
+    },
+    {
+     "doc_rank": 7,
+     "chars": 14982,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 18246,
+     "embedding_inputs": 3
+    },
+    {
+     "doc_rank": 8,
+     "chars": 6237,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 10700,
+     "embedding_inputs": 2
+    },
+    {
+     "doc_rank": 9,
+     "chars": 11756,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 17268,
+     "embedding_inputs": 3
+    },
+    {
+     "doc_rank": 10,
+     "chars": 10120,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 16496,
+     "embedding_inputs": 3
+    },
+    {
+     "doc_rank": 11,
+     "chars": 8275,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11868,
+     "embedding_inputs": 2
+    },
+    {
+     "doc_rank": 12,
+     "chars": 5601,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 10138,
+     "embedding_inputs": 2
+    },
+    {
+     "doc_rank": 13,
+     "chars": 6359,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 10934,
+     "embedding_inputs": 2
+    },
+    {
+     "doc_rank": 14,
+     "chars": 9754,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11956,
+     "embedding_inputs": 2
+    },
+    {
+     "doc_rank": 15,
+     "chars": 13179,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 18078,
+     "embedding_inputs": 3
+    },
+    {
+     "doc_rank": 16,
+     "chars": 22011,
+     "chat_calls": 10,
+     "chat_prompt_tokens": 30540,
+     "embedding_inputs": 5
+    },
+    {
+     "doc_rank": 17,
+     "chars": 16351,
+     "chat_calls": 8,
+     "chat_prompt_tokens": 23600,
+     "embedding_inputs": 4
+    },
+    {
+     "doc_rank": 18,
+     "chars": 7683,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 12014,
+     "embedding_inputs": 2
+    },
+    {
+     "doc_rank": 19,
+     "chars": 12684,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 17436,
+     "embedding_inputs": 3
+    },
+    {
+     "doc_rank": 20,
+     "chars": 8038,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11268,
+     "embedding_inputs": 2
+    }
+   ],
+   "stored": {
+    "chunks": 49,
+    "chunk_tokens_sum_lightrag_tokenizer": 44560,
+    "entities": 0,
+    "relationships": 0,
+    "graph_nodes": 0,
+    "graph_edges": 0
+   },
+   "responder_unclassified_calls": 0,
+   "lightrag_warning_counts": {},
+   "outbound": {
+    "connections_not_to_stub": {},
+    "name_lookups_not_loopback": {},
+    "subprocess_starts": [
+     "subprocess.Popen:uname from subprocess < platform < functools < platform < openai._base_client < concurrent.futures.thread",
+     "subprocess.Popen:file from subprocess < platform < openai._base_client < concurrent.futures.thread < threading",
+     "subprocess.Popen:file from subprocess < platform < openai._base_client < concurrent.futures.thread < threading"
+    ]
+   },
+   "tripwire_selftest_recorded_a_connect_to_127.0.0.1:9": true,
+   "openai_api_base_was_set_to_stub": true,
+   "dependency_versions": {
+    "lightrag-hku": "1.5.7",
+    "openai": "3.42.1",
+    "tiktoken": "0.14.0",
+    "nano-vectordb": "0.0.4.3",
+    "networkx": "3.7",
+    "numpy": "2.5.4",
+    "tenacity": "9.1.4",
+    "pipmaster": "1.2.2"
+   },
+   "calls_jsonl_sha256": "9c3e33f8d72f18c17a396bb1499d5ee264efe521b0c019b4331ab90d44e93a3d",
+   "calls_multiset_sha256": "edf7524c74439e20595b288daa2a15c547b13e89c4a798a847453b8494e61987"
+  },
+  "B2": {
+   "scenario": "B2",
+   "shape": "B",
+   "started_utc": "20261102 10:40:39",
+   "finished_utc": "20261102 10:40:41",
+   "wall_seconds": 2.7,
+   "lightrag_version": "1.5.7",
+   "config_as_constructed": {
+    "chunk_token_size": 1200,
+    "chunk_overlap_token_size": 100,
+    "entity_extract_max_gleaning": 1,
+    "force_llm_summary_on_merge": 8,
+    "summary_max_tokens": 1200,
+    "summary_context_size": 12000,
+    "llm_model_max_async": 4,
+    "max_parallel_insert": 3,
+    "embedding_batch_num": 10,
+    "embedding_func_max_async": 8,
+    "entity_extraction_use_json": false,
+    "enable_llm_cache": true,
+    "enable_llm_cache_for_entity_extract": true,
+    "tiktoken_model_name": "gpt-4o-mini",
+    "llm_model_name": "gpt-4o-mini",
+    "chunking": "fixed-token (ainsert always uses it)"
+   },
+   "snapshots": {
+    "1": {
+     "documents": 1,
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 4,
+      "chat_prompt_tokens": 11558,
+      "chat_completion_tokens": 798,
+      "embedding_calls": 3,
+      "embedding_inputs": 20,
+      "embedding_tokens": 1969,
+      "other_calls": 0
+     },
+     "chat_by_kind": {
+      "extraction_initial": {
+       "calls": 2,
+       "prompt_tokens": 4988,
+       "completion_tokens": 788
+      },
+      "extraction_gleaning": {
+       "calls": 2,
+       "prompt_tokens": 6570,
+       "completion_tokens": 10
+      }
+     },
+     "embeddings_by_kind": {
+      "chunks": {
+       "calls": 1,
+       "inputs": 2,
+       "tokens": 1490
+      },
+      "entities": {
+       "calls": 1,
+       "inputs": 9,
+       "tokens": 207
+      },
+      "relationships": {
+       "calls": 1,
+       "inputs": 9,
+       "tokens": 272
+      }
+     }
+    },
+    "5": {
+     "documents": 5,
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 18,
+      "chat_prompt_tokens": 53448,
+      "chat_completion_tokens": 3636,
+      "embedding_calls": 15,
+      "embedding_inputs": 91,
+      "embedding_tokens": 9590,
+      "other_calls": 0
+     },
+     "chat_by_kind": {
+      "extraction_initial": {
+       "calls": 9,
+       "prompt_tokens": 23142,
+       "completion_tokens": 3591
+      },
+      "extraction_gleaning": {
+       "calls": 9,
+       "prompt_tokens": 30306,
+       "completion_tokens": 45
+      }
+     },
+     "embeddings_by_kind": {
+      "chunks": {
+       "calls": 5,
+       "inputs": 9,
+       "tokens": 7400
+      },
+      "entities": {
+       "calls": 5,
+       "inputs": 41,
+       "tokens": 950
+      },
+      "relationships": {
+       "calls": 5,
+       "inputs": 41,
+       "tokens": 1240
+      }
+     }
+    },
+    "20": {
+     "documents": 20,
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 98,
+      "chat_prompt_tokens": 299901,
+      "chat_completion_tokens": 19371,
+      "embedding_calls": 80,
+      "embedding_inputs": 497,
+      "embedding_tokens": 56967,
+      "other_calls": 0
+     },
+     "chat_by_kind": {
+      "extraction_initial": {
+       "calls": 49,
+       "prompt_tokens": 130661,
+       "completion_tokens": 19126
+      },
+      "extraction_gleaning": {
+       "calls": 49,
+       "prompt_tokens": 169240,
+       "completion_tokens": 245
+      }
+     },
+     "embeddings_by_kind": {
+      "chunks": {
+       "calls": 20,
+       "inputs": 49,
+       "tokens": 44957
+      },
+      "entities": {
+       "calls": 32,
+       "inputs": 223,
+       "tokens": 5391
+      },
+      "relationships": {
+       "calls": 28,
+       "inputs": 225,
+       "tokens": 6619
+      }
+     }
+    }
+   },
+   "per_document": [
+    {
+     "doc_rank": 1,
+     "chars": 6341,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11558,
+     "embedding_inputs": 20
+    },
+    {
+     "doc_rank": 2,
+     "chars": 6005,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11221,
+     "embedding_inputs": 16
+    },
+    {
+     "doc_rank": 3,
+     "chars": 5112,
+     "chat_calls": 2,
+     "chat_prompt_tokens": 6432,
+     "embedding_inputs": 12
+    },
+    {
+     "doc_rank": 4,
+     "chars": 6374,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11779,
+     "embedding_inputs": 22
+    },
+    {
+     "doc_rank": 5,
+     "chars": 8626,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 12458,
+     "embedding_inputs": 21
+    },
+    {
+     "doc_rank": 6,
+     "chars": 6083,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11355,
+     "embedding_inputs": 23
+    },
+    {
+     "doc_rank": 7,
+     "chars": 14982,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 19431,
+     "embedding_inputs": 32
+    },
+    {
+     "doc_rank": 8,
+     "chars": 6237,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11515,
+     "embedding_inputs": 23
+    },
+    {
+     "doc_rank": 9,
+     "chars": 11756,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 18420,
+     "embedding_inputs": 26
+    },
+    {
+     "doc_rank": 10,
+     "chars": 10120,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 17675,
+     "embedding_inputs": 29
+    },
+    {
+     "doc_rank": 11,
+     "chars": 8275,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 12662,
+     "embedding_inputs": 22
+    },
+    {
+     "doc_rank": 12,
+     "chars": 5601,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 10614,
+     "embedding_inputs": 15
+    },
+    {
+     "doc_rank": 13,
+     "chars": 6359,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11757,
+     "embedding_inputs": 24
+    },
+    {
+     "doc_rank": 14,
+     "chars": 9754,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 12727,
+     "embedding_inputs": 23
+    },
+    {
+     "doc_rank": 15,
+     "chars": 13179,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 19223,
+     "embedding_inputs": 32
+    },
+    {
+     "doc_rank": 16,
+     "chars": 22011,
+     "chat_calls": 10,
+     "chat_prompt_tokens": 32474,
+     "embedding_inputs": 54
+    },
+    {
+     "doc_rank": 17,
+     "chars": 16351,
+     "chat_calls": 8,
+     "chat_prompt_tokens": 25164,
+     "embedding_inputs": 39
+    },
+    {
+     "doc_rank": 18,
+     "chars": 7683,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 12807,
+     "embedding_inputs": 19
+    },
+    {
+     "doc_rank": 19,
+     "chars": 12684,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 18603,
+     "embedding_inputs": 26
+    },
+    {
+     "doc_rank": 20,
+     "chars": 8038,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 12026,
+     "embedding_inputs": 19
+    }
+   ],
+   "stored": {
+    "chunks": 49,
+    "chunk_tokens_sum_lightrag_tokenizer": 44560,
+    "entities": 207,
+    "relationships": 224,
+    "graph_nodes": 207,
+    "graph_edges": 224
+   },
+   "responder_unclassified_calls": 0,
+   "lightrag_warning_counts": {},
+   "outbound": {
+    "connections_not_to_stub": {},
+    "name_lookups_not_loopback": {},
+    "subprocess_starts": [
+     "subprocess.Popen:uname from subprocess < platform < functools < platform < openai._base_client < concurrent.futures.thread",
+     "subprocess.Popen:file from subprocess < platform < openai._base_client < concurrent.futures.thread < threading",
+     "subprocess.Popen:file from subprocess < platform < openai._base_client < concurrent.futures.thread < threading"
+    ]
+   },
+   "tripwire_selftest_recorded_a_connect_to_127.0.0.1:9": true,
+   "openai_api_base_was_set_to_stub": true,
+   "dependency_versions": {
+    "lightrag-hku": "1.5.7",
+    "openai": "3.42.1",
+    "tiktoken": "0.14.0",
+    "nano-vectordb": "0.0.4.3",
+    "networkx": "3.7",
+    "numpy": "2.5.4",
+    "tenacity": "9.1.4",
+    "pipmaster": "1.2.2"
+   },
+   "calls_jsonl_sha256": "f60c1840685e5d819fb05cdd3021d025e43a22b0e1ea2c72ab037cdb83619b9f",
+   "calls_multiset_sha256": "e33ae41f7fcbbbedd6e12b5f9d5e3c56955bb30fffe6903db9babfa384d6f588"
+  },
+  "H": {
+   "scenario": "H",
+   "shape": "H",
+   "started_utc": "20261102 10:40:42",
+   "finished_utc": "20261102 10:40:45",
+   "wall_seconds": 2.9,
+   "lightrag_version": "1.5.7",
+   "config_as_constructed": {
+    "chunk_token_size": 1200,
+    "chunk_overlap_token_size": 100,
+    "entity_extract_max_gleaning": 1,
+    "force_llm_summary_on_merge": 8,
+    "summary_max_tokens": 1200,
+    "summary_context_size": 12000,
+    "llm_model_max_async": 4,
+    "max_parallel_insert": 3,
+    "embedding_batch_num": 10,
+    "embedding_func_max_async": 8,
+    "entity_extraction_use_json": false,
+    "enable_llm_cache": true,
+    "enable_llm_cache_for_entity_extract": true,
+    "tiktoken_model_name": "gpt-4o-mini",
+    "llm_model_name": "gpt-4o-mini",
+    "chunking": "fixed-token (ainsert always uses it)"
+   },
+   "snapshots": {
+    "1": {
+     "documents": 1,
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 4,
+      "chat_prompt_tokens": 11708,
+      "chat_completion_tokens": 948,
+      "embedding_calls": 3,
+      "embedding_inputs": 22,
+      "embedding_tokens": 2054,
+      "other_calls": 0
+     },
+     "chat_by_kind": {
+      "extraction_initial": {
+       "calls": 2,
+       "prompt_tokens": 4988,
+       "completion_tokens": 938
+      },
+      "extraction_gleaning": {
+       "calls": 2,
+       "prompt_tokens": 6720,
+       "completion_tokens": 10
+      }
+     },
+     "embeddings_by_kind": {
+      "chunks": {
+       "calls": 1,
+       "inputs": 2,
+       "tokens": 1490
+      },
+      "entities": {
+       "calls": 1,
+       "inputs": 10,
+       "tokens": 244
+      },
+      "relationships": {
+       "calls": 1,
+       "inputs": 10,
+       "tokens": 320
+      }
+     }
+    },
+    "5": {
+     "documents": 5,
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 19,
+      "chat_prompt_tokens": 54734,
+      "chat_completion_tokens": 4334,
+      "embedding_calls": 18,
+      "embedding_inputs": 101,
+      "embedding_tokens": 10169,
+      "other_calls": 0
+     },
+     "chat_by_kind": {
+      "extraction_initial": {
+       "calls": 9,
+       "prompt_tokens": 23142,
+       "completion_tokens": 4277
+      },
+      "extraction_gleaning": {
+       "calls": 9,
+       "prompt_tokens": 30992,
+       "completion_tokens": 45
+      },
+      "summary_entity": {
+       "calls": 1,
+       "prompt_tokens": 600,
+       "completion_tokens": 12
+      }
+     },
+     "embeddings_by_kind": {
+      "chunks": {
+       "calls": 5,
+       "inputs": 9,
+       "tokens": 7400
+      },
+      "entities": {
+       "calls": 6,
+       "inputs": 46,
+       "tokens": 1299
+      },
+      "relationships": {
+       "calls": 7,
+       "inputs": 46,
+       "tokens": 1470
+      }
+     }
+    },
+    "20": {
+     "documents": 20,
+     "stub_summary": {
+      "tokenizer": "tiktoken:cl100k_base",
+      "chat_calls": 104,
+      "chat_prompt_tokens": 307049,
+      "chat_completion_tokens": 23064,
+      "embedding_calls": 91,
+      "embedding_inputs": 552,
+      "embedding_tokens": 59483,
+      "other_calls": 0
+     },
+     "chat_by_kind": {
+      "extraction_initial": {
+       "calls": 49,
+       "prompt_tokens": 130661,
+       "completion_tokens": 22747
+      },
+      "extraction_gleaning": {
+       "calls": 49,
+       "prompt_tokens": 172861,
+       "completion_tokens": 245
+      },
+      "summary_entity": {
+       "calls": 6,
+       "prompt_tokens": 3527,
+       "completion_tokens": 72
+      }
+     },
+     "embeddings_by_kind": {
+      "chunks": {
+       "calls": 20,
+       "inputs": 49,
+       "tokens": 44957
+      },
+      "entities": {
+       "calls": 34,
+       "inputs": 243,
+       "tokens": 6654
+      },
+      "relationships": {
+       "calls": 37,
+       "inputs": 260,
+       "tokens": 7872
+      }
+     }
+    }
+   },
+   "per_document": [
+    {
+     "doc_rank": 1,
+     "chars": 6341,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11708,
+     "embedding_inputs": 22
+    },
+    {
+     "doc_rank": 2,
+     "chars": 6005,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11381,
+     "embedding_inputs": 18
+    },
+    {
+     "doc_rank": 3,
+     "chars": 5112,
+     "chat_calls": 2,
+     "chat_prompt_tokens": 6508,
+     "embedding_inputs": 14
+    },
+    {
+     "doc_rank": 4,
+     "chars": 6374,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11935,
+     "embedding_inputs": 24
+    },
+    {
+     "doc_rank": 5,
+     "chars": 8626,
+     "chat_calls": 5,
+     "chat_prompt_tokens": 13202,
+     "embedding_inputs": 23
+    },
+    {
+     "doc_rank": 6,
+     "chars": 6083,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11499,
+     "embedding_inputs": 25
+    },
+    {
+     "doc_rank": 7,
+     "chars": 14982,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 19653,
+     "embedding_inputs": 34
+    },
+    {
+     "doc_rank": 8,
+     "chars": 6237,
+     "chat_calls": 5,
+     "chat_prompt_tokens": 12236,
+     "embedding_inputs": 26
+    },
+    {
+     "doc_rank": 9,
+     "chars": 11756,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 18639,
+     "embedding_inputs": 30
+    },
+    {
+     "doc_rank": 10,
+     "chars": 10120,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 17900,
+     "embedding_inputs": 32
+    },
+    {
+     "doc_rank": 11,
+     "chars": 8275,
+     "chat_calls": 5,
+     "chat_prompt_tokens": 13405,
+     "embedding_inputs": 25
+    },
+    {
+     "doc_rank": 12,
+     "chars": 5601,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 10761,
+     "embedding_inputs": 18
+    },
+    {
+     "doc_rank": 13,
+     "chars": 6359,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 11905,
+     "embedding_inputs": 27
+    },
+    {
+     "doc_rank": 14,
+     "chars": 9754,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 12871,
+     "embedding_inputs": 25
+    },
+    {
+     "doc_rank": 15,
+     "chars": 13179,
+     "chat_calls": 7,
+     "chat_prompt_tokens": 20047,
+     "embedding_inputs": 36
+    },
+    {
+     "doc_rank": 16,
+     "chars": 22011,
+     "chat_calls": 10,
+     "chat_prompt_tokens": 32837,
+     "embedding_inputs": 60
+    },
+    {
+     "doc_rank": 17,
+     "chars": 16351,
+     "chat_calls": 9,
+     "chat_prompt_tokens": 26055,
+     "embedding_inputs": 41
+    },
+    {
+     "doc_rank": 18,
+     "chars": 7683,
+     "chat_calls": 4,
+     "chat_prompt_tokens": 12951,
+     "embedding_inputs": 22
+    },
+    {
+     "doc_rank": 19,
+     "chars": 12684,
+     "chat_calls": 6,
+     "chat_prompt_tokens": 18819,
+     "embedding_inputs": 28
+    },
+    {
+     "doc_rank": 20,
+     "chars": 8038,
+     "chat_calls": 5,
+     "chat_prompt_tokens": 12737,
+     "embedding_inputs": 22
+    }
+   ],
+   "stored": {
+    "chunks": 49,
+    "chunk_tokens_sum_lightrag_tokenizer": 44560,
+    "entities": 208,
+    "relationships": 259,
+    "graph_nodes": 208,
+    "graph_edges": 259
+   },
+   "responder_unclassified_calls": 0,
+   "lightrag_warning_counts": {},
+   "outbound": {
+    "connections_not_to_stub": {},
+    "name_lookups_not_loopback": {},
+    "subprocess_starts": [
+     "subprocess.Popen:uname from subprocess < platform < functools < platform < openai._base_client < concurrent.futures.thread",
+     "subprocess.Popen:file from subprocess < platform < openai._base_client < concurrent.futures.thread < threading",
+     "subprocess.Popen:file from subprocess < platform < openai._base_client < concurrent.futures.thread < threading"
+    ]
+   },
+   "tripwire_selftest_recorded_a_connect_to_127.0.0.1:9": true,
+   "openai_api_base_was_set_to_stub": true,
+   "dependency_versions": {
+    "lightrag-hku": "1.5.7",
+    "openai": "3.42.1",
+    "tiktoken": "0.14.0",
+    "nano-vectordb": "0.0.4.3",
+    "networkx": "3.7",
+    "numpy": "2.5.4",
+    "tenacity": "9.1.4",
+    "pipmaster": "1.2.2"
+   },
+   "calls_jsonl_sha256": "cf5c7588bb5f1cc8beb76e347516196ca445b773b51840f490abfdc84490a60c",
+   "calls_multiset_sha256": "0ee7e35995a27d16afb9670cd1a9c29aa8e5ad9ede2ba7d757eb25ddc02687cf"
+  }
+ },
+ "determinism_B1_vs_B2": {
+  "1": {
+   "stub_summary_equal_except_completion_tokens": true,
+   "chat_by_kind_equal": true,
+   "prompt_tokens_by_kind_equal": true,
+   "embeddings_by_kind_equal": true
+  },
+  "5": {
+   "stub_summary_equal_except_completion_tokens": true,
+   "chat_by_kind_equal": true,
+   "prompt_tokens_by_kind_equal": true,
+   "embeddings_by_kind_equal": true
+  },
+  "20": {
+   "stub_summary_equal_except_completion_tokens": true,
+   "chat_by_kind_equal": true,
+   "prompt_tokens_by_kind_equal": true,
+   "embeddings_by_kind_equal": true
+  },
+  "calls_multiset_sha256_equal": true,
+  "per_document_equal": true,
+  "stored_equal": true
+ }
+}
