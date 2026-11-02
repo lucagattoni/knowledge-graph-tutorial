@@ -328,5 +328,5 @@ Read 20261102 (UTC): the Ollama library page `https://ollama.com/library` (13:59
 `https://registry.ollama.ai/v2/library/<name>/manifests/<tag>` (14:02); Ollama's documentation pages
 `https://docs.ollama.com/context-length`, `/openai`, `/modelfile` and `/capabilities/structured-outputs` (14:01); the local
 machine through `ollama --version`, `ollama list`, `sysctl` and `df` (13:59). The helper that enforces the context check is
-[`tools/exp/passa_common.py`](../../../tools/exp/passa_common.py) (13 tests; 7 mutants, all killed after two weak tests were
-strengthened).
+[`tools/exp/passa_common.py`](../../../tools/exp/passa_common.py) (23 tests today; the first 13 had 7 mutants, all killed after two
+weak tests were strengthened, and later additions had 9 more, all killed).

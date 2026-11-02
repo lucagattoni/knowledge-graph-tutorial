@@ -311,8 +311,10 @@ usage), and that Anthropic cache writes are priced at the single `cache_write_pe
 
 - **No authentication between client and gateway.** Any program of your user on this Mac that can reach
   `127.0.0.1` can spend the cap through it. The `Host` and `Content-Type` checks only keep web pages out.
-- **The real key is in the gateway process's environment.** Third-party code run as the same user could try to
-  read it by other means; that was not tested.
+- **The real key is in the gateway process's memory** (from the environment, or read from a `key_file`). Third-party code
+  run as the same user could try to read it by other means, and a `key_file` is readable by any process of that user; that
+  was not tested. What the file route guarantees is that a runner which never reads the file never holds the key. The
+  mode check refuses group and other access but does not check who owns the file, and it was not tested as root.
 - **No TLS on the gateway side** (loopback only) and no keep-alive: one connection per call.
 - **A killed gateway loses its open reservations.** Calls in flight at that moment are not in the log, and
   `--resume` cannot know their spend. Check the provider's own usage page after a crash.
@@ -336,7 +338,8 @@ usage), and that Anthropic cache writes are priced at the single `cache_write_pe
 - The unit tests use `http.client` and raw sockets. The real OpenAI and Anthropic Python SDKs have since been pointed
   at it, but only against fake upstreams written for the purpose (`tools/exp/gateway_sdk_e2e_openai.py`, 17 checks, and
   `tools/exp/gateway_sdk_e2e_anthropic.py`, 12 checks: chat, streaming, embeddings, the key swap, exact cost, the cap).
-  No builder has been pointed at it, and which environment variable each builder reads for its base URL is unchecked.
+  Pass A then pointed all four builders at it, against local models and with the stub (each runner records how it was
+  pointed); the gateway has still never met a real provider.
   Behaviour with `Expect: 100-continue` or HTTP/2 is unobserved.
 - TLS towards a provider was not exercised: the tests use plain `http://` to loopback fake upstreams. The code uses
   the interpreter's default certificate verification.
