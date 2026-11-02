@@ -61,8 +61,8 @@ SECTION_LABELS = {
 }
 
 # The nav numbers the top-level sections and the sections inside them ("1.", "1.1"); deeper pages (one
-# per project) stay unnumbered. title-numbering.js copies the number onto the page title; headings
-# below it are not numbered, because many pages number their own.
+# per project) stay unnumbered. page-numbering.js copies the number onto the page title and numbers
+# the headings below it, replacing the numbers that many pages carry in their own headings.
 NUMBERED_DEPTH = 2
 
 _INDEX_NAMES = ("README.md", "index.md")

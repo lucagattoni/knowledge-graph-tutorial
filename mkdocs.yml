@@ -92,7 +92,7 @@ extra_css:
 
 extra_javascript:
   - javascripts/external-links.js
-  - javascripts/title-numbering.js
+  - javascripts/page-numbering.js
 
 extra:
   social:
