@@ -1,0 +1,140 @@
+# X4 code-graph vs grep: frozen questions and hand-derived answers for gin-gonic/gin.
+# Written before any agent or code-graph tool was run. Derivation, evidence and limits: derivation.md in this directory.
+# The first three questions in file order are the pilot's, chosen by position and never by result.
+repository: https://github.com/gin-gonic/gin
+language: Go
+pinned_commit: 0f09c3a9b4626d9fe9979cf4d0521d6ae32ab646
+commit_date_utc: 2026-10-10T04:20:35Z
+licence: MIT  # LICENSE file at the pinned commit, read 20261102 10:27 UTC; SHA-256 of the file b104efb2c7700691650f27034e8541c5ae0ed9af54d884287f19a7467ca2fe7f
+derived_utc: "20261102 10:40 UTC"
+pilot_question_ids: [gin-01, gin-02, gin-03]
+questions:
+  - id: gin-01
+    pilot: true
+    kind: definition
+    target: "Engine.handleHTTPRequest"
+    question: "In the Go repository in the current directory (the gin web framework), where is the method `handleHTTPRequest` of the type `Engine` defined? Ignore test files. Answer with the repository-relative path of the file and the line number of the line that begins with the keyword `func`, written `path:line` (for example `gin.go:100`)."
+    answer:
+      path: "gin.go"
+      line: 719
+      partial_credit_lines: [719, 719]
+    scoring: "Path and line both equal to the key scores 1.0 (correct). Any other answer scores 0: for this question there is no line other than the `func` line that earns partial credit."
+    why_not_trivial: "The name is unique, so one grep finds it, but ripgrep lists two call sites (gin.go:701 and gin.go:713) before the definition (gin.go:719), and the answer must be the `func` line, not the first hit."
+  - id: gin-02
+    pilot: true
+    kind: callers
+    target: "Context.hasRequestContext"
+    question: "In the Go repository in the current directory (the gin web framework), which functions or methods directly call the unexported method `hasRequestContext` of the type `Context`? Count only non-test source: ignore files whose names end in `_test.go` and everything under `docs/`, `examples/` and `testdata/`. Count direct calls only, not callers of callers. A call written inside a function literal counts for the enclosing named function or method. Assume the default build, with no build tags. Answer with one fully qualified name per line, written `path::func` for a function or `path::Type.method` for a method, where `path` is relative to the repository root (for example `gin.go::New` or `context.go::Context.Next`)."
+    answer_count: 4
+    answer:
+      - "context.go::Context.Deadline"
+      - "context.go::Context.Done"
+      - "context.go::Context.Err"
+      - "context.go::Context.Value"
+    scoring: "Exact set match scores 1.0 (correct). Otherwise the score is the Jaccard index |A intersect K| / |A union K|, where A is the set of names in the answer and K is the key; it is recorded as partial credit and never counted as correct. Before comparing, remove surrounding whitespace, a leading './' and duplicate entries, and read '(*T).m' and '*T.m' as 'T.m'; the path must match exactly. A name given without its path counts as wrong. Order is ignored. An empty answer scores 0."
+    why_not_trivial: "Four callers, all in one file; a grep for the name also returns a local variable called hasRequestContext inside the method itself (context.go:1496-1497) and a comment, which are not calls."
+  - id: gin-03
+    pilot: true
+    kind: callers
+    target: "RouterGroup.handle"
+    question: "In the Go repository in the current directory (the gin web framework), which functions or methods directly call the unexported method `handle` of the type `RouterGroup`? Count only non-test source: ignore files whose names end in `_test.go` and everything under `docs/`, `examples/` and `testdata/`. Count direct calls only, not callers of callers. A call written inside a function literal counts for the enclosing named function or method. Assume the default build, with no build tags. Answer with one fully qualified name per line, written `path::func` for a function or `path::Type.method` for a method, where `path` is relative to the repository root (for example `gin.go::New` or `context.go::Context.Next`)."
+    answer_count: 11
+    answer:
+      - "routergroup.go::RouterGroup.Any"
+      - "routergroup.go::RouterGroup.DELETE"
+      - "routergroup.go::RouterGroup.GET"
+      - "routergroup.go::RouterGroup.HEAD"
+      - "routergroup.go::RouterGroup.Handle"
+      - "routergroup.go::RouterGroup.Match"
+      - "routergroup.go::RouterGroup.OPTIONS"
+      - "routergroup.go::RouterGroup.PATCH"
+      - "routergroup.go::RouterGroup.POST"
+      - "routergroup.go::RouterGroup.PUT"
+      - "routergroup.go::RouterGroup.QUERY"
+    scoring: "Exact set match scores 1.0 (correct). Otherwise the score is the Jaccard index |A intersect K| / |A union K|, where A is the set of names in the answer and K is the key; it is recorded as partial credit and never counted as correct. Before comparing, remove surrounding whitespace, a leading './' and duplicate entries, and read '(*T).m' and '*T.m' as 'T.m'; the path must match exactly. A name given without its path counts as wrong. Order is ignored. An empty answer scores 0."
+    why_not_trivial: "Eleven callers; a grep for `handle(` also returns recovery.go:86, a call of a function-typed parameter named `handle` that is not the method; the exported `Handle` is a different method, and a grep for the bare word returns about thirty more hits, mostly in comments."
+  - id: gin-04
+    pilot: false
+    kind: callers
+    target: "Context.Get"
+    question: "In the Go repository in the current directory (the gin web framework), which functions or methods directly call the method `Get` of the type `Context` (the one that returns a stored value and a boolean)? Calls to other methods that are also named `Get`, on other types, do not count. Count only non-test source: ignore files whose names end in `_test.go` and everything under `docs/`, `examples/` and `testdata/`. Count direct calls only, not callers of callers. A call written inside a function literal counts for the enclosing named function or method. Assume the default build, with no build tags. Answer with one fully qualified name per line, written `path::func` for a function or `path::Type.method` for a method, where `path` is relative to the repository root (for example `gin.go::New` or `context.go::Context.Next`)."
+    answer_count: 4
+    answer:
+      - "context.go::Context.MustGet"
+      - "context.go::Context.ShouldBindBodyWith"
+      - "context.go::Context.Value"
+      - "context.go::getTyped"
+    scoring: "Exact set match scores 1.0 (correct). Otherwise the score is the Jaccard index |A intersect K| / |A union K|, where A is the set of names in the answer and K is the key; it is recorded as partial credit and never counted as correct. Before comparing, remove surrounding whitespace, a leading './' and duplicate entries, and read '(*T).m' and '*T.m' as 'T.m'; the path must match exactly. A name given without its path counts as wrong. Order is ignored. An empty answer scores 0."
+    why_not_trivial: "`Get` is a very common name: the non-test source also calls sync.Pool.Get, http.Header.Get, reflect.StructTag.Get, http.Client.Get and Params.Get, so the receiver's type has to be read for each hit; one caller is a generic function."
+  - id: gin-05
+    pilot: false
+    kind: definition
+    target: "Engine.Handler"
+    question: "In the Go repository in the current directory (the gin web framework), where is the method `Handler` of the type `Engine` defined? Ignore test files. Answer with the repository-relative path of the file and the line number of the line that begins with the keyword `func`, written `path:line` (for example `gin.go:100`)."
+    answer:
+      path: "gin.go"
+      line: 257
+      partial_credit_lines: [257, 257]
+    scoring: "Path and line both equal to the key scores 1.0 (correct). Any other answer scores 0: for this question there is no line other than the `func` line that earns partial credit."
+    why_not_trivial: "The type `Context` also has a method called `Handler` (context.go:176, with a doc comment); a grep for the method name returns both and only the receiver tells them apart."
+  - id: gin-06
+    pilot: false
+    kind: callers
+    target: "binding.setWithProperType in binding/form_mapping.go"
+    question: "In the Go repository in the current directory (the gin web framework), which functions in the file `binding/form_mapping.go` directly call the function `setWithProperType`, which is defined in that file? Only functions defined in that file count. A function that calls itself counts as calling it. Count only non-test source: ignore files whose names end in `_test.go` and everything under `docs/`, `examples/` and `testdata/`. Count direct calls only, not callers of callers. A call written inside a function literal counts for the enclosing named function or method. Assume the default build, with no build tags. Answer with one fully qualified name per line, written `path::func` for a function or `path::Type.method` for a method, where `path` is relative to the repository root (for example `gin.go::New` or `context.go::Context.Next`)."
+    answer_count: 3
+    answer:
+      - "binding/form_mapping.go::setArray"
+      - "binding/form_mapping.go::setByForm"
+      - "binding/form_mapping.go::setWithProperType"
+    scoring: "Exact set match scores 1.0 (correct). Otherwise the score is the Jaccard index |A intersect K| / |A union K|, where A is the set of names in the answer and K is the key; it is recorded as partial credit and never counted as correct. Before comparing, remove surrounding whitespace, a leading './' and duplicate entries, and read '(*T).m' and '*T.m' as 'T.m'; the path must match exactly. A name given without its path counts as wrong. Order is ignored. An empty answer scores 0."
+    why_not_trivial: "One of the three callers is the function itself (a recursive call at line 383), which a reader can take for the definition line or leave out."
+  - id: gin-07
+    pilot: false
+    kind: callers
+    target: "responseWriter.WriteHeaderNow (concrete receiver only)"
+    question: "In the Go repository in the current directory (the gin web framework), which functions or methods directly call the method `WriteHeaderNow` of the concrete type `responseWriter`? Count a call only when the receiver expression has the static type `responseWriter` or `*responseWriter`. A call made through a value of the interface type `ResponseWriter` (which declares a method of the same name) does not count, even though that value may hold a `*responseWriter`. Count only non-test source: ignore files whose names end in `_test.go` and everything under `docs/`, `examples/` and `testdata/`. Count direct calls only, not callers of callers. A call written inside a function literal counts for the enclosing named function or method. Assume the default build, with no build tags. Answer with one fully qualified name per line, written `path::func` for a function or `path::Type.method` for a method, where `path` is relative to the repository root (for example `gin.go::New` or `context.go::Context.Next`)."
+    answer_count: 6
+    answer:
+      - "gin.go::Engine.handleHTTPRequest"
+      - "gin.go::redirectRequest"
+      - "gin.go::serveError"
+      - "response_writer.go::responseWriter.Flush"
+      - "response_writer.go::responseWriter.Write"
+      - "response_writer.go::responseWriter.WriteString"
+    scoring: "Exact set match scores 1.0 (correct). Otherwise the score is the Jaccard index |A intersect K| / |A union K|, where A is the set of names in the answer and K is the key; it is recorded as partial credit and never counted as correct. Before comparing, remove surrounding whitespace, a leading './' and duplicate entries, and read '(*T).m' and '*T.m' as 'T.m'; the path must match exactly. A name given without its path counts as wrong. Order is ignored. An empty answer scores 0."
+    why_not_trivial: "Two further call sites (context.go:224 and context.go:1206) read `c.Writer.WriteHeaderNow()` and look identical to the counted ones; telling them apart needs the declared types of `c.writermem` (concrete) and `c.Writer` (interface)."
+  - id: gin-08
+    pilot: false
+    kind: definition
+    target: "node.getValue"
+    question: "In the Go repository in the current directory (the gin web framework), where is the method `getValue` of the type `node` (the node of the routing tree) defined? Ignore test files. Answer with the repository-relative path of the file and the line number of the line that begins with the keyword `func`, written `path:line` (for example `gin.go:100`)."
+    answer:
+      path: "tree.go"
+      line: 418
+      partial_credit_lines: [413, 418]
+    scoring: "Path and line both equal to the key scores 1.0 (correct). The correct path with a line from 413 to 417 (the doc comment directly above the `func` line) scores 0.5. Any other answer scores 0."
+    why_not_trivial: "A 255-line method with a five-line doc comment above it, so the answer is the `func` line (418), not the comment (413); the name also appears in two call sites in gin.go and in comments."
+  - id: gin-09
+    pilot: false
+    kind: callers
+    target: "RouterGroup.GET"
+    question: "In the Go repository in the current directory (the gin web framework), which functions or methods directly call the method `GET` of the type `RouterGroup`? A call made on a value whose type embeds `RouterGroup` (for example `*gin.Engine`) is a call of that same method and counts. Count only non-test source: ignore files whose names end in `_test.go` and everything under `docs/`, `examples/` and `testdata/`. Count direct calls only, not callers of callers. A call written inside a function literal counts for the enclosing named function or method. Assume the default build, with no build tags. Answer with one fully qualified name per line, written `path::func` for a function or `path::Type.method` for a method, where `path` is relative to the repository root (for example `gin.go::New` or `context.go::Context.Next`)."
+    answer_count: 3
+    answer:
+      - "ginS/gins.go::GET"
+      - "routergroup.go::RouterGroup.StaticFS"
+      - "routergroup.go::RouterGroup.staticFileHandler"
+    scoring: "Exact set match scores 1.0 (correct). Otherwise the score is the Jaccard index |A intersect K| / |A union K|, where A is the set of names in the answer and K is the key; it is recorded as partial credit and never counted as correct. Before comparing, remove surrounding whitespace, a leading './' and duplicate entries, and read '(*T).m' and '*T.m' as 'T.m'; the path must match exactly. A name given without its path counts as wrong. Order is ignored. An empty answer scores 0."
+    why_not_trivial: "One caller is in another package (ginS) and calls `engine().GET(...)`: `engine` is a package-level variable holding a function (sync.OnceValue), whose result is a *gin.Engine, on which GET is promoted from the embedded RouterGroup; the other two call it on a RouterGroup directly."
+  - id: gin-10
+    pilot: false
+    kind: callers
+    target: "Context.Error in context.go"
+    question: "In the Go repository in the current directory (the gin web framework), which functions or methods in the file `context.go` directly call the method `Error` of the type `Context`? Only functions defined in that file count. Calls to other methods named `Error` (for example the `Error` method of the `error` interface) do not count. Count only non-test source: ignore files whose names end in `_test.go` and everything under `docs/`, `examples/` and `testdata/`. Count direct calls only, not callers of callers. A call written inside a function literal counts for the enclosing named function or method. Assume the default build, with no build tags. Answer with one fully qualified name per line, written `path::func` for a function or `path::Type.method` for a method, where `path` is relative to the repository root (for example `gin.go::New` or `context.go::Context.Next`)."
+    answer_count: 2
+    answer:
+      - "context.go::Context.AbortWithError"
+      - "context.go::Context.Render"
+    scoring: "Exact set match scores 1.0 (correct). Otherwise the score is the Jaccard index |A intersect K| / |A union K|, where A is the set of names in the answer and K is the key; it is recorded as partial credit and never counted as correct. Before comparing, remove surrounding whitespace, a leading './' and duplicate entries, and read '(*T).m' and '*T.m' as 'T.m'; the path must match exactly. A name given without its path counts as wrong. Order is ignored. An empty answer scores 0."
+    why_not_trivial: "`Error` is a very common name (error.Error, Error.Error, a type called Error), and the method has two more callers in recovery.go, one of them inside a function literal, which the file restriction excludes."

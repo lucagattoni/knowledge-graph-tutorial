@@ -1,0 +1,239 @@
+# X4: ten code questions about pallets/flask with their answers,
+# frozen 20261102 10:43 UTC BEFORE any agent or code-graph tool was run on this repository.
+# How each answer was derived, by two independent methods, is in derivation.md next to this file.
+#
+# Order is fixed. The first three questions are the pilot's, chosen by position, never by result:
+#   1 = a definition question, 2 = a callers question with at most 5 callers, 3 = a callers question with 6 to 15.
+# Every question text below is given to an agent verbatim. `answer`, `scoring`, `why_not_trivial`, `target` and
+# `scope_file` are never shown to an agent. `scope_file` is present only on the two "which functions in file F call G"
+# questions (9 and 10): only callers defined in that file are in the key.
+
+repository: pallets/flask
+url: https://github.com/pallets/flask
+language: Python
+pinned_commit: 49943b5a94413a530761350f04e896f76e8d620e
+pilot_question_ids: [q01, q02, q03]
+commit_date_utc: "2026-10-30T15:05:20Z"   # git log committer date 2026-10-30T08:05:20-07:00 at that commit, read 20261102 10:27 UTC
+licence: "BSD-3-Clause. LICENSE.txt at the commit is the three-condition BSD text, 'Copyright 2010 Pallets'; pyproject.toml at the commit also declares license = \"BSD-3-Clause\". Read 20261102 10:27 UTC."
+source_scope: "src/flask/ (24 Python files). At the commit there is no other non-test, non-docs, non-examples Python file in the repository (checked with find on the clone, 20261102, between 10:30 and 10:40 UTC)."
+derivation: derivation.md
+
+# Scoring, fixed now. Each question repeats the rule that applies to it.
+scoring_rules:
+  callers: >-
+    Normalise the answer: trim spaces, drop duplicates, ignore order; a leading "./" on a path and "Class::method" for
+    "Class.method" are accepted (format only, logged). A name of a function nested inside another function or method is
+    mapped to its outermost enclosing function or method before comparing. EXACT is 1 if the normalised answer set
+    equals the key set, else 0. PARTIAL, reported next to EXACT and never instead of it, is F1 = 2*TP/(|answer|+|key|),
+    where TP is the number of names in both sets; an empty answer scores 0. The missing names and the extra names are
+    listed for every answer.
+  definition: >-
+    Only the first location given is scored. EXACT is 1 if the path equals the key path and the line is one of
+    accepted_lines (the line of the def or class keyword, or the line of a decorator of that same definition).
+    PARTIAL is 0.5 if the path equals the key path and the line is not accepted; it is reported next to EXACT and never
+    instead of it. Any other answer scores 0.
+
+questions:
+  - id: q01
+    pilot: true
+    kind: definition
+    target: "method App.handle_url_build_error, src/flask/sansio/app.py"
+    question: |-
+      In the Flask repository, where is the method `handle_url_build_error` defined? Answer with the repository-relative file path and the line number, in the form `path:line`. The line is the one of the `def` keyword (the line of a decorator just above it is also accepted). Count only the definition itself, not calls, imports or mentions in docs, comments or tests.
+    answer:
+      path: src/flask/sansio/app.py
+      line: 982
+      accepted_lines: [982]
+    scoring: >-
+      Only the first location given is scored. EXACT is 1 if the path equals src/flask/sansio/app.py and the line is
+      982. PARTIAL is 0.5 if the path is right and the line is not; any other answer scores 0. PARTIAL is reported next
+      to EXACT and never instead of it.
+    why_not_trivial: "Flask calls it (src/flask/app.py, in Flask.url_for) but it is defined in the base class App in src/flask/sansio/app.py; a plain search of src/ returns 5 lines, 3 of them in docstrings or comments."
+
+  - id: q02
+    pilot: true
+    kind: callers
+    target: "function get_debug_flag, src/flask/helpers.py:28"
+    question: |-
+      In the Flask repository, which functions or methods directly call the function `get_debug_flag` (defined in `src/flask/helpers.py`)? Count only non-test source under `src/` (ignore `tests/`, `docs/` and `examples/`). A direct call is a call expression that invokes it; callers of callers are not counted; a mere reference that passes it along without calling it, an import, and code shown in a docstring or comment are not calls. A call counts whatever the receiver expression is, as long as it invokes that function or method. If a call sits inside a function nested within another function or method, report the outermost enclosing function or method. Answer with a list of names, one per caller, as `path::func` for a module-level function or `path::Class.method` for a method, using repository-relative paths.
+    answer:
+      count: 4
+      callers:
+        - "src/flask/app.py::Flask.run"
+        - "src/flask/cli.py::ScriptInfo.load_app"
+        - "src/flask/cli.py::run_command"
+        - "src/flask/sansio/app.py::App.make_config"
+    scoring: >-
+      Normalise the answer: trim spaces, drop duplicates, ignore order; a leading "./" on a path and "Class::method" for
+      "Class.method" are accepted (format only, logged). A name of a function nested inside another function or method
+      is mapped to its outermost enclosing function or method before comparing. EXACT is 1 if the normalised answer
+      set equals the key set, else 0. PARTIAL, reported next to EXACT and never instead of it, is F1 =
+      2*TP/(|answer|+|key|), where TP is the number of names in both sets; an empty answer scores 0. The missing names
+      and the extra names are listed for every answer.
+    why_not_trivial: "Four callers in three files, one of them a click command function (run_command) and one in a base class defined in another package directory (App in src/flask/sansio/); the name (whole-word search) also appears in 10 lines of the repository, among them imports and a test."
+
+  - id: q03
+    pilot: true
+    kind: callers
+    target: "method Flask.ensure_sync, src/flask/app.py:1108"
+    question: |-
+      In the Flask repository, which functions or methods directly call the method `ensure_sync` of the class `Flask` (defined in `src/flask/app.py`)? Count only non-test source under `src/` (ignore `tests/`, `docs/` and `examples/`). A direct call is a call expression that invokes it, for example `x.ensure_sync(f)`; callers of callers are not counted; a mere reference that passes it along without calling it, an import, and code shown in a docstring or comment are not calls. A call counts whatever the receiver expression is, as long as it invokes that function or method. If a call sits inside a function nested within another function or method, report the outermost enclosing function or method. Answer with a list of names, one per caller, as `path::func` for a module-level function or `path::Class.method` for a method, using repository-relative paths.
+    answer:
+      count: 12
+      callers:
+        - "src/flask/app.py::Flask.dispatch_request"
+        - "src/flask/app.py::Flask.do_teardown_appcontext"
+        - "src/flask/app.py::Flask.do_teardown_request"
+        - "src/flask/app.py::Flask.handle_exception"
+        - "src/flask/app.py::Flask.handle_http_exception"
+        - "src/flask/app.py::Flask.handle_user_exception"
+        - "src/flask/app.py::Flask.preprocess_request"
+        - "src/flask/app.py::Flask.process_response"
+        - "src/flask/app.py::Flask.update_template_context"
+        - "src/flask/ctx.py::copy_current_request_context"
+        - "src/flask/views.py::MethodView.dispatch_request"
+        - "src/flask/views.py::View.as_view"
+    scoring: >-
+      Normalise the answer: trim spaces, drop duplicates, ignore order; a leading "./" on a path and "Class::method" for
+      "Class.method" are accepted (format only, logged). A name of a function nested inside another function or method
+      is mapped to its outermost enclosing function or method before comparing. EXACT is 1 if the normalised answer set
+      equals the key set, else 0. PARTIAL, reported next to EXACT and never instead of it, is F1 =
+      2*TP/(|answer|+|key|), where TP is the number of names in both sets; an empty answer scores 0. The missing names
+      and the extra names are listed for every answer.
+    why_not_trivial: "Twelve callers in three files. The receiver is self, current_app (a proxy object) or the app of a copied context; three call sites sit inside nested functions (View.as_view.view twice, copy_current_request_context.wrapper); and 12 other mentions pass ensure_sync as a value (_async_wrapper=...) without calling it; 7 functions (full_dispatch_request, finalize_request, AppContext.push, AppContext.pop, flash, _render, _stream) do only that and are not callers, so a name search of src/ returns 27 lines for 12 callers."
+
+  - id: q04
+    pilot: false
+    kind: definition
+    target: "class flask.Blueprint, src/flask/blueprints.py"
+    question: |-
+      In the Flask repository, in which file and at which line is the class that user code gets from `from flask import Blueprint` defined? Answer with the repository-relative file path and the line number, in the form `path:line`. The line is the one of the `class` keyword (the line of a decorator just above it is also accepted). Count only the definition itself, not imports, subclasses or mentions in docs, comments or tests.
+    answer:
+      path: src/flask/blueprints.py
+      line: 18
+      accepted_lines: [18]
+    scoring: >-
+      Only the first location given is scored. EXACT is 1 if the path equals src/flask/blueprints.py and the line is
+      18. PARTIAL is 0.5 if the path is right and the line is not; any other answer scores 0. PARTIAL is reported next
+      to EXACT and never instead of it.
+    why_not_trivial: "Two classes named Blueprint exist (src/flask/blueprints.py:18 and src/flask/sansio/blueprints.py:119, the second being the base of the first); which one `from flask import Blueprint` gives is decided only by reading the import in src/flask/__init__.py."
+
+  - id: q05
+    pilot: false
+    kind: callers
+    target: "function send_from_directory, src/flask/helpers.py:543"
+    question: |-
+      In the Flask repository, which functions or methods directly call the function `send_from_directory` defined in `src/flask/helpers.py`? Count only non-test source under `src/` (ignore `tests/`, `docs/` and `examples/`). A direct call is a call expression that invokes it; callers of callers are not counted; a mere reference that passes it along without calling it, an import, and code shown in a docstring or comment are not calls. A call counts whatever the receiver expression is, as long as it invokes that function or method. If a call sits inside a function nested within another function or method, report the outermost enclosing function or method. Answer with a list of names, one per caller, as `path::func` for a module-level function or `path::Class.method` for a method, using repository-relative paths.
+    answer:
+      count: 2
+      callers:
+        - "src/flask/app.py::Flask.send_static_file"
+        - "src/flask/blueprints.py::Blueprint.send_static_file"
+    scoring: >-
+      Normalise the answer: trim spaces, drop duplicates, ignore order; a leading "./" on a path and "Class::method" for
+      "Class.method" are accepted (format only, logged). A name of a function nested inside another function or method
+      is mapped to its outermost enclosing function or method before comparing. EXACT is 1 if the normalised answer set
+      equals the key set, else 0. PARTIAL, reported next to EXACT and never instead of it, is F1 =
+      2*TP/(|answer|+|key|), where TP is the number of names in both sets; an empty answer scores 0. The missing names
+      and the extra names are listed for every answer.
+    why_not_trivial: "A search of src/ returns 9 lines for 2 real callers: the function's own body calls werkzeug's function of the same name (src/flask/helpers.py:582, not a call to Flask's), its docstring shows an example call (line 554), and the rest are the definition, a docstring mention, imports and a re-export."
+
+  - id: q06
+    pilot: false
+    kind: definition
+    target: "method add_url_rule on a flask.Flask instance, resolved along the class inheritance chain"
+    question: |-
+      In the Flask repository, user code calls `app.add_url_rule(...)` where `app` is an instance of `flask.Flask`. In which file and at which line is the `add_url_rule` method that Python's attribute lookup finds first for that call, following the inheritance chain of the class `Flask`? Answer with the repository-relative file path and the line number, in the form `path:line`. The line is the one of the `def` keyword (the line of a decorator just above it is also accepted).
+    answer:
+      path: src/flask/sansio/app.py
+      line: 606
+      accepted_lines: [605, 606]
+    scoring: >-
+      Only the first location given is scored. EXACT is 1 if the path equals src/flask/sansio/app.py and the line is
+      605 (the decorator) or 606 (the def). PARTIAL is 0.5 if the path is right and the line is not; any other answer
+      scores 0. PARTIAL is reported next to EXACT and never instead of it.
+    why_not_trivial: "Four classes define add_url_rule (Scaffold at src/flask/sansio/scaffold.py:376, App at src/flask/sansio/app.py:606, the sansio Blueprint at src/flask/sansio/blueprints.py:413 and BlueprintSetupState at src/flask/sansio/blueprints.py:87) and Flask defines none; the answer needs the chain Flask, App, Scaffold and the override in App."
+
+  - id: q07
+    pilot: false
+    kind: callers
+    target: "method Blueprint.register of the sansio Blueprint, src/flask/sansio/blueprints.py:273"
+    question: |-
+      In the Flask repository, which functions or methods directly call the method `register` of the class `Blueprint` defined in `src/flask/sansio/blueprints.py`? A function that calls itself counts as its own caller. Count only non-test source under `src/` (ignore `tests/`, `docs/` and `examples/`). A direct call is a call expression that invokes it; callers of callers are not counted; a mere reference that passes it along without calling it, an import, and code shown in a docstring or comment are not calls. A call counts whatever the receiver expression is, as long as it invokes that function or method. If a call sits inside a function nested within another function or method, report the outermost enclosing function or method. Answer with a list of names, one per caller, as `path::func` for a module-level function or `path::Class.method` for a method, using repository-relative paths.
+    answer:
+      count: 2
+      callers:
+        - "src/flask/sansio/app.py::App.register_blueprint"
+        - "src/flask/sansio/blueprints.py::Blueprint.register"
+    scoring: >-
+      Normalise the answer: trim spaces, drop duplicates, ignore order; a leading "./" on a path and "Class::method" for
+      "Class.method" are accepted (format only, logged). A name of a function nested inside another function or method
+      is mapped to its outermost enclosing function or method before comparing. EXACT is 1 if the normalised answer set
+      equals the key set, else 0. PARTIAL, reported next to EXACT and never instead of it, is F1 =
+      2*TP/(|answer|+|key|), where TP is the number of names in both sets; an empty answer scores 0. The missing names
+      and the extra names are listed for every answer.
+    why_not_trivial: "`register` is also a method of TaggedJSONSerializer (called as self.register in its __init__, a different method); one of the two true callers is the method itself, recursing over nested blueprints; a name search of src/ returns 72 lines."
+
+  - id: q08
+    pilot: false
+    kind: callers
+    target: "function load_dotenv, src/flask/cli.py:698"
+    question: |-
+      In the Flask repository, which functions or methods directly call the module-level function `load_dotenv` defined in `src/flask/cli.py`? Count only non-test source under `src/` (ignore `tests/`, `docs/` and `examples/`). A direct call is a call expression that invokes it; callers of callers are not counted; a mere reference that passes it along without calling it, an import, and code shown in a docstring or comment are not calls. A call counts whatever the receiver expression is, as long as it invokes that function or method. If a call sits inside a function nested within another function or method, report the outermost enclosing function or method. Answer with a list of names, one per caller, as `path::func` for a module-level function or `path::Class.method` for a method, using repository-relative paths.
+    answer:
+      count: 2
+      callers:
+        - "src/flask/app.py::Flask.run"
+        - "src/flask/cli.py::_env_file_callback"
+    scoring: >-
+      Normalise the answer: trim spaces, drop duplicates, ignore order; a leading "./" on a path and "Class::method" for
+      "Class.method" are accepted (format only, logged). A name of a function nested inside another function or method
+      is mapped to its outermost enclosing function or method before comparing. EXACT is 1 if the normalised answer set
+      equals the key set, else 0. PARTIAL, reported next to EXACT and never instead of it, is F1 =
+      2*TP/(|answer|+|key|), where TP is the number of names in both sets; an empty answer scores 0. The missing names
+      and the extra names are listed for every answer.
+    why_not_trivial: "Flask.run calls it through a module alias (`from . import cli`, then `cli.load_dotenv()`), while the class Flask also has an attribute named cli; the name `load_dotenv` is also a parameter, an attribute and a keyword argument in the same files, so a search of src/ returns 11 lines for 2 callers."
+
+  - id: q09
+    pilot: false
+    kind: callers
+    scope_file: src/flask/cli.py
+    target: "method ScriptInfo.load_app, src/flask/cli.py:333"
+    question: |-
+      In the Flask repository, which functions or methods defined in `src/flask/cli.py` directly call the method `load_app` of the class `ScriptInfo` (also defined in `src/flask/cli.py`)? Count only non-test source under `src/` (ignore `tests/`, `docs/` and `examples/`) and only callers that are defined in that file. A direct call is a call expression that invokes it; callers of callers are not counted; a mere reference that passes it along without calling it, an import, and code shown in a docstring or comment are not calls. A call counts whatever the receiver expression is, as long as it invokes that function or method. If a call sits inside a function nested within another function or method, report the outermost enclosing function or method. Answer with a list of names, one per caller, as `path::func` for a module-level function or `path::Class.method` for a method, using repository-relative paths.
+    answer:
+      count: 4
+      callers:
+        - "src/flask/cli.py::FlaskGroup.get_command"
+        - "src/flask/cli.py::FlaskGroup.list_commands"
+        - "src/flask/cli.py::run_command"
+        - "src/flask/cli.py::with_appcontext"
+    scoring: >-
+      Normalise the answer: trim spaces, drop duplicates, ignore order; a leading "./" on a path and "Class::method" for
+      "Class.method" are accepted (format only, logged). A name of a function nested inside another function or method
+      is mapped to its outermost enclosing function or method before comparing. EXACT is 1 if the normalised answer set
+      equals the key set, else 0. PARTIAL, reported next to EXACT and never instead of it, is F1 =
+      2*TP/(|answer|+|key|), where TP is the number of names in both sets; an empty answer scores 0. The missing names
+      and the extra names are listed for every answer.
+    why_not_trivial: "Three of the four receivers are obtained from click's `ctx.ensure_object(ScriptInfo)` (directly or through a local variable), not from a typed name; one call sits inside the closure with_appcontext.decorator, which must be reported as with_appcontext; the one typed receiver is a parameter of the click command run_command."
+
+  - id: q10
+    pilot: false
+    kind: callers
+    scope_file: src/flask/app.py
+    target: "method _CollectErrors.raise_any, src/flask/helpers.py:676"
+    question: |-
+      In the Flask repository, which functions or methods defined in `src/flask/app.py` directly call the method `raise_any` of the class `_CollectErrors` (defined in `src/flask/helpers.py`)? Count only non-test source under `src/` (ignore `tests/`, `docs/` and `examples/`) and only callers that are defined in that file. A direct call is a call expression that invokes it; callers of callers are not counted; a mere reference that passes it along without calling it, an import, and code shown in a docstring or comment are not calls. A call counts whatever the receiver expression is, as long as it invokes that function or method. If a call sits inside a function nested within another function or method, report the outermost enclosing function or method. Answer with a list of names, one per caller, as `path::func` for a module-level function or `path::Class.method` for a method, using repository-relative paths.
+    answer:
+      count: 2
+      callers:
+        - "src/flask/app.py::Flask.do_teardown_appcontext"
+        - "src/flask/app.py::Flask.do_teardown_request"
+    scoring: >-
+      Normalise the answer: trim spaces, drop duplicates, ignore order; a leading "./" on a path and "Class::method" for
+      "Class.method" are accepted (format only, logged). A name of a function nested inside another function or method
+      is mapped to its outermost enclosing function or method before comparing. EXACT is 1 if the normalised answer set
+      equals the key set, else 0. PARTIAL, reported next to EXACT and never instead of it, is F1 =
+      2*TP/(|answer|+|key|), where TP is the number of names in both sets; an empty answer scores 0. The missing names
+      and the extra names are listed for every answer.
+    why_not_trivial: "A third caller, AppContext.pop in src/flask/ctx.py, calls the same method and is excluded by the file scope, so the whole-repository answer (3) differs from the asked one (2); the receiver is a local variable holding a `_CollectErrors()`."
