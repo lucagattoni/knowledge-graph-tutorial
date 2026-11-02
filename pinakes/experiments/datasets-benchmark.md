@@ -47,10 +47,11 @@ Run `20261030_1826-baseline-pypi-0.32.8`: 2,255 answerable and 301 null question
 ## What its README says it cannot show
 
 - **Scope:** MultiHop-RAG only, Pinakes 0.32.8 with its defaults, one machine, nothing tuned [2].
-- **The questions:** per the dataset's paper, GPT-4 generated the queries and answers [3]. The null questions are
-  worded differently from the rest, which is why the abstention result was re-checked on the 18 without tells [2].
-  (The benchmark's owning session also calls the null questions "templated"; I did not find that word in either
-  README I read, so it is not repeated as a finding here.)
+- **The questions:** per the dataset's paper, GPT-4 generated the queries and answers, and the benchmark did not
+  check them ("can be wrong or leading") [3]. The 301 null questions are written differently from the 2,255
+  answerable ones: 144 (47.8%) mention a "letter" against 0; 184 (61.1%) contain "Considering the information"
+  against 2; 211 (70.1%) name no news outlet against 14 [3]. That is why the abstention result was re-checked on the
+  18 null questions without these tells [2].
 - **The headline measure** is "every gold article in the first 8 passages" (43.4%). "At least one" (96.8%) is
   Pinakes' own harness definition of a hit and is the loose measure; do not quote it alone [2].
 - **The filter results use oracle filters** built from the gold articles' own metadata [2].
@@ -66,7 +67,8 @@ Run `20261030_1826-baseline-pypi-0.32.8`: 2,255 answerable and 301 null question
 - **P3** in [what to measure next](next.md#p3-public-dataset-baselines-for-the-free-retrieval-path) asked for the
   free path against BM25 alone on a public dataset. The free path now has numbers on MultiHop-RAG in this
   repository. A **BM25-alone arm is unstated** in the README (a search for "BM25 alone" or "BM25-only" found
-  none), so the comparison P3 named is not shown there.
+  none), and the repository's `configs/` holds only `baseline`, `baseline-fastembed` and `metadata-prefix`, plus
+  the model pins [5]; all three are the full free pipeline. So the comparison P3 named is not shown there.
 - **P4** (the deep-loop pilot) used a different corpus and three questions, so nothing in the two can be compared;
   the benchmark lists the deep loop as not run [2].
 - The page [what Pinakes has measured](README.md) is built from Pinakes' own documents and does not include these
@@ -76,10 +78,12 @@ Run `20261030_1826-baseline-pypi-0.32.8`: 2,255 answerable and 301 null question
 
 1. https://github.com/lucagattoni/pinakes-datasets-benchmark : repository metadata through the GitHub API; `main` is `9941f58`, committed 20261031 23:33 UTC (read 20261102 08:56 UTC)
 2. https://github.com/lucagattoni/pinakes-datasets-benchmark/blob/main/README.md : 215 lines, read in full (read 20261102 08:54 UTC)
-3. https://github.com/lucagattoni/pinakes-datasets-benchmark/blob/main/datasets/multihop-rag/README.md : the licence lines and the line saying who generated the questions (read 20261102 08:56 UTC)
+3. https://github.com/lucagattoni/pinakes-datasets-benchmark/blob/main/datasets/multihop-rag/README.md : the licence lines, the line saying who generated the questions, and the table of how null questions differ (lines 98 to 108; read 20261102 08:56 and 09:00 UTC)
 4. https://github.com/lucagattoni/pinakes-datasets-benchmark/tree/main/runs : directory listing (read 20261102 08:55 UTC)
+5. https://github.com/lucagattoni/pinakes-datasets-benchmark/tree/main/configs : directory listing (read 20261102 09:00 UTC)
 
 [1]: https://github.com/lucagattoni/pinakes-datasets-benchmark
 [2]: https://github.com/lucagattoni/pinakes-datasets-benchmark/blob/main/README.md
 [3]: https://github.com/lucagattoni/pinakes-datasets-benchmark/blob/main/datasets/multihop-rag/README.md
 [4]: https://github.com/lucagattoni/pinakes-datasets-benchmark/tree/main/runs
+[5]: https://github.com/lucagattoni/pinakes-datasets-benchmark/tree/main/configs
