@@ -133,6 +133,30 @@ Fixed for every stage, so nothing is chosen after a result:
 | F6 | **A dress rehearsal of the whole ladder** against the fake paid upstream, including a run that hits the cap and a run where calls are voided | It stops at the cap and writes a complete log |
 | F7 | **A watchdog** that runs beside every paid stage: it polls the gateway's summary and reads the body log, and stops the runner and the gateway the moment a stop rule fires. It reads `usage.completion_tokens_details.reasoning_tokens` and `finish_reason` from response bodies, which the gateway's own log does not hold | A fake upstream that produces each condition (reasoning tokens, a length stop, voided calls, repeated requests) makes it stop within one poll; the SDKs' own retries cannot hold it up |
 
+## Stage 0 status (updated 20261102 22:10 UTC)
+
+Built by Sonnet builders and verified by me (tests re-run, the new pieces driven against a real gateway process and a fake
+provider, deliberate breakages of my own). Nothing here has met a real provider.
+
+| Item | State | Commit |
+|---|---|---|
+| F1 gateway: `allow_request_defaults`, `output_limit_default`, and `key_file` (added during the work: the gateway reads the key itself) | Done; 124 gateway tests | `1e1b37c` |
+| F2 hosted setup for the four runners (`--hosted-profile`), canary of the key | Done; the four runners reproduce their rehearsals through a fake paid upstream | `f4c28b2` |
+| F4 free pre-flight | Done; returns the run's allowance and the cumulative cap for the gateway config | `3657dab` |
+| F7 watchdog | Done; also stops whole process groups | `3657dab` |
+| F5 provider terms | OpenAI's data page read (above); Anthropic's only before a repeat | this page |
+| F3 stage-A replay script and the durable copy of the requests | In progress | |
+| F8 (added) the stage driver: pre-flight, run profile, runner in its own session, watchdog beside it, reports | In progress | |
+| F6 dress rehearsal of the whole ladder against the fake paid upstream | After F3 and F8 | |
+
+Changes to the plan that the work made necessary, all in the direction of safer: the pre-flight returns two numbers, the run's
+**allowance** (what it may spend) and the **cap for the gateway config** (the ledger's spend plus the allowance, because a resumed
+gateway compares its cap with the whole log); the watchdog takes `--since`, so a stage's counts and spend are cumulative across its
+runs and ignore earlier stages; the profile refuses a zero price. **A residual risk, stated plainly:** the key file is readable by any
+process of the same user, including the builders, which run as that user; what is guaranteed is that the key is never handed to
+them (not in their environment, arguments, logs or results; the canary test checks this), not that a hostile builder could not open
+the file.
+
 ## Stop rules, fixed in advance
 
 - Stop everything and report on: any provider error other than one retried 429 or 5xx; any gateway refusal; a call whose usage is
