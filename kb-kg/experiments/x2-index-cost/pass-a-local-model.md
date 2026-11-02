@@ -2,7 +2,8 @@
 
 **Status (20261102 15:35 UTC): the owner chose `granite4.2:8b`; the model is installed, the four runners are built and agree
 with the stub rehearsals through the gateway, and each builder has indexed one document with the real model (results below).
-No longer run has started: the arithmetic below says a full set would take about ten hours, so it waits for the owner.**
+The owner chose option B below (every builder to 20 documents, about ten hours by my arithmetic) and the run started at
+20261102 15:38 UTC; results are not in yet.**
 The stub [rehearsals](README.md) counted what each builder sends. Pass A lets a real local model answer, through the [metering gateway](../../../tools/metering_gateway.md),
 so that output tokens, retries and the calls that depend on the model's text become measurable. It costs no money. Its
 numbers are for one small local model, not for a hosted one; what it can and cannot show is at the end.
@@ -166,6 +167,26 @@ checkpoint is a fresh index run). One sample each, and the runaway answers do no
 | nano-graphrag | does not get past document 1 with this model | | |
 | **All, to 5 documents** | **about 1.8 h** | | |
 | **All, to 20 documents** | | **about 10.5 h** | |
+
+## How the full run was launched
+
+Decision of 20261102 15:37 UTC (option B). One builder at a time, in this order: nano-graphrag (it is expected to stop at
+document 1), LightRAG, fast-graphrag, Microsoft GraphRAG. Each runs under its own interpreter with a stripped environment
+(`env -i`, an empty home directory) and the arguments below; the runner headers give the rest.
+
+```
+common:   --upstream-url http://127.0.0.1:11434/v1 --model granite4.2-8b-16k-cap --embed-model qwen3-embedding:0.6b
+          --checkpoints 1,5,20 --chat-default reasoning_effort=none
+nano:     --preflight require --max-async 2 --client-timeout-s 3600
+lightrag: --preflight-min-ctx 16384 --llm-max-async 2 --llm-timeout 1800
+fast:     --preflight-min-ctx 16384 --llm-concurrency 2 --llm-timeout-s 3600
+ms:       --concurrency 2 --request-timeout-s 3600 --child-timeout-s 43200
+```
+
+Two settings differ from the one-document runs. fast-graphrag was given a concurrency of 2 (its default sends every chunk
+of a document at once, and a queue in Ollama could then exceed the timeout). Microsoft GraphRAG's limit on one index run
+was raised from 6 hours to 12, because my estimate for its 20-document run is 6.2 hours. The Mac was kept awake with
+`caffeinate -i`.
 
 ## Decision for the owner
 

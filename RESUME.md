@@ -1,12 +1,17 @@
 # Resume
 
-Last updated 20261102 15:45 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261102 15:50 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
 ## State
 
-The first full pass is written, reviewed and pushed. Nothing is running.
+The first full pass is written, reviewed and pushed. **Running since 20261102 15:38 UTC: X2 pass A, all four builders
+to 20 documents on a local model (option B, about 10 hours by my arithmetic; free, nothing paid).** The order, arguments and
+settings are on [the pass-A page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md#how-the-full-run-was-launched); outputs
+are in the session's scratch directory, outside the repository. If it stopped, a finished builder's result JSON is in
+that directory; rerun an unfinished builder from scratch (a runner has no resume), and read
+`python tools/exp/passa_common.py facts WORKDIR/gateway` for how its answers ended.
 
 | Part | State |
 |---|---|
