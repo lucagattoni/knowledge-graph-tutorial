@@ -1,9 +1,11 @@
 # Resume: the new documentation (`docs/`)
 
-Last updated 20261103 00:00 UTC. Branch `worktree-20261102_1805-docs-restructure-proposal`, based on `origin/main`
-at `15ccdea`; **pushed and open as [PR #1](https://github.com/lucagattoni/knowledge-graph-tutorial/pull/1); not merged.** The
-experiments session pushes its D-31 row and a `RESUME.md` update to `main` first; rebase over it before merging.
-Decisions: row D-29 in [`DECISIONS.md`](../DECISIONS.md);
+Last updated 20261103 01:08 UTC. **Merged to `main` on 20261103 01:07 UTC as `804c814`
+([PR #1](https://github.com/lucagattoni/knowledge-graph-tutorial/pull/1)) on the owner's instruction "merge it"; the docs workflow
+run for that commit succeeded (build and deploy) and the deployed site's home page and a deeper page answered 200, the deeper one
+with the newest wording.** The branch was `worktree-20261102_1805-docs-restructure-proposal`; before the merge the experiments
+session's commits up to `6a2e30e` were merged into it and `docs/experiments/` follows them. Auto-fix was not enabled (the app
+refused: the session does not run on this computer). Decisions: row D-29 in [`DECISIONS.md`](../DECISIONS.md);
 the owner's structure answers: [`20261102_1915-docs-from-scratch-plan.md`](20261102_1915-docs-from-scratch-plan.md); the lists
 and the evidence for them: [`20261102_1951-docs-catalogue.md`](20261102_1951-docs-catalogue.md) and [`evidence/`](evidence/);
 the rules every page follows: [`20261102_1929-docs-writing-spec.md`](20261102_1929-docs-writing-spec.md).
@@ -19,18 +21,17 @@ the rules every page follows: [`20261102_1929-docs-writing-spec.md`](20261102_19
 
 ## Waiting on the owner
 
-1. **Review in a local preview** (the owner's condition S-6): the preview was served and the owner asked for the push and the PR;
-   how much of it was read is unstated. Nothing is published until the PR is merged.
+1. **Review in a local preview** (the owner's condition S-6): the preview was served; the owner then asked for the push, the PR and
+   the merge; how much of the 293 pages was read is unstated. The site is now published.
 2. **The lists** (eras, trends, 37 projects, 68 papers, 26 datasets, 24 benchmarks) were chosen by the assistant under the
    owner's delegation, not approved item by item.
-3. **Merging to `main`** deploys the site (CI). Before it lands: fetch, rebase over the experiments session's newest commits,
-   re-run the checks, and tell that session the file set (`mkdocs.yml`, `docs-site/**`, `.github/workflows/docs.yml`,
-   `tools/build_docs*.py`, `README.md`, `docs/**`, `plans/**`, one `DECISIONS.md` row, one `RESUME.md` row).
-4. **`CLAUDE.md` still describes the old structure.** Proposed edit (not applied): the title becomes "KB/KG documentation:
-   project instructions"; add to Structure: "`docs/` is the documentation and the site's home; `kb-kg/`, `pinakes/` and
-   `DECISIONS.md` are the archive and are never edited to match it. Add a project, paper, dataset, benchmark or trend as a page
-   plus a row in its chapter's `changes.tsv`; then `uv run tools/build_docs.py` (never edit a generated section by hand;
-   `--check` must exit 0). Page rules: `plans/20261102_1929-docs-writing-spec.md`."
+3. **Done:** the merge to `main` (above). Each later change to a fact that `docs/experiments/` quotes needs the page refreshed;
+   the experiments session was told the file set and to tell the documentation session the paths it changes. A push to `main`
+   deploys the site when it touches `docs/**`, `DECISIONS.md`, `kb-kg/**`, `pinakes/**`, `tools/build_docs.py`,
+   `tools/test_build_docs.py`, `mkdocs.yml`, `docs-site/**` or `.github/workflows/docs.yml` (the workflow's own path filter).
+4. **Done 20261103 01:14 UTC, at the owner's yes:** `CLAUDE.md` now has the title "KB/KG documentation: project instructions" and
+   Structure bullets for `docs/` and the archive, how to add a page and run the generator, the `docs/experiments/` refresh rule
+   and the fact that a push to `main` which touches the site's paths deploys it.
 5. **Safety gate false positive:** the pattern for local paths (`/home/<name>/`) matches real web addresses that contain
    `/home/` (two author copies of papers on a university site were replaced by DOIs). A narrower pattern is the owner's call.
 6. **Private-name list:** `tools/public-safe-patterns.local.txt` does not exist in either checkout, so the gate does not check
