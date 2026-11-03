@@ -1,6 +1,10 @@
 # Resume: the new documentation (`docs/`)
 
-Last updated 20261103 01:58 UTC (the owner's review of the lists, item 2 below, and the work after the merge: a tenth trend, five project pages, the experiments pages at `37c922c`). **Merged to `main` on 20261103 01:07 UTC as `804c814`
+Last updated 20261103 08:48 UTC. **Second merge: PR 2 (the owner's review of the lists, item 2 below: a tenth trend, five project
+pages, the experiments pages at `37c922c`, each new page re-read against its sources by a second agent) was merged to `main` on
+20261103 08:47 UTC as `ba1247f` on the owner's instruction "Merge now"; the docs workflow run for that commit succeeded (build and
+deploy), and the deployed trend page, a new project page and the trends overview answered 200 with the new content.**
+**First merge, 20261103 01:07 UTC as `804c814`
 ([PR #1](https://github.com/lucagattoni/knowledge-graph-tutorial/pull/1)) on the owner's instruction "merge it"; the docs workflow
 run for that commit succeeded (build and deploy) and the deployed site's home page and a deeper page answered 200, the deeper one
 with the newest wording.** The branch was `worktree-20261102_1805-docs-restructure-proposal`; before the merge the experiments
