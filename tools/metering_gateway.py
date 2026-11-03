@@ -14,7 +14,7 @@ refuses a call that would take spend past the cap before forwarding anything, fo
 record per call from the provider's own usage fields.
 
 Standard library only (threaded http.server and http.client). Binds 127.0.0.1 only. See tools/metering_gateway.md
-for the config, the log record and what it does not do. It has been tested against fake upstreams only.
+for the config, the log record, what it does not do and what has and has not been seen against a real provider.
 """
 
 from __future__ import annotations
@@ -43,7 +43,7 @@ from pathlib import Path
 from typing import Any, Callable, Mapping
 from urllib.parse import urlsplit
 
-__version__ = "1.2.0"
+__version__ = "1.3.0"
 
 BIND_HOST = "127.0.0.1"
 KEY_FILE_MAX_BYTES = 4096
@@ -468,7 +468,8 @@ def _int(value: Any) -> int | None:
 
 
 def openai_usage(usage: Any, kind: str) -> Usage | None:
-    """Usage from an OpenAI-style `usage` object; None when it is absent or unusable."""
+    """Usage from an OpenAI-style `usage` object; None when it is absent or unusable. Of `prompt_tokens`, `prompt_tokens_details.cached_tokens`
+    are billed reads and `.cache_write_tokens` are billed writes (a model's `cache_write_per_mtok`); the rest is plain input."""
     if not isinstance(usage, dict):
         return None
     prompt = _int(usage.get("prompt_tokens"))
@@ -477,13 +478,17 @@ def openai_usage(usage: Any, kind: str) -> Usage | None:
     completion = 0 if kind == "embeddings" else _int(usage.get("completion_tokens"))
     if completion is None:
         return None
-    cached = None
+    cached = written = None
     details = usage.get("prompt_tokens_details")
     if isinstance(details, dict):
         cached = _int(details.get("cached_tokens"))
-    if cached is not None and cached > prompt:
+        if details.get("cache_write_tokens") is not None:  # null or absent: no figure; anything else must be a count
+            written = _int(details.get("cache_write_tokens"))
+            if written is None:
+                return None
+    if (cached or 0) + (written or 0) > prompt:
         return None
-    return Usage(prompt, completion, cached, None)
+    return Usage(prompt, completion, cached, written)
 
 
 def anthropic_usage(usage: Any) -> Usage | None:

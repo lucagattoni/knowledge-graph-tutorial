@@ -12,10 +12,12 @@ through. It exists because the third-party builders an experiment runs cannot do
    real key is read by the gateway itself, from its own environment or from a file only its owner can read, put on
    the outgoing request, and never printed or logged.
 
-**Status: used against one real provider.** On 20261103 the first three stages of a paid pilot sent 443 answered requests (and three
-rejected ones) to OpenAI's `gpt-6-luna` for about USD 0.263; what that showed is in
+**Status: used against one real provider.** On 20261103 the four stages of a paid pilot sent 1,751 answered requests (and three
+rejected ones) to OpenAI's `gpt-6-luna`; the gateway's total was USD 1.105, **about 0.079 too low** because versions up to 1.2.0 did not
+price OpenAI's cache writes; what that showed is in
 [What this leaves unchecked](#what-this-leaves-unchecked). Everything else below was tested against fake upstreams on loopback,
-with invented prices and made-up keys. Version 1.2.0 adds `translate_max_tokens`.
+with invented prices and made-up keys. Version 1.2.0 added `translate_max_tokens`; version 1.3.0 prices OpenAI's
+`prompt_tokens_details.cache_write_tokens` (found in the pilot's stage D; no real provider has met 1.3.0).
 
 Standard library only (threaded `http.server`, `http.client`); no dependency to install. Python 3.11 or newer.
 Binds `127.0.0.1` and nothing else.
@@ -99,7 +101,7 @@ upstream = "anthropic-main"
 input_per_mtok = 1.00
 output_per_mtok = 5.00
 cached_input_per_mtok = 0.10        # Anthropic cache reads
-cache_write_per_mtok = 1.25         # optional; Anthropic cache creation; without it priced as plain input
+cache_write_per_mtok = 1.25         # optional; Anthropic cache creation, OpenAI cache writes (1.3.0); without it priced as plain input
 source_url = "https://example.invalid/pricing"
 read_at = "20261102 10:00"
 ```
@@ -285,7 +287,7 @@ float. Bodies and the client's headers are never in this file.
 | `input_tokens` | all prompt tokens, cached ones included (Anthropic: input + cache read + cache creation) |
 | `output_tokens` | completion tokens (0 for embeddings); null when no usage |
 | `cached_input_tokens` | cached prompt tokens; null if the provider gives none |
-| `cache_creation_input_tokens` | Anthropic cache writes; null otherwise |
+| `cache_creation_input_tokens` | cache writes: Anthropic `cache_creation_input_tokens`, OpenAI `prompt_tokens_details.cache_write_tokens` (from 1.3.0; before it, always null for OpenAI); null if the provider gives no figure |
 | `cost`, `currency` | cost in `currency`, from the provider's usage and the configured prices |
 | `reserve` | the reservation made before forwarding (null if the call never got that far) |
 | `voided`, `usage_missing`, `streamed` | see the table above; `streamed` is true when the response was a stream |
@@ -319,9 +321,13 @@ Read 20261102 10:30 to 10:31 UTC. None of it was checked against a live response
 | Anthropic | `https://platform.claude.com/docs/en/build-with-claude/prompt-caching` (read 20261102 10:30 UTC; the first 100,000 of 165,895 characters) | `input_tokens` counts only tokens after the last cache breakpoint; total input = `cache_read_input_tokens + cache_creation_input_tokens + input_tokens`; cache writes cost 1.25x (5 minute) or 2x (1 hour) of base input, cache reads a fraction of it that differs by model |
 | OpenAI | The provider's documentation returned HTTP 403 to the fetch (20261102 10:30 UTC). Used instead: the `openai-python` type definitions on its `main` branch, which carry the header "generated from our OpenAPI spec": `src/openai/types/completion_usage.py`, `src/openai/types/chat/chat_completion_stream_options_param.py`, `src/openai/types/create_embedding_response.py`, `src/openai/types/chat/chat_completion_chunk.py` (read 20261102 10:31 UTC; commit `unstated`) | `usage.prompt_tokens`, `completion_tokens`, `prompt_tokens_details.cached_tokens`; embeddings have `usage.prompt_tokens` only; with `include_usage` an extra chunk with empty `choices` carries the total, other chunks carry `usage: null`, and an interrupted stream may lack it |
 
-Two readings are inferences, not statements of the sources: that OpenAI's `cached_tokens` is a subset of
-`prompt_tokens` (the SDK says "Cached tokens present in the prompt"; the gateway treats a larger value as unusable
-usage), and that Anthropic cache writes are priced at the single `cache_write_per_mtok` whatever their TTL.
+| OpenAI | `https://developers.openai.com/api/docs/guides/prompt-caching` and `/models/gpt-6-luna` (read 20261103; the second read of the guide at 19:08 UTC repeated a read made a few minutes earlier) | "For GPT-5.6 and later, cache writes cost 1.25× the standard, uncached input-token rate for the default 30-minute lifetime" (the model page: cache writes USD 0.125, input 0.1, cached input 0.01, output 0.5 per million); the guide's cost helper: `ordinary_input_tokens = input_tokens - cached_tokens - cache_write_tokens`; "`cached_tokens` counts billed reads and excludes tokens charged as writes". The guide names the Responses fields `input_tokens_details.cached_tokens` and `.cache_write_tokens`; the Chat Completions answers of the pilot carried `prompt_tokens_details.cached_tokens` and `.cache_write_tokens` |
+
+Two readings are inferences, not statements of the sources: that Anthropic cache writes are priced at the single
+`cache_write_per_mtok` whatever their TTL, and that the Chat Completions field `prompt_tokens_details.cache_write_tokens` means the same as
+the Responses field of that name in the guide (the pilot's totals are consistent with it: no answer had reads plus writes above the prompt).
+That OpenAI's `cached_tokens` is a subset of `prompt_tokens` was an inference until the guide's helper above; the gateway treats reads plus
+writes above the prompt as unusable usage.
 
 ## What it does not do
 
@@ -340,7 +346,10 @@ usage), and that Anthropic cache writes are priced at the single `cache_write_pe
 - **Prices are the owner's input.** The gateway cannot tell that a price is stale; it records the source and time
   the owner wrote down.
 - **Modalities and extras are not priced separately.** Image or audio tokens, Anthropic server tools, and the
-  1-hour cache TTL premium are counted only as far as the provider's total token fields cover them.
+  1-hour cache TTL premium are counted only as far as the provider's total token fields cover them. OpenAI's 12-hour cache
+  option, written at twice the 30-minute price (USD 0.25 against 0.125 for `gpt-6-luna`), cannot be told apart in the usage
+  from the default 30-minute write; a model has one `cache_write_per_mtok`, so a request that asked for 12 hours would be
+  under-priced (the pilot's requests did not ask: the builders send no cache options and the gateway forwards bodies unchanged).
 - **The request body is forwarded unchanged**, except for what the config asks the gateway to add or change: the model's
   `request_defaults` (on a paid upstream only with `allow_request_defaults`), its `output_limit_default`, its
   `translate_max_tokens` (the same condition), and `stream_options.include_usage`. The recorded hash and `bytes_in` are of the body the client sent, and the body log
@@ -348,15 +357,23 @@ usage), and that Anthropic cache writes are priced at the single `cache_write_pe
 
 ## What this leaves unchecked
 
-- It has been used against **one real provider**: OpenAI's `gpt-6-luna`, 20261103, the first three stages of a paid pilot (the
-  first ten requests and the re-test are the ones listed here; the later 432 answered requests, from four builders, all returned 200 with finish
+- It has been used against **one real provider**: OpenAI's `gpt-6-luna`, 20261103, the four stages of a paid pilot (the
+  first ten requests and the re-test are the ones listed here; the later 1,740 answered requests, from four builders, all returned 200 with finish
   reason `stop`). Observed there: Chat Completions with `reasoning_effort: none`, `max_completion_tokens`, `response_format`
   `json_object` and strict `json_schema` all accepted; `usage` with `prompt_tokens_details.cached_tokens` and
-  `.cache_write_tokens` and `completion_tokens_details.reasoning_tokens`; a cost computed from those fields that equals a
-  recomputation from the tokens; a 401 `invalid_api_key` answered with a standard error body; a refusal at a tiny cap
-  that forwarded nothing. **Not observed:** streaming, the embeddings route, Anthropic, a 429 or 5xx from a provider, a
+  `.cache_write_tokens` and `completion_tokens_details.reasoning_tokens`; a 401 `invalid_api_key` answered with a standard error body;
+  a refusal at a tiny cap that forwarded nothing; the labelled translation of `max_tokens: null` (13 requests of one builder in stage D, all
+  answered 200). **Not observed:** streaming, the embeddings route, Anthropic, a 429 or 5xx from a provider, a
   timeout, and the provider's own billing (OpenAI's usage page is the only check that is not the gateway's own numbers, and the
   owner makes that comparison by hand).
+- **Version 1.2.0 did not price OpenAI's cache writes, and the pilot's own check could not show it.** It read
+  `prompt_tokens_details.cached_tokens` and ignored `.cache_write_tokens`, which every answer carried, so it priced the written tokens as
+  plain input (USD 0.10 per million) where the model's page says cache writes cost 1.25 times that (0.125). Over stages A to D OpenAI
+  reported 3,140,582 written tokens (2,540,573 of them in stage D), which is about USD 0.0785 of the gateway's USD 1.105 (7%) if the
+  bill follows the page; the stage-A check "the gateway's cost recomputed from the tokens equals its own" used the same fields the gateway
+  read, so it was circular on this point. Version 1.3.0 reads the field (unit tests; mutation check below). The pilot's figures are not
+  re-run: the results page gives the gateway's total and the total with the write price, from the answers' own token counts, side by side.
+  **Not observed:** 1.3.0 against a real provider, and the provider's own billing of the written tokens.
 - The unit tests use `http.client` and raw sockets. The real OpenAI and Anthropic Python SDKs have since been pointed
   at it, but only against fake upstreams written for the purpose (`tools/exp/gateway_sdk_e2e_openai.py`, 17 checks, and
   `tools/exp/gateway_sdk_e2e_anthropic.py`, 12 checks: chat, streaming, embeddings, the key swap, exact cost, the cap).
@@ -454,6 +471,12 @@ upstream without `allow_request_defaults`; the flag missing from the manifest; a
 `max_tokens` refused; the translation after the limit choice; and the profile, config, result-block, driver and stage-A copies of the
 flag. The survivor is equivalent: a bad `max_tokens` replaced by 1 before the rename leaves the bad value in `max_tokens`, where
 `max_output_tokens` refuses it all the same.
+
+**Mutation check of version 1.3.0 (OpenAI cache writes), 20261103**, same method (copies; each anchor matched once; the unmodified copy
+was green first). 12 mutants, 12 killed: the writes dropped from the usage; the reads-plus-writes check dropped, made to refuse exactly the
+prompt, or made to ignore the reads; a write figure that is not a count ignored; a null figure treated as unusable; the writes priced as plain
+input or counted twice; the wrong field name; the writes ignored when no cached figure is present; and a negative or a boolean count accepted.
+The two last mutate the shared integer reader, so other tests may kill them too.
 
 Two things the first check showed about the tests themselves. The lock mutant first survived: under CPython's global
 interpreter lock the check and the reservation are rarely interleaved by chance, so the concurrency tests now use
