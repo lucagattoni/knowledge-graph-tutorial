@@ -1,6 +1,10 @@
 # Resume: the new documentation (`docs/`)
 
-Last updated 20261103 08:48 UTC. **Second merge: PR 2 (the owner's review of the lists, item 2 below: a tenth trend, five project
+Last updated 20261103 10:47 UTC. **Third merge: PR 3 (the owner's answers to the four cases left open by the review: a Semantica page, a
+paper group for the new trend, a sentence on Open Knowledge Format; the RDF-star Index entry corrected) was merged to `main` on
+20261103 10:45 UTC as `c31f54e` on the owner's instruction "Merge now"; the docs workflow run for that commit succeeded (build and
+deploy), and the deployed Semantica page, the new paper group and the corrected RDF-star entry answered 200 with the new content.**
+**Second merge: PR 2 (the owner's review of the lists, item 2 below: a tenth trend, five project
 pages, the experiments pages at `37c922c`, each new page re-read against its sources by a second agent) was merged to `main` on
 20261103 08:47 UTC as `ba1247f` on the owner's instruction "Merge now"; the docs workflow run for that commit succeeded (build and
 deploy), and the deployed trend page, a new project page and the trends overview answered 200 with the new content.**
