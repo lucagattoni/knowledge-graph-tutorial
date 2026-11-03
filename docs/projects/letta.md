@@ -68,6 +68,7 @@ MemoryAgentBench ran MemGPT through its archival-insert and send-message functio
 **Projects**
 
 - [MemOS](memos.md)
+- [memU](memu.md)
 - [MIRIX](mirix.md)
 - [Projects](README.md)
 

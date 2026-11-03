@@ -3,7 +3,7 @@ type: trend
 shift: retrieving documents -> remembering across sessions
 status: growing
 order: 7
-updated: 20261102 23:17 UTC
+updated: 20261103 01:57 UTC
 ---
 
 # Agent memory: from retrieving documents to remembering across sessions
@@ -62,11 +62,16 @@ Persistent memory is an attack surface and a compliance object. MINJA showed tha
 | [OpenViking](../projects/openviking.md) | virtual filesystem [10] | AGPL-3.0 since 20260330; Apache-2.0 before [14][40] | 41,197 [1] |
 | [Cognee](../projects/cognee.md) | graph, vector and relational stores [7] | Apache-2.0 [14] | 32,934 [1] |
 | [Graphiti](../projects/graphiti.md) | temporal context graph [5] | Apache-2.0 [14] | 32,373 [1] |
+| [Supermemory](../projects/supermemory.md) | hosted memory API; the public repository has docs, an MCP server and plugins, not the engine [41] | MIT for the repository; the self-hosted binary's licence is unstated [41] | 31,471 [1] |
+| [TencentDB Agent Memory](../projects/tencentdb-agent-memory.md) | team memory hub with four assets: chat memory, skills, wiki, code graph [41] | MIT from the LICENSE file; GitHub shows NOASSERTION [41] | 30,258 [1] |
 | [Letta](../projects/letta.md) | self-managed memory in git [9] | Apache-2.0 [14] | 25,294 (7 commits in 90 days; the old server is retired) [1][8] |
+| [Memori](../projects/memori.md) | SDKs and a Rust core; conversations go to the vendor's hosted service by default [41] | reworded Apache 2.0; GitHub shows NOASSERTION [41] | 17,241 [1] |
+| [memU](../projects/memu.md) | embedding-only sidecar for coding agents; the host agent writes Markdown [41] | Apache-2.0 text with an edited grant; GitHub shows NOASSERTION [41] | 14,581 [1] |
+| [EverOS](../projects/everos.md) | Markdown as source of truth, with derived indexes [41] | Apache-2.0 [41] | 13,721 [1] |
 | [MemOS](../projects/memos.md) | memory operating system [12] | Apache-2.0 [14] | 12,200 [1] |
 | [MIRIX](../projects/mirix.md) | six memory types, one agent each [13] | Apache-2.0 since 20250711; MIT before [14][40] | 3,456 [1] |
 
-Three of the nine files changed licence in 2025 and 2026 (claude-mem, OpenViking, MIRIX), read from the commit history of each `LICENSE` file [40]; the other six show no change in those years. The moves of claude-mem and OpenViking sit beside hosted or reserved commercial parts and are told on [features in and out](./features-in-and-out.md).
+The last five rows (Supermemory, TencentDB Agent Memory, Memori, memU, EverOS) were added at the owner's review of 20261103; their approach and licence cells come from their project pages [41], and the licence-history check of [40] was not run for them. Of the other nine files, three changed licence in 2025 and 2026 (claude-mem, OpenViking, MIRIX), read from the commit history of each `LICENSE` file [40]; the other six of the nine show no change in those years. The moves of claude-mem and OpenViking sit beside hosted or reserved commercial parts and are told on [features in and out](./features-in-and-out.md).
 
 ## Fundamental papers
 
@@ -149,3 +154,4 @@ Experiments in this documentation that test this trend: none.
 38. https://arxiv.org/abs/2410.10813 : LongMemEval (Wu, Wang, Yu and 3 more; 20241014; ICLR 2025) (read 20261102 20:13 UTC)
 39. https://github.com/HKUDS/LightRAG : README feature "Incremental Updates & Selective Deletion" (read 20261102 21:01 UTC)
 40. https://api.github.com/repos/OWNER/NAME/commits?path=LICENSE and the file text at each commit (authenticated CLI; OWNER/NAME is each of the nine repositories of the table, named in sources 5 to 13): claude-mem, binary licence 20250906, compiled-form licence 20250909, AGPL-3.0 20250911 and 20251003, Apache-2.0 20260508 (commit 36b0929f); OpenViking, Apache-2.0 20260129, AGPL-3.0 20260330 (commit ce998873); MIRIX, MIT 20250416, Apache-2.0 20250711 (commit a5944e0c); the other six: no change of licence type in 2025 and 2026 (read 20261102 22:56 to 22:59 UTC)
+41. The project pages [supermemory](../projects/supermemory.md), [tencentdb-agent-memory](../projects/tencentdb-agent-memory.md), [memori](../projects/memori.md), [memu](../projects/memu.md) and [everos](../projects/everos.md) of this documentation, each written from primary sources read on 20261103 between 01:30 and 01:50 UTC: the approach in one phrase and the licence from each repository's `LICENSE` file, with the details, the licence analysis and the evidence on the pages; stars are the snapshot's [1]

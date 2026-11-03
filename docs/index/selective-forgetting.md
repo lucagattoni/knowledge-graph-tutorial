@@ -40,6 +40,10 @@ Still moving: [Agent memory](../trends/agent-memory.md).
 
 <!-- BEGIN GENERATED: appears-in -->
 
+**Projects**
+
+- [Supermemory](../projects/supermemory.md)
+
 **Benchmarks**
 
 - [MemoryAgentBench](../benchmarks/memoryagentbench.md)

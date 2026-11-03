@@ -55,10 +55,13 @@ Stonebraker and Pavlo write that inverted-index search engines "have been suppla
 - [MCP reference servers](../projects/mcp-servers.md)
 - [Mem0](../projects/mem0.md)
 - [Memgraph](../projects/memgraph.md)
+- [memU](../projects/memu.md)
 - [Neo4j](../projects/neo4j.md)
 - [neo4j-graphrag-python](../projects/neo4j-graphrag-python.md)
 - [PageIndex](../projects/pageindex.md)
 - [Projects](../projects/README.md)
+- [Supermemory](../projects/supermemory.md)
+- [TencentDB Agent Memory](../projects/tencentdb-agent-memory.md)
 
 **Papers**
 

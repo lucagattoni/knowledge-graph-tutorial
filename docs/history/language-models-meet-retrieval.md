@@ -2,7 +2,7 @@
 type: era
 period: 2018-2022
 order: 7
-updated: 20261102 23:11 UTC
+updated: 20261103 01:52 UTC
 ---
 
 # Language models meet retrieval (2018-2022)
@@ -35,7 +35,7 @@ Before 2018 the common baseline for text search matched words ([BM25](../index/b
 
 - **JSON-LD 1.1** became a W3C Recommendation on 16 July 2020 [14]. It is a JSON serialization of [Linked Data](../index/linked-data.md). See [JSON-LD](../index/json-ld.md).
 - **Standing.** Hitzler (2020) says the field's "grand goal" has "not been achieved yet" [11]. No other standard of 2018-2022 appears in the pages read.
-- **Moving.** RDF 1.2, SPARQL 1.2 and SHACL 1.2 are W3C drafts of 2026, not yet Recommendations [15][16][17]. See [trends](../trends/README.md).
+- **Moving.** RDF 1.2, SPARQL 1.2 and SHACL 1.2 are W3C drafts of 2026, not yet Recommendations [15][16][17]. See [Semantic web standards](../trends/semantic-web-standards.md).
 
 ### Databases and search
 

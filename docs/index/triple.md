@@ -2,7 +2,7 @@
 type: index
 kind: concept
 aliases: [RDF triple, triplet, RDF statement]
-updated: 20261102 22:51 UTC
+updated: 20261103 01:52 UTC
 ---
 
 # Triple
@@ -20,7 +20,7 @@ In RDF 1.1 Concepts, an RDF triple "consists of three components": a subject (an
 - **2013.** Bordes et al. write "triplets (h, ℓ, t)" of two entities and a relationship [6]. See [knowledge graph embedding](./knowledge-graph-embedding.md).
 - **20140225.** RDF 1.1 Concepts becomes a Recommendation [1]. Era: [Knowledge graphs at scale](../history/knowledge-graphs-at-scale.md).
 - **20250529.** AutoSchemaKG has language models extract "knowledge triples" at scale, reporting 5.9 billion edges (first-party) [8]. See [LLM graph construction](../trends/llm-kg-construction.md).
-- **20260407.** RDF 1.2 Concepts, a Candidate Recommendation Snapshot, adds the triple term: a triple used as a term in the object position of another triple [4]. W3C's history shows no later step, and RDF 1.1 stays the latest Recommendation [4][5]. See [RDF-star](./rdf-star.md).
+- **20260407.** RDF 1.2 Concepts, a Candidate Recommendation Snapshot, adds the triple term: a triple used as a term in the object position of another triple [4]. W3C's history shows no later step, and RDF 1.1 stays the latest Recommendation [4][5]. See [RDF-star](./rdf-star.md); still moving: [Semantic web standards](../trends/semantic-web-standards.md).
 
 ## Where sources disagree
 
@@ -38,9 +38,14 @@ In RDF 1.1 Concepts, an RDF triple "consists of three components": a subject (an
 
 <!-- BEGIN GENERATED: appears-in -->
 
+**Trends**
+
+- [Semantic web standards: from RDF 1.1 and RDF-star to RDF 1.2](../trends/semantic-web-standards.md)
+
 **Projects**
 
 - [HippoRAG](../projects/hipporag.md)
+- [Memori](../projects/memori.md)
 
 **Papers**
 

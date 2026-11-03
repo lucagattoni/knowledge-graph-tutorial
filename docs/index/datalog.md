@@ -39,6 +39,10 @@ No disagreement found in the sources read. They differ in emphasis: the textbook
 
 - [Knowledge systems: boom and bust](../history/knowledge-systems.md)
 
+**Trends**
+
+- [Semantic web standards: from RDF 1.1 and RDF-star to RDF 1.2](../trends/semantic-web-standards.md)
+
 **Index**
 
 - [Closed-world assumption](closed-world-assumption.md)

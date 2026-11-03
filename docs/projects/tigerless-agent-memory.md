@@ -78,6 +78,7 @@ The README itself says the answer-level experiments "do not establish an end-to-
 
 **Projects**
 
+- [EverOS](everos.md)
 - [Projects](README.md)
 
 **Index**

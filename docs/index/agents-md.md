@@ -44,6 +44,10 @@ Still moving: [Plain files as agent knowledge](../trends/plain-file-knowledge.md
 
 - [Plain files as agent knowledge: from databases and indexes to Markdown the model maintains](../trends/plain-file-knowledge.md)
 
+**Projects**
+
+- [memU](../projects/memu.md)
+
 **Index**
 
 - [Agent harness](agent-harness.md)

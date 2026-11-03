@@ -74,6 +74,7 @@ Active: pushed to within 90 days, not archived [1]. Latest release v0.5.3, 20261
 **Projects**
 
 - [Projects](README.md)
+- [Supermemory](supermemory.md)
 
 **Index**
 

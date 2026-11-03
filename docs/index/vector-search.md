@@ -59,6 +59,7 @@ Vector search finds the stored vectors that lie closest to a query vector. In th
 - [LlamaIndex](../projects/llama-index.md)
 - [LLM Wiki (nashsu)](../projects/llm-wiki-nashsu.md)
 - [Mem0](../projects/mem0.md)
+- [memU](../projects/memu.md)
 - [MIRIX](../projects/mirix.md)
 - [neo4j-graphrag-python](../projects/neo4j-graphrag-python.md)
 - [OpenViking](../projects/openviking.md)

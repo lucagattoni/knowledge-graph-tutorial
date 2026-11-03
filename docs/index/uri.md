@@ -2,7 +2,7 @@
 type: index
 kind: standard
 aliases: [Uniform Resource Identifier, Uniform Resource Locator, URL]
-updated: 20261102 21:25 UTC
+updated: 20261103 01:52 UTC
 ---
 
 # URI
@@ -23,7 +23,7 @@ RFC 3986 (STD 66, January 2005) opens: a URI is "a compact sequence of character
 - **200501.** RFC 3986 obsoletes RFC 2396. The RFC Editor lists it as an Internet Standard, updated by RFC 7320 and RFC 8820 [1][5]. RFC 3987 adds IRIs, the same idea over Unicode characters [6]. See [The semantic web and linked data](../history/semantic-web.md).
 - **20060727.** Berners-Lee's first linked-data rule: "Use URIs as names for things" [10]. See [linked data](./linked-data.md).
 - **20140225.** RDF 1.1 uses IRIs, "a generalization of URIs" [8].
-- **20260407, still moving.** The RDF 1.2 Candidate Recommendation Snapshot keeps IRIs per RFC 3987 and requires resolution per RFC 3986 [9]. See [the trends](../trends/README.md).
+- **20260407, still moving.** The RDF 1.2 Candidate Recommendation Snapshot keeps IRIs per RFC 3987 and requires resolution per RFC 3986 [9]. See [Semantic web standards](../trends/semantic-web-standards.md).
 
 ## Where sources disagree
 

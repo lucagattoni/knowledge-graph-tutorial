@@ -44,6 +44,7 @@ How to build it is also disputed. One single-author study of three Java code bas
 - [code-review-graph](../projects/code-review-graph.md)
 - [codebase-memory-mcp](../projects/codebase-memory-mcp.md)
 - [CodeGraph](../projects/codegraph.md)
+- [TencentDB Agent Memory](../projects/tencentdb-agent-memory.md)
 
 **Papers**
 

@@ -2,7 +2,7 @@
 type: era
 period: 2012-2017
 order: 6
-updated: 20261102 23:11 UTC
+updated: 20261103 01:52 UTC
 ---
 
 # Knowledge graphs at scale
@@ -33,7 +33,7 @@ A Semantic Web idea became a product term: companies built large graphs of entit
 ### Ontologies and the semantic web
 
 - **Linked Data cools.** In the early 2010s "shallow non-expressive schemas" appeared "a major obstacle to reuseability" [3]. schema.org (2011) had annotations on over 30% of pages in a 2015 report [3].
-- **The standards are revised.** OWL 2 Second Edition 20121211 [8], SPARQL 1.1 20130321 [9], RDF 1.1 20140225 [10], JSON-LD 1.0 20140116 [11] and SHACL 20170720 [12]. The Semantic Web Activity was "subsumed, in December 2013, by the W3C Data Activity" [13]. The 2026 drafts of RDF 1.2, SPARQL 1.2 and SHACL 1.2 still name RDF 1.1, SPARQL 1.1 and SHACL as the "Latest Recommendation" [14][15][16]; JSON-LD 1.0 has a successor [11]. The drafts themselves are still moving: see [trends](../trends/README.md).
+- **The standards are revised.** OWL 2 Second Edition 20121211 [8], SPARQL 1.1 20130321 [9], RDF 1.1 20140225 [10], JSON-LD 1.0 20140116 [11] and SHACL 20170720 [12]. The Semantic Web Activity was "subsumed, in December 2013, by the W3C Data Activity" [13]. The 2026 drafts of RDF 1.2, SPARQL 1.2 and SHACL 1.2 still name RDF 1.1, SPARQL 1.1 and SHACL as the "Latest Recommendation" [14][15][16]; JSON-LD 1.0 has a successor [11]. The drafts themselves are still moving: see [Semantic web standards](../trends/semantic-web-standards.md).
 
 ### Databases and search
 

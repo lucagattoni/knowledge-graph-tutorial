@@ -56,6 +56,7 @@ No disagreement found in the sources read. Dates need care, though. A revision n
 - [CodeGraph](../projects/codegraph.md)
 - [Cognee](../projects/cognee.md)
 - [Dify](../projects/dify.md)
+- [EverOS](../projects/everos.md)
 - [FalkorDB](../projects/falkordb.md)
 - [Graphify](../projects/graphify.md)
 - [GraphRAG SDK](../projects/graphrag-sdk.md)
@@ -66,6 +67,7 @@ No disagreement found in the sources read. Dates need care, though. A revision n
 - [LlamaIndex](../projects/llama-index.md)
 - [LLM Wiki (nashsu)](../projects/llm-wiki-nashsu.md)
 - [MCP reference servers](../projects/mcp-servers.md)
+- [Memori](../projects/memori.md)
 - [MIRIX](../projects/mirix.md)
 - [Neo4j](../projects/neo4j.md)
 - [OpenViking](../projects/openviking.md)
@@ -73,6 +75,8 @@ No disagreement found in the sources read. Dates need care, though. A revision n
 - [Projects](../projects/README.md)
 - [RAG-Anything](../projects/rag-anything.md)
 - [RAGFlow](../projects/ragflow.md)
+- [Supermemory](../projects/supermemory.md)
+- [TencentDB Agent Memory](../projects/tencentdb-agent-memory.md)
 - [Understand Anything](../projects/understand-anything.md)
 
 **Papers**

@@ -2,7 +2,7 @@
 type: index
 kind: standard
 aliases: [SPARQL Query Language for RDF, SPARQL 1.1, SPARQL 1.2]
-updated: 20261102 21:26 UTC
+updated: 20261103 01:52 UTC
 ---
 
 # SPARQL
@@ -22,7 +22,7 @@ The W3C Recommendation of 20080115 "defines the syntax and semantics of the SPAR
 - **20130321.** SPARQL 1.1 Query Language becomes a Recommendation, one of eleven of the SPARQL Working Group, beside Update, Federated Query and Protocol [5][6]. Its abstract names aggregation, subqueries, negation, creating values by expressions, extensible value testing and constraining queries by source graph [7]. A list of what is new since SPARQL 1.0 was not found on that page and is **unstated**. Era: [Knowledge graphs at scale](../history/knowledge-graphs-at-scale.md).
 - **20230516.** First Public Working Draft of SPARQL 1.2 Query [8].
 - **20251216.** The first version of SPARQL-LLM, a system that generates SPARQL from natural-language questions; its v2 is dated 20260923 [10]. Still moving: [asking graphs in natural language](../trends/graph-query-generation.md).
-- **20261101.** The 108th publication of that draft, the latest read, is a Working Draft, one of twelve SPARQL 1.2 documents; it adds functions on triple terms and names SPARQL 1.1 as the latest Recommendation [8][9]. Not settled: see [What has settled since 2023](../history/settled-since-2023.md).
+- **20261101.** The 108th publication of that draft, the latest read, is a Working Draft, one of twelve SPARQL 1.2 documents; it adds functions on triple terms and names SPARQL 1.1 as the latest Recommendation [8][9]. Not settled: see [What has settled since 2023](../history/settled-since-2023.md); still moving: [Semantic web standards](../trends/semantic-web-standards.md).
 
 ## Where sources disagree
 
@@ -48,6 +48,7 @@ The dates agree across the W3C pages [1][2][6][8]. The wording changed: the 2008
 - [Agentic graph retrieval: from one-shot lookup to learned multi-turn traversal](../trends/learned-graph-traversal.md)
 - [Asking graphs in natural language: from hand-written queries to model-written Cypher and SPARQL](../trends/graph-query-generation.md)
 - [Building knowledge graphs with LLMs: from fixed schemas to induced ones](../trends/llm-kg-construction.md)
+- [Semantic web standards: from RDF 1.1 and RDF-star to RDF 1.2](../trends/semantic-web-standards.md)
 - [Trends: what the field is doing now](../trends/README.md)
 
 **Papers**

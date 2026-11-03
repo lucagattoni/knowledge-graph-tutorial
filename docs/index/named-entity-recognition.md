@@ -43,6 +43,7 @@ What counts as an entity differs by source. The MUC-6 task includes numeric and 
 **Projects**
 
 - [GLiNER](../projects/gliner.md)
+- [Memori](../projects/memori.md)
 - [Projects](../projects/README.md)
 
 **Datasets**

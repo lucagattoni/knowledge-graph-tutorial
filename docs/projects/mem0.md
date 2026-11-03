@@ -72,14 +72,19 @@ Every score below is published; none was reproduced here.
 
 - [Claude-Mem](claude-mem.md)
 - [Cognee](cognee.md)
+- [EverOS](everos.md)
 - [Graphify](graphify.md)
 - [Graphiti](graphiti.md)
 - [Hindsight](hindsight.md)
 - [HippoRAG](hipporag.md)
 - [Letta](letta.md)
+- [Memori](memori.md)
 - [MemOS](memos.md)
+- [memU](memu.md)
 - [MIRIX](mirix.md)
 - [Projects](README.md)
+- [Supermemory](supermemory.md)
+- [TencentDB Agent Memory](tencentdb-agent-memory.md)
 
 **Papers**
 

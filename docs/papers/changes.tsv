@@ -1,2 +1,3 @@
 date_utc	kind	subject	summary	source	read_utc
 20261102	added	chapter	First edition: 68 fundamental papers in 10 groups (Foundations with 29 papers, then one group per trend) and a map of how they build on, answer or evaluate each other.	docs/papers/README.md	20261102 23:26 UTC
+20261103	updated	chapter rules	The owner reviewed the list: both one-paper groups stay (Text2Cypher; Knowledge Compounding), and the papers behind WordNet, YAGO, DBpedia, Freebase and Wikidata stay in Foundations as a named exception to the rule on dataset papers.	docs/papers/README.md	20261103 01:33 UTC

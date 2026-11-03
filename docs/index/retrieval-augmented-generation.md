@@ -71,6 +71,7 @@ Lewis et al. introduce RAG as "models which combine pre-trained parametric and n
 - [Projects](../projects/README.md)
 - [RAG-Anything](../projects/rag-anything.md)
 - [RAGFlow](../projects/ragflow.md)
+- [Supermemory](../projects/supermemory.md)
 
 **Papers**
 

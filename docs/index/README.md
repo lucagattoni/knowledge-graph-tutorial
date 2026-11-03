@@ -146,6 +146,7 @@ points to the entry under its usual name.
 - entity-relationship modeling, see [Entity-relationship model](entity-relationship-model.md)
 - ER model, see [Entity-relationship model](entity-relationship-model.md)
 - ERM, see [Entity-relationship model](entity-relationship-model.md)
+- [EverOS](../projects/everos.md) : project
 - [Exact match](exact-match.md) : concept
 - exact matching, see [Exact match](exact-match.md)
 - exact-match accuracy, see [Exact match](exact-match.md)
@@ -313,11 +314,13 @@ points to the entry under its usual name.
 - [Mean reciprocal rank](mean-reciprocal-rank.md) : concept
 - [Mem0](../projects/mem0.md) : project
 - [Memgraph](../projects/memgraph.md) : project
+- [Memori](../projects/memori.md) : project
 - memory and context poisoning, see [Memory poisoning](memory-poisoning.md)
 - memory for LLM agents, see [Agent memory](agent-memory.md)
 - memory injection, see [Memory poisoning](memory-poisoning.md)
 - [Memory poisoning](memory-poisoning.md) : concept
 - [MemOS](../projects/memos.md) : project
+- [memU](../projects/memu.md) : project
 - MHQA, see [Multi-hop question answering](multi-hop-question-answering.md)
 - [Microsoft GraphRAG](../projects/microsoft-graphrag.md) : project
 - [MIRIX](../projects/mirix.md) : project
@@ -509,6 +512,7 @@ points to the entry under its usual name.
 - Structured Query Language, see [SQL](sql.md)
 - subword token, see [Token](token.md)
 - suffix stripping, see [Stemming](stemming.md)
+- [Supermemory](../projects/supermemory.md) : project
 - [Supervised fine-tuning](supervised-fine-tuning.md) : concept
 - supervised finetuning, see [Supervised fine-tuning](supervised-fine-tuning.md)
 - [System R](system-r.md) : system
@@ -518,6 +522,7 @@ points to the entry under its usual name.
 - [Taxonomy](taxonomy.md) : concept
 - temporal KG, see [Temporal knowledge graph](temporal-knowledge-graph.md)
 - [Temporal knowledge graph](temporal-knowledge-graph.md) : concept
+- [TencentDB Agent Memory](../projects/tencentdb-agent-memory.md) : project
 - term frequency-inverse document frequency, see [tf-idf](tf-idf.md)
 - test set contamination, see [Data contamination](data-contamination.md)
 - test time learning, see [Test-time learning](test-time-learning.md)

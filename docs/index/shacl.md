@@ -2,7 +2,7 @@
 type: index
 kind: standard
 aliases: [Shapes Constraint Language]
-updated: 20261102 21:26 UTC
+updated: 20261103 01:52 UTC
 ---
 
 # SHACL
@@ -18,7 +18,7 @@ The W3C Recommendation of 20170720 defines SHACL, the Shapes Constraint Language
 - **20151008.** First Public Working Draft [2].
 - **20170720.** SHACL becomes a W3C Recommendation, after a Proposed Recommendation of 20170608 [1][2]. Era: [Knowledge graphs at scale](../history/knowledge-graphs-at-scale.md).
 - **20250318.** First Public Working Draft of SHACL 1.2 Core [4].
-- **20261102.** The 62nd publication of that draft, the latest read, is a Working Draft [4][5]. The 1.2 family lists six SHACL Working Drafts, among them Core, Node Expressions and SPARQL-Related Features [5]. Changes from 2017 include node expressions, SPARQL-based validators moved out of Core, and `sh:agentInstruction`, which holds "textual instructions that can be sent to a software agent" [5]. The draft names the 2017 text as the latest Recommendation [5]. Not settled: see [What has settled since 2023](../history/settled-since-2023.md).
+- **20261102.** The 62nd publication of that draft, the latest read, is a Working Draft [4][5]. The 1.2 family lists six SHACL Working Drafts, among them Core, Node Expressions and SPARQL-Related Features [5]. Changes from 2017 include node expressions, SPARQL-based validators moved out of Core, and `sh:agentInstruction`, which holds "textual instructions that can be sent to a software agent" [5]. The draft names the 2017 text as the latest Recommendation [5]. Not settled: see [What has settled since 2023](../history/settled-since-2023.md); still moving: [Semantic web standards](../trends/semantic-web-standards.md).
 
 ## Where sources disagree
 
@@ -37,6 +37,10 @@ The W3C's own description changed. The 2017 Recommendation calls SHACL "a langua
 - [History: how knowledge bases and knowledge graphs evolved](../history/README.md)
 - [Knowledge graphs at scale](../history/knowledge-graphs-at-scale.md)
 - [What has settled since 2023 (2023-present)](../history/settled-since-2023.md)
+
+**Trends**
+
+- [Semantic web standards: from RDF 1.1 and RDF-star to RDF 1.2](../trends/semantic-web-standards.md)
 
 **Datasets**
 

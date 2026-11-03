@@ -2,7 +2,7 @@
 type: era
 period: 2023-present
 order: 8
-updated: 20261102 23:11 UTC
+updated: 20261103 01:52 UTC
 ---
 
 # What has settled since 2023 (2023-present)
@@ -34,7 +34,7 @@ The three core specifications still stand at their earlier versions: RDF 1.1 (20
 - **RDF Dataset Canonicalization**, Recommendation of 20240521 [18]. It defines an algorithm (RDFC-1.0) that turns an RDF dataset into a canonical form, so that datasets can be compared, signed or hashed. It is based on the RDF 1.1 definition [18]. See [RDF Dataset Canonicalization](../index/rdf-dataset-canonicalization.md).
 - **DCAT 3**, Recommendation of 20240822 [19]. It is an RDF vocabulary for describing datasets and data services in catalogues. It adds terms for versioning, dataset series and inverse properties without breaking the definitions of DCAT 2 [19]. See [DCAT](../index/dcat.md).
 
-Other W3C Recommendations of 2023 onwards: **unstated**; the W3C list was not surveyed. Updates are under way and are not settled: RDF 1.2 is a Candidate Recommendation Snapshot of 20260407, SPARQL 1.2 a Working Draft of 20261101, SHACL 1.2 Core a Working Draft of 20261102 [10][11][12]. Each draft page names the old version as the "Latest Recommendation". Links: [RDF](../index/rdf.md), [SPARQL](../index/sparql.md), [SHACL](../index/shacl.md). Still moving: see [trends](../trends/README.md).
+Other W3C Recommendations of 2023 onwards: **unstated**; the W3C list was not surveyed. Updates are under way and are not settled: RDF 1.2 is a Candidate Recommendation Snapshot of 20260407, SPARQL 1.2 a Working Draft of 20261101, SHACL 1.2 Core a Working Draft of 20261102 [10][11][12]. Each draft page names the old version as the "Latest Recommendation". Links: [RDF](../index/rdf.md), [SPARQL](../index/sparql.md), [SHACL](../index/shacl.md). Still moving: see [Semantic web standards](../trends/semantic-web-standards.md).
 
 ### Databases and search
 
@@ -90,7 +90,7 @@ See [the papers chapter](../papers/README.md).
 ## Left unsolved
 
 - **Adoption.** A published standard shows that a standard exists, not that products use it. GQL's uptake is **unstated** in the sources read.
-- **The stack's update.** RDF 1.2, SPARQL 1.2 and SHACL 1.2 are drafts; the sources give no rule for a standard with a newer draft.
+- **The stack's update.** RDF 1.2, SPARQL 1.2 and SHACL 1.2 are drafts; the sources give no rule for a standard with a newer draft. They are told in [Semantic web standards](../trends/semantic-web-standards.md).
 - **Evidence.** The vector-index claim rests on one paper. Independent checks are still to be done.
 
 These lead into [the trends](../trends/README.md). The previous era is [language models meet retrieval](language-models-meet-retrieval.md). Earlier pages of this chapter: [the semantic web](semantic-web.md) and [knowledge graphs at scale](knowledge-graphs-at-scale.md).

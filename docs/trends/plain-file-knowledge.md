@@ -3,7 +3,7 @@ type: trend
 shift: databases and indexes -> Markdown the model maintains
 status: growing
 order: 8
-updated: 20261102 23:27 UTC
+updated: 20261103 01:58 UTC
 ---
 
 # Plain files as agent knowledge: from databases and indexes to Markdown the model maintains
@@ -81,7 +81,7 @@ Stars are a signal from the 20261030 19:54 UTC snapshot [3]. Licences, creation 
 | [Tigerless agent-memory](../projects/tigerless-agent-memory.md) | MIT | 4,381 | created 20260901; no release |
 | [Letta](../projects/letta.md) | Apache-2.0 | 25,294 | overlap case with agent memory; current code is in `letta-code` [8] |
 | [OpenViking](../projects/openviking.md) | AGPL-3.0 | 41,197 | overlap case with agent memory; read-only reference |
-| [EverOS](https://github.com/EverMind-AI/EverOS) | Apache-2.0 | 13,721 | "Markdown source of truth" with derived indexes [9] |
+| [EverOS](../projects/everos.md) | Apache-2.0 | 13,721 | "Markdown source of truth" with derived indexes [9] |
 | [OKF](https://github.com/GoogleCloudPlatform/open-knowledge-format) | Apache-2.0 | 1,177 | specification [10] |
 
 Letta and OpenViking are chiefly [agent memory](./agent-memory.md) projects; they appear here because their stored medium is files.

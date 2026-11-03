@@ -2,7 +2,7 @@
 type: index
 kind: standard
 aliases: [RDFS, RDF Schema 1.1, RDF Vocabulary Description Language]
-updated: 20261102 21:25 UTC
+updated: 20261103 01:52 UTC
 ---
 
 # RDF Schema
@@ -19,7 +19,7 @@ The W3C's RDF Schema 1.1 opens: "RDF Schema provides a data-modelling vocabulary
 - **20040210.** The Recommendation *RDF Vocabulary Description Language 1.0* [1][4] appeared with RDF 1.0, whose concepts document says it "jointly" replaces the 1999 RDF specification and the 2000 schema draft [5]. See [The semantic web and linked data](../history/semantic-web.md).
 - **20140225.** *RDF Schema 1.1* became a Recommendation, renamed from "RDF Vocabulary Description Language 1.0". Changes were editorial: "URI Reference" became "IRI", rdf:langString and rdf:HTML were added, the out-of-date RDF/XML appendix was removed [1]. See [Knowledge graphs at scale](../history/knowledge-graphs-at-scale.md).
 - **20231201.** Both pages carry a status update of this date; for the 2004 page it only corrected the "Latest Version" link [1][4].
-- **20261023.** *RDF 1.2 Schema* is a Working Draft, not a Recommendation; its abstract repeats that of 1.1, and the latest Recommendation is RDF 1.1 Schema [6]. It moves with RDF 1.2; see [the trends](../trends/README.md).
+- **20261023.** *RDF 1.2 Schema* is a Working Draft, not a Recommendation; its abstract repeats that of 1.1, and the latest Recommendation is RDF 1.1 Schema [6]. It moves with RDF 1.2; see [Semantic web standards](../trends/semantic-web-standards.md).
 
 ## Where sources disagree
 
@@ -37,6 +37,10 @@ No disagreement found in the sources read.
 
 - [History: how knowledge bases and knowledge graphs evolved](../history/README.md)
 - [The Web changes data and search](../history/the-web.md)
+
+**Trends**
+
+- [Semantic web standards: from RDF 1.1 and RDF-star to RDF 1.2](../trends/semantic-web-standards.md)
 
 **Index**
 

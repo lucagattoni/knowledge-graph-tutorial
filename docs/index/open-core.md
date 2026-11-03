@@ -42,6 +42,11 @@ In an open-core business model a vendor publishes a core product as open source 
 
 - [Graph features removed and added](../trends/features-in-and-out.md)
 
+**Projects**
+
+- [Memori](../projects/memori.md)
+- [Supermemory](../projects/supermemory.md)
+
 <!-- END GENERATED: appears-in -->
 
 ## Sources
