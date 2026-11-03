@@ -1,6 +1,6 @@
 repo	category	trends	note
 agiresearch/A-mem	agent-memory	agent-memory	
-robert-mcdermott/ai-knowledge-graph	core	llm-kg-construction	No page: judged no distinct approach: command-line tool turning text into LLM-extracted triples and an HTML graph, like hyper-extract; no database; default branch idle 202601 to 202608, then 24 commits in 202609
+robert-mcdermott/ai-knowledge-graph	core	llm-kg-construction	No page: judged no distinct approach: command-line tool turning text into LLM-extracted triples and an HTML graph, like hyper-extract; no database; no default-branch commits 202601 to 202608; 24 in 202609
 Mintplex-Labs/anything-llm	adjacent	infrastructure-and-mcp	No page: judged adjacent: document-chat application with vector retrieval only, and the entry found no knowledge-graph feature; a general platform like dify, whose graph is at least claimed in beta
 basicmachines-co/basic-memory	markdown-kb	plain-file-knowledge	
 thedotmack/claude-mem	agent-memory	agent-memory	
@@ -21,27 +21,27 @@ LHRLAB/Graph-R1	core	learned-graph-traversal
 Graphify-Labs/graphify	adjacent	code-knowledge-graphs,features-in-and-out	
 getzep/graphiti	agent-memory	agent-memory,features-in-and-out	
 FalkorDB/GraphRAG-SDK	core	graph-based-rag	
-deepset-ai/haystack	adjacent	infrastructure-and-mcp	No page: judged adjacent: general RAG and agent framework like llama-index, but no graph component in its core (path names only); graph, memory and MCP arrive as integrations in a separate repository
+deepset-ai/haystack	adjacent	infrastructure-and-mcp	No page: judged adjacent: general RAG and agent framework like llama-index; no graph component in core (path names only); graph, memory and MCP arrive as integrations in a separate repository
 vectorize-io/hindsight	agent-memory	agent-memory	
 OSU-NLP-Group/HippoRAG	core	graph-based-rag,agent-memory	
 plastic-labs/honcho	agent-memory	agent-memory	No page: judged no distinct approach: background workers extract and consolidate conclusions from stored messages, like hindsight's retain and consolidation; differs by modelling peers (people or agents); AGPL-3.0, read-only reference
 yifanfeng97/Hyper-Extract	core	llm-kg-construction	
 OpenSPG/KAG	core	graph-based-rag	
 Astro-Han/karpathy-llm-wiki	markdown-kb	plain-file-knowledge	
-khoj-ai/khoj	adjacent	infrastructure-and-mcp	No page: judged adjacent: personal document search and chat app on pgvector, no graph found; AGPL-3.0; pushed 89 days before the snapshot, at the 90-day edge, with 2 commits in 90 days
-kiwifs/kiwifs	markdown-kb	plain-file-knowledge	No page: judged no distinct approach: Markdown files as source of truth with SQLite search and an MCP server, like basic-memory; adds NFS, S3, WebDAV and FUSE access; BSL 1.1 licence
+khoj-ai/khoj	adjacent	infrastructure-and-mcp	No page: judged adjacent: personal document search and chat app on pgvector, no graph found; AGPL-3.0; pushed 89 days before the snapshot (the 90-day edge), 2 commits in 90 days
+kiwifs/kiwifs	markdown-kb	plain-file-knowledge	No page: judged no distinct approach: Markdown files as source of truth with SQLite search and an MCP server, like basic-memory; adds NFS, S3, WebDAV and FUSE access; BSL 1.1
 kuzudb/kuzu	adjacent	infrastructure-and-mcp,features-in-and-out	
 letta-ai/letta	agent-memory	agent-memory	
 HKUDS/LightRAG	core	graph-based-rag,features-in-and-out	
 DEEP-PolyU/LinearRAG	core	graph-based-rag	
 run-llama/llama_index	adjacent	infrastructure-and-mcp,graph-based-rag	
 neo4j-labs/llm-graph-builder	core	llm-kg-construction,graph-based-rag	
-SamurAIGPT/llm-wiki-agent	markdown-kb	plain-file-knowledge	No page: judged no distinct approach: coding-agent skill that writes an interlinked Markdown wiki from raw sources, like claude-obsidian; adds a wikilink graph and a health check; last human commit 20260908
-atomicstrata/llm-wiki-compiler	markdown-kb	plain-file-knowledge	No page: judged no distinct approach: program with its own LLM pipeline compiling sources into a cited Markdown wiki, like llm-wiki-nashsu; differs in form: command line, SDK and MCP server
+SamurAIGPT/llm-wiki-agent	markdown-kb	plain-file-knowledge	No page: judged no distinct approach: coding-agent skill writing an interlinked Markdown wiki from raw sources, like claude-obsidian; adds a wikilink graph and health check; last non-bot commit 20260917
+atomicstrata/llm-wiki-compiler	markdown-kb	plain-file-knowledge	No page: judged no distinct approach: program with its own LLM pipeline compiling sources into a cited Markdown wiki, like llm-wiki-nashsu; command line and SDK instead of a desktop app
 nashsu/llm_wiki	markdown-kb	plain-file-knowledge	
-lucasastorian/llmwiki	markdown-kb	plain-file-knowledge	No page: judged no distinct approach: web app and Chrome extension that let Claude write a Markdown wiki through ten MCP tools, like llm-wiki-nashsu; local or hosted; no releases or tags
+lucasastorian/llmwiki	markdown-kb	plain-file-knowledge	No page: judged no distinct approach: web app and Chrome extension letting Claude write a Markdown wiki through ten MCP tools, like claude-obsidian; local or hosted; no releases or tags
 chensyCN/LogicRAG	core	reasoning-over-structure	
-FlowElement-xinliuyuansu/m_flow	core	agent-memory,graph-based-rag	No page: judged no distinct approach: LLM-built graph and vector memory like cognee, whose patterns its NOTICE says it drew on; differs by a cone graph; one commit in 90 days (snapshot)
+FlowElement-xinliuyuansu/m_flow	core	agent-memory,graph-based-rag	No page: judged no distinct approach: LLM-built graph and vector memory like cognee, whose patterns its NOTICE acknowledges; adds a cone graph; one commit in 90 days (snapshot)
 modelcontextprotocol/servers	adjacent	infrastructure-and-mcp	
 mem0ai/mem0	agent-memory	agent-memory,features-in-and-out	
 memgraph/memgraph	adjacent	infrastructure-and-mcp	
@@ -56,26 +56,26 @@ gusye1234/nano-graphrag	core	graph-based-rag
 neo4j/neo4j-graphrag-python	core	graph-based-rag,graph-query-generation	
 neo4j/neo4j	adjacent	infrastructure-and-mcp	
 breferrari/obsidian-mind	markdown-kb	plain-file-knowledge	No page: judged no distinct approach: Obsidian vault of Markdown notes that an agent writes, as in claude-obsidian; adds lifecycle hooks that inject notes into sessions and work-oriented templates
-Ar9av/obsidian-wiki	markdown-kb	plain-file-knowledge	No page: judged no distinct approach: agent skills turning notes and sessions into a linked Obsidian vault, like claude-obsidian; adds a manifest so only changed sources are re-read; its test is first-party
-okf-memory/okf-agent-memory	markdown-kb	plain-file-knowledge,agent-memory	No page: judged no distinct approach: agent memory as Markdown files with BM25 recall, like tigerless-agent-memory; adds the OKF v0.2 format and an MCP server; created 20260905, no embeddings or database
+Ar9av/obsidian-wiki	markdown-kb	plain-file-knowledge	No page: judged no distinct approach: agent skills turning notes and sessions into a linked Obsidian vault, like claude-obsidian; adds a manifest that skips unchanged sources; its test is first-party
+okf-memory/okf-agent-memory	markdown-kb	plain-file-knowledge,agent-memory	No page: judged no distinct approach: agent memory as Markdown files with BM25 recall, like tigerless-agent-memory; adds the OKF v0.2 format and MCP server; created 20260905, no embeddings or database
 monarch-initiative/ontogpt	core	llm-kg-construction	
-GoogleCloudPlatform/open-knowledge-format	markdown-kb	plain-file-knowledge	No page: judged a specification, not software: six commits, one account, no release; the plain-file trend tells it in a section of its own and lists it, so a page is arguable
-inkeep/open-knowledge	markdown-kb	plain-file-knowledge	No page: judged no distinct approach: Markdown files under git with BM25 search and an MCP server, like basic-memory; an editor and desktop app, no LLM index step; GPL-3.0, read-only reference
+GoogleCloudPlatform/open-knowledge-format	markdown-kb	plain-file-knowledge	No page: judged a specification, not software: six commits, one account, no release; the plain-file trend gives it its own section and lists it, so a page is arguable
+inkeep/open-knowledge	markdown-kb	plain-file-knowledge	No page: judged no distinct approach: Markdown files under git with BM25 search and an MCP server, like basic-memory; editor and desktop app, no LLM index step; GPL-3.0, read-only reference
 VectifyAI/OpenKB	markdown-kb	plain-file-knowledge,reasoning-over-structure	
 volcengine/OpenViking	agent-memory	agent-memory,plain-file-knowledge	
 VectifyAI/PageIndex	core	reasoning-over-structure	
 HKUDS/RAG-Anything	core	graph-based-rag	
 infiniflow/ragflow	adjacent	infrastructure-and-mcp,reasoning-over-structure	
-semantica-agi/semantica	core	llm-kg-construction	No page: judged no distinct approach: ontology-grounded context graph, a subsection the construction trend merges and fills with four other projects; bi-temporal facts as in graphiti, plus OWL and SHACL; page arguable
+semantica-agi/semantica	core	llm-kg-construction	No page: judged no distinct approach: ontology-grounded context graph, a subsection the construction trend merges, naming four other projects; bi-temporal facts as in graphiti, plus OWL and SHACL; page arguable
 supermemoryai/supermemory	agent-memory	agent-memory	
-surrealdb/surrealdb	adjacent	infrastructure-and-mcp	No page: judged adjacent: general multi-model database where graph is one model; same role as memgraph (graph, vector and text indexes); BSL 1.1; the infrastructure trend lists it only as also named
+surrealdb/surrealdb	adjacent	infrastructure-and-mcp	No page: judged adjacent: multi-model database where graph is one model; like memgraph, offers graph, vector and text indexes; BSL 1.1; the infrastructure trend lists it only as also named
 TencentCloud/TencentDB-Agent-Memory	agent-memory	agent-memory	
 tigerless-labs/agent-memory	markdown-kb	plain-file-knowledge,agent-memory	
-trustgraph-ai/trustgraph	core	llm-kg-construction	No page: judged no distinct approach: ontology-grounded context graph with access policies, in the construction trend's merged subsection; ontology-guided extraction like ontogpt; only an ingest-speed benchmark
+trustgraph-ai/trustgraph	core	llm-kg-construction	No page: judged no distinct approach: ontology-grounded context graph with access policies, the kind the construction trend's merged subsection covers; ontology-guided extraction like ontogpt; only an ingest-speed benchmark
 Egonex-AI/Understand-Anything	adjacent	code-knowledge-graphs	
 TencentCloudADP/youtu-graphrag	core	learned-graph-traversal,graph-based-rag	
-xerrors/Yuxi	core	graph-based-rag	No page: judged adjacent: multi-tenant agent platform where the knowledge graph is one of six modules, built by a separate administrator job into Neo4j; the README credits LightRAG for the graph ideas
-getzep/zep	agent-memory	agent-memory,features-in-and-out	No page: judged not a representative: the repository holds examples for hosted Zep Cloud and no engine (that is graphiti); the features trend tells its 20250402 demotion
+xerrors/Yuxi	core	graph-based-rag	No page: judged adjacent: multi-tenant agent platform; the knowledge graph is one of six modules, built into Neo4j by a separate administrator job; README credits LightRAG for early graph ideas
+getzep/zep	agent-memory	agent-memory,features-in-and-out	No page: judged not a representative: the repository holds examples for hosted Zep Cloud and no maintained engine (that is graphiti); the features trend tells its 20250402 demotion
 potpie-ai/potpie	adjacent	code-knowledge-graphs	
 redhat-et/ripwire	adjacent	code-knowledge-graphs	deterministic call graph
 zzet/gortex	adjacent	code-knowledge-graphs	
