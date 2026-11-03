@@ -360,7 +360,7 @@ usage), and that Anthropic cache writes are priced at the single `cache_write_pe
   at it, but only against fake upstreams written for the purpose (`tools/exp/gateway_sdk_e2e_openai.py`, 17 checks, and
   `tools/exp/gateway_sdk_e2e_anthropic.py`, 12 checks: chat, streaming, embeddings, the key swap, exact cost, the cap).
   Pass A then pointed all four builders at it, against local models and with the stub (each runner records how it was
-  pointed); the gateway has still never met a real provider.
+  pointed); a real provider came afterwards (the first bullet above).
   Behaviour with `Expect: 100-continue` or HTTP/2 is unobserved.
 - TLS towards a provider is exercised only by the one real run above (the interpreter's default certificate verification
   worked from five interpreters, tested by a handshake first); the tests use plain `http://` to loopback fake upstreams.
@@ -373,7 +373,7 @@ usage), and that Anthropic cache writes are priced at the single `cache_write_pe
   "does not exist" message.
 - `output_limit_default` was accepted by `gpt-6-luna` as `max_completion_tokens` (eight requests); no provider has accepted
   a request that carries it together with a `null` `max_tokens` (`gpt-6-luna` rejected that). `translate_max_tokens` was tested
-  against fake upstreams in version 1.2.0; whether `gpt-6-luna` accepts what it produces is checked by the pilot, not here.
+  against fake upstreams in version 1.2.0; `gpt-6-luna` accepted what it produces in a re-test on 20261103 (the ping and the two shapes, three requests, all answered 200).
 
 ## Tests and the mutation check
 

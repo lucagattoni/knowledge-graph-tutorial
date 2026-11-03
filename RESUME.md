@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261103 16:33 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261103 17:02 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
@@ -21,7 +21,7 @@ page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md).
 | `kb-kg/directions/` | nine pages and an overview, first drafts |
 | `kb-kg/experiments/` | five proposals; X1 run; **Step 0 of the order and gates built 20261102** (D-25); X2 pass A on two local models done (D-26, D-27, D-28); X3 to X5 not started |
 | `pinakes/` | approach record, recommendations R1 to R7, 12 takeaways, ClaudeKB precedent, what Pinakes has measured, four proposals for what to measure next (P1 answered, the P4 pilot run, P2 blocked, P3's free-path half in the public benchmark repository, described on its own page) |
-| `tools/` | `gh_snapshot.py` (57 tests), `build_projects_index.py` (12 tests), `check_public_safe.sh`; `tools/exp/` (stub model server, document selection, statistics, four builder rehearsal runners, two SDK end-to-end checks; 32 tests plus the runners); `metering_gateway.py` 1.1.0 (124 tests); four pass-A runners (`x2_passa_*.py`) and `passa_common.py` (23 tests); the pass-B pieces `passb_common.py` (hosted setup, 45 tests), `passb_watchdog.py` (92), `passb_preflight.py` (54), `passb_stage_a.py` (55) and the stage driver `passb_stage.py` (43); none has met a real provider |
+| `tools/` | `gh_snapshot.py` (57 tests), `build_projects_index.py` (12 tests), `check_public_safe.sh`; `tools/exp/` (stub model server, document selection, statistics, four builder rehearsal runners, two SDK end-to-end checks; 32 tests plus the runners); `metering_gateway.py` 1.2.0 (136 tests); four pass-A runners (`x2_passa_*.py`) and `passa_common.py` (23 tests); the pass-B pieces `passb_common.py` (hosted setup, 49 tests), `passb_watchdog.py` (92), `passb_preflight.py` (54), `passb_stage_a.py` (56) and the stage driver `passb_stage.py` (44); the gateway, the hosted setup and the stage-A script have met OpenAI (stage A, 20261103), the watchdog and the stage driver have not |
 
 Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wave B about 5.9M, wave C about
 1.5M; about 11.5M in all. Step 0's seven agents: about 1.84M (my sum of their totals).
@@ -74,14 +74,15 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
 
 ## Next, once the owner answers
 
-- **Paid pilot, stage A (needs answers 3 to 7 above and the owner's explicit yes with model, provider and cap, D-14).** The owner's
-  steps are in [`pass-b-owner-steps.md`](kb-kg/experiments/x2-index-cost/pass-b-owner-steps.md). The owner prepares a key file by the D-20 route (mode 600, one line, outside the repository and the scratch directory) and sets the hard
-  limit at the provider; then, from the repository root: `tools/exp/passb_stage_a.py extract` (free; the pass-A gateway
-  directories and the builders' throwaway environments must exist, or be rebuilt at the pins on the rehearsal pages), then
-  `passb_stage_a.py run` without `--send` (prints the plan, starts nothing), then with `--send`. Stages B, C and D run with
-  `tools/exp/passb_stage.py` the same way (dry run first); both scripts' headers hold the arguments and the config shapes
-  (`passb_profile.example.json`, `passb_builders.example.json`). After a watchdog trip, read the stage report before anything
-  else; the repeat-after-fault procedure is in the driver's header.
+- **Paid pilot, stages B and C (the owner's yes is given, D-34; the gate is the owner's comparison of OpenAI's usage page with stage
+  A's totals, in the plan's run log).** From the repository root: `uv run python tools/exp/passb_stage.py --stage B --builder lightrag
+  --builder fast --builder ms --builder nano --profile PROFILE --builders-config CONFIG --out-dir OUT` is a dry run (add `--send` to
+  run), then stage C twice (`--stage C --run-label r1`, then `r2`); stage D needs its own yes. The profile, the builders config, the
+  key file and the ledger are in the owner's private pilot directory made on 20261103 (`~/.config/kb-kg-pilot/`: `profile.json`,
+  `builders.json`, `openai.key`, `ledger/`; none is in this repository); the builders' throwaway environments and the corpus are in
+  the session's scratch directory and must be rebuilt if it is gone. The pre-flight, the gateway's cap and the watchdog run by
+  themselves. After a watchdog trip, read the stage report before anything else; the repeat-after-fault procedure is in the
+  driver's header.
 
 - Run an approved experiment: throwaway environment under the scratch directory, one scoped key in that
   process's environment only, raw logs and tool versions recorded, no verdicts. A pilot first, with the cap the

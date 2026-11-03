@@ -1,7 +1,8 @@
 # X2 pass B: a plan for the paid pilot
 
-**Plan written 20261102 20:24 UTC and revised at 20:39 UTC after an independent review (the changes are listed at the end). No paid
-call has been made, nothing is approved, nothing has been spent.** The owner asked for this plan ("Plan paid pilot") after
+**Plan written 20261102 20:24 UTC and revised at 20:39 UTC after an independent review (the changes are listed at the end). When it was
+written no paid call had been made and nothing was approved; since then the owner has approved stages A to C (D-34) and stage A has
+run (USD 0.0065 spent so far; the run log near the end).** The owner asked for this plan ("Plan paid pilot") after
 [pass A](pass-a-local-model.md). Under D-14 a paid step starts only on the owner's explicit yes with model, provider and cap; this
 page says what that yes would unlock, what is fixed in advance, and what has to be built and checked for free first. Everything that
 could be chosen after seeing a result is fixed here instead.
@@ -9,9 +10,9 @@ could be chosen after seeing a result is fixed here instead.
 **Decided so far (owner, 20261102 20:49 UTC, reply "gpt-6-luna, USD 3"):** decision 1, OpenAI `gpt-6-luna` with reasoning off, and
 decision 2, a cap of USD 3 in total with the stage limits below. **Decided 20261103 01:26 UTC** (owner, reply "go wit your
 recommendations"): 3 yes, article text may go to OpenAI's API; 4 local embeddings; 5 all four builders; 7 two yeses (one for stages A to
-C, one for D). **Decision 6 is the owner's action, not yet done:** the key file and the provider-side hard limit
-([`pass-b-owner-steps.md`](pass-b-owner-steps.md)). **This is still not the yes that starts a paid stage:** when the key file exists I
-show the dry runs with their numbers and ask for the yes for stages A to C (D-14). Stage 0 is done (below); what is next is in
+C, one for D). **Decision 6 was done by the owner on 20261103:** a project of its own at OpenAI with a USD 3 hard limit and a restricted key in a
+private file ([`pass-b-owner-steps.md`](pass-b-owner-steps.md)). **The yes for stages A to C was given on 20261103 16:12 UTC (D-34),
+after the dry runs; stage A has run** (run log below), and stage D needs its own yes. Stage 0 is done (below); what is next is in
 [`RESUME.md`](../../../RESUME.md).
 
 ## What pass B answers, and what it does not
@@ -245,7 +246,7 @@ granite's, so the pass-A figures only bracket them.
 | Retries multiply calls and cost | Concurrency 4; stop rules on repeated and voided requests; the console total is compared because failed attempts carry no tokens in the log |
 | The provider bills a call the gateway voided | Timeout 900; the hard limit at the provider (decision 6); the voided-call stop rule |
 | A request shape is rejected (`json_object`, `max_tokens`, `temperature`) | Stage A, including requests synthesised from source for nano-graphrag; rejection is a recorded result |
-| The gateway has never met a real provider | Stage A, with a refused call checked against the provider's console |
+| The gateway had never met a real provider (until stage A, 20261103) | Stage A, with a refused call checked against the provider's console; the refusal test passed, and the console comparison is the owner's |
 | Pessimistic reservations refuse calls | Concurrency 4; stage limits above expected spend plus open reservations |
 | Key exposure | D-20 route; only the gateway holds it; the canary test (F2); never printed; deleted afterwards |
 | Third-party text sent to a provider | Decision 3; text never committed; the body logs stay outside the repository |
@@ -284,6 +285,14 @@ key hand-off were specified; F1 was tightened.
 answered 200, 16,945 input tokens of which 2,043 cached, 9,893 output tokens, **USD 0.00645713**; two 400 rejections (no tokens) and one
 401 from the first key, which was refused before any token was counted. The console comparison, the plan's only check that is not the
 gateway's own numbers, is the owner's and is the gate to stage B.
+
+**Stage A's call count, its money limit and the code, stated plainly.** The ladder says "at most 12 calls"; that was written for one
+run of the script. Three runs happened (a refused key, the ten requests, the re-test) and 14 requests reached OpenAI in all (1 refused
+by the key, 10, 3). The script's money limit is also per run (each run may spend up to its allowance of USD 0.10 on top of what the
+ledger already holds), while the pilot's USD 3 cap is cumulative; the stage's total was USD 0.0065 against 0.10, so nothing was close,
+but the per-run limit is looser than the ladder's wording. The re-test ran on the working tree: by file modification times the gateway,
+`passb_common.py`, `passb_stage.py` and `passb_stage_a.py` were last changed at 16:24 and 16:26, before the 16:32 re-test, and no code
+file changed between the re-test and the commit (`a446479`).
 
 A credentials fault is a harness reason, so a repeat of stage A is allowed once the cause is fixed and written down (stop rules,
 above). Attempt 1's files are kept under the pilot directory as `stage-a-attempt1`.

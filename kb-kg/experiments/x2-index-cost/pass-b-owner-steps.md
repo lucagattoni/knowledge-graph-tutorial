@@ -1,14 +1,15 @@
 # Pass B: what the owner does before stage A
 
-Written 20261103 01:20 UTC. It belongs to [the pass-B plan](pass-b-plan.md); that page says why, this one says how. Nothing here
-spends money. **Nothing paid starts until you have answered the five decisions below and given an explicit yes with model, provider
-and cap (D-14).** The commands are for **your own terminal**, so that the key never passes through the conversation (D-20).
+Written 20261103 01:17 UTC; status updated 20261103 17:02 UTC. It belongs to [the pass-B plan](pass-b-plan.md); that page says why, this one
+says how. Nothing here spends money. **Status: the five decisions were answered (D-32), the project, hard limit and key were set up,
+the yes for stages A to C was given (D-34) and stage A has run (the plan's run log). What follows is kept as it was given, for the
+record and for a repeat.** Under D-14 a paid step starts only on an explicit yes with model, provider and cap. The commands are for **your own terminal**, so that the key never passes through the conversation (D-20).
 
 ## 1. Five answers I need
 
 Decisions 1 and 2 are made (D-30: OpenAI `gpt-6-luna`, reasoning off, USD 3 in all). **On 20261103 you replied "go wit your
-recommendations": 3, 4, 5 and 7 are answered as the table recommends (D-32). Only 6 is open, and it is yours to do.** The reply I
-need now is "6 done" and the key file's path.
+recommendations": 3, 4, 5 and 7 are answered as the table recommends (D-32). Only 6 was open, and you did it
+("6 done", 20261103).**
 
 | # | Question | My recommendation | If you disagree |
 |---|---|---|---|
