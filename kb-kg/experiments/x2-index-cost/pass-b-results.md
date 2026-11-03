@@ -1,6 +1,6 @@
 # X2 pass B: results of stages A to C
 
-Written 20261103 17:54 UTC. These are the numbers from the paid pilot's first three stages, run 20261103 between 16:12 and 17:50 UTC on OpenAI's
+Written 20261103 18:19 UTC. These are the numbers from the paid pilot's first three stages, run 20261103 between 16:12 and 17:50 UTC on OpenAI's
 `gpt-6-luna` (reasoning off) through the metering gateway, with the key in a private file and the owner's yes (D-34). Stage D has **not**
 run and needs its own yes. **Nothing here says which graph is better**: no quality was measured. My readings are kept apart, in the
 last section. The plan is [`pass-b-plan.md`](pass-b-plan.md); the run log with stage A is in it. Every number below is in the
@@ -64,7 +64,8 @@ two runs are not independent for cost**: r2 repeated r1's prompts, and OpenAI bi
 
 - **The plan's estimates** (arithmetic from pass A's local tokens, at luna's prices): stage B 0.030 against 0.0373 actual; stage C 0.1175
   a run against 0.1135 and 0.1060. Per builder the ratios of actual to estimate run from 0.50 to 2.70: LightRAG 1.28 (B), 0.81 and 0.74 (C);
-  fast-graphrag 0.94, 1.13 and 1.10; Microsoft GraphRAG 0.68, 0.68 and 0.50; nano-graphrag 2.70, 1.32 and 1.39. nano-graphrag's estimate was
+  fast-graphrag 0.94, 1.13 and 1.10; Microsoft GraphRAG 0.68, 0.68 and 0.50; nano-graphrag 2.70, 1.32 and 1.39 (the ratios use the unrounded estimates the dry runs print to six places; the tables show four, so a
+  ratio worked out from them can differ in the second decimal). nano-graphrag's estimate was
   a guess, because pass A's local model never got past its first document.
 - **Pass A at five documents** (`granite4.2:8b`, local; the committed result files), chat calls, input tokens, output tokens, against the
   hosted run r1: LightRAG 18, 66,543, 24,290 against 18, 65,285, 24,485. fast-graphrag 18, 52,264, 19,457 against 15, 34,134, 31,645.
@@ -102,7 +103,8 @@ The figures for the hosted calls (embeddings are local and not on that page), fr
 
 Stage D is 20 documents; the 20 hold 191,571 characters against 32,458 in the first five (a factor of 5.90, the plan's). Scaling the
 five-document cost by 5.90: r1 gives LightRAG 0.090, fast-graphrag 0.099, Microsoft GraphRAG 0.185, nano-graphrag 0.296, **0.670 in all**;
-the mean of r1 and r2 gives 0.648. The plan's central estimate was 0.625 and its limit 1.50. This assumes cost grows with characters;
+the mean of r1 and r2 gives 0.648; r2 alone gives 0.625. The range quoted for the owner's yes, 0.61 to 0.69, is the per-builder lowest
+and highest of the two runs, summed and scaled (0.610 and 0.685). The plan's central estimate was 0.625 and its limit 1.50. This assumes cost grows with characters;
 the graph builders' community steps may grow faster, and stage D is where that would show. The dry run of the driver for stage D passes the pre-flight with an
 allowance of USD 1.50 for the first builder, a cap for the gateway of 1.763 and 2.74 left of the pilot's 3.00. If D is run, its cost
 would be the largest single spend of the pilot, and it needs the owner's yes.
@@ -110,8 +112,9 @@ would be the largest single spend of the pilot, and it needs the owner's yes.
 ## My readings (kept apart from the numbers)
 
 1. **At five documents nano-graphrag cost about 3.5 times LightRAG per document** (0.0103 against 0.0029, the mean of the two runs),
-   Microsoft GraphRAG about 1.9 times and fast-graphrag about 1.1 times. Most of nano-graphrag's and Microsoft GraphRAG's calls are
-   community reports (nano-graphrag: 44 of 62 chat calls in r1 and 52 of 70 in r2).
+   Microsoft GraphRAG about 1.9 times and fast-graphrag about 1.1 times. Most of nano-graphrag's chat calls are community reports (44 of 62
+   in r1, 52 of 70 in r2); most of Microsoft GraphRAG's are entity and relationship description summaries (76 of 113 in r1, 36 of 65 in r2),
+   with 18 and 10 community reports.
 2. **The input side is cheap here and the output side is not**, because of the cache and the 5-to-1 price ratio; so the ranking of the
    builders by cost follows their output tokens. A cheaper-output model or one with no caching would rank them differently.
 3. **A single run can mislead for Microsoft GraphRAG**: the same five documents gave 113 and 65 chat calls. Part of its r2 saving is the
@@ -120,8 +123,11 @@ would be the largest single spend of the pilot, and it needs the owner's yes.
    and Microsoft GraphRAG**, in both directions, which is what the plan said they could do: bracket.
 5. **The plan's total for stage C was close (within 10%) because two errors cancelled** (Microsoft GraphRAG over-estimated, nano-graphrag
    under-estimated). The per-builder estimates were not reliable.
-6. **Corpus-scale arithmetic**, for the headline only: the mean five-document cost times the 609 articles gives about USD 1.78 for LightRAG,
-   2.03 for fast-graphrag, 3.31 for Microsoft GraphRAG and 6.26 for nano-graphrag. Linear growth is an assumption stage D is meant to test.
+6. **Corpus-scale arithmetic**, for the headline only. The first five documents average 6,492 characters and the 609 articles 10,340 (a
+   factor of 1.59), so the mean five-document cost per document, scaled by characters as the plan does for stage D, gives about USD 2.83
+   for LightRAG, 3.23 for fast-graphrag, 5.27 for Microsoft GraphRAG and 9.96 for nano-graphrag over the corpus (without the length
+   correction, 1.78, 2.03, 3.31 and 6.25: too low). Linear growth in characters is an assumption stage D is meant to test; its cost per
+   character will replace this arithmetic.
 
 ## What this cannot show
 

@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261103 17:58 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261103 18:19 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
@@ -21,7 +21,7 @@ page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md).
 | `kb-kg/directions/` | nine pages and an overview, first drafts |
 | `kb-kg/experiments/` | five proposals; X1 run; **Step 0 of the order and gates built 20261102** (D-25); X2 pass A on two local models done (D-26, D-27, D-28); X3 to X5 not started |
 | `pinakes/` | approach record, recommendations R1 to R7, 12 takeaways, ClaudeKB precedent, what Pinakes has measured, four proposals for what to measure next (P1 answered, the P4 pilot run, P2 blocked, P3's free-path half in the public benchmark repository, described on its own page) |
-| `tools/` | `gh_snapshot.py` (57 tests), `build_projects_index.py` (12 tests), `check_public_safe.sh`; `tools/exp/` (stub model server, document selection, statistics, four builder rehearsal runners, two SDK end-to-end checks; 32 tests plus the runners); `metering_gateway.py` 1.2.0 (136 tests); four pass-A runners (`x2_passa_*.py`) and `passa_common.py` (23 tests); the pass-B pieces `passb_common.py` (hosted setup, 49 tests), `passb_watchdog.py` (92), `passb_preflight.py` (54), `passb_stage_a.py` (56) and the stage driver `passb_stage.py` (44); the gateway, the hosted setup and the stage-A script have met OpenAI (stage A, 20261103), the watchdog and the stage driver have not |
+| `tools/` | `gh_snapshot.py` (57 tests), `build_projects_index.py` (12 tests), `check_public_safe.sh`; `tools/exp/` (stub model server, document selection, statistics, four builder rehearsal runners, two SDK end-to-end checks; 32 tests plus the runners); `metering_gateway.py` 1.2.0 (136 tests); four pass-A runners (`x2_passa_*.py`) and `passa_common.py` (23 tests); the pass-B pieces `passb_common.py` (hosted setup, 49 tests), `passb_watchdog.py` (92), `passb_preflight.py` (54), `passb_stage_a.py` (56) and the stage driver `passb_stage.py` (44); every pass-B tool has met OpenAI (stages A to C, 20261103); the watchdog, live in all 12 runs, tripped nothing, so its stops have only been exercised against fakes |
 
 Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wave B about 5.9M, wave C about
 1.5M; about 11.5M in all. Step 0's seven agents: about 1.84M (my sum of their totals).
@@ -35,9 +35,10 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
    revised after an independent review. The owner chose OpenAI `gpt-6-luna` with reasoning off and a cap of USD 3 (D-30), answered
    the open questions on 20261103 (D-32) and gave the yes for stages A to C (D-34). **Where it stands: stages A, B and C are done**
    (20261103; USD 0.263 in all, 443 answered requests; the stop rules fired nowhere; the numbers and my readings are in
-   [`pass-b-results.md`](kb-kg/experiments/x2-index-cost/pass-b-results.md), the run log in the plan). **Waiting on the owner: the
-   comparison of OpenAI's usage page with the gateway's totals for stages B and C** (table in the results page), then **the yes for stage D**
-   (20 documents, about USD 0.65 by arithmetic from C, limit 1.50, with the cap USD 3 leaving 2.74). **The free work (stage 0) is done**, including a dress rehearsal of the whole ladder with
+   [`pass-b-results.md`](kb-kg/experiments/x2-index-cost/pass-b-results.md), the run log in the plan). The owner compared the console for B and C
+   (agrees) and gave the yes for stage D (D-37). **Stage D (20 documents, four builders, limit USD 1.50) started 20261103 17:59 UTC and
+   may be running; if this session ended, read `~/.config/kb-kg-pilot/out/stage_report.json` and the `D-r1-*` directories there first (the
+   driver's header says how to resume or repeat), and note that a stage that tripped or was interrupted keeps its window open.** **The free work (stage 0) is done**, including a dress rehearsal of the whole ladder with
    the real driver, runners and builders against a fake provider (573 checks; it found and fixed one error, D-31). The other options
    from pass A are on [the pass-A page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md#where-this-leaves-the-owner). To
    rerun a pass-A builder, use the command line in its runner's header (`tools/exp/x2_passa_*.py`) and the arguments on the
