@@ -39,6 +39,10 @@ RDF Dataset Canonicalization, subtitled "A Standard RDF Dataset Canonicalization
 - [History: how knowledge bases and knowledge graphs evolved](../history/README.md)
 - [What has settled since 2023 (2023-present)](../history/settled-since-2023.md)
 
+**Trends**
+
+- [Semantic web standards: from RDF 1.1 and RDF-star to RDF 1.2](../trends/semantic-web-standards.md)
+
 **Index**
 
 - [JSON-LD](json-ld.md)

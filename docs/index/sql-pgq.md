@@ -49,6 +49,7 @@ ISO/IEC 9075-16:2023, "Property Graph Queries (SQL/PGQ)", "defines ways for the 
 
 - [Asking graphs in natural language: from hand-written queries to model-written Cypher and SPARQL](../trends/graph-query-generation.md)
 - [Infrastructure and MCP: what knowledge systems run on, and how agents reach them](../trends/infrastructure-and-mcp.md)
+- [Semantic web standards: from RDF 1.1 and RDF-star to RDF 1.2](../trends/semantic-web-standards.md)
 
 **Index**
 

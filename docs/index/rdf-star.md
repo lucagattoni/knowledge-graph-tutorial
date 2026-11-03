@@ -2,7 +2,7 @@
 type: index
 kind: standard
 aliases: [RDF*, RDF-star and SPARQL-star, quoted triples, triple terms]
-updated: 20261102 22:50 UTC
+updated: 20261103 01:52 UTC
 ---
 
 # RDF-star
@@ -19,7 +19,7 @@ RDF-star extends RDF "with a convenient way to make statements about other state
 - **2014-2017.** Hartig and Thompson (arXiv, 20140613) propose a backwards-compatible alternative to reification [4]. Hartig's workshop paper (AMW, June 2017) names it RDF\* and SPARQL\*, and lists provenance among the uses of statement-level metadata [1][2]. See [Knowledge graphs at scale](../history/knowledge-graphs-at-scale.md).
 - **20211217.** The RDF-DEV Community Group issues the Final Community Group Report "RDF-star and SPARQL-star" [1]. See [Language models meet retrieval](../history/language-models-meet-retrieval.md).
 - **20220829.** The first charter of the W3C working group for statements about statements in RDF and SPARQL begins; its page is titled "RDF & SPARQL" (shortname rdf-star) and its current charter runs to 20270430 [5].
-- **20260407.** RDF 1.2 Concepts is a Candidate Recommendation Snapshot (first public working draft 20230516) that adds triple terms, reifiers and the property rdf:reifies. The history read on 20261102 shows no later step [6][7]. See [RDF](./rdf.md).
+- **20260407.** RDF 1.2 Concepts is a Candidate Recommendation Snapshot (first public working draft 20230516) that adds triple terms, reifiers and the property rdf:reifies. The history read on 20261102 shows no later step [6][7]. See [RDF](./rdf.md); still moving: [Semantic web standards](../trends/semantic-web-standards.md).
 - **20230928 and 20261101.** The SPARQL 1.2 Query working draft of 20230928 already has TRIPLE and isTRIPLE, under the heading "Functions on Quoted Triples"; the draft of 20261101 has them under "Functions on Triple Terms" [10][8]. See [SPARQL](./sparql.md).
 - **Read 20261102.** YAGO's documentation says it uses "the RDF\* format" for facts about facts [9].
 
@@ -38,6 +38,10 @@ RDF-star extends RDF "with a convenient way to make statements about other state
 ## Appears in
 
 <!-- BEGIN GENERATED: appears-in -->
+
+**Trends**
+
+- [Semantic web standards: from RDF 1.1 and RDF-star to RDF 1.2](../trends/semantic-web-standards.md)
 
 **Datasets**
 

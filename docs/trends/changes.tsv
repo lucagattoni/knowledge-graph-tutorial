@@ -1,2 +1,3 @@
 date_utc	kind	subject	summary	source	read_utc
 20261102	added	chapter	First edition: 11 pages (9 families of approach and 2 themes), a comparison table and a map of how they relate; chosen by two tests, sustained activity in the dated sources and an idea no other trend covers.	docs/trends/README.md	20261102 23:26 UTC
+20261103	added	semantic-web-standards	New family page on RDF 1.2, SPARQL 1.2 and SHACL 1.2, the tenth family, added at the owner's review; the two theme pages move to orders 11 and 12. Status steady; activity is read on W3C publication histories because the paper and snapshot counts are thin.	docs/trends/semantic-web-standards.md	20261103 01:52 UTC

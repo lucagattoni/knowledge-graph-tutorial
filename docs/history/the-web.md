@@ -2,7 +2,7 @@
 type: era
 period: 1993-2000
 order: 4
-updated: 20261102 23:11 UTC
+updated: 20261103 01:52 UTC
 ---
 
 # The Web changes data and search
@@ -88,7 +88,7 @@ See the papers chapter: [foundations](../papers/foundations.md).
 - Kleinberg 1999, *Authoritative sources in a hyperlinked environment*, J. ACM 46(5) [14][2].
 - Voorhees 2001, *The TREC question answering track*, Natural Language Engineering 7(4) (via [2]).
 - XML 1.0, 19980210 [9]; RDF Model and Syntax, 19990222 [10].
-- Still moving: RDF 1.2 is a W3C Candidate Recommendation Snapshot of 20260407 [20]; see [the trends](../trends/README.md).
+- Still moving: RDF 1.2 is a W3C Candidate Recommendation Snapshot of 20260407 [20]; see [Semantic web standards](../trends/semantic-web-standards.md).
 
 ## Left unsolved
 

@@ -2,8 +2,8 @@
 type: trend
 shift: vector-only stores and custom connectors -> vector indexes inside existing databases and one protocol
 status: steady
-order: 10
-updated: 20261102 23:17 UTC
+order: 11
+updated: 20261103 01:52 UTC
 ---
 
 # Infrastructure and MCP: what knowledge systems run on, and how agents reach them

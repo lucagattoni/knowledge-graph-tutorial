@@ -2,7 +2,7 @@
 type: era
 period: 2001-2011
 order: 5
-updated: 20261102 23:11 UTC
+updated: 20261103 01:52 UTC
 ---
 
 # The semantic web and linked data
@@ -94,7 +94,7 @@ Group page: [foundations](../papers/foundations.md).
 
 ## Left unsolved
 
-Ontologies stayed costly to reuse, and linked data's schemas were shallow [3]. Combining logic and statistics was open: "little is yet known on how to integrate" them [4]. The standards also kept moving: RDF 1.1 (2014) and SPARQL 1.1 (2013) are the latest Recommendations [29][31], while RDF 1.2 is a Candidate Recommendation Snapshot (7 April 2026), and SPARQL 1.2 and SHACL 1.2 are Working Drafts, all as read on 20261102 [30][32][33]; see [chapter 2](../trends/README.md). What came next is in [Knowledge graphs at scale](knowledge-graphs-at-scale.md).
+Ontologies stayed costly to reuse, and linked data's schemas were shallow [3]. Combining logic and statistics was open: "little is yet known on how to integrate" them [4]. The standards also kept moving: RDF 1.1 (2014) and SPARQL 1.1 (2013) are the latest Recommendations [29][31], while RDF 1.2 is a Candidate Recommendation Snapshot (7 April 2026), and SPARQL 1.2 and SHACL 1.2 are Working Drafts, all as read on 20261102 [30][32][33]; see [Semantic web standards](../trends/semantic-web-standards.md) in chapter 2. What came next is in [Knowledge graphs at scale](knowledge-graphs-at-scale.md).
 
 ## Sources
 

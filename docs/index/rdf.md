@@ -2,7 +2,7 @@
 type: index
 kind: standard
 aliases: [Resource Description Framework, RDF 1.1, RDF 1.2]
-updated: 20261102 21:25 UTC
+updated: 20261103 01:52 UTC
 ---
 
 # RDF
@@ -19,7 +19,7 @@ The W3C's RDF 1.1 Concepts calls RDF "a framework for representing information i
 - **19990222.** *RDF Model and Syntax* became a W3C Recommendation. It calls RDF "a foundation for processing metadata" [5].
 - **20040210.** *RDF Concepts and Abstract Syntax* (RDF 1.0) became a Recommendation, "intended to jointly replace" the 1999 specification and the 2000 draft of RDF Schema [6]. See [The semantic web and linked data](../history/semantic-web.md).
 - **20140225.** RDF 1.1 Concepts became a Recommendation. Its status section names the RDF dataset as a new concept [1]. See [Knowledge graphs at scale](../history/knowledge-graphs-at-scale.md).
-- **20260407.** RDF 1.2 Concepts is a Candidate Recommendation Snapshot, not a Recommendation. It adds triple terms (a triple as the object of another triple), directional language-tagged strings and a way to state which RDF version data uses [7]. The page says it is "not expected to advance to Recommendation any earlier than 05 May 2026"; W3C's publication history, read on 20261102, shows no later step, and dates the first public working draft 20230516 [7][8]. RDF 1.1 stays the latest Recommendation [7]. See [the trends](../trends/README.md).
+- **20260407.** RDF 1.2 Concepts is a Candidate Recommendation Snapshot, not a Recommendation. It adds triple terms (a triple as the object of another triple), directional language-tagged strings and a way to state which RDF version data uses [7]. The page says it is "not expected to advance to Recommendation any earlier than 05 May 2026"; W3C's publication history, read on 20261102, shows no later step, and dates the first public working draft 20230516 [7][8]. RDF 1.1 stays the latest Recommendation [7]. Still moving: [Semantic web standards](../trends/semantic-web-standards.md).
 
 ## Where sources disagree
 
@@ -45,6 +45,7 @@ The W3C's RDF 1.1 Concepts calls RDF "a framework for representing information i
 
 - [Asking graphs in natural language: from hand-written queries to model-written Cypher and SPARQL](../trends/graph-query-generation.md)
 - [Building knowledge graphs with LLMs: from fixed schemas to induced ones](../trends/llm-kg-construction.md)
+- [Semantic web standards: from RDF 1.1 and RDF-star to RDF 1.2](../trends/semantic-web-standards.md)
 
 **Papers**
 

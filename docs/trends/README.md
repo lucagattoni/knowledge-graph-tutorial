@@ -1,11 +1,11 @@
 ---
 type: chapter
-updated: 20261102 23:19 UTC
+updated: 20261103 01:52 UTC
 ---
 
 # Trends: what the field is doing now
 
-This chapter holds the families of approach to [knowledge graphs](../index/knowledge-graph.md), [retrieval-augmented generation](../index/retrieval-augmented-generation.md) (RAG) and [agent memory](../index/agent-memory.md) that are still moving. Nine pages are families, each told as a shift from one way of doing something to another; two are themes, on the infrastructure underneath (including the [Model Context Protocol](../index/model-context-protocol.md), MCP) and on graph features that projects removed or added. What has settled is in chapter 1, [History](../history/README.md); a trend that settles moves there, with a dated row in the changes list at the foot of this page. The list was fixed on 20261102 and is updated on request [1].
+This chapter holds the families of approach to [knowledge graphs](../index/knowledge-graph.md), [retrieval-augmented generation](../index/retrieval-augmented-generation.md) (RAG) and [agent memory](../index/agent-memory.md) that are still moving. Ten pages are families, each told as a shift from one way of doing something to another; two are themes, on the infrastructure underneath (including the [Model Context Protocol](../index/model-context-protocol.md), MCP) and on graph features that projects removed or added. What has settled is in chapter 1, [History](../history/README.md); a trend that settles moves there, with a dated row in the changes list at the foot of this page. The list was fixed on 20261102 and is updated on request; the tenth family, on the W3C standards for RDF, SPARQL and SHACL, was added on 20261103 at the owner's review [1].
 
 ## How the trends were chosen
 
@@ -18,7 +18,7 @@ The two themes were added by the owner when the list was fixed (the trend pages 
 
 Paper counts are keyword hits in the arXiv API, not counts of papers in the field. Each is read against three controls over the same two windows: any [large language model](../index/large-language-model.md) (LLM) wording (x1.38), any RAG wording (x1.23) and LLM-agent wording (x2.50) [2]. A family is `growing` when its activity rises faster than the controls, `steady` when it is sustained near them, and `settling` when parts have become standard or been absorbed; no trend is `settling` yet [1].
 
-*Reading:* the status is a judgement, not a formula. Graph-based RAG papers rise faster than the RAG and LLM controls but slower than the agent control, while Microsoft's flagship project, [Microsoft GraphRAG](../projects/microsoft-graphrag.md), is in maintenance mode, so it is called `steady` [3]. Of the six `growing` calls, five rest on small or noisy counts, and their pages say so: agentic graph retrieval, vectorless retrieval, agentic search, plain files and code graphs [6][7][8][10][11]. Agent memory's page calls neither its paper count (482 against 53) nor its repository count noisy; it calls the repository count a lower bound [9].
+*Reading:* the status is a judgement, not a formula. Graph-based RAG papers rise faster than the RAG and LLM controls but slower than the agent control, while Microsoft's flagship project, [Microsoft GraphRAG](../projects/microsoft-graphrag.md), is in maintenance mode, so it is called `steady` [3]. Of the six `growing` calls, five rest on small or noisy counts, and their pages say so: agentic graph retrieval, vectorless retrieval, agentic search, plain files and code graphs [6][7][8][10][11]. Agent memory's page calls neither its paper count (482 against 53) nor its repository count noisy; it calls the repository count a lower bound [9]. The tenth family is a standard, so the two tests were read on a different kind of evidence: the snapshot and the paper counts are thin for it (5 papers against 2), and its call rests on W3C publication histories, charters and release notes; it is called `steady`, not `settling`, because no part is a Recommendation yet [22].
 
 The table gives each trend's results on the two tests, as its page reports them.
 
@@ -33,6 +33,7 @@ The table gives each trend's results on the two tests, as its page reports them.
 | Agent memory | Papers 482 against 53 (x9.1) against an agent control of x2.5; 199 active repositories in the snapshot's category, a lower bound [9] | Plain files: extracted records in a store, not files; graph-based RAG: sessions write to the store |
 | Plain files as agent knowledge | Papers on LLM wikis 21 against 0, on context files 59 against 2; 20 of 48 April-2026 repositories still active [10] | Agent memory: files are the source of truth; vectorless retrieval: here the model writes the pages |
 | Code graphs for coding agents | Papers 13 against 1, about 5 of 13 on topic; four of six projects flagged fast-growth (re-read 20261102 21:29 UTC); 28 active repositories by hand tag ([list](../../plans/evidence/trends-hand-tags-of-the-snapshot.txt)) [11] | Graph-based RAG: a graph without a model; agentic search: grep |
+| Semantic web standards | W3C publications 335 against 222 across 23 drafts (RDF flat, 128 against 136; SHACL and SPARQL 1.2 RL up); papers 5 against 2 on RDF-star and the 1.2 drafts (3 against 2 by abstract), SHACL 45 against 16; one snapshot project, Oxigraph (2,014 stars, last push 20261023); RDF4J 6.0.0 ships RDF 1.2 [22] | Infrastructure and MCP: its standards are the ISO graph query languages, settled in 2023 and 2024; asking graphs: a model writes the SPARQL. Here the W3C family, still in draft, with no model [22] |
 | Infrastructure and MCP | Theme. MCP hits x2.8; graph-database hits x0.8; vector-database hits x1.2 [12] | None: it holds no retrieval method |
 | Graph features removed and added | Theme. Ten dated removals or demotions and seven additions, from eleven chosen repositories [13] | None: it follows acts across families |
 
@@ -48,7 +49,7 @@ The catalogue gives about 117 active repositories for agent memory; the page's r
 | Reinforcement-learned controllers for memory operations | [Agentic graph retrieval](./learned-graph-traversal.md) | Same technique and claim: a policy rewarded on task success ([reinforcement learning](../index/reinforcement-learning.md)); what is stored is agent memory's business [6] |
 | Temporal knowledge graphs; write policies; governed and attacked memory | [Agent memory](./agent-memory.md) | Time is a design axis of all memory; the write choice separates memory from retrieval; governance acts on the same store [9] |
 | LLM wikis; context files; skills; knowledge compilation; the Open Knowledge Format | [Plain files as agent knowledge](./plain-file-knowledge.md) | The model reads or writes files instead of querying a store [10] |
-| Graph databases and standards; vector indexes in relational databases; MCP; RAG platforms | [Infrastructure and MCP](./infrastructure-and-mcp.md) | The layer under the other trends [12] |
+| Graph databases and standards (the ISO graph query languages, GQL and SQL/PGQ); vector indexes in relational databases; MCP; RAG platforms | [Infrastructure and MCP](./infrastructure-and-mcp.md) | The layer under the other trends; the W3C standards for RDF, SPARQL and SHACL have [their own page](./semantic-web-standards.md) [12][22] |
 | Dated removals and additions of graph features | [Graph features removed and added](./features-in-and-out.md) | A record of acts across projects, whatever their family [13] |
 
 Not trends of their own: evaluation and licensing. They are two columns of the table below and a section ("What is measured, and by whom") on every trend page (the trend pages call this decision T-6) [1].
@@ -68,6 +69,7 @@ Each row is taken from the page its first cell links to, which is the source num
 | [Agent memory](./agent-memory.md) [9] | Retrieving documents -> remembering across sessions | Extracted fact records, graphs with validity windows, or notes and files written after each session | At write time to extract and consolidate (one call per add in [Mem0](../projects/mem0.md)); [Cognee](../projects/cognee.md) states ingestion and retrieval work without an LLM | A fixed pipeline in Mem0 and [Graphiti](../projects/graphiti.md); the agent itself in [Letta](../projects/letta.md), A-MEM and [MIRIX](../projects/mirix.md) | A model call per write in the extraction designs; the best published Mem0 scores use its hosted platform; otherwise unstated | Mostly first-party on [LoCoMo](../datasets/locomo.md) and [LongMemEval](../datasets/longmemeval.md); independent: plain retrieval level or ahead ([MemoryAgentBench](../benchmarks/memoryagentbench.md) overall: long-context 42.2, BM25 41.5, Mem0 21.1) | Apache-2.0: [claude-mem](../projects/claude-mem.md) (AGPL-3.0 from 20250911 to 20260508), Mem0, Cognee, Graphiti, Letta, [MemOS](../projects/memos.md), MIRIX (MIT before 20250711). MIT: [Hindsight](../projects/hindsight.md). AGPL-3.0: [OpenViking](../projects/openviking.md) (Apache-2.0 before 20260330) | growing |
 | [Plain files as agent knowledge](./plain-file-knowledge.md) [10] | Databases and indexes -> Markdown the model maintains | Model-written, linked Markdown pages plus `index.md` and `log.md`; any search index is a derived cache | At ingest (compile), query (navigate) and lint; none at storage | The agent reads the index, then opens pages | Paid at ingest, then reading per query; one small preregistered study found about 21 times vector RAG's query tokens | First-party for the projects; a few small third-party studies, mixed, none at scale | MIT: [claude-obsidian](../projects/claude-obsidian.md), [Tigerless agent-memory](../projects/tigerless-agent-memory.md). Apache-2.0: Letta, EverOS, OKF (Open Knowledge Format). AGPL-3.0: [Basic Memory](../projects/basic-memory.md), OpenViking. [llm-wiki-nashsu](../projects/llm-wiki-nashsu.md): GPL-3.0, read-only | growing (small base) |
 | [Code graphs for coding agents](./code-knowledge-graphs.md) [11] | Grep and file reads -> parsed code graphs | A graph of definitions and calls from a tree-sitter parser, in SQLite or JSON | No LLM to index code in five of six projects; the agent's own model steers by calling tools | The coding agent, by choosing graph tools (MCP, command line or skill) | No LLM tokens to build; reported query savings (62% fewer tokens, about 10 times fewer) are first-party | All six projects first-party; the one quality comparison against a file-reading baseline favours the baseline (0.83 against 0.92); no independent evaluation found | MIT: [CodeGraph](../projects/codegraph.md), [codebase-memory-mcp](../projects/codebase-memory-mcp.md), [code-review-graph](../projects/code-review-graph.md), Code-Graph-RAG, [Understand Anything](../projects/understand-anything.md). Apache-2.0: [Graphify](../projects/graphify.md), since 20260722 | growing (small, noisy count) |
+| [Semantic web standards](./semantic-web-standards.md) [22] | RDF 1.1 plus the RDF-star report -> RDF 1.2 with SPARQL 1.2 and SHACL 1.2 | Nothing: the standards fix how a graph is written, queried and checked (triple terms and reifiers in RDF; shapes graphs in SHACL) | Never: no specification contains a model; SHACL 1.2 Core defines a property for text meant for an agent | The query author, and the engine that runs the SPARQL; a shapes graph decides what is valid | No retrieval cost; a migration cost: RDF4J 6.0.0 needs Java 25 and renames its RDF-star classes, Oxigraph 0.5 changes how nested triples are written | W3C records and the implementers' own release notes (first-party); the W3C reports list four parsers for RDF 1.2 and two engines for SPARQL 1.2; no independent evaluation found | Specifications: W3C Software and Document licence, royalty-free commitments; tests: W3C Test Suite License and 3-clause BSD. RDF4J, rdflib: BSD-3-Clause. Jena: Apache-2.0. Oxigraph: Apache-2.0 and MIT | steady |
 | [Infrastructure and MCP](./infrastructure-and-mcp.md) [12] | Vector-only stores and custom connectors -> vector indexes inside existing databases and one protocol | Not a retrieval method: graph databases, embedded stores, vector indexes in relational databases, MCP servers | Not applicable to storage; an agent calls MCP tools when it queries | The agent calls tools; the host controls authorization | Bulk ingest ranged 5.0k to 4.3M rows/s across eight engines (first-party in part) | MCP hits x2.8 (440 against 159), graph database x0.8, vector database x1.2; three 2026 studies, all first-party at least in part | GPL-3.0: [Neo4j](../projects/neo4j.md) Community. [FalkorDB](../projects/falkordb.md): the Server Side Public License v1 then the Elastic License 2.0 in one file. [Memgraph](../projects/memgraph.md): Business Source License 1.1 and the Memgraph Enterprise License. [MCP servers](../projects/mcp-servers.md): Apache-2.0 for new work. [LlamaIndex](../projects/llama-index.md): MIT. [Dify](../projects/dify.md): modified Apache 2.0 | steady |
 | [Graph features removed and added](./features-in-and-out.md) [13] | Theme: none (n/a) | Varies by project | Several additions cut model use at extraction (local GLiNER, spaCy, one call instead of two) | Not a retrieval design | Extraction cost is one lever of the additions; removals mostly give no reason | First-party only for the features; independent studies test graphs in general | Apache-2.0 (7 of 11 repositories), MIT (3), AGPL-3.0 (1), from the LICENSE files | steady |
 
@@ -75,9 +77,9 @@ Each row is taken from the page its first cell links to, which is the source num
 
 Neighbouring trends share one of three axes and differ on another.
 
-- **What is built before the question.** A model-built graph (graph-based RAG, graph construction), a parser-built graph (code graphs), a layout tree (vectorless retrieval), model-written pages (plain files), records written after sessions (agent memory), or nothing (agentic search; asking graphs, where the graph already exists).
+- **What is built before the question.** A model-built graph (graph-based RAG, graph construction), a parser-built graph (code graphs), a layout tree (vectorless retrieval), model-written pages (plain files), records written after sessions (agent memory), or nothing (agentic search; asking graphs, where the graph already exists). The semantic web standards build no graph at all; they fix how one is written and queried.
 - **Who steers retrieval.** A fixed algorithm (graph-based RAG, Mem0 and Graphiti), a database engine running one model-written query (asking graphs), a prompted model (vectorless retrieval, agentic search, code graphs through tool choice) or a trained policy (agentic graph retrieval).
-- **When a model is used.** At index time (graph-based RAG, graph construction), at query time (asking graphs, vectorless retrieval, agentic search), at write time (agent memory), or at ingest and query (plain files).
+- **When a model is used.** At index time (graph-based RAG, graph construction), at query time (asking graphs, vectorless retrieval, agentic search), at write time (agent memory), or at ingest and query (plain files). The semantic web standards contain no model.
 
 ```mermaid
 flowchart LR
@@ -90,6 +92,7 @@ flowchart LR
     MEM["Agent memory"]
     PFK["Plain files"]
     CKG["Code graphs"]
+    SWS["Semantic web standards"]
     INF["Infrastructure and MCP"]
     FIO["Features in and out"]
 
@@ -108,6 +111,9 @@ flowchart LR
     AGS ---|"nothing built vs wiki compiled in advance"| PFK
     MEM ---|"extracted records vs files as source of truth"| PFK
     CKG ---|"model writes Cypher over a parsed code graph"| GQG
+    SWS ---|"the language a model writes vs the model that writes it"| GQG
+    SWS ---|"schema languages vs induced schemas"| KGC
+    SWS ---|"W3C RDF standards vs ISO graph query standards"| INF
     INF ---|"where an index lives vs how it is built"| GBR
     INF ---|"protocol that reaches the store"| MEM
     INF ---|"protocol that reaches the graph"| CKG
@@ -116,7 +122,7 @@ flowchart LR
     FIO ---|"acts on features vs the layer they run on"| INF
 ```
 
-The same relations as a list, for readers without Mermaid. Each of the 21 pairs is named on at least one of the two trend pages, checked against their links and text on 20261102 21:49 UTC [3] to [13]. Thirteen are named on both pages. The eight named on one page only say which one.
+The same relations as a list, for readers without Mermaid. Each of the first 21 pairs is named on at least one of the two trend pages, checked against their links and text on 20261102 21:49 UTC [3] to [13]. Thirteen are named on both pages. The eight named on one page only say which one. The three pairs of the semantic web standards, added on 20261103, are named on that page only, checked against its text on 20261103 01:52 UTC [22].
 
 - Graph-based RAG and building knowledge graphs with LLMs: the extraction step is the same; the graph is an index in one and the product in the other.
 - Graph-based RAG and code graphs: a model builds the graph in one, a parser in the other.
@@ -137,6 +143,9 @@ The same relations as a list, for readers without Mermaid. Each of the 21 pairs 
 - Features in and out with agent memory: dated acts on the features of that family (named on both pages).
 - Features in and out with infrastructure: acts on features against the layer they run on (named on both pages).
 - Features in and out with graph-based RAG: dated acts on the features of that family (named on the features page only).
+- Semantic web standards and asking graphs: the standard defines the language, the other page covers the model that writes it (named on the standards page only).
+- Semantic web standards and building knowledge graphs with LLMs: standard schema languages against schemas a model induces (named on the standards page only).
+- Semantic web standards and infrastructure: the W3C RDF standards against the ISO graph query standards (named on the standards page only).
 
 ## Readings across the trends
 
@@ -154,13 +163,13 @@ The same relations as a list, for readers without Mermaid. Each of the 21 pairs 
 
 Exceptions: graphs led on multi-hop sets [3][6], and structured tools doubled grep-only accuracy for two small models in one single-author study [11].
 
-*Reading:* **Most numbers are first-party.** Every score on the query-generation page, every result on the graph-construction page and all six code-graph projects' figures are the authors' own [5][4][11]. The features page found no before-and-after test of any removal or addition [13]. The independent studies the pages cite are mostly preprints, many read at abstract level [3][6][9].
+*Reading:* **Most numbers are first-party.** Every score on the query-generation page, every result on the graph-construction page and all six code-graph projects' figures are the authors' own [5][4][11]. The features page found no before-and-after test of any removal or addition [13]. The independent studies the pages cite are mostly preprints, many read at abstract level [3][6][9]. The standards page rests on W3C's own records and on implementers' release notes, which are first-party; RDF4J and Oxigraph, whose notes claim RDF 1.2 support, are not test subjects in the W3C reports [22].
 
 *Reading:* **Cost moves; it rarely vanishes.** Graph-based RAG's levers move model calls from index time to query time [3]. A tree costs about $0.001 a page to index and $110 per 1,000 queries to answer [7]. Raw search has no index bill and 39 times BM25's query tokens at the smallest tier [8]. A compiled wiki paid about 21 times vector RAG's query tokens in one small study [10]. Asking graphs needs no index and one model call per question [5]. No source read compares the cheap routes at matched cost on one corpus [3][7].
 
 *Reading:* **Files, protocols and hosted tiers recur.** Files are the medium of plain-file knowledge and of two memory designs (OpenViking's virtual filesystem and Anthropic's memory tool directory) [9][10]. MCP is how agents reach memory servers and code graphs [11][12]. Graph features sit behind hosted tiers: Mem0's graph memory is Platform-only and Graphify leads with Graphify Cloud [11][13]. Mem0's README says its best scores reflect its managed platform, so the open code may not equal what a vendor reports [9][13]. A different case: LLM Graph Builder's banner says it is no longer actively developed and points to a hosted successor in Aura, a deprecation notice rather than a feature moved behind a tier [13][17].
 
-*Reading:* **Papers and repositories do not always agree.** Agentic graph retrieval and agentic search have papers and no active project [6][8]. Graph-based RAG papers rise while Microsoft's flagship is in maintenance mode [3]. Of 48 April-2026 wiki repositories, 28 were quiet at the snapshot [10]. Code graphs have large, fast-growing projects and few papers, none independent [11]. A status that rests on one of the two is lower in confidence.
+*Reading:* **Papers and repositories do not always agree.** Agentic graph retrieval and agentic search have papers and no active project [6][8]. Graph-based RAG papers rise while Microsoft's flagship is in maintenance mode [3]. Of 48 April-2026 wiki repositories, 28 were quiet at the snapshot [10]. Code graphs have large, fast-growing projects and few papers, none independent [11]. The standards have few papers on topic and a steady stream of W3C drafts [22]. A status that rests on one of the two is lower in confidence.
 
 ## Changes
 
@@ -170,6 +179,7 @@ The latest changes to the trends are listed here, newest first; a trend that set
 
 | Date | Kind | Subject | Summary | Source |
 |---|---|---|---|---|
+| 20261103 | added | semantic-web-standards | New family page on RDF 1.2, SPARQL 1.2 and SHACL 1.2, the tenth family, added at the owner's review; the two theme pages move to orders 11 and 12. Status steady; activity is read on W3C publication histories because the paper and snapshot counts are thin. | docs/trends/semantic-web-standards.md |
 | 20261102 | added | chapter | First edition: 11 pages (9 families of approach and 2 themes), a comparison table and a map of how they relate; chosen by two tests, sustained activity in the dated sources and an idea no other trend covers. | docs/trends/README.md |
 
 Full list: [changes.tsv](changes.tsv)
@@ -178,10 +188,10 @@ Full list: [changes.tsv](changes.tsv)
 
 ## Sources
 
-Times are UTC, read 20261102. Sources 3 to 13 are the pages of this chapter, not primary sources; they cite their own primary sources. Sources 14 to 21 are primary sources read again for this page.
+Times are UTC, read 20261102 unless a line says 20261103. Sources 3 to 13 and 22 are the pages of this chapter, not primary sources; they cite their own primary sources. Sources 14 to 21 are primary sources read again for this page.
 
-1. plans/20261102_1951-docs-catalogue.md : chapter 2: the eleven trends, the two tests, status values, controls, merges and exclusions. A decision record, not a primary source (read 20261102 21:26 UTC)
-2. https://export.arxiv.org/api/query : controls, `totalResults` for submittedDate 202511020000 to 202611022359 against 202411020000 to 202511012359, no category filter. (a) Any LLM wording `(abs:LLM OR abs:LLMs OR abs:"large language model" OR abs:"large language models")`: 44,692 against 32,396, x1.38. (b) Any RAG wording `(abs:RAG OR abs:"retrieval-augmented generation")`: 3,357 against 2,736, x1.23. (c) LLM-agent wording `(abs:agent OR abs:agents OR abs:agentic) AND (abs:LLM OR abs:LLMs OR abs:"language model" OR abs:"language models")`: 15,158 against 6,068, x2.50. All three re-run for this page (read 20261102 21:27 UTC) with the numbers the trend pages give. The infrastructure page's own controls (x3.3 for "LLM agents", x1.1 for RAG) come from the arXiv search page with a computer-science filter and differ. Keyword counts, never papers in the field
+1. plans/20261102_1951-docs-catalogue.md : chapter 2: the eleven trends, the two tests, status values, controls, merges and exclusions. A decision record, not a primary source (read 20261102 21:26 UTC); its section "The owner's review of the lists (20261103)" adds the tenth family, `semantic-web-standards` (read 20261103 01:41 UTC)
+2. https://export.arxiv.org/api/query : controls, `totalResults` for submittedDate 202511020000 to 202611022359 against 202411020000 to 202511012359, no category filter. (a) Any LLM wording `(abs:LLM OR abs:LLMs OR abs:"large language model" OR abs:"large language models")`: 44,692 against 32,396, x1.38. (b) Any RAG wording `(abs:RAG OR abs:"retrieval-augmented generation")`: 3,357 against 2,736, x1.23. (c) LLM-agent wording `(abs:agent OR abs:agents OR abs:agentic) AND (abs:LLM OR abs:LLMs OR abs:"language model" OR abs:"language models")`: 15,158 against 6,068, x2.50. All three re-run for this page (read 20261102 21:27 UTC) with the numbers the trend pages give, and again on 20261103 01:33 UTC with the same numbers, for the page on the semantic web standards. The infrastructure page's own controls (x3.3 for "LLM agents", x1.1 for RAG) come from the arXiv search page with a computer-science filter and differ. Keyword counts, never papers in the field
 3. [Graph-based RAG](./graph-based-rag.md) : page of 20261102 20:44 UTC (read 20261102 21:26 UTC). The Microsoft GraphRAG README notice, https://github.com/microsoft/graphrag (read 20261102 21:29 UTC)
 4. [Building knowledge graphs with LLMs](./llm-kg-construction.md) : page of 20261102 21:24 UTC (read 20261102 21:26 UTC)
 5. [Asking graphs in natural language](./graph-query-generation.md) : page of 20261102 20:38 UTC (read 20261102 21:26 UTC)
@@ -201,3 +211,4 @@ Times are UTC, read 20261102. Sources 3 to 13 are the pages of this chapter, not
 19. https://arxiv.org/html/2507.05257 : MemoryAgentBench, Table 3 rows BM25 (overall 41.5) and Mem0 (overall 21.1) (read 20261102 21:52 UTC)
 20. https://arxiv.org/html/2604.09666 : RAGSearch, Table 1, "Overall Contain Exact Match": GraphSearch-7B-GraphRAG 58.64, 79.88, 55.26 against Graph-R1-7B 53.42, 66.25, 40.82 on HotpotQA, 2Wiki, Musique (read 20261102 21:53 UTC)
 21. https://arxiv.org/html/2606.25656 : Chen and others, Table 1 (Hit@1, Hit@5, R@20, MRR): scenario 8 0.6881, scenario 9 with a predefined KG retriever 0.6055 (read 20261102 21:52 UTC)
+22. [Semantic web standards](./semantic-web-standards.md) : page of 20261103 01:52 UTC (read 20261103 01:52 UTC). The Oxigraph snapshot row: kb-kg/landscape/20261030_1954-github/repos.tsv, snapshot 20261030 19:54 UTC (read 20261103 01:42 UTC). The control counts of source 2 were re-run on 20261103 01:33 UTC

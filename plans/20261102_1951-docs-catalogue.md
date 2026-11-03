@@ -201,3 +201,17 @@ one item share the slug in the two folders.
 corpora (`wikipedia-dpr-kilt`; `ultradomain` is questions and corpus; `ms-marco` is questions and passages).
 Considered and left to further mention: FB15k and WN18 (inside the pages above), YAGO3-10, Wikidata5M, CoDEx,
 LoCoMo-Plus, AMA-Bench, EvoMemBench, WildGraphBench, Text2GraphQuery-Bench, CypherTurn, the TEXT2SPARQL challenge.
+
+## The owner's review of the lists (20261103)
+
+The owner went through all six lists with the assistant on 20261103, after the first edition was merged (decision D-33 in
+`DECISIONS.md`). The lists above are approved except where this section changes them; each change is a dated row in the
+chapter's `changes.tsv`.
+
+| Chapter | The owner's decision | Change |
+|---|---|---|
+| 1, eras | Keep the eight eras and their boundaries | none |
+| 2, trends | Keep all nine families and both themes, including the two that rest on paper counts alone (agentic graph retrieval, agentic search over raw data). The RDF 1.2, SPARQL 1.2 and SHACL 1.2 drafts were told nowhere though about ten pages pointed to the trends for them | **A new trend page, `semantic-web-standards`** (a tenth family; the themes move to orders 11 and 12) |
+| 3, projects | 26 active projects had no page and no stated reason | **Five new pages** (supermemory, TencentDB-Agent-Memory, Memori, memU, EverOS, all agent memory; 42 pages in all) and a stated reason in the watch list for each of the other 21 |
+| 4, papers | Keep the two one-paper groups (Text2Cypher; Knowledge Compounding). Keep the WordNet, YAGO, DBpedia, Freebase and Wikidata papers in Foundations | The papers chapter's rule names the exception |
+| 5 and 6, datasets and benchmarks | Keep both lists; none of the considered items gets a page | none |

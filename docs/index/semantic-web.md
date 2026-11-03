@@ -2,7 +2,7 @@
 type: index
 kind: concept
 aliases: [Web of Data]
-updated: 20261102 21:27 UTC
+updated: 20261103 01:52 UTC
 ---
 
 # Semantic Web
@@ -24,7 +24,7 @@ The W3C's Semantic Web Activity page says the Semantic Web "provides a common fr
 - **20110602.** [schema.org](./schema-org.md) is announced; Hitzler counts it in his second phase [2][7].
 - **201312.** The W3C subsumes its Semantic Web Activity into the Data Activity; the page was frozen on 20131211 [1]. See [Knowledge graphs at scale](../history/knowledge-graphs-at-scale.md).
 - **2020 (CACM 2021).** Hitzler groups the field into three overlapping phases, driven by [ontologies](./ontology.md), then linked data, then [knowledge graphs](./knowledge-graph.md) [2].
-- **20260407.** RDF 1.2 Concepts is a W3C Candidate Recommendation Snapshot, not yet a Recommendation; it adds triple terms [8].
+- **20260407.** RDF 1.2 Concepts is a W3C Candidate Recommendation Snapshot, not yet a Recommendation; it adds triple terms [8]. Still moving: [Semantic web standards](../trends/semantic-web-standards.md).
 
 ## Where sources disagree
 

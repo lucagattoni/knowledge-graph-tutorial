@@ -1,6 +1,6 @@
 ---
 type: chapter
-updated: 20261102 23:24 UTC
+updated: 20261103 01:30 UTC
 ---
 
 # Papers
@@ -22,7 +22,7 @@ Fourteen papers of the first edition of this chapter were moved to the further r
 
 What is not a paper of this chapter:
 
-- **Datasets and benchmarks.** A paper whose main contribution is a dataset or a benchmark lives in chapters 5 and 6; the papers chapter names it only in relation lines. An evaluation study that reports a finding is a paper (for example RAG vs GraphRAG and GraphRAG-Bench Xiang). The one exception, Text2Cypher, is explained under the table of groups.
+- **Datasets and benchmarks.** A paper whose main contribution is a dataset or a benchmark lives in chapters 5 and 6; the papers chapter names it only in relation lines. An evaluation study that reports a finding is a paper (for example RAG vs GraphRAG and GraphRAG-Bench Xiang). There are two exceptions. Text2Cypher is explained under the table of groups. The papers behind five knowledge bases (WordNet, YAGO, DBpedia, Freebase and Wikidata) stay in Foundations, because each presents a built system (its design, data model or construction method) and is a founding paper of the knowledge-graph story; the owner kept them after the review of 20261103. Their data facts (size, versions, licence) live on the [dataset pages](../datasets/README.md), not here.
 - **Standards.** W3C and ISO documents are entries of the [index](../index/README.md) of kind standard.
 - **Blog posts and gists.** They are not papers. A group page names one in its introduction when it presents it as the origin or the earliest dated source it read for the line of work (the LazyGraphRAG post, the LLM Wiki gist and Aider's repository map are named this way).
 
@@ -51,7 +51,7 @@ One row per group: Foundations first, then the trends in the order of the [trend
 | [Code graphs for coding agents](code-knowledge-graphs.md) | [Code graphs for coding agents](../trends/code-knowledge-graphs.md) | 2 | 2024 |
 | **Total** | | **68** | **1967 to 2026** |
 
-**Open points for the owner: two groups have one paper, not the two the catalogue asked for.** Asking graphs in natural language: Text2Cypher passes one test, "widely built on", on a small count (73 citations, Semantic Scholar, read 20261102 19:47 UTC), and later papers of the line use its data or cite it. No other candidate passed a test: Text2Cypher Across Languages has 3 citations and a narrow finding, SPARQL-LLM extends its authors' earlier system and no paper read cites it, and Text2GraphQuery-Bench is a benchmark paper ([group page](graph-query-generation.md)). Text2Cypher is also a dataset paper, which the rule above would send to chapters 5 and 6. Plain files as agent knowledge: Knowledge Compounding passes "origin" on arXiv timestamps, as the first paper on the gist; the other candidates were cited only as corroboration or by their own author, or are not first ([group page](plain-file-knowledge.md)). Both groups stay as they are until the owner decides to keep them, drop them or relax a test. Vectorless retrieval and Code graphs for coding agents have two papers each.
+**Two groups have one paper, not the two the catalogue asked for; the owner decided on 20261103 to keep them as they are.** Asking graphs in natural language: Text2Cypher passes one test, "widely built on", on a small count (73 citations, Semantic Scholar, read 20261102 19:47 UTC), and later papers of the line use its data or cite it. No other candidate passed a test: Text2Cypher Across Languages has 3 citations and a narrow finding, SPARQL-LLM extends its authors' earlier system and no paper read cites it, and Text2GraphQuery-Bench is a benchmark paper ([group page](graph-query-generation.md)). Text2Cypher is also a dataset paper, which the rule above would send to chapters 5 and 6. Plain files as agent knowledge: Knowledge Compounding passes "origin" on arXiv timestamps, as the first paper on the gist; the other candidates were cited only as corroboration or by their own author, or are not first ([group page](plain-file-knowledge.md)). Both groups stay as they are: the owner chose to keep them rather than drop them or relax a test. Vectorless retrieval and Code graphs for coding agents have two papers each.
 
 ## Map
 
@@ -332,6 +332,7 @@ The latest changes to this chapter, newest first, come from the chapter's list o
 
 | Date | Kind | Subject | Summary | Source |
 |---|---|---|---|---|
+| 20261103 | updated | chapter rules | The owner reviewed the list: both one-paper groups stay (Text2Cypher; Knowledge Compounding), and the papers behind WordNet, YAGO, DBpedia, Freebase and Wikidata stay in Foundations as a named exception to the rule on dataset papers. | docs/papers/README.md |
 | 20261102 | added | chapter | First edition: 68 fundamental papers in 10 groups (Foundations with 29 papers, then one group per trend) and a map of how they build on, answer or evaluate each other. | docs/papers/README.md |
 
 Full list: [changes.tsv](changes.tsv)
