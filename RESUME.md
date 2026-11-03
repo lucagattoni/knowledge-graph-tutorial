@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261103 16:22 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261103 16:33 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
@@ -33,12 +33,11 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
    there). Its value was once malformed; rotating or revoking the key is the owner's call.
 2. **The paid pilot, X2 pass B (D-26 to D-28).** A [plan](kb-kg/experiments/x2-index-cost/pass-b-plan.md) was written 20261102 and
    revised after an independent review. The owner chose OpenAI `gpt-6-luna` with reasoning off and a cap of USD 3 (D-30), answered
-   the open questions on 20261103 (D-32) and gave the yes for stages A to C (D-34). **Where it stands: stage A is done (attempt 1
-   stopped on a 401 for a bad key, USD 0; attempt 2, 20261103 16:18 UTC, USD 0.0064: eight answers, two request shapes rejected, the
-   refusal test passed; the run log in the plan).** Waiting on the owner: the comparison of OpenAI's usage page with the gateway's
-   total (expected: eight requests, 16,677 input tokens of which 2,043 cached, 9,836 output, about USD 0.0064) and a decision about the
-   two rejected shapes (fast-graphrag's `max_tokens: null` and nano-graphrag's `max_tokens`), which stages B to D would otherwise hit.
-   Stage D needs its own yes. **The free work (stage 0) is done**, including a dress rehearsal of the whole ladder with
+   the open questions on 20261103 (D-32) and gave the yes for stages A to C (D-34). **Where it stands: stage A is done** (attempt 1
+   stopped on a 401 for a bad key, USD 0; attempt 2, 20261103 16:18 UTC: eight answers, two request shapes rejected; the owner chose a
+   labelled gateway translation for them, D-35, and the re-test answered 200; the run log in the plan). **Waiting on the owner: the
+   comparison of OpenAI's usage page with the gateway's total** (11 requests answered, 16,945 input tokens of which 2,043 cached, 9,893
+   output, USD 0.00645713); it is the gate to stage B, then B and C run (D-34). Stage D needs its own yes. **The free work (stage 0) is done**, including a dress rehearsal of the whole ladder with
    the real driver, runners and builders against a fake provider (573 checks; it found and fixed one error, D-31). The other options
    from pass A are on [the pass-A page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md#where-this-leaves-the-owner). To
    rerun a pass-A builder, use the command line in its runner's header (`tools/exp/x2_passa_*.py`) and the arguments on the
