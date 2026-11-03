@@ -286,6 +286,8 @@ answered 200, 16,945 input tokens of which 2,043 cached, 9,893 output tokens, **
 401 from the first key, which was refused before any token was counted. The console comparison, the plan's only check that is not the
 gateway's own numbers, is the owner's and is the gate to stage B.
 
+**The gate was passed:** the owner compared OpenAI's usage page with those figures and replied "Agrees" (recorded 20261103 17:18 UTC) (the owner's word; the page's own numbers were not sent to me). Stage B started after it.
+
 **Stage A's call count, its money limit and the code, stated plainly.** The ladder says "at most 12 calls"; that was written for one
 run of the script. Three runs happened (a refused key, the ten requests, the re-test) and 14 requests reached OpenAI in all (1 refused
 by the key, 10, 3). The script's money limit is also per run (each run may spend up to its allowance of USD 0.10 on top of what the
