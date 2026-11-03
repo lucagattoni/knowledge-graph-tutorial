@@ -1,0 +1,153 @@
+====================================================================================================
+C1 eager LLM-built KG
+  ACTIVE n=20  (D-basis 17, E-basis 3, component/borderline 0)
+    HKUDS/LightRAG                                E stars=40443   d1   commits90d=100+ contrib=353
+    microsoft/graphrag                            D stars=36498   d1   commits90d=20 contrib=51
+    neo4j-labs/llm-graph-builder                  D stars=5289    d1   commits90d=1 contrib=22
+    FlowElement-xinliuyuansu/m_flow               D stars=4510    d58  commits90d=1 contrib=8
+    yifanfeng97/Hyper-Extract                     D stars=4207    d1   commits90d=100+ contrib=20
+    OSU-NLP-Group/HippoRAG                        E stars=4083    d23  commits90d=10 contrib=20
+    robert-mcdermott/ai-knowledge-graph           D stars=3134    d46  commits90d=24 contrib=3
+    pingcap/autoflow                              D stars=2978    d7   commits90d=0 contrib=20
+    trustgraph-ai/trustgraph                      E stars=2854    d2   commits90d=n/a contrib=n/a
+    raphaelmansuy/edgequake                       D stars=2292    d0   commits90d=n/a contrib=n/a
+    neo4j/neo4j-graphrag-python                   D stars=1326    d0   commits90d=100+ contrib=42
+    apecloud/ApeRAG                               D stars=1318    d1   commits90d=n/a contrib=n/a
+    FalkorDB/GraphRAG-SDK                         D stars=1029    d0   commits90d=100+ contrib=11
+    benmaster82/Kwipu                             D stars=612     d7   commits90d=n/a contrib=n/a
+    awslabs/graphrag-toolkit                      D stars=451     d0   commits90d=n/a contrib=n/a
+    bibinprathap/VeritasGraph                     D stars=326     d0   commits90d=n/a contrib=n/a
+    zilliztech/vector-graph-rag                   D stars=263     d14  commits90d=n/a contrib=n/a
+    stevereiner/flexible-graphrag                 D stars=196     d5   commits90d=n/a contrib=n/a
+    apache/hugegraph-ai                           D stars=144     d1   commits90d=n/a contrib=n/a
+    RaguTeam/RAGU                                 D stars=143     d25  commits90d=n/a contrib=n/a
+  QUIET/ARCHIVED (listed members) n=12
+    OpenSPG/KAG                                   E stars=9140    d275 quiet commits90d=0 contrib=25
+    gusye1234/nano-graphrag                       D stars=4006    d276 quiet commits90d=0 contrib=20
+    1517005260/graph-rag-agent                    D stars=2354    d359 quiet commits90d=n/a contrib=n/a
+    TencentCloudADP/youtu-graphrag                D stars=1271    d246 quiet commits90d=0 contrib=11
+    ImprintLab/Medical-Graph-RAG                  D stars=839     d376 quiet commits90d=n/a contrib=n/a
+    hhy-huang/HiRAG                               D stars=555     d136 quiet commits90d=n/a contrib=n/a
+    automataIA/graphrag-rs                        D stars=535     d149 quiet commits90d=n/a contrib=n/a
+    LeDat98/NexusRAG                              D stars=528     d193 quiet commits90d=n/a contrib=n/a
+    XMUDeepLIT/MemGraphRAG                        D stars=233     d131 quiet commits90d=n/a contrib=n/a
+    shuyu-labs/GraphRag.Net                       D stars=230     d367 quiet commits90d=n/a contrib=n/a
+    tpoisonooo/ROGRAG                             D stars=201     d322 quiet commits90d=n/a contrib=n/a
+    ksachdeva/langchain-graphrag                  D stars=173     d213 quiet commits90d=n/a contrib=n/a
+====================================================================================================
+C2 cheaper / lazy graph build
+  ACTIVE n=2  (D-basis 0, E-basis 1, component/borderline 1)
+    urchade/GLiNER                                C stars=4184    d6   commits90d=47 contrib=53
+    OSU-NLP-Group/HippoRAG                        E stars=4083    d23  commits90d=10 contrib=20
+  QUIET/ARCHIVED (listed members) n=6
+    gusye1234/nano-graphrag                       E stars=4006    d276 quiet commits90d=0 contrib=20
+    circlemind-ai/fast-graphrag                   E stars=3967    d362 quiet commits90d=0 contrib=15
+    HKUDS/MiniRAG                                 D stars=2026    d379 quiet commits90d=0 contrib=16
+    DEEP-PolyU/LinearRAG                          D stars=566     d117 quiet commits90d=0 contrib=6
+    chensyCN/LogicRAG                             E stars=241     d103 quiet commits90d=0 contrib=2
+    datastax/graph-rag                            E stars=91      d543 quiet commits90d=0 contrib=5
+====================================================================================================
+C3 agentic / RL graph retrieval
+  ACTIVE n=1  (D-basis 0, E-basis 0, component/borderline 1)
+    RManLuo/gfm-rag                               C stars=309     d52  commits90d=n/a contrib=n/a
+  QUIET/ARCHIVED (listed members) n=7
+    TencentCloudADP/youtu-graphrag                D stars=1271    d246 quiet commits90d=0 contrib=11
+    DataArcTech/ToG                               D stars=666     d950 quiet commits90d=n/a contrib=n/a
+    LHRLAB/Graph-R1                               D stars=599     d182 quiet commits90d=0 contrib=1
+    LHRLAB/HyperGraphRAG                          C stars=460     d171 quiet commits90d=n/a contrib=n/a
+    Ayanami0730/arag                              D stars=364     d266 quiet commits90d=n/a contrib=n/a
+    RManLuo/graph-constrained-reasoning           D stars=268     d528 quiet commits90d=n/a contrib=n/a
+    XMUDeepLIT/MemGraphRAG                        D stars=233     d131 quiet commits90d=n/a contrib=n/a
+====================================================================================================
+C4 reasoning over structure, no vectors
+  ACTIVE n=6  (D-basis 2, E-basis 2, component/borderline 2)
+    langgenius/dify                               E stars=160020  d0   commits90d=100+ contrib=1592
+    infiniflow/ragflow                            E stars=93209   d0   commits90d=100+ contrib=908
+    VectifyAI/PageIndex                           D stars=39913   d0   commits90d=100+ contrib=16
+    Dataojitori/nocturne_memory                   C stars=1412    d37  commits90d=n/a contrib=n/a
+    memoket/memoket-kite                          D stars=230     d0   commits90d=n/a contrib=n/a
+    ctxr-dev/llm-wiki-memory                      C stars=129     d51  commits90d=n/a contrib=n/a
+  QUIET/ARCHIVED (listed members) n=2
+    VectifyAI/OpenKB                              D stars=4831    d100 quiet commits90d=0 contrib=14
+    chensyCN/LogicRAG                             E stars=241     d103 quiet commits90d=0 contrib=2
+====================================================================================================
+C6 temporal KG for agents
+  ACTIVE n=5  (D-basis 1, E-basis 2, component/borderline 2)
+    getzep/graphiti                               E stars=32373   d1   commits90d=100+ contrib=64
+    getzep/zep                                    E stars=4984    d10  commits90d=22 contrib=20
+    orneryd/NornicDB                              C stars=920     d0   commits90d=n/a contrib=n/a
+    Pometry/Raphtory                              C stars=650     d0   commits90d=n/a contrib=n/a
+    syncable-dev/memtrace-public                  D stars=509     d0   commits90d=n/a contrib=n/a
+  QUIET/ARCHIVED (listed members) n=0
+====================================================================================================
+C8 code KG for coding agents
+  ACTIVE n=28  (D-basis 22, E-basis 0, component/borderline 6)
+    Graphify-Labs/graphify                        D stars=139374  d3   fast-growth commits90d=100+ contrib=374
+    Egonex-AI/Understand-Anything                 D stars=89048   d4   fast-growth commits90d=100+ contrib=75
+    colbymchenry/codegraph                        D stars=76004   d0   fast-growth commits90d=100+ contrib=51
+    DeusData/codebase-memory-mcp                  D stars=47853   d1   fast-growth commits90d=100+ contrib=208
+    tirth8205/code-review-graph                   D stars=32509   d1   commits90d=100+ contrib=143
+    potpie-ai/potpie                              C stars=5782    d0   commits90d=42 contrib=45
+    vitali87/code-graph-rag                       D stars=5303    d0   commits90d=100+ contrib=74
+    redhat-et/ripwire                             D stars=2495    d0   commits90d=n/a contrib=n/a
+    zzet/gortex                                   D stars=1948    d0   commits90d=n/a contrib=n/a
+    aoci-spec/aoci-code                           C stars=1803    d0   commits90d=n/a contrib=n/a
+    ix-infrastructure/Ix                          C stars=1138    d0   commits90d=n/a contrib=n/a
+    Jakedismo/codegraph-rust                      D stars=908     d18  commits90d=n/a contrib=n/a
+    scabench-org/hound                            C stars=823     d43  commits90d=n/a contrib=n/a
+    harshkedia177/axon                            D stars=816     d88  commits90d=n/a contrib=n/a
+    aovestdipaperino/tokensave                    D stars=682     d0   commits90d=n/a contrib=n/a
+    Muvon/octocode                                D stars=518     d2   commits90d=n/a contrib=n/a
+    syncable-dev/memtrace-public                  D stars=509     d0   commits90d=n/a contrib=n/a
+    Graphicle-AI/graphicle                        D stars=479     d0   commits90d=n/a contrib=n/a
+    AxiomCodeAI/axiomcodegraph                    D stars=389     d0   commits90d=n/a contrib=n/a
+    FalkorDB/code-graph                           D stars=350     d4   commits90d=n/a contrib=n/a
+    aouicher/graphmind                            D stars=216     d15  commits90d=n/a contrib=n/a
+    nikolai-vysotskyi/trace-mcp                   D stars=199     d0   commits90d=n/a contrib=n/a
+    crabbuild/compass                             D stars=175     d10  commits90d=n/a contrib=n/a
+    davide-desio-eleva/kirograph                  D stars=167     d16  commits90d=n/a contrib=n/a
+    this-rs/project-orchestrator                  C stars=140     d0   commits90d=n/a contrib=n/a
+    codegraph-ai/CodeGraph                        D stars=138     d24  commits90d=n/a contrib=n/a
+    stakwork/stakgraph                            D stars=113     d0   commits90d=n/a contrib=n/a
+    opentrace/opentrace                           C stars=109     d2   commits90d=n/a contrib=n/a
+  QUIET/ARCHIVED (listed members) n=0
+====================================================================================================
+C9 LLM KG construction / schema induction
+  ACTIVE n=9  (D-basis 8, E-basis 0, component/borderline 1)
+    neo4j-labs/llm-graph-builder                  D stars=5289    d1   commits90d=1 contrib=22
+    yifanfeng97/Hyper-Extract                     D stars=4207    d1   commits90d=100+ contrib=20
+    urchade/GLiNER                                C stars=4184    d6   commits90d=47 contrib=53
+    robert-mcdermott/ai-knowledge-graph           D stars=3134    d46  commits90d=24 contrib=3
+    HelixDB/helix-foundry                         D stars=1854    d0   commits90d=n/a contrib=n/a
+    monarch-initiative/ontogpt                    D stars=1080    d50  commits90d=38 contrib=31
+    FengZhenfei/carrel                            D stars=653     d3   commits90d=n/a contrib=n/a
+    liliang-cn/cortexdb                           D stars=474     d1   commits90d=n/a contrib=n/a
+    databrickslabs/ontobricks                     D stars=455     d0   commits90d=n/a contrib=n/a
+  QUIET/ARCHIVED (listed members) n=8
+    stair-lab/kg-gen                              D stars=1289    d219 quiet commits90d=n/a contrib=n/a
+    HKUST-KnowComp/AutoSchemaKG                   D stars=845     d184 quiet commits90d=n/a contrib=n/a
+    dylanhogg/llmgraph                            D stars=509     d384 quiet commits90d=n/a contrib=n/a
+    AI4WA/Docs2KG                                 D stars=372     d527 quiet commits90d=n/a contrib=n/a
+    fusion-jena/automatic-KG-creation-with-LLM    D stars=367     d554 quiet commits90d=n/a contrib=n/a
+    DerwenAI/strwythura                           D stars=233     d197 quiet commits90d=n/a contrib=n/a
+    hanxiao/knowledge-graph-extractor             D stars=221     d131 quiet commits90d=n/a contrib=n/a
+    KnowledgeXLab/RAKG                            D stars=203     d384 quiet commits90d=n/a contrib=n/a
+====================================================================================================
+C10 NL to graph query
+  ACTIVE n=6  (D-basis 2, E-basis 3, component/borderline 1)
+    vitali87/code-graph-rag                       E stars=5303    d0   commits90d=100+ contrib=74
+    neo4j/neo4j-graphrag-python                   E stars=1326    d0   commits90d=100+ contrib=42
+    skygazer42/GustoBot                           C stars=413     d62  commits90d=n/a contrib=n/a
+    neo4j-labs/text2cypher                        D stars=245     d21  commits90d=n/a contrib=n/a
+    neo4j-contrib/neo4j-skills                    D stars=118     d4   commits90d=n/a contrib=n/a
+    dimknaf/braindb                               E stars=115     d18  commits90d=n/a contrib=n/a
+  QUIET/ARCHIVED (listed members) n=0
+====================================================================================================
+C11 multimodal graph RAG
+  ACTIVE n=4  (D-basis 3, E-basis 1, component/borderline 0)
+    HKUDS/RAG-Anything                            E stars=24322   d2   commits90d=100+ contrib=77
+    yuezhiai/jonex                                D stars=1522    d2   commits90d=47 contrib=11
+    apecloud/ApeRAG                               D stars=1318    d1   commits90d=n/a contrib=n/a
+    OpenDCAI/DataMind                             D stars=456     d7   commits90d=n/a contrib=n/a
+  QUIET/ARCHIVED (listed members) n=1
+    aiming-lab/SimpleMem                          D stars=3858    d98  quiet commits90d=n/a contrib=n/a

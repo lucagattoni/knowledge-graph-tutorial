@@ -1,5 +1,5 @@
 site_name: Knowledge bases and knowledge graphs
-site_description: How the ideas of knowledge base (KB) and knowledge graph (KG) have evolved, what the state of the art is, and which directions are being tried, with a focus on using LLMs and agents to build and query them.
+site_description: How knowledge bases (KB) and knowledge graphs (KG) evolved, which trends are current, and a maintained survey of the projects, papers, datasets and benchmarks behind them, with a focus on LLMs and agents that build and query them.
 site_url: https://lucagattoni.github.io/knowledge-graph-tutorial/
 site_author: Luca Gattoni
 
@@ -7,12 +7,21 @@ repo_url: https://github.com/lucagattoni/knowledge-graph-tutorial
 repo_name: lucagattoni/knowledge-graph-tutorial
 edit_uri: edit/main/
 
-# docs-src/ is a copy of the repository's Markdown, made by docs-site/stage_docs.py with every path
-# kept (MkDocs refuses a docs_dir that holds its own config file, and the content lives at the repo
-# root). The site is a view over those files, never a second copy; README.md is the home page.
+# docs-src/ is a copy of the repository's Markdown, made by docs-site/stage_docs.py (MkDocs refuses a
+# docs_dir that holds its own config file). The site is a view over those files, never a second copy:
+# docs/ is staged without its prefix (docs/README.md is the home page, docs/history/x.md is served at
+# history/x/), and the archive (kb-kg/, pinakes/, DECISIONS.md) keeps its own paths and URLs.
 docs_dir: docs-src
 site_dir: site
 use_directory_urls: true
+
+# staged-paths.json is the staged-path to repository-path mapping that the hook reads; it must not be
+# published. The default patterns (dotfiles, templates/) are repeated because setting this option
+# replaces them.
+exclude_docs: |
+  /staged-paths.json
+  .*
+  /templates/
 
 # Broken internal links and anchors fail the build (`--strict` in CI). Relative links that GitHub
 # resolves but MkDocs does not (folders, files the site does not publish) are rewritten by the hook
@@ -46,6 +55,9 @@ theme:
         icon: material/weather-sunny
         name: Switch to light mode
   features:
+    # Top bar: the chapters, Index and Archive are tabs (the top level of the generated nav)
+    - navigation.tabs
+    - navigation.tabs.sticky
     # Left column: collapsible nav
     - navigation.instant
     - navigation.tracking
@@ -67,7 +79,13 @@ markdown_extensions:
   - tables
   - footnotes
   - pymdownx.details
-  - pymdownx.superfences
+  # Mermaid diagrams (```mermaid fences) render on the site as GitHub renders them: the history
+  # timeline, the trends map and the papers map are written that way.
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite
@@ -80,8 +98,8 @@ markdown_extensions:
 plugins:
   - search
 
-# Loaded by file path relative to this config. It also generates the nav from the staged tree, so
-# there is no `nav:` here.
+# Loaded by file path relative to this config. It generates the nav from the staged tree (so there is
+# no `nav:` here), resolves relative links against repository paths, and sets each page's edit link.
 hooks:
   - docs-site/mkdocs_hooks.py
 

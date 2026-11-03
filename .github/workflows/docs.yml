@@ -3,27 +3,32 @@ name: docs
 # Build the MkDocs site on every PR (--strict, so a broken internal link or anchor fails the check),
 # and deploy it to GitHub Pages on push to main.
 #
-# Path-filtered on purpose: the site is a view over the Markdown in README.md, DECISIONS.md, kb-kg/
-# and pinakes/, so a change to tools/ or RESUME.md cannot break it. docs-site/ holds the staging
-# script and the hook that decides how anchors are slugged and links are rewritten, which is what
-# --strict validates.
+# Path-filtered on purpose: the site is a view over the Markdown in docs/ (the documentation) and
+# DECISIONS.md, kb-kg/ and pinakes/ (the archive), so a change to RESUME.md or the root README.md
+# cannot break it. tools/build_docs.py writes the generated sections of docs/, so it and its tests
+# are in the filter. docs-site/ holds the staging script and the hook that decides how anchors are
+# slugged and links are rewritten, which is what --strict validates.
 on:
   push:
     branches: [main]
     paths:
-      - README.md
+      - docs/**
       - DECISIONS.md
       - kb-kg/**
       - pinakes/**
+      - tools/build_docs.py
+      - tools/test_build_docs.py
       - mkdocs.yml
       - docs-site/**
       - .github/workflows/docs.yml
   pull_request:
     paths:
-      - README.md
+      - docs/**
       - DECISIONS.md
       - kb-kg/**
       - pinakes/**
+      - tools/build_docs.py
+      - tools/test_build_docs.py
       - mkdocs.yml
       - docs-site/**
       - .github/workflows/docs.yml
@@ -47,6 +52,10 @@ jobs:
           enable-cache: true
           cache-dependency-glob: docs-site/requirements.txt
       - run: uv run python -m unittest discover -s docs-site
+      # The generated sections of docs/ (A-Z index, watch list, changes, appears-in) must be up to
+      # date: --check exits 0 when they are, 1 when stale and 2 on invalid input.
+      - run: uv run python -m unittest tools/test_build_docs.py
+      - run: uv run tools/build_docs.py --check
       - run: uv run docs-site/stage_docs.py
       # uv provisions Python + an ephemeral env from requirements.txt, then builds. mkdocs is not a
       # project dependency: this repository has no Python project to install it into.
