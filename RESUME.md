@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261103 01:18 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261103 01:27 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
@@ -33,9 +33,10 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
    there). Its value was once malformed; rotating or revoking the key is the owner's call.
 2. **The paid pilot, X2 pass B (D-26 to D-28).** A [plan](kb-kg/experiments/x2-index-cost/pass-b-plan.md) was written 20261102 and
    revised after an independent review; nothing has been spent. The owner chose OpenAI `gpt-6-luna` with reasoning off and a cap of
-   USD 3 (D-30). **Still needed from the owner:** whether article text may go to the provider, embeddings (recommended local),
-   builders (recommended all four), a new key with a hard provider-side limit, and one yes or two (recommended two). No paid call
-   starts before those are answered. **The free work (stage 0) is done**, including a dress rehearsal of the whole ladder with
+   USD 3 (D-30). On 20261103 the owner answered "go wit your recommendations": article text may go to OpenAI, embeddings local,
+   all four builders, two yeses (D-32). **Still needed from the owner:** the key file and the hard limit at OpenAI (decision 6; the
+   steps are in [`pass-b-owner-steps.md`](kb-kg/experiments/x2-index-cost/pass-b-owner-steps.md)), then the explicit yes for stages A
+   to C once I have shown the dry runs with their numbers. No paid call starts before that. **The free work (stage 0) is done**, including a dress rehearsal of the whole ladder with
    the real driver, runners and builders against a fake provider (573 checks; it found and fixed one error, D-31). The other options
    from pass A are on [the pass-A page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md#where-this-leaves-the-owner). To
    rerun a pass-A builder, use the command line in its runner's header (`tools/exp/x2_passa_*.py`) and the arguments on the

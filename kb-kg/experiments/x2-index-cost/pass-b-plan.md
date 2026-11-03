@@ -7,9 +7,11 @@ page says what that yes would unlock, what is fixed in advance, and what has to 
 could be chosen after seeing a result is fixed here instead.
 
 **Decided so far (owner, 20261102 20:49 UTC, reply "gpt-6-luna, USD 3"):** decision 1, OpenAI `gpt-6-luna` with reasoning off, and
-decision 2, a cap of USD 3 in total with the stage limits below. **Still open:** 3 (article text to the provider), 4 (embeddings), 5
-(builders), 6 (a new key and a hard provider-side limit), 7 (one yes or two). Recommended answers stand as written. This is not yet the
-yes that starts a paid stage: stage A needs 3 and 6 answered and the free work (stage 0) done. Stage 0 is done (below); what is next is in
+decision 2, a cap of USD 3 in total with the stage limits below. **Decided 20261103 01:26 UTC** (owner, reply "go wit your
+recommendations"): 3 yes, article text may go to OpenAI's API; 4 local embeddings; 5 all four builders; 7 two yeses (one for stages A to
+C, one for D). **Decision 6 is the owner's action, not yet done:** the key file and the provider-side hard limit
+([`pass-b-owner-steps.md`](pass-b-owner-steps.md)). **This is still not the yes that starts a paid stage:** when the key file exists I
+show the dry runs with their numbers and ask for the yes for stages A to C (D-14). Stage 0 is done (below); what is next is in
 [`RESUME.md`](../../../RESUME.md).
 
 ## What pass B answers, and what it does not
@@ -42,6 +44,7 @@ Read 20261102 (UTC). Prices change; they are read again when the gateway config 
 |---|---|
 | Claude Haiku 5.5: USD 0.10 per million input tokens, 0.50 output (prompts up to 100,000 tokens; above that 0.50 and 2.50). Claude Sonnet 5.5: 2 and 10. Quoted table rows | `https://platform.claude.com/docs/en/about-claude/pricing`, 20:19 |
 | `gpt-6-luna`: USD 0.10 input, 0.50 output, 0.01 cached input, 0.125 for a 30-minute cache write and 0.25 for a 12-hour one, per million tokens, in the raw page text and on the model's own page. The page also says regional-processing (data residency) endpoints cost a further 10% for models released on or after 5 March 2026. The reviewer also reports a long-context tier above 272,000 input tokens and a doubled "Fast" price; prompts here are a few thousand tokens | `https://developers.openai.com/api/docs/pricing` (raw text) and `/models/gpt-6-luna`, 20:20 and 20:35 |
+| `gpt-6-luna` read again 20261103: Standard USD 0.10 input, 0.50 output, 0.01 cached input, 0.125 (30 min) and 0.25 (12 h) cache write, unchanged; Fast tier (a separate service tier, not used) 0.20 and 1.00; a long-context row exists (0.20 input, 0.75 output); the 10% regional-processing uplift applies to models released on or after 5 March 2026 and the page does not give this model's release date; Chat Completions and Responses supported, embeddings not; `reasoning.effort` accepts `none`; default rate limits by usage tier: Build 5,000 requests and 2,000,000 tokens a minute, Launch 10,000 and 10,000,000, Grow 30,000 and 180,000,000 (**the owner's tier is unstated**) | `https://developers.openai.com/api/docs/pricing` and `/models/gpt-6-luna`, 20261103 01:25 |
 | OpenAI project spend limit: **Enforce a hard limit** makes requests fail with a `429` (`project_spend_limit_exceeded`); alerts do not stop anything; "enforcement is not instantaneous, so recorded spend can slightly exceed the configured amount"; a project limit "applies only to API traffic billed to that project" | `https://developers.openai.com/api/docs/guides/spend-limits`, 20261103 |
 | `gpt-5-nano` 0.05 and 0.40; `gpt-4o-mini` 0.15 and 0.60; `text-embedding-3-small` 0.02 per million. **Only through a page summariser; the raw page text held only the luna rows** | the pricing page, 20:19 |
 | `gpt-6-luna`: Chat Completions supported, embeddings not; context 1,050,000, maximum output 128,000 tokens; reasoning on, default effort `medium`, `none` supported; "structured outputs" listed as supported. Whether `json_object`, `max_tokens`, `temperature` and `seed` are accepted is **not stated** on that page | `https://developers.openai.com/api/docs/models/gpt-6-luna`, between 20:19 and 20:23 |

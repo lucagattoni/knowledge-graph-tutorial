@@ -6,8 +6,9 @@ and cap (D-14).** The commands are for **your own terminal**, so that the key ne
 
 ## 1. Five answers I need
 
-Decisions 1 and 2 are made (D-30: OpenAI `gpt-6-luna`, reasoning off, USD 3 in all). A one-line reply is enough, for example
-"3 yes, 4 local, 5 all four, 6 done, 7 two".
+Decisions 1 and 2 are made (D-30: OpenAI `gpt-6-luna`, reasoning off, USD 3 in all). **On 20261103 you replied "go wit your
+recommendations": 3, 4, 5 and 7 are answered as the table recommends (D-32). Only 6 is open, and it is yours to do.** The reply I
+need now is "6 done" and the key file's path.
 
 | # | Question | My recommendation | If you disagree |
 |---|---|---|---|
