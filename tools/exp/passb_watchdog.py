@@ -23,7 +23,8 @@ The eight rules, in this order. Counts are over the calls read so far (a record 
                           share with choices[0].finish_reason == "length" exceeds `length_share`, once at least
                           `min_sample` chat answers are seen.
     6 repeated_requests   the share of records whose request_sha256 was already seen exceeds `repeat_share`, once at
-                          least `min_sample` records are seen.
+                          least `min_sample` records are seen. Only records in the repeat window count (`repeat_since`,
+                          below); without one, every record does.
     7 voided_calls        more than `voided_max` records with voided true.
     8 spend               the sum of the records' cost (Decimal, never float) exceeds `stop_at_usd`.
 
@@ -36,6 +37,11 @@ Choices that go beyond the rules as written, each one for a reason:
 * `since` (CLI `--since`, `--from-now`): the plan keeps ONE ledger for the whole pilot, so a stage's watchdog would
   otherwise count the earlier stages' calls (their spend, their voided calls). Records whose `ts` is before `since` are
   ignored. A record without a readable `ts` is not ignored.
+* `repeat_since` (CLI `--repeat-since`): the repeat rule looks for a retry loop, not for a second run. Stage C is run twice
+  on the same documents, so the second run's requests are the first run's, byte for byte (found by the dress rehearsal of
+  the ladder, where the second run tripped this rule within a second). Records stamped before `repeat_since` still count for
+  every other rule, but their hashes are not remembered and they are not in the repeat share's denominator. A record without
+  a readable `ts` is in the window. Without `repeat_since` every record is.
 * Chat records whose body never arrives (the gateway was started without `log_bodies`), and bodies that are not JSON
   (streams), cannot be checked by rules 4 and 5. They are counted (`chat_records_without_body`, `unparsed_bodies`) and
   appear in the report, not guessed at. Rules 4 and 5 are blind without bodies: start the gateway with `log_bodies = true`.
@@ -190,12 +196,16 @@ class State:
     """Counters over every call read so far. Feed it records and body-log entries in any order and in pieces: a chat record
     and its body are joined by call_id whichever arrives first. `trips()` is a pure function of the counters."""
 
-    def __init__(self, rules: Rules, since: str | datetime | None = None):
+    def __init__(self, rules: Rules, since: str | datetime | None = None, repeat_since: str | datetime | None = None):
         self.rules = rules
         self.since = _parse_ts(since) if isinstance(since, str) else since
         if isinstance(since, str) and self.since is None:
             raise ValueError("since: not a readable ISO timestamp")
+        self.repeat_since = _parse_ts(repeat_since) if isinstance(repeat_since, str) else repeat_since
+        if isinstance(repeat_since, str) and self.repeat_since is None:
+            raise ValueError("repeat_since: not a readable ISO timestamp")
         self.records = 0
+        self.repeat_records = 0
         self.errors_retryable = 0
         self.errors_other = 0
         self.refusals = 0
@@ -232,11 +242,10 @@ class State:
             self.bad_records += 1
             return
         call_id = record.get("call_id")
-        if self.since is not None:
-            ts = _parse_ts(record.get("ts"))
-            if ts is not None and ts < self.since:
-                self.skipped_before_since += 1
-                return
+        ts = _parse_ts(record.get("ts"))
+        if self.since is not None and ts is not None and ts < self.since:
+            self.skipped_before_since += 1
+            return
         if isinstance(call_id, str):
             if call_id in self._seen_call_ids:
                 return
@@ -261,13 +270,15 @@ class State:
             self.voided += 1
             self._note("voided_calls", call_id)
 
-        sha = record.get("request_sha256")
-        if isinstance(sha, str) and sha:
-            if sha in self._seen_hashes:
-                self.repeats += 1
-                self._note("repeated_requests", call_id)
-            else:
-                self._seen_hashes.add(sha)
+        if self.repeat_since is None or ts is None or ts >= self.repeat_since:    # in the repeat window
+            self.repeat_records += 1
+            sha = record.get("request_sha256")
+            if isinstance(sha, str) and sha:
+                if sha in self._seen_hashes:
+                    self.repeats += 1
+                    self._note("repeated_requests", call_id)
+                else:
+                    self._seen_hashes.add(sha)
 
         cost = _decimal(record.get("cost"))
         if cost is None:
@@ -339,10 +350,10 @@ class State:
             add("length_stops",
                 f"{self.length_stops} of {self.chat_answers} chat answers ended by the output limit (more than {r.length_share} allowed)",
                 {"length_stops": self.length_stops, "chat_answers": self.chat_answers, "length_share": str(r.length_share)})
-        if self.records >= r.min_sample and Decimal(self.repeats) > r.repeat_share * self.records:
+        if self.repeat_records >= r.min_sample and Decimal(self.repeats) > r.repeat_share * self.repeat_records:
             add("repeated_requests",
-                f"{self.repeats} of {self.records} requests repeated an earlier one (more than {r.repeat_share} allowed)",
-                {"repeats": self.repeats, "records": self.records, "repeat_share": str(r.repeat_share)})
+                f"{self.repeats} of {self.repeat_records} requests repeated an earlier one (more than {r.repeat_share} allowed)",
+                {"repeats": self.repeats, "records": self.repeat_records, "repeat_share": str(r.repeat_share)})
         if self.voided > r.voided_max:
             add("voided_calls", f"{self.voided} voided call(s) (more than {r.voided_max} allowed)",
                 {"voided": self.voided, "voided_max": r.voided_max})
@@ -358,7 +369,8 @@ class State:
         return {
             "records": self.records, "spent_usd": str(self.spend), "errors_retryable": self.errors_retryable,
             "errors_not_retryable": self.errors_other, "refusals": self.refusals, "usage_missing": self.usage_missing,
-            "voided": self.voided, "repeats": self.repeats, "cost_unreadable": self.cost_unreadable,
+            "voided": self.voided, "repeats": self.repeats, "repeat_records": self.repeat_records,
+            "cost_unreadable": self.cost_unreadable,
             "chat_records": self.chat_records, "chat_answers": self.chat_answers, "length_stops": self.length_stops,
             "responses_with_reasoning_tokens": self.reasoning_bodies, "unparsed_bodies": self.unparsed_bodies,
             "chat_records_without_body": len(self._pending_chat) + self._chat_without_id,
@@ -368,13 +380,13 @@ class State:
 
 
 def evaluate(records: Iterable[Any], bodies: Iterable[Any] | Mapping[str, Any], rules: Rules,
-             *, since: str | datetime | None = None) -> list[Trip]:
+             *, since: str | datetime | None = None, repeat_since: str | datetime | None = None) -> list[Trip]:
     """The trips for a whole set of records and body-log entries, with no files or processes.
 
     `bodies` is a list of `{call_id, request, response}` entries (as the body log holds them, `response` raw text or already
     parsed) or a mapping call_id -> such an entry. A chat record with no body is counted as without one, not guessed at.
     """
-    state = State(rules, since)
+    state = State(rules, since, repeat_since)
     body_entries = bodies.values() if isinstance(bodies, Mapping) else bodies
     # bodies first or records first gives the same counters; feeding bodies first exercises the "body arrived first" join
     for entry in body_entries:
@@ -591,7 +603,7 @@ def watch(gateway_dir: str | Path, rules: Rules, kill_pids: Iterable[int] = (), 
           report_path: str | Path | None = None, stop_event: threading.Event | None = None, *,
           max_seconds: float | None = None, since: str | datetime | None = None, grace_s: float = 10.0,
           max_poll_errors: int = MAX_POLL_ERRORS, state: State | None = None,
-          kill_pgids: Iterable[int] = ()) -> list[Trip]:
+          kill_pgids: Iterable[int] = (), repeat_since: str | datetime | None = None) -> list[Trip]:
     """Poll the gateway directory until a rule trips, `stop_event` is set or `max_seconds` has passed.
 
     On the first trip: the report is written, every process group in `kill_pgids` (a runner started in its own session
@@ -599,14 +611,14 @@ def watch(gateway_dir: str | Path, rules: Rules, kill_pids: Iterable[int] = (), 
     survivors get SIGKILL after `grace_s`, the report is rewritten with the outcome, and the trips are returned. A quiet end
     returns []. The first poll happens at once. It does not raise on a missing or half-written file; a pid, a pgid (at most
     1, or the watchdog's own group) or a threshold that is invalid raises ValueError before anything is read. A caller that wants the counters afterwards passes its own `state` (built with the
-    same `rules`; then `since` is the state's, not this argument's).
+    same `rules`; then `since` and `repeat_since` are the state's, not these arguments').
     """
     pids = validate_pids(kill_pids)
     pgids = validate_pgids(kill_pgids)
     if poll_s <= 0:
         raise ValueError("poll_s must be positive")
     gateway_dir = Path(gateway_dir)
-    state = state if state is not None else State(rules, since)
+    state = state if state is not None else State(rules, since, repeat_since)
     meter = JsonlTail(gateway_dir / METER_NAME, decimal_floats=True)
     bodies = JsonlTail(gateway_dir / BODIES_NAME)
     stop_event = stop_event if stop_event is not None else threading.Event()
@@ -692,6 +704,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--since", help="ignore records stamped before this UTC time (ISO, e.g. 2026-11-02T21:00:00Z): "
                                    "the ledger is shared by all stages, a stage counts only its own calls")
     p.add_argument("--from-now", action="store_true", help="same as --since with the current time")
+    p.add_argument("--repeat-since", help="the repeat rule remembers requests only from this UTC time on (ISO): a stage run a "
+                                          "second time on the same documents repeats the first run's requests, which is not a "
+                                          "retry loop; every other rule still counts all calls since --since")
     return p
 
 
@@ -710,15 +725,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         rules = Rules(args.stop_at_usd, args.length_share, args.repeat_share, args.voided_max, args.min_sample,
                       args.tolerated_retryable)
-        State(rules, since)
+        State(rules, since, args.repeat_since)
         pids = validate_pids(args.kill_pid)
         pgids = validate_pgids(args.kill_pgid)
     except ValueError as exc:
         parser.error(str(exc))
     print(f"watchdog: watching the gateway directory, stop at USD {rules.stop_at_usd}, "
           f"kill pids {pids or 'none'}, kill process groups {pgids or 'none'}, polling every {args.poll_s} s"
-          + (f", only calls since {since}" if since else ""), flush=True)
-    state = State(rules, since)
+          + (f", only calls since {since}" if since else "")
+          + (f", repeats looked for since {args.repeat_since}" if args.repeat_since else ""), flush=True)
+    state = State(rules, since, args.repeat_since)
     try:
         trips = watch(args.gateway_dir, rules, pids, args.poll_s, args.report, max_seconds=args.max_seconds, state=state,
                       kill_pgids=pgids)

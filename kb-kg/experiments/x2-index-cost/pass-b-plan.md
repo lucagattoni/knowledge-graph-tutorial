@@ -133,7 +133,7 @@ Fixed for every stage, so nothing is chosen after a result:
 | F6 | **A dress rehearsal of the whole ladder** against the fake paid upstream, including a run that hits the cap and a run where calls are voided | It stops at the cap and writes a complete log |
 | F7 | **A watchdog** that runs beside every paid stage: it polls the gateway's summary and reads the body log, and stops the runner and the gateway the moment a stop rule fires. It reads `usage.completion_tokens_details.reasoning_tokens` and `finish_reason` from response bodies, which the gateway's own log does not hold | A fake upstream that produces each condition (reasoning tokens, a length stop, voided calls, repeated requests) makes it stop within one poll; the SDKs' own retries cannot hold it up |
 
-## Stage 0 status (updated 20261102 22:10 UTC)
+## Stage 0 status (updated 20261103 00:26 UTC)
 
 Built by Sonnet builders and verified by me (tests re-run, the new pieces driven against a real gateway process and a fake
 provider, deliberate breakages of my own). Nothing here has met a real provider.
@@ -145,9 +145,41 @@ provider, deliberate breakages of my own). Nothing here has met a real provider.
 | F4 free pre-flight | Done; returns the run's allowance and the cumulative cap for the gateway config | `3657dab` |
 | F7 watchdog | Done; also stops whole process groups | `3657dab` |
 | F5 provider terms | OpenAI's data page read (above); Anthropic's only before a repeat | this page |
-| F3 stage-A replay script and the durable copy of the requests | In progress | |
-| F8 (added) the stage driver: pre-flight, run profile, runner in its own session, watchdog beside it, reports | In progress | |
-| F6 dress rehearsal of the whole ladder against the fake paid upstream | After F3 and F8 | |
+| F3 stage-A replay script and the durable copy of the requests | Done; a dry run unless `--send`; the refusal test runs against a dead loopback upstream; driven end to end against a fake provider | `15ccdea` |
+| F8 (added) the stage driver `passb_stage.py`: pre-flight, run profile, runner in its own session, watchdog beside it, reports | Done; 43 tests; 52 mutants by the builder and 34 of mine (29 killed, the 5 left are listed in the README); changed once after the rehearsal (below) | `90e8ae3` |
+| F6 dress rehearsal of the whole ladder against the fake paid upstream | Done for all four builders (below). It found one design error, in the watchdog | this page |
+
+### What the dress rehearsal showed
+
+Run 20261102 23:48 to 23:58 UTC, free, nothing paid. Real: the stage driver, pre-flight, watchdog, gateway, the four runners and the four builders in their throwaway environments,
+real processes, files, locks and signals. Fake: the paid provider (each builder's rehearsal responder, with fault modes) and the
+embedding server. A canary key stood in for the real one.
+
+| Run | Checks | Result |
+|---|---|---|
+| The whole ladder for each builder: stage B, stage C twice, stage D, and a dry run first | 295 | All 16 runs completed; each run's spend equals its ledger rows to the last digit; files mode 600 and directories 700; no process of a run left; the report holds no absolute path; the canary key is in no file outside its own, in no driver output; a used run label is refused before anything starts |
+| One fault per run, 16 runs (reasoning tokens; usage missing; dropped connections for all four builders; a bill beyond the allowance and a length stop for LightRAG and Microsoft GraphRAG) | 278 | Every run ended `tripped` with exit status 3, the rule named, the runner's whole group and its gateway stopped, the report complete. Reasoning and length stops hit a live runner and stopped it (runner exit -15 for three builders; nano-graphrag had already exited 1 when its group was swept) |
+
+- **The error it found.** The first ladder run stopped stage C's second run within a second: the watchdog counted a request as
+  repeated if any run of the stage had sent it, and the second run sends the first run's requests again by design (5 repeats in
+  39 records at the first look). Pass A's own ledgers confirm the premise: 23 of Microsoft GraphRAG's 103 five-document requests
+  were identical to its one-document run's. The watchdog now takes `--repeat-since` (the run's start) so the rule looks for a
+  retry loop inside one run; every other rule still counts the whole stage. A real second run would have been killed at the first
+  poll, after the first run's money was spent. No unit test had seen it, because the builder's fake runner never repeated itself.
+- **The cap is not a check on what the provider reports.** With a fake that reported 3,000 times the tokens a real output limit
+  allows, a run spent USD 1.18 (LightRAG) and 1.11 (Microsoft GraphRAG) against an allowance of 0.20 before the watchdog's next poll:
+  the gateway reserves the worst case it believes, then charges what the provider says. A real provider cannot exceed the limit the
+  gateway injected, so this is not expected; it is why decision 6, a hard limit at the provider, stays the one independent guard.
+- **Rules that need a sample.** The length-stop rule is not evaluated below 20 chat answers, which stage B never reaches (LightRAG
+  makes 4 to 5); in stages B and C only the other rules guard. A dropped connection tripped `provider_error` (a 5xx beyond the one
+  tolerated), not `voided_calls`, and was recorded at zero cost, as the gateway records any call without usage; **a provider may
+  still bill it**, which is what the console comparison is for.
+- **After a trip, repeating the stage.** The stage's window stays open, so running it again trips at once on the old calls. The
+  procedure (also in the driver's help): move `stage_<STAGE>.json` in the ledger directory aside, use a new run label; the new
+  window opens at the ledger's spend then, and the total cap of USD 3 still counts everything. A test covers it.
+- **Not covered, because it cannot be rehearsed offline:** what the real provider accepts (stage A), its real token counts, rate
+  limits, and billing of failed calls. The stub's tokens gave USD 0.19 for stage D against the plan's central 0.625, as the
+  stub's outputs are short (pass A: the real ones are 4 to 16 times longer).
 
 Changes to the plan that the work made necessary, all in the direction of safer: the pre-flight returns two numbers, the run's
 **allowance** (what it may spend) and the **cap for the gateway config** (the ledger's spend plus the allowance, because a resumed
@@ -161,8 +193,15 @@ the file.
 
 - Stop everything and report on: any provider error other than one retried 429 or 5xx; any gateway refusal; a call whose usage is
   missing; reasoning tokens where none are expected; a stage's spend past its "stop at"; more than 5% of answers ended by the output
-  limit; more than 5% of requests repeated identically; more than 3 voided calls in a stage. The percentages and the count are my
-  choices, written here before any run.
+  limit; more than 5% of requests repeated identically **within one run** (a first draft counted across the stage, and the dress
+  rehearsal showed that stage C's second run, which sends the first run's requests again by design, was stopped within a second);
+  more than 3 voided calls in a stage. The percentages and the count are my choices, written here before any run. **Evidence for the
+  5%:** in pass A's clean local runs (read from the gateway ledgers of 20261102) the share of repeated requests inside one index
+  run was 0 for LightRAG (343 records, three checkpoints that add documents to one index), 0 for fast-graphrag at 1 and 5
+  documents and 2 of 81 chat calls (2.5%) at 14, and 0 for Microsoft GraphRAG in both its runs (43 records at 1 document, 103 at 5;
+  it indexes each checkpoint again from scratch, and 23 of the 103 are identical to the first run's, which is the cross-run
+  repetition the window removes). Nothing is measured past 14 documents for fast-graphrag or past 5 for Microsoft GraphRAG, so
+  stage D could stop a clean run on this rule; that would be a recorded stop, not a result.
 - A builder that fails by its own fault (exit not zero, the provider answered 200) is a result: record it and continue with the
   other builders of the stage.
 - **No run is repeated to get a better result.** The only repeats are the pre-registered second run of stage C and the fault repeat above.

@@ -1,0 +1,42 @@
+{
+  "repo_root": "REPO_ROOT_HERE",
+  "corpus": "CORPUS_JSON_HERE",
+  "documents": "DOCUMENTS_TSV_HERE",
+  "local_upstream_url": "http://127.0.0.1:11434/v1",
+  "embed_model": "qwen3-embedding:0.6b",
+  "chat_model": "gpt-6-luna",
+  "builders": {
+    "lightrag": {
+      "python": "LIGHTRAG_VENV_PYTHON_HERE",
+      "runner": "x2_passa_lightrag.py",
+      "isolated": true,
+      "env": {"HOME": "LIGHTRAG_HOME_HERE", "TMPDIR": "LIGHTRAG_HOME_HERE/tmp"},
+      "tiktoken_cache": "LIGHTRAG_TIKTOKEN_CACHE_HERE",
+      "extra_args": ["--llm-max-async", "4", "--llm-timeout", "1800"]
+    },
+    "fast": {
+      "python": "FAST_GRAPHRAG_VENV_PYTHON_HERE",
+      "runner": "x2_passa_fast_graphrag.py",
+      "isolated": false,
+      "env": {"HOME": "FAST_GRAPHRAG_HOME_HERE", "PYTHONDONTWRITEBYTECODE": "1"},
+      "tiktoken_cache": "FAST_GRAPHRAG_TIKTOKEN_CACHE_HERE",
+      "extra_args": ["--llm-concurrency", "4", "--llm-timeout-s", "3600"]
+    },
+    "ms": {
+      "python": "MICROSOFT_GRAPHRAG_VENV_PYTHON_HERE",
+      "runner": "x2_passa_microsoft_graphrag.py",
+      "isolated": true,
+      "env": {"HOME": "MICROSOFT_GRAPHRAG_HOME_HERE"},
+      "tiktoken_cache": "MICROSOFT_GRAPHRAG_TIKTOKEN_CACHE_HERE",
+      "extra_args": ["--concurrency", "4", "--request-timeout-s", "3600", "--child-timeout-s", "43200"]
+    },
+    "nano": {
+      "python": "NANO_GRAPHRAG_VENV_PYTHON_HERE",
+      "runner": "x2_passa_nano_graphrag.py",
+      "isolated": false,
+      "env": {"HOME": "NANO_GRAPHRAG_HOME_HERE"},
+      "tiktoken_cache": "NANO_GRAPHRAG_TIKTOKEN_CACHE_HERE",
+      "extra_args": ["--max-async", "4", "--client-timeout-s", "3600"]
+    }
+  }
+}

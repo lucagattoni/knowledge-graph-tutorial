@@ -451,6 +451,93 @@ class SinceFilter(unittest.TestCase):
             wd.State(rules(), since="not a time")
 
 
+class RepeatWindow(unittest.TestCase):
+    """`repeat_since`: stage C's second run sends the first run's requests again, which is not a retry loop. The dress
+    rehearsal with the real LightRAG and the real driver found it stopped within a second."""
+    OLD, NEW, BOUND = "2026-11-02T21:00:00.000Z", "2026-11-02T22:00:00.000Z", "2026-11-02T21:30:00Z"
+
+    def two_runs(self):
+        first = [rec(i, ts=self.OLD) for i in range(25)]
+        second = [rec(100 + i, ts=self.NEW, request_sha256=first[i]["request_sha256"]) for i in range(25)]
+        return first, second
+
+    def test_a_second_run_that_repeats_the_first_is_not_a_retry_loop_but_the_rule_would_have_fired_without_the_window(self):
+        first, second = self.two_runs()
+        self.assertEqual(names(wd.evaluate(first + second, [], rules())), ["repeated_requests"])
+        self.assertEqual(wd.evaluate(first + second, [], rules(), repeat_since=self.BOUND), [])
+
+    def test_a_repeat_inside_the_window_still_trips_and_the_share_is_of_the_windows_records(self):
+        first, second = self.two_runs()
+        for i in range(1, 7):                                          # 6 of the second run's 25 repeat its own first request
+            second[i]["request_sha256"] = second[0]["request_sha256"]
+        trips = wd.evaluate(first + second, [], rules(), repeat_since=self.BOUND)
+        self.assertEqual(names(trips), ["repeated_requests"])
+        self.assertEqual((trips[0].counts["repeats"], trips[0].counts["records"]), (6, 25))
+        second[6]["request_sha256"] = "sha-unique"                      # 5 of 25 is exactly 20%: still above 5%
+        self.assertEqual(names(wd.evaluate(first + second, [], rules(), repeat_since=self.BOUND)), ["repeated_requests"])
+        for i in range(1, 5):
+            second[i]["request_sha256"] = f"sha-unique-{i}"
+        self.assertEqual(wd.evaluate(first + second, [], rules(), repeat_since=self.BOUND), [])      # 1 of 25 is 4%
+
+    def test_the_share_and_the_minimum_sample_are_of_the_windows_records_not_the_stages(self):
+        old = [rec(i, ts=self.OLD) for i in range(30)]
+        window = [rec(100 + i, ts=self.NEW) for i in range(25)]
+        window[1]["request_sha256"] = window[2]["request_sha256"] = window[0]["request_sha256"]
+        # 2 repeats of 25 in the window is 8%, though only 2 of the stage's 55 records (3.6%)
+        self.assertEqual(names(wd.evaluate(old + window, [], rules(), repeat_since=self.BOUND)), ["repeated_requests"])
+        # a window of 10 records is below the minimum sample of 20, though the stage holds 40
+        few = [rec(200 + i, ts=self.NEW, request_sha256="same") for i in range(10)]
+        self.assertEqual(wd.evaluate(old + few, [], rules(), repeat_since=self.BOUND), [])
+
+    def test_every_other_rule_still_counts_the_whole_stage_window(self):
+        first, second = self.two_runs()
+        for c in first[:4]:
+            c["voided"] = True
+        state = wd.State(rules(stop_at_usd=Decimal("0.04")), repeat_since=self.BOUND)
+        for c in first + second:
+            state.add_record(c)
+        counters = state.counters()
+        self.assertEqual((counters["records"], counters["repeat_records"], counters["repeats"]), (50, 25, 0))
+        self.assertEqual(counters["spent_usd"], "0.050")
+        self.assertEqual(names(state.trips()), ["voided_calls", "spend"])
+
+    def test_the_boundary_is_inclusive_and_a_hash_from_before_it_is_not_remembered(self):
+        state = wd.State(rules(min_sample=1), repeat_since="2026-11-02T21:30:00.000Z")
+        state.add_record(rec(1, ts="2026-11-02T21:29:59.999Z", request_sha256="x"))
+        state.add_record(rec(2, ts="2026-11-02T21:30:00.000Z", request_sha256="x"))
+        self.assertEqual((state.repeats, state.repeat_records), (0, 1))
+        state.add_record(rec(3, ts="2026-11-02T21:30:00.000Z", request_sha256="x"))
+        self.assertEqual((state.repeats, state.repeat_records), (1, 2))
+
+    def test_a_record_without_a_readable_time_is_inside_the_window(self):
+        for ts in (None, "yesterday", 5):
+            with self.subTest(ts=ts):
+                state = wd.State(rules(min_sample=1), repeat_since=self.BOUND)
+                state.add_record(rec(1, ts=ts, request_sha256="x"))
+                state.add_record(rec(2, ts=ts, request_sha256="x"))
+                self.assertEqual((state.repeats, state.repeat_records), (1, 2))
+
+    def test_without_a_window_every_record_is_in_it_and_a_bad_window_is_refused(self):
+        state = wd.State(rules())
+        for c in (rec(1), rec(2, request_sha256=None)):
+            state.add_record(c)
+        self.assertEqual((state.records, state.repeat_records), (2, 2))
+        with self.assertRaises(ValueError):
+            wd.State(rules(), repeat_since="not a time")
+        self.assertEqual(wd.State(rules(), repeat_since=wd._parse_ts(self.BOUND)).repeat_since, wd._parse_ts(self.BOUND))
+
+    def test_the_window_is_independent_of_since(self):
+        first, second = self.two_runs()
+        state = wd.State(rules(), since="2026-11-02T20:00:00Z", repeat_since=self.BOUND)
+        for c in first + second:
+            state.add_record(c)
+        self.assertEqual((state.records, state.repeat_records, state.skipped_before_since), (50, 25, 0))
+        state = wd.State(rules(), since=self.BOUND, repeat_since=self.BOUND)
+        for c in first + second:
+            state.add_record(c)
+        self.assertEqual((state.records, state.repeat_records, state.skipped_before_since), (25, 25, 25))
+
+
 class ReaderTests(TmpDirCase):
     def test_a_missing_file_reads_as_nothing(self):
         tail = wd.JsonlTail(self.tmp / "nope" / "meter.jsonl")
@@ -858,6 +945,18 @@ class CliTests(TmpDirCase):
         self.assertEqual(run_cli(*base, "--since", "2026-11-02T11:00:00Z").returncode, 0)
         self.assertEqual(run_cli(*base, "--from-now").returncode, 0)
 
+    def test_repeat_since(self):
+        for i in range(25):
+            self.gw.record(rec(i, ts="2026-11-02T21:00:00.000Z"))
+        for i in range(25):
+            self.gw.record(rec(100 + i, ts="2026-11-02T22:00:00.000Z", request_sha256=f"sha{i:04d}"))
+        base = ["--gateway-dir", str(self.gw.path), "--stop-at-usd", "1", "--max-seconds", "0"]
+        self.assertEqual(run_cli(*base).returncode, 3)
+        done = run_cli(*base, "--repeat-since", "2026-11-02T21:30:00Z")
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn("repeats looked for since 2026-11-02T21:30:00Z", done.stdout)
+        self.assertEqual(run_cli(*base, "--repeat-since", "2026-11-02T22:30:00Z").returncode, 0)      # no record in it at all
+
     def test_usage_errors_exit_2(self):
         base = ["--gateway-dir", str(self.gw.path), "--stop-at-usd", "0.09"]
         cases = {
@@ -879,6 +978,7 @@ class CliTests(TmpDirCase):
             "share above 1": base + ["--length-share", "2"],
             "since and from now": base + ["--since", "2026-11-02T11:00:00Z", "--from-now"],
             "bad since": base + ["--since", "later"],
+            "bad repeat since": base + ["--repeat-since", "later"],
             "min sample 0": base + ["--min-sample", "0"],
         }
         for label, args in cases.items():
