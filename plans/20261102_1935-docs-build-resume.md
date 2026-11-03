@@ -1,7 +1,9 @@
 # Resume: the new documentation (`docs/`)
 
-Last updated 20261102 23:30 UTC. Branch `worktree-20261102_1805-docs-restructure-proposal`, rebased onto `origin/main`
-at `3eede85`; **not pushed, not merged, not reviewed by the owner.** Decisions: row D-29 in [`DECISIONS.md`](../DECISIONS.md);
+Last updated 20261103 00:00 UTC. Branch `worktree-20261102_1805-docs-restructure-proposal`, based on `origin/main`
+at `15ccdea`; **pushed and open as [PR #1](https://github.com/lucagattoni/knowledge-graph-tutorial/pull/1); not merged.** The
+experiments session pushes its D-31 row and a `RESUME.md` update to `main` first; rebase over it before merging.
+Decisions: row D-29 in [`DECISIONS.md`](../DECISIONS.md);
 the owner's structure answers: [`20261102_1915-docs-from-scratch-plan.md`](20261102_1915-docs-from-scratch-plan.md); the lists
 and the evidence for them: [`20261102_1951-docs-catalogue.md`](20261102_1951-docs-catalogue.md) and [`evidence/`](evidence/);
 the rules every page follows: [`20261102_1929-docs-writing-spec.md`](20261102_1929-docs-writing-spec.md).
@@ -17,7 +19,8 @@ the rules every page follows: [`20261102_1929-docs-writing-spec.md`](20261102_19
 
 ## Waiting on the owner
 
-1. **Review in a local preview** (the owner's condition S-6) before anything is pushed or published.
+1. **Review in a local preview** (the owner's condition S-6): the preview was served and the owner asked for the push and the PR;
+   how much of it was read is unstated. Nothing is published until the PR is merged.
 2. **The lists** (eras, trends, 37 projects, 68 papers, 26 datasets, 24 benchmarks) were chosen by the assistant under the
    owner's delegation, not approved item by item.
 3. **Merging to `main`** deploys the site (CI). Before it lands: fetch, rebase over the experiments session's newest commits,
