@@ -9,7 +9,7 @@ could be chosen after seeing a result is fixed here instead.
 **Decided so far (owner, 20261102 20:49 UTC, reply "gpt-6-luna, USD 3"):** decision 1, OpenAI `gpt-6-luna` with reasoning off, and
 decision 2, a cap of USD 3 in total with the stage limits below. **Still open:** 3 (article text to the provider), 4 (embeddings), 5
 (builders), 6 (a new key and a hard provider-side limit), 7 (one yes or two). Recommended answers stand as written. This is not yet the
-yes that starts a paid stage: stage A needs 3 and 6 answered and the free work (stage 0) done. Stage 0 has started; progress is in
+yes that starts a paid stage: stage A needs 3 and 6 answered and the free work (stage 0) done. Stage 0 is done (below); what is next is in
 [`RESUME.md`](../../../RESUME.md).
 
 ## What pass B answers, and what it does not
@@ -170,8 +170,10 @@ embedding server. A canary key stood in for the real one.
   allows, a run spent USD 1.18 (LightRAG) and 1.11 (Microsoft GraphRAG) against an allowance of 0.20 before the watchdog's next poll:
   the gateway reserves the worst case it believes, then charges what the provider says. A real provider cannot exceed the limit the
   gateway injected, so this is not expected; it is why decision 6, a hard limit at the provider, stays the one independent guard.
-- **Rules that need a sample.** The length-stop rule is not evaluated below 20 chat answers, which stage B never reaches (LightRAG
-  makes 4 to 5); in stages B and C only the other rules guard. A dropped connection tripped `provider_error` (a 5xx beyond the one
+- **Rules that need a sample.** The length-stop rule is not evaluated below 20 chat answers over the stage's window. Stage B never
+  reaches that (LightRAG and fast-graphrag make 4 each at one document in pass A). In stage C, pass A's chat calls at 5 documents
+  were 18 for LightRAG, 18 for fast-graphrag and 91 for Microsoft GraphRAG (nano-graphrag unmeasured), so the rule guards
+  Microsoft GraphRAG from its first run and the other two only from the second run, whose calls add to the first's. A dropped connection tripped `provider_error` (a 5xx beyond the one
   tolerated), not `voided_calls`, and was recorded at zero cost, as the gateway records any call without usage; **a provider may
   still bill it**, which is what the console comparison is for.
 - **After a trip, repeating the stage.** The stage's window stays open, so running it again trips at once on the old calls. The
@@ -197,10 +199,12 @@ the file.
   rehearsal showed that stage C's second run, which sends the first run's requests again by design, was stopped within a second);
   more than 3 voided calls in a stage. The percentages and the count are my choices, written here before any run. **Evidence for the
   5%:** in pass A's clean local runs (read from the gateway ledgers of 20261102) the share of repeated requests inside one index
-  run was 0 for LightRAG (343 records, three checkpoints that add documents to one index), 0 for fast-graphrag at 1 and 5
-  documents and 2 of 81 chat calls (2.5%) at 14, and 0 for Microsoft GraphRAG in both its runs (43 records at 1 document, 103 at 5;
-  it indexes each checkpoint again from scratch, and 23 of the 103 are identical to the first run's, which is the cross-run
-  repetition the window removes). Nothing is measured past 14 documents for fast-graphrag or past 5 for Microsoft GraphRAG, so
+  run was 0 for LightRAG (342 calls at 20 documents; its checkpoints add documents to one index), 0 for fast-graphrag at 1 and 5
+  documents and 2 of 81 requests (2.5%; 60 chat and 21 embedding, both repeats chat) at 14, and 0 for Microsoft GraphRAG in both
+  its runs (43 calls at 1 document, 102 at 5). The committed result files carry those counts; the next figure comes from the
+  session's gateway ledgers, which are not committed: Microsoft GraphRAG indexes each checkpoint again from scratch, and 23 of the
+  second run's 103 ledger records (the 102 calls plus a dimension probe) are identical to the first run's, which is the cross-run
+  repetition the window removes. Nothing is measured past 14 documents for fast-graphrag or past 5 for Microsoft GraphRAG, so
   stage D could stop a clean run on this rule; that would be a recorded stop, not a result.
 - A builder that fails by its own fault (exit not zero, the provider answered 200) is a result: record it and continue with the
   other builders of the stage.
