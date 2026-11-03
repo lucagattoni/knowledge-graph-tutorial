@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261102 22:48 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261103 00:26 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
@@ -20,7 +20,7 @@ page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md).
 | `kb-kg/directions/` | nine pages and an overview, first drafts |
 | `kb-kg/experiments/` | five proposals; X1 run; **Step 0 of the order and gates built 20261102** (D-25); X2 pass A on two local models done (D-26, D-27, D-28); X3 to X5 not started |
 | `pinakes/` | approach record, recommendations R1 to R7, 12 takeaways, ClaudeKB precedent, what Pinakes has measured, four proposals for what to measure next (P1 answered, the P4 pilot run, P2 blocked, P3's free-path half in the public benchmark repository, described on its own page) |
-| `tools/` | `gh_snapshot.py` (57 tests), `build_projects_index.py` (12 tests), `check_public_safe.sh`; `tools/exp/` (stub model server, document selection, statistics, four builder rehearsal runners, two SDK end-to-end checks; 32 tests plus the runners); `metering_gateway.py` 1.1.0 (124 tests); four pass-A runners (`x2_passa_*.py`) and `passa_common.py` (23 tests); the pass-B pieces `passb_common.py` (hosted setup, 45 tests), `passb_watchdog.py` (83) and `passb_preflight.py` (54) |
+| `tools/` | `gh_snapshot.py` (57 tests), `build_projects_index.py` (12 tests), `check_public_safe.sh`; `tools/exp/` (stub model server, document selection, statistics, four builder rehearsal runners, two SDK end-to-end checks; 32 tests plus the runners); `metering_gateway.py` 1.1.0 (124 tests); four pass-A runners (`x2_passa_*.py`) and `passa_common.py` (23 tests); the pass-B pieces `passb_common.py` (hosted setup, 45 tests), `passb_watchdog.py` (92), `passb_preflight.py` (54), `passb_stage_a.py` (55) and the stage driver `passb_stage.py` (43); none has met a real provider |
 
 Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wave B about 5.9M, wave C about
 1.5M; about 11.5M in all. Step 0's seven agents: about 1.84M (my sum of their totals).
@@ -34,8 +34,8 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
    revised after an independent review; nothing has been spent. The owner chose OpenAI `gpt-6-luna` with reasoning off and a cap of
    USD 3 (D-30). **Still needed from the owner:** whether article text may go to the provider, embeddings (recommended local),
    builders (recommended all four), a new key with a hard provider-side limit, and one yes or two (recommended two). No paid call
-   starts before those are answered. Free work is under way (a gateway change, a hosted setup for the runners, a watchdog, a
-   pre-flight, a rehearsal). The other options
+   starts before those are answered. **The free work (stage 0) is done**, including a dress rehearsal of the whole ladder with
+   the real driver, runners and builders against a fake provider (573 checks; it found and fixed one error, D-31). The other options
    from pass A are on [the pass-A page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md#where-this-leaves-the-owner). To
    rerun a pass-A builder, use the command line in its runner's header (`tools/exp/x2_passa_*.py`) and the arguments on the
    page; the builders' throwaway virtual environments were in the session's scratch directory and must be rebuilt at the pins
@@ -70,6 +70,15 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
   at its commit `9941f58`, with its limits kept; the owning session confirmed the framing.
 
 ## Next, once the owner answers
+
+- **Paid pilot, stage A (needs answers 3 to 7 above and the owner's explicit yes with model, provider and cap, D-14).** The owner
+  prepares a key file by the D-20 route (mode 600, one line, outside the repository and the scratch directory) and sets the hard
+  limit at the provider; then, from the repository root: `tools/exp/passb_stage_a.py extract` (free; the pass-A gateway
+  directories and the builders' throwaway environments must exist, or be rebuilt at the pins on the rehearsal pages), then
+  `passb_stage_a.py run` without `--send` (prints the plan, starts nothing), then with `--send`. Stages B, C and D run with
+  `tools/exp/passb_stage.py` the same way (dry run first); both scripts' headers hold the arguments and the config shapes
+  (`passb_profile.example.json`, `passb_builders.example.json`). After a watchdog trip, read the stage report before anything
+  else; the repeat-after-fault procedure is in the driver's header.
 
 - Run an approved experiment: throwaway environment under the scratch directory, one scoped key in that
   process's environment only, raw logs and tool versions recorded, no verdicts. A pilot first, with the cap the
