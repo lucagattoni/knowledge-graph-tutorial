@@ -1,6 +1,6 @@
 # X2 pass B: results of stages A to D
 
-Written 20261103 19:13 UTC. These are the numbers from the paid pilot's four stages, run 20261103 between 16:12 and 19:01 UTC on OpenAI's
+Written 20261103 19:44 UTC. These are the numbers from the paid pilot's four stages, run 20261103 between 16:12 and 19:01 UTC on OpenAI's
 `gpt-6-luna` (reasoning off) through the metering gateway, with the key in a private file and the owner's yes (D-34 for stages A to C,
 D-37 for stage D). **The pilot has run to its end**: the spend is far below its USD 3.00 cap, nothing more is approved, and D-37 does not
 cover a repeat of D. **Nothing here says which graph is better**: no quality was measured. My readings are kept apart, in the last
@@ -12,13 +12,18 @@ files passed the path, key, name, e-mail and copied-text scans (no run of eight 
 
 ## One correction first: the gateway left out OpenAI's cache-write price
 
-Every answer of OpenAI carried `usage.prompt_tokens_details.cache_write_tokens` beside `cached_tokens`, and gateway version 1.2.0, which ran
-the whole pilot, read only the second. It priced the written tokens as plain input, USD 0.10 per million, where OpenAI's model page says
+Every answer of OpenAI carried `usage.prompt_tokens_details.cache_write_tokens` beside `cached_tokens`, and the gateway read only the second:
+version 1.2.0, which ran stages B to D and stage A's re-test, and the 1.1.0 code of stage A's first two runs (by the plan's file times they came
+before the 1.2.0 change; neither version read the field, so no figure differs). It priced the written tokens as plain input, USD 0.10 per million, where OpenAI's model page says
 "Cache writes are billed at 1.25x the uncached input token rate", USD 0.125 (page and prompt-caching guide read 20261103; the sources are in
 [the gateway's page](../../../tools/metering_gateway.md#where-the-usage-field-names-come-from)). I found it while building stage D's tables, after
 the run; the stage-A check "the gateway's cost recomputed from the tokens equals its own" could not show it, because it used the same
 fields. Version 1.3.0 of the gateway reads the field. The pilot was **not** re-run: the gateway's figures stay in the ledger as run, and the
-tables below give them first, with the price of the written tokens added from the answers' own token counts where a column says so.
+tables below give them first, with the price of the written tokens added from the answers' own token counts where a column says so. The
+price itself was configured (0.125 in the run profile) but the gateway applied a cache-write price only to Anthropic usage, so it was set and
+unused. **The written-token counts are not in the repository's ledger**: `cache_creation_input_tokens` is null in all 2,510 records of
+[`meter.jsonl`](pass-b/meter.jsonl), because 1.2.0 did not read the field; the counts come from the gateway's body log, which is outside the
+repository, and are summed per run in [`stage-totals.json`](pass-b/stage-totals.json), so they cannot be re-derived from the committed files.
 
 | Stage | Tokens OpenAI reported as written to its cache | The gateway's total (USD) | With the cache-write price (USD) | Difference |
 |---|---|---|---|---|

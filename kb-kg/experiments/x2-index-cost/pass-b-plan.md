@@ -12,7 +12,7 @@ decision 2, a cap of USD 3 in total with the stage limits below. **Decided 20261
 recommendations"): 3 yes, article text may go to OpenAI's API; 4 local embeddings; 5 all four builders; 7 two yeses (one for stages A to
 C, one for D). **Decision 6 was done by the owner on 20261103:** a project of its own at OpenAI with a USD 3 hard limit and a restricted key in a
 private file ([`pass-b-owner-steps.md`](pass-b-owner-steps.md)). **The yes for stages A to C was given on 20261103 16:12 UTC (D-34),
-after the dry runs, and the yes for stage D at 17:58 UTC (D-37); all four stages have run** (run log below; the numbers are in
+after the dry runs, and the yes for stage D at 17:57 UTC (D-37); all four stages have run** (run log below; the numbers are in
 [`pass-b-results.md`](pass-b-results.md)). Stage 0 is done (below); what is next (the owner's console comparison for stage D, and closing the
 pilot) is in [`RESUME.md`](../../../RESUME.md).
 
@@ -137,7 +137,7 @@ Fixed for every stage, so nothing is chosen after a result:
 
 | # | Item | Done when |
 |---|---|---|
-| F1 | **Gateway:** (a) allow `request_defaults` on a keyed upstream only when that upstream's config says so; (b) a **separate** per-model output-limit key, injected as the provider's own field (`max_completion_tokens` for OpenAI-protocol, `max_tokens` for Anthropic) when the client sent neither, **before** `max_out` and the reservation are computed, named in `request_defaults_applied`; (c) `cache_write_per_mtok` set from the pricing page | Tests pass, including that the reservation equals the injected limit and that a client's own limit wins; a deliberate break of each rule turns a test red |
+| F1 | **Gateway:** (a) allow `request_defaults` on a keyed upstream only when that upstream's config says so; (b) a **separate** per-model output-limit key, injected as the provider's own field (`max_completion_tokens` for OpenAI-protocol, `max_tokens` for Anthropic) when the client sent neither, **before** `max_out` and the reservation are computed, named in `request_defaults_applied`; (c) `cache_write_per_mtok` set from the pricing page (**added after stage D, D-39:** the price was set, 0.125 in the run profile, but gateway 1.2.0 applied a cache-write price only to Anthropic usage and never read OpenAI's `cache_write_tokens`; it was configured and unused for the whole pilot) | Tests pass, including that the reservation equals the injected limit and that a client's own limit wins; a deliberate break of each rule turns a test red |
 | F2 | **A hosted setup for the four runners:** chat upstream with the key variable, real prices with `source_url` and `read_at`, the cap, `upstream_timeout_s` 900, `log_bodies = true`; the embedding model stays on the local upstream. **The gateway process alone gets the key** (it reads the file itself); the runner and the builders never have it | Each runner completes against a fake paid upstream and reproduces the stub rehearsal's counts. A **canary test** with a distinctive fake key finds it in none of: the builder's environment and argument list, every log, the body logs, the result JSON, stderr |
 | F3 | **The stage-A replay script** and a durable copy of the requests it needs (about a dozen) in a mode-600 file outside the repository and outside the session's scratch directory, which does not outlive the session | It sends nothing without the stage's cap loaded; it runs against the fake upstream first |
 | F4 | **A free pre-flight** that prints expected tokens times price and the cap for the stage and refuses if the estimate exceeds the stage's "stop at" | It refuses an over-cap case in a test |
@@ -148,7 +148,7 @@ Fixed for every stage, so nothing is chosen after a result:
 ## Stage 0 status (updated 20261103 00:26 UTC)
 
 Built by Sonnet builders and verified by me (tests re-run, the new pieces driven against a real gateway process and a fake
-provider, deliberate breakages of my own). Nothing here has met a real provider.
+provider, deliberate breakages of my own). Nothing here has met a real provider. (True when this section was written; stage A met one on 20261103 and stages B to D ran against it: see the run log.)
 
 | Item | State | Commit |
 |---|---|---|
@@ -307,13 +307,13 @@ tokens.** The tables, the comparison with the plan's estimates and with pass A, 
 [`pass-b-results.md`](pass-b-results.md); the per-call record is in [`pass-b/meter.jsonl`](pass-b/meter.jsonl). **The console comparison
 for stages B and C is the owner's and is the gate to stage D** (figures in the results page); stage D needs its own yes with C's numbers.
 
-**The owner compared OpenAI's usage page for stages B and C and replied that it agrees, and gave the yes for stage D** (recorded 20261103 17:58 UTC,
+**The owner compared OpenAI's usage page for stages B and C and replied that it agrees, and gave the yes for stage D** (recorded 20261103 17:57 UTC,
 D-37): 20 documents for each of the four builders, one run each, in the usual order, allowance and stop-at USD 1.50, the pilot's cap USD 3.00.
 
 **Stage D ran (17:57 to 19:01 UTC) and with it the four stages: USD 1.10537 by the gateway, 1,751 answered requests, 4,170,590 input
 tokens (943,721 cached), 1,546,498 output tokens.** The tables, the comparison with the arithmetic from C and my readings are in
 [`pass-b-results.md`](pass-b-results.md). **The gateway left out OpenAI's cache-write price (D-39):** OpenAI reported 3,140,582 tokens as written
-to its cache (2,540,573 in stage D) and gateway 1.2.0 priced them as plain input; at the model page's USD 0.125 per million the four stages
+to its cache (2,540,573 in stage D) and the gateway (1.1.0 in stage A's first two runs, 1.2.0 after) priced them as plain input; at the model page's USD 0.125 per million the four stages
 cost 1.18389, not 1.10537. The console comparison for stage D is the owner's and is the first that can tell the two figures apart; the
 earlier ones (A, and B with C) were made against the gateway's figures. No further paid step is approved; a repeat of D is not covered by D-37.
 

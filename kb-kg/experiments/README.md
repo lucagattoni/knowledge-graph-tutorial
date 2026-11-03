@@ -47,7 +47,7 @@ be chosen and downloaded.
 step starts only on the owner's explicit yes (D-14), stating cost, model and data first. A step does not start just
 because the one before it worked.
 
-**Step 0 status, 20261102: built, with the gaps below.** (a) The [metering gateway](../../tools/metering_gateway.md)
+**Step 0 status, 20261102: built, with the gaps below.** (Written before the paid pilot; two of the gaps have since closed: the gateway has been used against OpenAI, stages A to D, 20261103, and output tokens have been measured there, see [the X2 results](x2-index-cost/pass-b-results.md).) (a) The [metering gateway](../../tools/metering_gateway.md)
 exists for both providers and has been exercised with the real OpenAI and Anthropic SDKs against fake providers. (b) and
 (d) Four builders were installed in throwaway environments and rehearsed against a stub; the
 [results side by side](x2-index-cost/README.md#the-rehearsals-side-by-side) are on the X2 page. (c) The 20 X2 documents

@@ -81,4 +81,4 @@ package and at the release tag or pinned commit.
 **What the pilot's gate will need from this.** The next paid step is the pilot on a hosted model under a cap. The table
 gives the number of calls and the input size the pilot must expect per builder, so its cap can be set from measured
 prompt sizes, with output tokens as the one unmeasured term. Which builders are worth a paid pass is the owner's call;
-the table does not rank them.
+the table does not rank them. (Written before the pilot; it has since run, stages A to D, and output tokens were measured there: [the results](pass-b-results.md).)
