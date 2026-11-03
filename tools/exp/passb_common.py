@@ -75,7 +75,7 @@ PROTECTED_REQUEST_FIELDS = frozenset({"model", "messages", "input", "stream", "s
                                       "max_tokens", "max_completion_tokens"})
 ALLOWED_KEYS = ("base_url", "key_file", "ledger_dir", "allowance_usd", "upstream_timeout_s", "input_per_mtok",
                 "output_per_mtok", "cached_input_per_mtok", "cache_write_per_mtok", "source_url", "read_at",
-                "output_limit_default", "request_defaults")
+                "output_limit_default", "request_defaults", "translate_max_tokens")
 REQUIRED_KEYS = ("key_file", "ledger_dir", "allowance_usd", "input_per_mtok", "output_per_mtok", "source_url", "read_at",
                  "output_limit_default", "request_defaults")
 _EXACT = Context(prec=60, traps=[InvalidOperation, DivisionByZero, Overflow, Inexact, Rounded])
@@ -129,6 +129,7 @@ class Profile:
     upstream_timeout_s: int = DEFAULT_TIMEOUT_S
     cached_input_per_mtok: Decimal | None = None
     cache_write_per_mtok: Decimal | None = None
+    translate_max_tokens: bool = False     # the gateway drops a null max_tokens and renames a set one (a departure; see hosted_block)
 
     def redact(self, text: str) -> str:
         """Replace the key file's path and the ledger's path in a text (longest first, so a path inside the other is safe)."""
@@ -185,6 +186,13 @@ def _whole(profile: Mapping[str, Any], key: str, *, default: int | None = None, 
         value = int(value)
     if isinstance(value, bool) or not isinstance(value, int) or value < 1 or (maximum is not None and value > maximum):
         raise ProfileError(f"profile: {key} must be a whole number of at least 1" + (f" and at most {maximum}" if maximum else ""))
+    return value
+
+
+def _flag(profile: Mapping[str, Any], key: str) -> bool:
+    value = profile.get(key, False)
+    if not isinstance(value, bool):
+        raise ProfileError(f"profile: {key} must be true or false")
     return value
 
 
@@ -270,6 +278,7 @@ def load_profile(path: str | Path) -> Profile:
         request_defaults=_request_defaults(raw),
         base_url=_base_url(raw),
         upstream_timeout_s=_whole(raw, "upstream_timeout_s", default=DEFAULT_TIMEOUT_S, maximum=86400),
+        translate_max_tokens=_flag(raw, "translate_max_tokens"),
     )
 
 
@@ -412,6 +421,8 @@ class HostedGateway(pc.LocalGateway):
         lines += [f"output_limit_default = {p.output_limit_default}",
                   f"source_url = {j(p.source_url)}",
                   f"read_at = {j(p.read_at)}"]
+        if p.translate_max_tokens:
+            lines.append("translate_max_tokens = true")
         if self.request_defaults.get(self.chat_model):
             lines += ["", f"[models.{j(self.chat_model)}.request_defaults]"]
             lines += [f"{k} = {pc.toml_value(v)}" for k, v in self.request_defaults[self.chat_model].items()]
@@ -505,6 +516,10 @@ class HostedGateway(pc.LocalGateway):
                        "cache_write_per_mtok": None if p.cache_write_per_mtok is None else money_text(p.cache_write_per_mtok),
                        "source_url": p.source_url, "read_at": p.read_at},
             "output_limit_default": p.output_limit_default,
+            "translate_max_tokens": p.translate_max_tokens,
+            "departures_from_the_builders_requests": (
+                ["max_tokens: null is dropped and a set max_tokens is sent as max_completion_tokens (the model rejects both)"]
+                if p.translate_max_tokens else []),
             "request_defaults_names": sorted(self.request_defaults.get(self.chat_model, {})),
             "request_defaults": dict(self.request_defaults.get(self.chat_model, {})),
             "upstream_timeout_s": p.upstream_timeout_s,

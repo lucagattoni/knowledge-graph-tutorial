@@ -200,6 +200,14 @@ class ProfileTests(Dirs):
         self.assertEqual((p.key_file, p.ledger_dir, p.output_limit_default), (str(self.key_file), str(self.ledger), OUTPUT_LIMIT))
         self.assertEqual(dict(p.request_defaults), {"reasoning_effort": "none"})
 
+    def test_translate_max_tokens_is_optional_false_by_default_and_must_be_a_boolean(self) -> None:
+        self.assertIs(self.load().translate_max_tokens, False)
+        self.assertIs(self.load(translate_max_tokens=True).translate_max_tokens, True)
+        self.assertIs(self.load(translate_max_tokens=False).translate_max_tokens, False)
+        for bad in ("true", 1, 0, None, [], {}):
+            with self.subTest(bad=bad):
+                self.refused(self.profile_dict(translate_max_tokens=bad), "translate_max_tokens must be true or false")
+
     def test_json_numbers_are_read_as_exact_decimals_never_floats(self) -> None:
         text = json.dumps(self.profile_dict()).replace('"0.13"', "0.13").replace('"0.01"', "0.01")
         path = self.root / "numbers.json"
@@ -350,6 +358,15 @@ class ConfigTests(Dirs):
         cfg = self.parsed(self.gw(request_defaults={}))
         self.assertEqual(dict(cfg.models[CHAT].request_defaults), {"reasoning_effort": "none"})
 
+    def test_the_flag_reaches_the_chat_models_table_and_only_that_one(self) -> None:
+        cfg = self.parsed(self.gw(translate_max_tokens=True))
+        self.assertEqual((cfg.models[CHAT].translate_max_tokens, cfg.models[EMBED].translate_max_tokens), (True, False))
+        cfg = self.parsed(self.gw())
+        self.assertEqual((cfg.models[CHAT].translate_max_tokens, cfg.models[EMBED].translate_max_tokens), (False, False))
+        gw = self.gw(translate_max_tokens=False)
+        gw.cap = Decimal(1)
+        self.assertNotIn("translate_max_tokens", gw.write_config().read_text())
+
     def test_a_profile_with_no_defaults_and_no_option_writes_no_table(self) -> None:
         gw = pb.HostedGateway(self.root / "none", "http://127.0.0.1:1/v1", [CHAT, EMBED], REPO,
                               profile=self.load(request_defaults={}))
@@ -467,6 +484,33 @@ class OneCallTests(GatewayCase):
         self.assertEqual(call["request_defaults_applied"], ["reasoning_effort", "max_completion_tokens"])
         self.assertNotIn("reasoning_effort", call["request"])             # the body log keeps what the builder sent
         self.assertEqual(call["response"]["usage"]["completion_tokens_details"], {"reasoning_tokens": 0})
+
+    def test_with_the_flag_a_set_or_null_max_tokens_reaches_the_provider_translated_and_the_block_names_the_departure(self) -> None:
+        with self.gateway("run1", translate_max_tokens=True) as gw:
+            chat(gw, max_tokens=300)
+            chat(gw, max_tokens=None)
+            chat(gw)
+            calls = gw.calls()
+            block = gw.hosted_block()
+        first, second, third = (r["body"] for r in self.paid.chat_requests())
+        self.assertEqual((first["max_completion_tokens"], "max_tokens" in first), (300, False))
+        self.assertEqual((second["max_completion_tokens"], "max_tokens" in second), (OUTPUT_LIMIT, False))
+        self.assertEqual((third["max_completion_tokens"], "max_tokens" in third), (OUTPUT_LIMIT, False))
+        self.assertEqual([c["request_defaults_applied"] for c in calls],
+                         [["max_tokens->max_completion_tokens", "reasoning_effort"],
+                          ["max_tokens(null)-dropped", "reasoning_effort", "max_completion_tokens"],
+                          ["reasoning_effort", "max_completion_tokens"]])
+        self.assertIs(block["translate_max_tokens"], True)
+        self.assertEqual(len(block["departures_from_the_builders_requests"]), 1)
+        self.assertIn("max_completion_tokens", block["departures_from_the_builders_requests"][0])
+
+    def test_without_the_flag_max_tokens_goes_through_as_sent_and_the_block_lists_no_departure(self) -> None:
+        with self.gateway("run1") as gw:
+            chat(gw, max_tokens=300)
+            block = gw.hosted_block()
+        (request,) = self.paid.chat_requests()
+        self.assertEqual((request["body"]["max_tokens"], "max_completion_tokens" in request["body"]), (300, False))
+        self.assertEqual((block["translate_max_tokens"], block["departures_from_the_builders_requests"]), (False, []))
 
     def test_cached_input_is_priced_at_the_cached_rate_and_reasoning_tokens_are_read_from_the_body_log(self) -> None:
         self.paid.prompt_tokens, self.paid.completion_tokens, self.paid.cached_tokens, self.paid.reasoning_tokens = 5000, 800, 2000, 120

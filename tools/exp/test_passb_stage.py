@@ -867,6 +867,16 @@ class RunTests(StageCase):
         self.assertEqual(r2["spent_in_stage_usd"], pb.money_text(4 * per_call))
         self.assertEqual([r["label"] for r in state["runs"]], ["C-r1-lightrag", "C-r2-lightrag"])
 
+    def test_the_run_profile_carries_the_max_tokens_translation_flag_so_a_runner_gets_it(self) -> None:
+        self.assertEqual(self.drive(["lightrag"]).rc, 0)
+        self.assertIs(self.run_profile("B-r1-lightrag")["translate_max_tokens"], False)
+        self.profile_over = {"translate_max_tokens": True}
+        self.write_all()
+        self.assertEqual(self.drive(["lightrag"], label="r2").rc, 0)
+        run_profile = self.run_profile("B-r2-lightrag")
+        self.assertIs(run_profile["translate_max_tokens"], True)
+        self.assertIs(pb.load_profile(self.out / "B-r2-lightrag" / "profile.json").translate_max_tokens, True)
+
     def test_the_signal_handlers_are_put_back_when_the_driver_returns(self) -> None:
         before = (signal.getsignal(signal.SIGINT), signal.getsignal(signal.SIGTERM))
         self.assertEqual(self.drive(["lightrag"]).rc, 0)

@@ -1722,6 +1722,145 @@ class OutputLimitTests(unittest.TestCase):
                 parse_keyed(text, openai_extra=ALLOW)
 
 
+# --------------------------------------------------------------------------- translate_max_tokens (1.2.0)
+
+
+TRANSLATE_MODELS = (
+    priced("fake-translate", "fake-openai", "output_limit_default = 6144\ntranslate_max_tokens = true")
+    + priced("fake-translate-plain", "fake-openai", "translate_max_tokens = true")
+    + priced("fake-translate-embed", "fake-openai", "translate_max_tokens = true", out="0")
+    + priced("fake-untranslated", "fake-openai", "output_limit_default = 6144")
+)
+
+
+class TranslateMaxTokensTests(unittest.TestCase):
+    """A reasoning model rejects `max_tokens` (unsupported_parameter) and a null `max_tokens` (invalid_type); stage A of the
+    paid pilot met both. With the key, the gateway drops the null and renames a set `max_tokens` to `max_completion_tokens`."""
+
+    def rig(self, **kwargs):
+        return Rig(self, models_extra=TRANSLATE_MODELS, openai_extra=ALLOW, **kwargs)
+
+    def forwarded(self, rig, index=0):
+        body = rig.openai.requests[index]["body"]
+        return body, json.loads(body)
+
+    def test_a_set_max_tokens_is_renamed_and_is_the_clients_own_limit_for_the_reservation(self):
+        rig = self.rig()
+        client = nolimit_req("fake-translate", max_tokens=500)
+        self.assertEqual(rig.chat(client)[0], 200)
+        body, forwarded = self.forwarded(rig)
+        self.assertEqual(forwarded, {"model": "fake-translate", "messages": client["messages"], "max_completion_tokens": 500})
+        self.assertNotIn("max_tokens", forwarded)
+        (rec,) = rig.records()
+        self.assertEqual(rec["request_defaults_applied"], ["max_tokens->max_completion_tokens"])   # no 6144 was injected
+        self.assertEqual(Decimal(rec["reserve"]), expect_reserve(len(body), "1", "2", 500))
+        self.assertEqual(rec["request_sha256"], hashlib.sha256(encoded(client)).hexdigest(), "the hash is of what the client sent")
+
+    def test_a_null_max_tokens_is_dropped_and_the_models_limit_is_injected(self):
+        rig = self.rig()
+        client = nolimit_req("fake-translate", max_tokens=None, response_format={"type": "json_object"})
+        self.assertEqual(rig.chat(client)[0], 200)
+        body, forwarded = self.forwarded(rig)
+        self.assertNotIn("max_tokens", forwarded)
+        self.assertEqual(forwarded["max_completion_tokens"], 6144)
+        self.assertEqual(forwarded["response_format"], {"type": "json_object"})
+        (rec,) = rig.records()
+        self.assertEqual(rec["request_defaults_applied"], ["max_tokens(null)-dropped", "max_completion_tokens"])
+        self.assertEqual(Decimal(rec["reserve"]), expect_reserve(len(body), "1", "2", 6144))
+
+    def test_a_null_max_tokens_on_a_model_with_no_limit_default_is_dropped_and_the_default_reservation_applies(self):
+        rig = self.rig()
+        client = nolimit_req("fake-translate-plain", max_tokens=None)
+        self.assertEqual(rig.chat(client)[0], 200)
+        body, forwarded = self.forwarded(rig)
+        self.assertEqual(forwarded, {"model": "fake-translate-plain", "messages": client["messages"]})
+        (rec,) = rig.records()
+        self.assertEqual(rec["request_defaults_applied"], ["max_tokens(null)-dropped"])
+        self.assertEqual(Decimal(rec["reserve"]), expect_reserve(len(body), "1", "2", 1024))
+
+    def test_a_null_max_completion_tokens_beside_a_set_max_tokens_is_replaced_by_the_rename(self):
+        rig = self.rig()
+        client = nolimit_req("fake-translate", max_tokens=300, max_completion_tokens=None)
+        self.assertEqual(rig.chat(client)[0], 200)
+        _, forwarded = self.forwarded(rig)
+        self.assertEqual((forwarded["max_completion_tokens"], "max_tokens" in forwarded), (300, False))
+        self.assertEqual(rig.records()[0]["request_defaults_applied"], ["max_tokens->max_completion_tokens"])
+
+    def test_both_limits_set_is_refused_and_nothing_is_forwarded(self):
+        rig = self.rig()
+        status, _, body = rig.chat(nolimit_req("fake-translate", max_tokens=10, max_completion_tokens=500))
+        self.assertEqual(status, 400)
+        self.assertIn("gateway_bad_request", body.decode())
+        self.assertEqual(rig.openai.count, 0)
+        (rec,) = rig.records()
+        self.assertEqual((rec["refusal"], rec["request_defaults_applied"]), ("gateway_bad_request", []))
+
+    def test_a_bad_max_tokens_is_still_refused_after_the_rename(self):
+        rig = self.rig()
+        for bad in (0, -3, "100", True, 1.5):
+            status, _, body = rig.chat(nolimit_req("fake-translate", max_tokens=bad))
+            self.assertEqual(status, 400, bad)
+            self.assertIn("gateway_bad_request", body.decode())
+        self.assertEqual(rig.openai.count, 0)
+
+    def test_a_request_with_neither_field_is_only_given_the_limit_as_before(self):
+        rig = self.rig()
+        client = nolimit_req("fake-translate")
+        rig.chat(client)
+        _, forwarded = self.forwarded(rig)
+        self.assertEqual(forwarded, {**client, "max_completion_tokens": 6144})
+        self.assertEqual(rig.records()[0]["request_defaults_applied"], ["max_completion_tokens"])
+
+    def test_a_model_without_the_key_is_forwarded_exactly_as_sent(self):
+        rig = self.rig()
+        for n, extra in enumerate(({"max_tokens": 500}, {"max_tokens": None})):
+            client = nolimit_req("fake-untranslated", **extra)
+            self.assertEqual(rig.chat(client)[0], 200)
+            self.assertEqual(rig.openai.requests[n]["body"], encoded(client) if extra["max_tokens"] else
+                             json.dumps({**client, "max_completion_tokens": 6144}).encode())
+
+    def test_a_streamed_request_is_translated_then_gets_stream_options(self):
+        events = openai_sse(prompt=700, completion=40)
+        rig = self.rig(openai=FakeUpstream(lambda req, h: send_sse(h, events)))
+        client = nolimit_req("fake-translate", stream=True, max_tokens=200)
+        self.assertEqual(rig.chat(client)[0], 200)
+        sent, forwarded = self.forwarded(rig)
+        self.assertEqual((forwarded["max_completion_tokens"], "max_tokens" in forwarded, forwarded["stream_options"]),
+                         (200, False, {"include_usage": True}))
+        self.assertEqual(Decimal(rig.records()[0]["reserve"]), expect_reserve(len(sent), "1", "2", 200))
+
+    def test_embeddings_are_never_translated(self):
+        usage = {"object": "list", "model": "fake-embed-v1", "data": [{"index": 0, "embedding": [0.1]}],
+                 "usage": {"prompt_tokens": 20, "total_tokens": 20}}
+        rig = self.rig(openai=FakeUpstream(answer(usage)))
+        client = {"model": "fake-translate-embed", "input": "text", "max_tokens": 5}
+        self.assertEqual(rig.post("/v1/embeddings", client)[0], 200)
+        self.assertEqual(rig.openai.requests[0]["body"], encoded(client))
+        self.assertEqual(rig.records()[0]["request_defaults_applied"], [])
+
+    def test_the_summary_and_the_manifest_show_which_models_translate(self):
+        rig = self.rig()
+        models = json.loads(Path(rig.gw.manifest_path).read_text())["models"]
+        self.assertEqual({n: models[n]["translate_max_tokens"] for n in
+                          ("fake-translate", "fake-translate-plain", "fake-translate-embed", "fake-untranslated")},
+                         {"fake-translate": True, "fake-translate-plain": True, "fake-translate-embed": True,
+                          "fake-untranslated": False})
+
+    def test_the_key_is_a_boolean_on_an_openai_upstream_that_allows_it(self):
+        self.assertIs(parse_keyed(priced("m", "fake-openai", "translate_max_tokens = true"), openai_extra=ALLOW)
+                      .models["m"].translate_max_tokens, True)
+        self.assertIs(parse_keyed(priced("m", "fake-openai", "translate_max_tokens = false"))
+                      .models["m"].translate_max_tokens, False)
+        self.assertIs(parse_keyed(priced("m", "fake-openai")).models["m"].translate_max_tokens, False)
+        for bad in ('"yes"', "1", "[]", "0"):
+            with self.assertRaisesRegex(mg.ConfigError, "translate_max_tokens must be true or false"):
+                parse_keyed(priced("m", "fake-openai", f"translate_max_tokens = {bad}"), openai_extra=ALLOW)
+        with self.assertRaisesRegex(mg.ConfigError, "translate_max_tokens is allowed only"):
+            parse_keyed(priced("m", "fake-openai", "translate_max_tokens = true"))        # a paid upstream that has not allowed it
+        with self.assertRaisesRegex(mg.ConfigError, "openai protocol"):
+            parse_keyed(priced("m", "fake-anthropic", "translate_max_tokens = true"), openai_extra=ALLOW)
+
+
 # --------------------------------------------------------------------------- the key held in a file
 
 
@@ -1917,9 +2056,10 @@ class DocumentationTests(unittest.TestCase):
         self.assertEqual(cfg.models["fake-small"].output_limit_default, 4096)
 
     def test_the_keys_added_for_a_paid_pilot_and_their_rules_are_documented(self):
-        for key in ("allow_request_defaults", "output_limit_default", "key_file", "key_env", "request_defaults"):
+        for key in ("allow_request_defaults", "output_limit_default", "key_file", "key_env", "request_defaults",
+                    "translate_max_tokens"):
             self.assertIn(f"`{key}`", self.DOC)
-        for phrase in ("max_completion_tokens", "mode 600", "may still bill a generation it completed", "stage A checks it"):
+        for phrase in ("max_completion_tokens", "mode 600", "may still bill a generation it completed", "invalid_type"):
             self.assertIn(phrase, self.DOC)
 
     def test_every_log_field_is_documented_and_nothing_else(self):

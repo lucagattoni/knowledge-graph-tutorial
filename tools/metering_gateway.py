@@ -43,7 +43,7 @@ from pathlib import Path
 from typing import Any, Callable, Mapping
 from urllib.parse import urlsplit
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 
 BIND_HOST = "127.0.0.1"
 KEY_FILE_MAX_BYTES = 4096
@@ -144,6 +144,7 @@ class Model:
     price: Price
     request_defaults: Mapping[str, Any] = field(default_factory=dict)  # fields added to a request that lacks them
     output_limit_default: int | None = None  # written as the provider's own output-limit field when the client sent none
+    translate_max_tokens: bool = False  # chat requests only: drop a null max_tokens, rename a set one to max_completion_tokens
 
 
 @dataclass(frozen=True)
@@ -368,7 +369,8 @@ def parse_config(text: str, environ: Mapping[str, str]) -> Config:
         if not NAME_RE.match(name) or not isinstance(table, dict):
             raise ConfigError(f"{where}: bad name or not a table")
         _only(table, {"upstream", "input_per_mtok", "output_per_mtok", "cached_input_per_mtok",
-                      "cache_write_per_mtok", "source_url", "read_at", "request_defaults", "output_limit_default"}, where)
+                      "cache_write_per_mtok", "source_url", "read_at", "request_defaults", "output_limit_default",
+                      "translate_max_tokens"}, where)
         upstream = _string(table, "upstream", where)
         if upstream not in upstreams:
             raise ConfigError(f"{where}: upstream {upstream!r} is not configured")
@@ -397,6 +399,15 @@ def parse_config(text: str, environ: Mapping[str, str]) -> Config:
             raise ConfigError(f"{where}: read_at must be UTC like \"20261102 10:00\"")
         output_limit = _positive_int(table["output_limit_default"], f"{where} output_limit_default") \
             if "output_limit_default" in table else None
+        translate = table.get("translate_max_tokens", False)
+        if not isinstance(translate, bool):
+            raise ConfigError(f"{where}: translate_max_tokens must be true or false")
+        if translate and upstreams[upstream].protocol != "openai":
+            raise ConfigError(f"{where}: translate_max_tokens applies to an upstream that speaks the openai protocol "
+                              "(an anthropic upstream takes max_tokens as it is)")
+        if translate and not upstreams[upstream].dry_run and not upstreams[upstream].allow_request_defaults:
+            raise ConfigError(f"{where}: translate_max_tokens is allowed only on a dry_run upstream, or on an upstream whose "
+                              f"[upstreams.{upstream}] table sets allow_request_defaults = true (it changes a paid request)")
         optional = {k: (_decimal(table[k], f"{where} {k}") if k in table else None)
                     for k in ("cached_input_per_mtok", "cache_write_per_mtok")}
         price = Price(
@@ -404,7 +415,7 @@ def parse_config(text: str, environ: Mapping[str, str]) -> Config:
             _decimal(table["output_per_mtok"], f"{where} output_per_mtok"),
             optional["cached_input_per_mtok"], optional["cache_write_per_mtok"], source_url, read_at,
         )
-        models[name] = Model(name, upstream, price, defaults, output_limit)
+        models[name] = Model(name, upstream, price, defaults, output_limit, translate)
     if not models:
         raise ConfigError("config: no model priced (no prices, no start)")
 
@@ -746,6 +757,22 @@ def max_output_tokens(route: Route, request: Mapping[str, Any], default: int) ->
     return limit
 
 
+def translate_max_tokens(request: dict[str, Any]) -> list[str]:
+    """For a model with `translate_max_tokens`, on a chat request: a null `max_tokens` is dropped (a null limit counts as not
+    sent, and the provider rejects the null itself), and a set one is renamed `max_completion_tokens` (the field a reasoning
+    model takes). Returns the names for the log. Both limits set at once is refused: the gateway will not choose between them."""
+    if "max_tokens" not in request:
+        return []
+    if request["max_tokens"] is None:
+        del request["max_tokens"]
+        return ["max_tokens(null)-dropped"]
+    if request.get("max_completion_tokens") is not None:
+        raise HttpError(400, "gateway_bad_request",
+                        "both max_tokens and max_completion_tokens are set, and this model translates max_tokens; send one")
+    request["max_completion_tokens"] = request.pop("max_tokens")
+    return ["max_tokens->max_completion_tokens"]
+
+
 def output_limit_field(route: Route, upstream: Upstream, model: Model, request: Mapping[str, Any]) -> str | None:
     """The field a model's `output_limit_default` goes into for this request, or None when nothing is to be injected.
 
@@ -884,6 +911,7 @@ class Gateway:
             "models": {n: {"upstream": m.upstream, "source_url": m.price.source_url, "read_at": m.price.read_at,
                            "request_defaults": dict(m.request_defaults),
                            "output_limit_default": m.output_limit_default,
+                           "translate_max_tokens": m.translate_max_tokens,
                            "input_per_mtok": money_text(m.price.input_per_mtok),
                            "output_per_mtok": money_text(m.price.output_per_mtok),
                            "cached_input_per_mtok": None if m.price.cached_input_per_mtok is None
@@ -968,18 +996,24 @@ class Gateway:
         forward_body = body
         # What the gateway adds is decided from the client's request, then written in one go: first the model's output
         # limit (so the reservation below is made from it), then its request_defaults. A field the client sent wins.
+        translated: list[str] = []
+        if route.kind == "chat" and model.translate_max_tokens:
+            try:
+                translated = translate_max_tokens(request)  # first, so the client's own limit still wins and is what is reserved
+            except HttpError as exc:
+                return refuse(exc.status, exc.code, exc.message)
         limit_field = output_limit_field(route, upstream, model, request)
         if limit_field is not None:
             request[limit_field] = model.output_limit_default
         added = [k for k in model.request_defaults if k not in request]
         request.update({k: model.request_defaults[k] for k in added})
-        if limit_field is not None or added:
-            forward_body = json.dumps(request).encode("utf-8")  # one re-serialisation for both
+        if limit_field is not None or added or translated:
+            forward_body = json.dumps(request).encode("utf-8")  # one re-serialisation for all of it
         try:
             max_out = max_output_tokens(route, request, self.cfg.default_max_output_tokens)
         except HttpError as exc:
             return refuse(exc.status, exc.code, exc.message)
-        call.defaults_applied = added + ([limit_field] if limit_field is not None else [])
+        call.defaults_applied = translated + added + ([limit_field] if limit_field is not None else [])
         stream = request.get("stream") is True
         if stream and route.kind == "chat":
             options = request.get("stream_options")

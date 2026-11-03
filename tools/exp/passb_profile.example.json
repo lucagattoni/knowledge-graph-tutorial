@@ -11,5 +11,6 @@
   "source_url": "https://developers.openai.com/api/docs/pricing",
   "read_at": "20261102 20:20",
   "output_limit_default": 6144,
-  "request_defaults": {"reasoning_effort": "none"}
+  "request_defaults": {"reasoning_effort": "none"},
+  "translate_max_tokens": true
 }

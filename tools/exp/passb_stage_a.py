@@ -456,7 +456,8 @@ def print_plan(profile: pb.Profile, plan: Mapping[str, Any], model: str, out: An
     print(f"worst case, all requests (the gateway's reservation formula): USD {pb.money_text(plan['worst_case_total_usd'])}", file=out)
     print(f"prices per million tokens: input {pb.money_text(profile.input_per_mtok)}, output {pb.money_text(profile.output_per_mtok)}"
           f" (read {profile.read_at}, {profile.source_url}); output limit {profile.output_limit_default}; "
-          f"request defaults {sorted(profile.request_defaults)}", file=out)
+          f"request defaults {sorted(profile.request_defaults)}; max_tokens translation "
+          f"{'ON' if profile.translate_max_tokens else 'off'}", file=out)
     print(f"caps: stage USD {pb.money_text(STAGE_CAP)}; this run's allowance USD {pb.money_text(profile.allowance_usd)}; "
           f"ledger holds {plan['ledger_records']} record(s), USD {pb.money_text(plan['spent_before_usd'])}; the gateway "
           f"would load a cap of USD {pb.money_text(plan['gateway_cap_usd'])}", file=out)

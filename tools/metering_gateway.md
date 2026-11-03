@@ -12,8 +12,10 @@ through. It exists because the third-party builders an experiment runs cannot do
    real key is read by the gateway itself, from its own environment or from a file only its owner can read, put on
    the outgoing request, and never printed or logged.
 
-**Status: never used against a real provider.** Everything below was tested against fake upstreams on loopback,
-with invented prices and made-up keys. See [What this leaves unchecked](#what-this-leaves-unchecked).
+**Status: used once against a real provider.** On 20261103 the first stage of a paid pilot sent ten requests (eight answered,
+two rejected, about USD 0.006) to OpenAI's `gpt-6-luna`; what that showed is in
+[What this leaves unchecked](#what-this-leaves-unchecked). Everything else below was tested against fake upstreams on loopback,
+with invented prices and made-up keys. Version 1.2.0 adds `translate_max_tokens`.
 
 Standard library only (threaded `http.server`, `http.client`); no dependency to install. Python 3.11 or newer.
 Binds `127.0.0.1` and nothing else.
@@ -143,12 +145,26 @@ read_at = "20261102 10:00"
   `default_max_output_tokens`. The field is the provider's own: `max_completion_tokens` on an `openai` upstream,
   `max_tokens` on an `anthropic` one. A limit the client sent always wins, even a very large one (nothing is
   clamped), on either field. A `"max_tokens": null`, which fast-graphrag sends on summary calls, counts as not sent:
-  the gateway adds the protocol's field and leaves the client's `null` as it was sent. **Whether a provider accepts a
-  request that holds both a `null` `max_tokens` and a `max_completion_tokens` is not checked here; the paid pilot's
-  stage A checks it.** The injected field's name is added to `request_defaults_applied`, after the names of any
+  the gateway adds the protocol's field and leaves the client's `null` as it was sent. **OpenAI's `gpt-6-luna` rejected
+  that combination (HTTP 400, `invalid_type`, parameter `max_tokens`; 20261103), and it rejected a set `max_tokens` too
+  (`unsupported_parameter`); `translate_max_tokens` below is the option for such a model.** The injected field's name is added to `request_defaults_applied`, after the names of any
   `request_defaults` fields. The body log, the hash and `bytes_in` are of the client's request, as for
   `request_defaults`, and the manifest holds each model's value. It is a separate key on purpose: `request_defaults`
   still may not set a limit field.
+- `translate_max_tokens` (optional boolean in a `[models."name"]` table, default `false`; version 1.2.0) is for a model that
+  takes `max_completion_tokens` and rejects `max_tokens`, as OpenAI's reasoning models do. **It applies to an upstream that
+  speaks the `openai` protocol (anything else stops the start) and, on a paid upstream, only with `allow_request_defaults`**,
+  because it changes a paid request. On a chat request for that model, **before** the output limit is chosen: a `"max_tokens":
+  null` is dropped (it then counts as not sent, as above, so `output_limit_default` is injected if the model has one); a set
+  `max_tokens` is renamed `max_completion_tokens` with its value, and is then the client's own limit, so it wins over
+  `output_limit_default` and is what the reservation uses. A `max_completion_tokens` that is `null` beside a set `max_tokens`
+  is replaced by the rename; **a non-null `max_completion_tokens` beside a set `max_tokens` is refused** (400
+  `gateway_bad_request`, nothing forwarded), because the gateway will not choose between them. A bad value (zero, negative, a
+  string, a boolean, a fraction) is refused as before, after the rename. Embeddings are never touched. The call's record names
+  what was done in `request_defaults_applied`: `max_tokens->max_completion_tokens` or `max_tokens(null)-dropped`, first in the
+  list. The body log, the hash and `bytes_in` are of the client's request, and the manifest and the summary hold the flag for
+  every model. **It is a departure from "the builder's request is forwarded as it is", and a user of the gateway must say so
+  wherever a result comes from a model that has it.**
 
 An example in prose, for a paid pilot: the upstream `openai-main` sets `key_file` and `allow_request_defaults = true`,
 and the model `gpt-6-luna` on it sets `output_limit_default = 6144` and a `request_defaults` table with
@@ -278,7 +294,7 @@ float. Bodies and the client's headers are never in this file.
 | `error` | short code such as `upstream_status`, `upstream_timeout`, `stream_interrupted`, or null |
 | `latency_ms` | request received until the call was settled |
 | `request_sha256`, `bytes_in`, `bytes_out` | SHA-256 and size of the body the client sent; bytes sent back to the client |
-| `request_defaults_applied` | the names of the fields the gateway added to this request: the `request_defaults` fields in the table's order, then the output-limit field if `output_limit_default` was injected (an empty list when none) |
+| `request_defaults_applied` | the names of what the gateway changed or added in this request: first a translation (`max_tokens->max_completion_tokens` or `max_tokens(null)-dropped`) if `translate_max_tokens` applied, then the `request_defaults` fields in the table's order, then the output-limit field if `output_limit_default` was injected (an empty list when none) |
 
 Other files, next to `log_file`:
 
@@ -325,24 +341,29 @@ usage), and that Anthropic cache writes are priced at the single `cache_write_pe
   the owner wrote down.
 - **Modalities and extras are not priced separately.** Image or audio tokens, Anthropic server tools, and the
   1-hour cache TTL premium are counted only as far as the provider's total token fields cover them.
-- **The request body is forwarded unchanged**, except for what the config asks the gateway to add: the model's
-  `request_defaults` (on a paid upstream only with `allow_request_defaults`), its `output_limit_default`, and
-  `stream_options.include_usage`. The recorded hash and `bytes_in` are of the body the client sent, and the body log
+- **The request body is forwarded unchanged**, except for what the config asks the gateway to add or change: the model's
+  `request_defaults` (on a paid upstream only with `allow_request_defaults`), its `output_limit_default`, its
+  `translate_max_tokens` (the same condition), and `stream_options.include_usage`. The recorded hash and `bytes_in` are of the body the client sent, and the body log
   holds that body, so the log does not show what was added; `request_defaults_applied` names it.
 
 ## What this leaves unchecked
 
-- It has **never been used against a real provider**, so the wire formats are those of the sources above, not of
-  an observed response. Field names or status codes that differ would show as `usage_missing` or voided calls, which
-  is why the first real run should be a pilot with a small cap.
+- It has been used against **one real provider, once**: OpenAI's `gpt-6-luna`, 20261103, ten requests of the first stage of a
+  paid pilot. Observed there: Chat Completions with `reasoning_effort: none`, `max_completion_tokens`, `response_format`
+  `json_object` and strict `json_schema` all accepted; `usage` with `prompt_tokens_details.cached_tokens` and
+  `.cache_write_tokens` and `completion_tokens_details.reasoning_tokens`; a cost computed from those fields that equals a
+  recomputation from the tokens; a 401 `invalid_api_key` answered with a standard error body; a refusal at a tiny cap
+  that forwarded nothing. **Not observed:** streaming, the embeddings route, Anthropic, a 429 or 5xx from a provider, a
+  timeout, and the provider's own billing (OpenAI's usage page is the only check that is not the gateway's own numbers, and the
+  owner makes that comparison by hand).
 - The unit tests use `http.client` and raw sockets. The real OpenAI and Anthropic Python SDKs have since been pointed
   at it, but only against fake upstreams written for the purpose (`tools/exp/gateway_sdk_e2e_openai.py`, 17 checks, and
   `tools/exp/gateway_sdk_e2e_anthropic.py`, 12 checks: chat, streaming, embeddings, the key swap, exact cost, the cap).
   Pass A then pointed all four builders at it, against local models and with the stub (each runner records how it was
   pointed); the gateway has still never met a real provider.
   Behaviour with `Expect: 100-continue` or HTTP/2 is unobserved.
-- TLS towards a provider was not exercised: the tests use plain `http://` to loopback fake upstreams. The code uses
-  the interpreter's default certificate verification.
+- TLS towards a provider is exercised only by the one real run above (the interpreter's default certificate verification
+  worked from five interpreters, tested by a handshake first); the tests use plain `http://` to loopback fake upstreams.
 - The suite passed on Python 3.11, 3.12, 3.13, 3.14 and 3.15 in the author's run (20261102 11:43 UTC). A second,
   independent run used one version, 3.13.18 (`uv run python`, 20261102 11:46 UTC). The header says 3.11 or newer.
 - The fake upstreams are written by the same author as the gateway, so they share its reading of the protocols.
@@ -350,8 +371,9 @@ usage), and that Anthropic cache writes are priced at the single `cache_write_pe
   a file system that does not keep modes, and it cannot see a copy of the key elsewhere (a backup, a synced folder).
   A value that is not a path but is neither key-like nor equal to an environment value would still be named in the
   "does not exist" message.
-- `output_limit_default` was tested against fake upstreams only. No provider has been shown to accept a request that
-  carries `max_completion_tokens` together with a `null` `max_tokens`, or `max_completion_tokens` at all on a given model.
+- `output_limit_default` was accepted by `gpt-6-luna` as `max_completion_tokens` (eight requests); no provider has accepted
+  a request that carries it together with a `null` `max_tokens` (`gpt-6-luna` rejected that). `translate_max_tokens` was tested
+  against fake upstreams in version 1.2.0; whether `gpt-6-luna` accepts what it produces is checked by the pilot, not here.
 
 ## Tests and the mutation check
 
@@ -359,7 +381,7 @@ usage), and that Anthropic cache writes are priced at the single `cache_write_pe
 uv run python -m unittest tools/test_metering_gateway.py
 ```
 
-124 tests, about 10 seconds, no network and no key: fake upstreams are real loopback servers written in the test
+136 tests, about 11 seconds, no network and no key: fake upstreams are real loopback servers written in the test
 file. Green on Python 3.11, 3.12, 3.13, 3.14 and 3.15, one run each, and on three consecutive runs on 3.13
 (20261102 21:08 UTC, version 1.1.0). The longer series (10 consecutive runs on 3.13, 16 runs with eight copies going
 at once) were made on the earlier 78-test suite and have not been repeated on the 36 tests added since for the
@@ -422,6 +444,15 @@ The two survivors. *Zero (or another falsy value) treated as an absent limit* is
 added, but `max_output_tokens` still refuses any non-null value that is not a positive whole number, so the request is
 refused all the same and the log record is identical. *Neither key accepted* with one guard changed survived once
 because the other, earlier guard still refuses; the two-guard and first-guard versions above kill it.
+
+**Mutation check of version 1.2.0 (`translate_max_tokens`), 20261103**, same method. 22 mutants of the gateway,
+the profile and the stage wiring: 21 killed, 1 survived. Killed: the null not dropped; the rename that keeps the old field or loses the
+value; both limits set not refused; the flag ignored; embeddings translated too; the names not logged; the body not re-serialised when
+only a translation changed it; the flag not required to be a boolean, accepted on an anthropic upstream, or accepted on a paid
+upstream without `allow_request_defaults`; the flag missing from the manifest; a null `max_completion_tokens` beside a set
+`max_tokens` refused; the translation after the limit choice; and the profile, config, result-block, driver and stage-A copies of the
+flag. The survivor is equivalent: a bad `max_tokens` replaced by 1 before the rename leaves the bad value in `max_tokens`, where
+`max_output_tokens` refuses it all the same.
 
 Two things the first check showed about the tests themselves. The lock mutant first survived: under CPython's global
 interpreter lock the check and the reservation are rarely interleaved by chance, so the concurrency tests now use

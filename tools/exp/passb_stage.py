@@ -443,7 +443,7 @@ def run_profile_text(profile: pb.Profile, allowance: Decimal) -> str:
         "allowance_usd": pb.money_text(allowance), "upstream_timeout_s": profile.upstream_timeout_s,
         "input_per_mtok": pb.money_text(profile.input_per_mtok), "output_per_mtok": pb.money_text(profile.output_per_mtok),
         "source_url": profile.source_url, "read_at": profile.read_at, "output_limit_default": profile.output_limit_default,
-        "request_defaults": dict(profile.request_defaults)}
+        "request_defaults": dict(profile.request_defaults), "translate_max_tokens": profile.translate_max_tokens}
     if profile.cached_input_per_mtok is not None:
         data["cached_input_per_mtok"] = pb.money_text(profile.cached_input_per_mtok)
     if profile.cache_write_per_mtok is not None:

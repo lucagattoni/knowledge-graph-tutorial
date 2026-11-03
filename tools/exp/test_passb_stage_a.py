@@ -434,6 +434,14 @@ class DryRunTests(Base):
         for secret in (CANARY, SENT, RESPONSE_SENT, str(self.root), self.key_file.name):
             self.assertNotIn(secret, out)
 
+    def test_the_dry_run_says_whether_the_max_tokens_translation_is_on(self) -> None:
+        code, out, _ = run_main(*self.run_args())
+        self.assertEqual(code, 0)
+        self.assertIn("max_tokens translation off", out)
+        code, out, _ = run_main(*self.run_args(translate_max_tokens=True))
+        self.assertEqual(code, 0)
+        self.assertIn("max_tokens translation ON", out)
+
     def test_the_worst_case_follows_the_gateways_reservation_formula(self) -> None:
         profile = self.profile()
         by_name = {r["name"]: r for r in self.requests}
