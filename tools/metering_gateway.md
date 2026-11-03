@@ -12,8 +12,8 @@ through. It exists because the third-party builders an experiment runs cannot do
    real key is read by the gateway itself, from its own environment or from a file only its owner can read, put on
    the outgoing request, and never printed or logged.
 
-**Status: used once against a real provider.** On 20261103 the first stage of a paid pilot sent ten requests (eight answered,
-two rejected, about USD 0.006) to OpenAI's `gpt-6-luna`; what that showed is in
+**Status: used against one real provider.** On 20261103 the first three stages of a paid pilot sent 443 answered requests (and three
+rejected ones) to OpenAI's `gpt-6-luna` for about USD 0.263; what that showed is in
 [What this leaves unchecked](#what-this-leaves-unchecked). Everything else below was tested against fake upstreams on loopback,
 with invented prices and made-up keys. Version 1.2.0 adds `translate_max_tokens`.
 
@@ -348,8 +348,9 @@ usage), and that Anthropic cache writes are priced at the single `cache_write_pe
 
 ## What this leaves unchecked
 
-- It has been used against **one real provider, once**: OpenAI's `gpt-6-luna`, 20261103, ten requests of the first stage of a
-  paid pilot. Observed there: Chat Completions with `reasoning_effort: none`, `max_completion_tokens`, `response_format`
+- It has been used against **one real provider**: OpenAI's `gpt-6-luna`, 20261103, the first three stages of a paid pilot (the
+  first ten requests and the re-test are the ones listed here; the later 432 answered requests, from four builders, all returned 200 with finish
+  reason `stop`). Observed there: Chat Completions with `reasoning_effort: none`, `max_completion_tokens`, `response_format`
   `json_object` and strict `json_schema` all accepted; `usage` with `prompt_tokens_details.cached_tokens` and
   `.cache_write_tokens` and `completion_tokens_details.reasoning_tokens`; a cost computed from those fields that equals a
   recomputation from the tokens; a 401 `invalid_api_key` answered with a standard error body; a refusal at a tiny cap

@@ -1,0 +1,462 @@
+{
+ "note": "built from the gateway's ledger and the stage report of 20261103; numbers only; prices as in the plan; stage A is in the plan's run log",
+ "runs": [
+  {
+   "label": "B-r1-lightrag",
+   "stage": "B",
+   "run": "r1",
+   "builder": "lightrag",
+   "documents": 1,
+   "outcome": "completed",
+   "runner_exit": 0,
+   "tripped_rules": [],
+   "chat_calls": 4,
+   "embedding_calls_local": 16,
+   "http_statuses": {
+    "200": 20
+   },
+   "input_tokens": 14872,
+   "cached_input_tokens": 5032,
+   "output_tokens": 5908,
+   "cost_usd": "0.00398832",
+   "cost_per_document_usd": "0.00398832",
+   "finish_reasons": {
+    "stop": 4
+   },
+   "translated_calls": {},
+   "voided": 0,
+   "wall_seconds_by_driver_clock": 36,
+   "allowance_usd": "0.2",
+   "stop_at_usd": "0.09",
+   "graph_counts": {
+    "chunks": 2,
+    "chunk_tokens_sum_lightrag_tokenizer": 1455,
+    "entities": 61,
+    "relationships": 67,
+    "graph_nodes": 61,
+    "graph_edges": 67,
+    "llm_response_cache_entries": 4
+   }
+  },
+  {
+   "label": "B-r1-fast",
+   "stage": "B",
+   "run": "r1",
+   "builder": "fast",
+   "documents": 1,
+   "outcome": "completed",
+   "runner_exit": 0,
+   "tripped_rules": [],
+   "chat_calls": 3,
+   "embedding_calls_local": 3,
+   "http_statuses": {
+    "200": 6
+   },
+   "input_tokens": 6810,
+   "cached_input_tokens": 3268,
+   "output_tokens": 7135,
+   "cost_usd": "0.00395438",
+   "cost_per_document_usd": "0.00395438",
+   "finish_reasons": {
+    "stop": 3
+   },
+   "translated_calls": {},
+   "voided": 0,
+   "wall_seconds_by_driver_clock": 28,
+   "allowance_usd": "0.19601168",
+   "stop_at_usd": "0.09",
+   "graph_counts": {
+    "entities": 56,
+    "relations": 103,
+    "chunks": 3
+   }
+  },
+  {
+   "label": "B-r1-ms",
+   "stage": "B",
+   "run": "r1",
+   "builder": "ms",
+   "documents": 1,
+   "outcome": "completed",
+   "runner_exit": 0,
+   "tripped_rules": [],
+   "chat_calls": 24,
+   "embedding_calls_local": 8,
+   "http_statuses": {
+    "200": 32
+   },
+   "input_tokens": 40669,
+   "cached_input_tokens": 4921,
+   "output_tokens": 14100,
+   "cost_usd": "0.01067401",
+   "cost_per_document_usd": "0.01067401",
+   "finish_reasons": {
+    "stop": 24
+   },
+   "translated_calls": {},
+   "voided": 0,
+   "wall_seconds_by_driver_clock": 84,
+   "allowance_usd": "0.1920573",
+   "stop_at_usd": "0.09",
+   "graph_counts": {
+    "documents": 1,
+    "text_units": 2,
+    "entities": 57,
+    "relationships": 74,
+    "communities": 9,
+    "community_reports": 9,
+    "entities_seen_in_2_or_more_chunks": 8,
+    "relationships_seen_in_2_or_more_chunks": 4,
+    "entities_in_a_level0_community": 50
+   }
+  },
+  {
+   "label": "B-r1-nano",
+   "stage": "B",
+   "run": "r1",
+   "builder": "nano",
+   "documents": 1,
+   "outcome": "completed",
+   "runner_exit": 0,
+   "tripped_rules": [],
+   "chat_calls": 25,
+   "embedding_calls_local": 4,
+   "http_statuses": {
+    "200": 29
+   },
+   "input_tokens": 65889,
+   "cached_input_tokens": 5347,
+   "output_tokens": 25247,
+   "cost_usd": "0.01873117",
+   "cost_per_document_usd": "0.01873117",
+   "finish_reasons": {
+    "stop": 25
+   },
+   "translated_calls": {},
+   "voided": 0,
+   "wall_seconds_by_driver_clock": 122,
+   "allowance_usd": "0.18138329",
+   "stop_at_usd": "0.09",
+   "graph_counts": {
+    "chunks_stored": 2,
+    "communities_in_report_store": 21,
+    "connected_components": 5,
+    "documents_stored": 1,
+    "edges": 106,
+    "largest_component_nodes": 79,
+    "nodes": 84,
+    "nodes_with_cluster_data": 79
+   }
+  },
+  {
+   "label": "C-r1-lightrag",
+   "stage": "C",
+   "run": "r1",
+   "builder": "lightrag",
+   "documents": 5,
+   "outcome": "completed",
+   "runner_exit": 0,
+   "tripped_rules": [],
+   "chat_calls": 18,
+   "embedding_calls_local": 67,
+   "http_statuses": {
+    "200": 85
+   },
+   "input_tokens": 65285,
+   "cached_input_tokens": 39177,
+   "output_tokens": 24485,
+   "cost_usd": "0.01524507",
+   "cost_per_document_usd": "0.003049014",
+   "finish_reasons": {
+    "stop": 18
+   },
+   "translated_calls": {},
+   "voided": 0,
+   "wall_seconds_by_driver_clock": 150,
+   "allowance_usd": "0.6",
+   "stop_at_usd": "0.6",
+   "graph_counts": {
+    "chunks": 9,
+    "chunk_tokens_sum_lightrag_tokenizer": 7338,
+    "entities": 281,
+    "relationships": 278,
+    "graph_nodes": 281,
+    "graph_edges": 278,
+    "llm_response_cache_entries": 18
+   }
+  },
+  {
+   "label": "C-r1-fast",
+   "stage": "C",
+   "run": "r1",
+   "builder": "fast",
+   "documents": 5,
+   "outcome": "completed",
+   "runner_exit": 0,
+   "tripped_rules": [],
+   "chat_calls": 15,
+   "embedding_calls_local": 11,
+   "http_statuses": {
+    "200": 26
+   },
+   "input_tokens": 34134,
+   "cached_input_tokens": 26409,
+   "output_tokens": 31645,
+   "cost_usd": "0.01685909",
+   "cost_per_document_usd": "0.003371818",
+   "finish_reasons": {
+    "stop": 15
+   },
+   "translated_calls": {},
+   "voided": 0,
+   "wall_seconds_by_driver_clock": 117,
+   "allowance_usd": "0.58475493",
+   "stop_at_usd": "0.6",
+   "graph_counts": {
+    "entities": 251,
+    "relations": 447,
+    "chunks": 15
+   }
+  },
+  {
+   "label": "C-r1-ms",
+   "stage": "C",
+   "run": "r1",
+   "builder": "ms",
+   "documents": 5,
+   "outcome": "completed",
+   "runner_exit": 0,
+   "tripped_rules": [],
+   "chat_calls": 113,
+   "embedding_calls_local": 19,
+   "http_statuses": {
+    "200": 132
+   },
+   "input_tokens": 123319,
+   "cached_input_tokens": 27854,
+   "output_tokens": 43042,
+   "cost_usd": "0.03134604",
+   "cost_per_document_usd": "0.006269208",
+   "finish_reasons": {
+    "stop": 113
+   },
+   "translated_calls": {},
+   "voided": 0,
+   "wall_seconds_by_driver_clock": 154,
+   "allowance_usd": "0.56789584",
+   "stop_at_usd": "0.6",
+   "graph_counts": {
+    "documents": 5,
+    "text_units": 9,
+    "entities": 216,
+    "relationships": 310,
+    "communities": 18,
+    "community_reports": 18,
+    "entities_seen_in_2_or_more_chunks": 53,
+    "relationships_seen_in_2_or_more_chunks": 34,
+    "entities_in_a_level0_community": 74
+   }
+  },
+  {
+   "label": "C-r1-nano",
+   "stage": "C",
+   "run": "r1",
+   "builder": "nano",
+   "documents": 5,
+   "outcome": "completed",
+   "runner_exit": 0,
+   "tripped_rules": [],
+   "chat_calls": 62,
+   "embedding_calls_local": 13,
+   "http_statuses": {
+    "200": 75
+   },
+   "input_tokens": 182869,
+   "cached_input_tokens": 30197,
+   "output_tokens": 69037,
+   "cost_usd": "0.05008767",
+   "cost_per_document_usd": "0.010017534",
+   "finish_reasons": {
+    "stop": 62
+   },
+   "translated_calls": {},
+   "voided": 0,
+   "wall_seconds_by_driver_clock": 309,
+   "allowance_usd": "0.5365498",
+   "stop_at_usd": "0.6",
+   "graph_counts": {
+    "chunks_stored": 9,
+    "communities_in_report_store": 26,
+    "connected_components": 21,
+    "documents_stored": 5,
+    "edges": 386,
+    "largest_component_nodes": 84,
+    "nodes": 293,
+    "nodes_with_cluster_data": 158
+   }
+  },
+  {
+   "label": "C-r2-lightrag",
+   "stage": "C",
+   "run": "r2",
+   "builder": "lightrag",
+   "documents": 5,
+   "outcome": "completed",
+   "runner_exit": 0,
+   "tripped_rules": [],
+   "chat_calls": 18,
+   "embedding_calls_local": 60,
+   "http_statuses": {
+    "200": 78
+   },
+   "input_tokens": 65941,
+   "cached_input_tokens": 46870,
+   "output_tokens": 23223,
+   "cost_usd": "0.01398730",
+   "cost_per_document_usd": "0.00279746",
+   "finish_reasons": {
+    "stop": 18
+   },
+   "translated_calls": {},
+   "voided": 0,
+   "wall_seconds_by_driver_clock": 141,
+   "allowance_usd": "0.48646213",
+   "stop_at_usd": "0.6",
+   "graph_counts": {
+    "chunks": 9,
+    "chunk_tokens_sum_lightrag_tokenizer": 7338,
+    "entities": 248,
+    "relationships": 232,
+    "graph_nodes": 248,
+    "graph_edges": 232,
+    "llm_response_cache_entries": 18
+   }
+  },
+  {
+   "label": "C-r2-fast",
+   "stage": "C",
+   "run": "r2",
+   "builder": "fast",
+   "documents": 5,
+   "outcome": "completed",
+   "runner_exit": 0,
+   "tripped_rules": [],
+   "chat_calls": 15,
+   "embedding_calls_local": 12,
+   "http_statuses": {
+    "200": 27
+   },
+   "input_tokens": 34134,
+   "cached_input_tokens": 34089,
+   "output_tokens": 32118,
+   "cost_usd": "0.01640439",
+   "cost_per_document_usd": "0.003280878",
+   "finish_reasons": {
+    "stop": 15
+   },
+   "translated_calls": {},
+   "voided": 0,
+   "wall_seconds_by_driver_clock": 110,
+   "allowance_usd": "0.47247483",
+   "stop_at_usd": "0.6",
+   "graph_counts": {
+    "entities": 266,
+    "relations": 473,
+    "chunks": 15
+   }
+  },
+  {
+   "label": "C-r2-ms",
+   "stage": "C",
+   "run": "r2",
+   "builder": "ms",
+   "documents": 5,
+   "outcome": "completed",
+   "runner_exit": 0,
+   "tripped_rules": [],
+   "chat_calls": 65,
+   "embedding_calls_local": 17,
+   "http_statuses": {
+    "200": 82
+   },
+   "input_tokens": 95755,
+   "cached_input_tokens": 45866,
+   "output_tokens": 35038,
+   "cost_usd": "0.02296656",
+   "cost_per_document_usd": "0.004593312",
+   "finish_reasons": {
+    "stop": 65
+   },
+   "translated_calls": {},
+   "voided": 0,
+   "wall_seconds_by_driver_clock": 125,
+   "allowance_usd": "0.45607044",
+   "stop_at_usd": "0.6",
+   "graph_counts": {
+    "documents": 5,
+    "text_units": 9,
+    "entities": 198,
+    "relationships": 251,
+    "communities": 10,
+    "community_reports": 10,
+    "entities_seen_in_2_or_more_chunks": 55,
+    "relationships_seen_in_2_or_more_chunks": 47,
+    "entities_in_a_level0_community": 58
+   }
+  },
+  {
+   "label": "C-r2-nano",
+   "stage": "C",
+   "run": "r2",
+   "builder": "nano",
+   "documents": 5,
+   "outcome": "completed",
+   "runner_exit": 0,
+   "tripped_rules": [],
+   "chat_calls": 70,
+   "embedding_calls_local": 11,
+   "http_statuses": {
+    "200": 81
+   },
+   "input_tokens": 199473,
+   "cached_input_tokens": 49700,
+   "output_tokens": 74306,
+   "cost_usd": "0.05262730",
+   "cost_per_document_usd": "0.01052546",
+   "finish_reasons": {
+    "stop": 70
+   },
+   "translated_calls": {},
+   "voided": 0,
+   "wall_seconds_by_driver_clock": 340,
+   "allowance_usd": "0.43310388",
+   "stop_at_usd": "0.6",
+   "graph_counts": {
+    "chunks_stored": 9,
+    "communities_in_report_store": 34,
+    "connected_components": 14,
+    "documents_stored": 5,
+    "edges": 382,
+    "largest_component_nodes": 119,
+    "nodes": 282,
+    "nodes_with_cluster_data": 192
+   }
+  }
+ ],
+ "stages": {
+  "B": {
+   "cost_usd": "0.03734788",
+   "chat_calls": 56,
+   "input_tokens": 128240,
+   "cached_input_tokens": 18568,
+   "output_tokens": 52390
+  },
+  "C": {
+   "cost_usd": "0.21952342",
+   "chat_calls": 376,
+   "input_tokens": 800910,
+   "cached_input_tokens": 300162,
+   "output_tokens": 332894
+  }
+ }
+}

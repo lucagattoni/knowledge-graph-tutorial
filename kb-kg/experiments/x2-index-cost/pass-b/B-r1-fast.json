@@ -1,0 +1,388 @@
+{
+ "runner": "x2_passa_fast_graphrag.py",
+ "builder": "fast-graphrag",
+ "version": "0.0.5",
+ "package_files_sha256": "da8a9d520f70448fc951413c562f9bb094365acfa276fdcb7f93d1d46ab71146",
+ "upstream_url": "http://127.0.0.1:11434/v1",
+ "model": "gpt-6-luna",
+ "embed_model": "qwen3-embedding:0.6b",
+ "chat_request_defaults": {},
+ "embedding_dim": 1024,
+ "preflight": {
+  "mode": "auto",
+  "ollama": true,
+  "embed_model": "qwen3-embedding:0.6b",
+  "embedding_model_installed": true,
+  "chat_model_checked": false,
+  "note": "the chat model is hosted; its context is the provider's"
+ },
+ "documents": {
+  "count": 1,
+  "source": "documents.tsv",
+  "total_chars": 6341
+ },
+ "inputs_given_to_the_builder": {
+  "domain": "Analyze news articles and identify the organizations, people, products, places and events they report on, and how these relate to each other.",
+  "example_queries": [
+   "Which company announced the product described in the article?",
+   "Who is quoted in the article, and what organization do they belong to?",
+   "What event does the article report, and where and when did it take place?"
+  ],
+  "entity_types": [
+   "Organization",
+   "Person",
+   "Product",
+   "Place",
+   "Event"
+  ]
+ },
+ "builder_settings": {
+  "defaults_seen": {
+   "llm_class": "OpenAILLMService",
+   "llm_model": "gpt-6-luna",
+   "llm_max_requests_concurrent": 4,
+   "llm_rate_limit_per_minute_enabled": false,
+   "embedding_model": "qwen3-embedding:0.6b",
+   "embedding_dim": 1024,
+   "embedding_max_elements_per_request": 32,
+   "embedding_max_requests_concurrent": 1024,
+   "embedding_rate_limit_per_minute_enabled": true,
+   "max_gleaning_steps": 0,
+   "chunk_token_size": 800,
+   "chunk_token_overlap": 100,
+   "chunk_size_chars": 3200,
+   "chunk_overlap_chars": 400,
+   "max_node_description_size": 512,
+   "edge_merge_threshold": 5,
+   "insert_similarity_score_threshold": 0.9
+  },
+  "changed_from_library_defaults": {
+   "llm_max_requests_concurrent": {
+    "library": 1024,
+    "applied": 4
+   },
+   "llm_timeout_s": {
+    "library": 180.0,
+    "applied": 3600.0
+   },
+   "model_names": "the real names given on the command line instead of gpt-4o-mini / text-embedding-3-small",
+   "embedding_dim": {
+    "library": 1536,
+    "applied": 1024
+   },
+   "base_url_and_key": "the gateway's address and a dummy key, passed to both services"
+  }
+ },
+ "ok": true,
+ "stopped_at_document": null,
+ "documents_not_indexed": [],
+ "child_exit_status": 0,
+ "checkpoints": {
+  "1": {
+   "total": {
+    "calls": 5,
+    "ok": 5,
+    "input_tokens": 8754,
+    "output_tokens": 7135,
+    "latency_ms": 49023
+   },
+   "chat": {
+    "calls": 3,
+    "ok": 3,
+    "input_tokens": 6810,
+    "output_tokens": 7135,
+    "latency_ms": 47450,
+    "retry_calls": 0
+   },
+   "embedding": {
+    "calls": 2,
+    "ok": 2,
+    "input_tokens": 1944,
+    "output_tokens": 0,
+    "latency_ms": 1573,
+    "requests": 2,
+    "inputs": 56,
+    "inputs_per_request": {
+     "24": 1,
+     "32": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 2,
+     "ok": 2,
+     "input_tokens": 1944,
+     "output_tokens": 0,
+     "latency_ms": 1573
+    },
+    "extract": {
+     "calls": 3,
+     "ok": 3,
+     "input_tokens": 6810,
+     "output_tokens": 7135,
+     "latency_ms": 47450,
+     "retry_calls": 0
+    }
+   },
+   "http_statuses": {
+    "200": 5
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0,
+   "documents_run": 1,
+   "cost_usd": "0.00395438",
+   "documents_indexed": 1,
+   "sdk_retries_logged": 0,
+   "graph_totals": {
+    "entities": 56,
+    "relations": 103,
+    "chunks": 3
+   },
+   "extraction_calls_equal_chunker_count": true
+  }
+ },
+ "per_document": [
+  {
+   "n": 1,
+   "rank": 1,
+   "url_sha256_16": "0068586b43cf2f56",
+   "chars": 6341,
+   "chunks_by_library_chunker": 3,
+   "chunk_chars_min": 1233,
+   "chunk_chars_max": 3056,
+   "graph_totals_after": {
+    "entities": 56,
+    "relations": 103,
+    "chunks": 3
+   },
+   "chunks_stored_for_this_document": 3,
+   "seconds": 23.443,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 5,
+    "ok": 5,
+    "input_tokens": 8754,
+    "output_tokens": 7135,
+    "latency_ms": 49023
+   },
+   "chat": {
+    "calls": 3,
+    "ok": 3,
+    "input_tokens": 6810,
+    "output_tokens": 7135,
+    "latency_ms": 47450,
+    "retry_calls": 0
+   },
+   "embedding": {
+    "calls": 2,
+    "ok": 2,
+    "input_tokens": 1944,
+    "output_tokens": 0,
+    "latency_ms": 1573,
+    "requests": 2,
+    "inputs": 56,
+    "inputs_per_request": {
+     "24": 1,
+     "32": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 2,
+     "ok": 2,
+     "input_tokens": 1944,
+     "output_tokens": 0,
+     "latency_ms": 1573
+    },
+    "extract": {
+     "calls": 3,
+     "ok": 3,
+     "input_tokens": 6810,
+     "output_tokens": 7135,
+     "latency_ms": 47450,
+     "retry_calls": 0
+    }
+   },
+   "http_statuses": {
+    "200": 5
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0,
+   "cost_usd": "0.00395438"
+  }
+ ],
+ "first_request_of_each_kind": {
+  "embedding": {
+   "route": "/v1/embeddings",
+   "request_body_keys": [
+    "dimensions",
+    "encoding_format",
+    "input",
+    "model"
+   ],
+   "n_messages": 0,
+   "roles": [],
+   "response_format": null,
+   "model": "qwen3-embedding:0.6b",
+   "max_tokens": "absent",
+   "dimensions": 1024,
+   "stream": false,
+   "http_status": 200
+  },
+  "extract": {
+   "route": "/v1/chat/completions",
+   "request_body_keys": [
+    "messages",
+    "model",
+    "response_format"
+   ],
+   "n_messages": 2,
+   "roles": [
+    "system",
+    "user"
+   ],
+   "response_format": {
+    "type": "json_object"
+   },
+   "model": "gpt-6-luna",
+   "max_tokens": "absent",
+   "dimensions": "absent",
+   "stream": false,
+   "http_status": 200
+  }
+ },
+ "gateway": {
+  "calls_in_log": 6,
+  "calls_before_the_builder_started": 1,
+  "calls_after_the_last_document": 0,
+  "embedding_probe_calls": 1,
+  "models_requested": {
+   "gpt-6-luna": 3,
+   "qwen3-embedding:0.6b": 3
+  },
+  "routes": {
+   "/v1/chat/completions": 3,
+   "/v1/embeddings": 3
+  }
+ },
+ "calls_jsonl_sha256": "2ce767fb6dc503c04b3f9c32e498e2f124a99b4aa84acdeeee37beabff5df5cf",
+ "request_multiset_sha256": "5c62efbc590331617268c7be046b393cf34ba50dca09e006d22fdb76f99dcbaa",
+ "wall_seconds_all_documents": 23.47,
+ "outbound_attempts": [],
+ "openai_sdk_retries_logged": 0,
+ "tokenizer_failures_logged_by_library": [
+  "LLM: failed to load tokenizer for model 'gpt-6-luna' ('Could not automatically map gpt-6-luna to a tokeniser. Please use `tiktoken.get_encoding` to explicitly g"
+ ],
+ "error_log_lines": {
+  "count": 0,
+  "by_head": {}
+ },
+ "environment_variable_names": [
+  "ALL_PROXY",
+  "HOME",
+  "HTTPS_PROXY",
+  "HTTP_PROXY",
+  "LC_CTYPE",
+  "NO_PROXY",
+  "OPENAI_API_KEY",
+  "OPENAI_BASE_URL",
+  "PATH",
+  "PYTHONDONTWRITEBYTECODE",
+  "TIKTOKEN_CACHE_DIR",
+  "TMPDIR",
+  "__CF_USER_TEXT_ENCODING",
+  "all_proxy",
+  "http_proxy",
+  "https_proxy",
+  "no_proxy"
+ ],
+ "minimal_environment_variable_names": [
+  "ALL_PROXY",
+  "HOME",
+  "HTTPS_PROXY",
+  "HTTP_PROXY",
+  "NO_PROXY",
+  "OPENAI_API_KEY",
+  "OPENAI_BASE_URL",
+  "PATH",
+  "PYTHONDONTWRITEBYTECODE",
+  "TIKTOKEN_CACHE_DIR",
+  "TMPDIR",
+  "all_proxy",
+  "http_proxy",
+  "https_proxy",
+  "no_proxy"
+ ],
+ "proxy_setting": "http://127.0.0.1:9",
+ "warnings": [
+  "the library could not load a tokenizer for the model name; it falls back to a naive one (no code in the package calls it on the indexing path: grep of the pinned source)"
+ ],
+ "started_utc": "20261103 17:20:03",
+ "finished_utc": "20261103 17:20:31",
+ "hosted": {
+  "chat_upstream": "hosted",
+  "embedding_upstream": "local",
+  "chat_model": "gpt-6-luna",
+  "embedding_model": "qwen3-embedding:0.6b",
+  "hosted_base_url": "https://api.openai.com/v1",
+  "currency": "USD",
+  "key_file": "set",
+  "ledger": "shared",
+  "allowance_usd": "0.19601168",
+  "prices": {
+   "unit": "per million tokens",
+   "input_per_mtok": "0.1",
+   "output_per_mtok": "0.5",
+   "cached_input_per_mtok": "0.01",
+   "cache_write_per_mtok": "0.125",
+   "source_url": "https://developers.openai.com/api/docs/pricing",
+   "read_at": "20261103 16:10"
+  },
+  "output_limit_default": 6144,
+  "translate_max_tokens": true,
+  "departures_from_the_builders_requests": [
+   "max_tokens: null is dropped and a set max_tokens is sent as max_completion_tokens (the model rejects both)"
+  ],
+  "request_defaults_names": [
+   "reasoning_effort"
+  ],
+  "request_defaults": {
+   "reasoning_effort": "none"
+  },
+  "upstream_timeout_s": 900,
+  "started": true,
+  "resumed_an_existing_ledger": true,
+  "model_reported": {
+   "gpt-6-luna": 3
+  },
+  "cost_usd": "0.00395438",
+  "spent_before_usd": "0.01044545",
+  "cap_usd": "0.20645713",
+  "ledger_records_before": 34,
+  "ledger_records_after": 40,
+  "calls_in_this_run": 6,
+  "run_records_sha256": "ed897be49d9bc991682d1084911c306d591ac16b092a17e501477fe11b627f58",
+  "response_facts": {
+   "chat_calls": 3,
+   "finish_reasons": {
+    "stop": 3
+   },
+   "answers_with_reasoning_text": 0,
+   "reasoning_tokens_total": 0,
+   "unparsed_or_streamed": 0,
+   "longest_answer_output_tokens": 3425
+  }
+ }
+}

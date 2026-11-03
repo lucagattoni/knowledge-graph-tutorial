@@ -1,8 +1,8 @@
 # X2 pass B: a plan for the paid pilot
 
 **Plan written 20261102 20:24 UTC and revised at 20:39 UTC after an independent review (the changes are listed at the end). When it was
-written no paid call had been made and nothing was approved; since then the owner has approved stages A to C (D-34) and stage A has
-run (USD 0.0065 spent so far; the run log near the end).** The owner asked for this plan ("Plan paid pilot") after
+written no paid call had been made and nothing was approved; since then the owner has approved stages A to C (D-34) and they have
+run (USD 0.263 spent in all; the run log near the end and [the results](pass-b-results.md)).** The owner asked for this plan ("Plan paid pilot") after
 [pass A](pass-a-local-model.md). Under D-14 a paid step starts only on the owner's explicit yes with model, provider and cap; this
 page says what that yes would unlock, what is fixed in advance, and what has to be built and checked for free first. Everything that
 could be chosen after seeing a result is fixed here instead.
@@ -12,7 +12,8 @@ decision 2, a cap of USD 3 in total with the stage limits below. **Decided 20261
 recommendations"): 3 yes, article text may go to OpenAI's API; 4 local embeddings; 5 all four builders; 7 two yeses (one for stages A to
 C, one for D). **Decision 6 was done by the owner on 20261103:** a project of its own at OpenAI with a USD 3 hard limit and a restricted key in a
 private file ([`pass-b-owner-steps.md`](pass-b-owner-steps.md)). **The yes for stages A to C was given on 20261103 16:12 UTC (D-34),
-after the dry runs; stage A has run** (run log below), and stage D needs its own yes. Stage 0 is done (below); what is next is in
+after the dry runs; stages A, B and C have run** (run log below; the numbers are in [`pass-b-results.md`](pass-b-results.md)), and
+stage D needs its own yes. Stage 0 is done (below); what is next is in
 [`RESUME.md`](../../../RESUME.md).
 
 ## What pass B answers, and what it does not
@@ -286,6 +287,8 @@ answered 200, 16,945 input tokens of which 2,043 cached, 9,893 output tokens, **
 401 from the first key, which was refused before any token was counted. The console comparison, the plan's only check that is not the
 gateway's own numbers, is the owner's and is the gate to stage B.
 
+**The gate was passed:** the owner compared OpenAI's usage page with those figures and replied "Agrees" (recorded 20261103 17:18 UTC) (the owner's word; the page's own numbers were not sent to me). Stage B started after it.
+
 **Stage A's call count, its money limit and the code, stated plainly.** The ladder says "at most 12 calls"; that was written for one
 run of the script. Three runs happened (a refused key, the ten requests, the re-test) and 14 requests reached OpenAI in all (1 refused
 by the key, 10, 3). The script's money limit is also per run (each run may spend up to its allowance of USD 0.10 on top of what the
@@ -293,6 +296,18 @@ ledger already holds), while the pilot's USD 3 cap is cumulative; the stage's to
 but the per-run limit is looser than the ladder's wording. The re-test ran on the working tree: by file modification times the gateway,
 `passb_common.py`, `passb_stage.py` and `passb_stage_a.py` were last changed at 16:24 and 16:26, before the 16:32 re-test, and no code
 file changed between the re-test and the commit (`a446479`).
+
+| 20261103 17:19 | **Stage B**, one document for each builder, in the order LightRAG, fast-graphrag, Microsoft GraphRAG, nano-graphrag (the owner's "Agrees", D-34) | All four completed, runner exit 0, no rule tripped, every answer HTTP 200 and finish `stop`, 0 reasoning tokens. 56 chat requests, 128,240 input tokens (18,568 cached), 52,390 output. The labelled translation was not needed by any call. nano-graphrag, which failed on its first document with the local model, finished, at 2.7 times the plan's guess | USD 0.03735 (limit 0.20, stop at 0.09) |
+| 20261103 17:24 | **Stage C, run r1**, five documents for each builder | All four completed, no rule tripped, no repeated request, every answer 200 and `stop`. 208 chat requests | USD 0.11354 |
+| 20261103 17:38 | **Stage C, run r2** (the pre-registered second run) | All four completed, nothing tripped (the repeat window let it run). 168 chat requests. Microsoft GraphRAG made 65 calls against r1's 113 (10 communities against 18); r2's input was cached more (r1 had just run) | USD 0.10599 (stage C 0.21952 of its limit 0.60) |
+
+**Stages A to C in all: USD 0.26333 by the gateway, 443 answered requests, 946,095 input tokens (320,773 cached), 395,177 output
+tokens.** The tables, the comparison with the plan's estimates and with pass A, and my readings are in
+[`pass-b-results.md`](pass-b-results.md); the per-call record is in [`pass-b/meter.jsonl`](pass-b/meter.jsonl). **The console comparison
+for stages B and C is the owner's and is the gate to stage D** (figures in the results page); stage D needs its own yes with C's numbers.
+
+**The owner compared OpenAI's usage page for stages B and C and replied that it agrees, and gave the yes for stage D** (recorded 20261103 17:58 UTC,
+D-37): 20 documents for each of the four builders, one run each, in the usual order, allowance and stop-at USD 1.50, the pilot's cap USD 3.00.
 
 A credentials fault is a harness reason, so a repeat of stage A is allowed once the cause is fixed and written down (stop rules,
 above). Attempt 1's files are kept under the pilot directory as `stage-a-attempt1`.

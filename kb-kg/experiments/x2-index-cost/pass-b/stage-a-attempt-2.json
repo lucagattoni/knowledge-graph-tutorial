@@ -1,0 +1,601 @@
+{
+ "calls": [
+  {
+   "attempt": 1,
+   "cache_creation_input_tokens": null,
+   "cached_input_tokens": 0,
+   "client_limit": "none",
+   "completion_tokens": 4,
+   "cost_usd": "0.0000033",
+   "error": null,
+   "finish_reason": "stop",
+   "gateway_refusal": null,
+   "http_status": 200,
+   "latency_ms": 2147,
+   "model_reported": "gpt-6-luna",
+   "null_max_tokens_with_injected_limit": null,
+   "outcome": "ok",
+   "prompt_tokens": 13,
+   "reasoning_tokens": 0,
+   "request": "ping",
+   "request_defaults_applied": [
+    "reasoning_effort",
+    "max_completion_tokens"
+   ],
+   "usage_fields": [
+    "completion_tokens",
+    "completion_tokens_details",
+    "completion_tokens_details.accepted_prediction_tokens",
+    "completion_tokens_details.audio_tokens",
+    "completion_tokens_details.reasoning_tokens",
+    "completion_tokens_details.rejected_prediction_tokens",
+    "prompt_tokens",
+    "prompt_tokens_details",
+    "prompt_tokens_details.audio_tokens",
+    "prompt_tokens_details.cache_write_tokens",
+    "prompt_tokens_details.cached_tokens",
+    "total_tokens"
+   ],
+   "usage_missing": false,
+   "voided": false
+  },
+  {
+   "attempt": 1,
+   "cache_creation_input_tokens": null,
+   "cached_input_tokens": 0,
+   "client_limit": "none",
+   "completion_tokens": 1235,
+   "cost_usd": "0.0008221",
+   "error": null,
+   "finish_reason": "stop",
+   "gateway_refusal": null,
+   "http_status": 200,
+   "latency_ms": 9866,
+   "model_reported": "gpt-6-luna",
+   "null_max_tokens_with_injected_limit": null,
+   "outcome": "ok",
+   "prompt_tokens": 2046,
+   "reasoning_tokens": 0,
+   "request": "lightrag_extraction",
+   "request_defaults_applied": [
+    "reasoning_effort",
+    "max_completion_tokens"
+   ],
+   "usage_fields": [
+    "completion_tokens",
+    "completion_tokens_details",
+    "completion_tokens_details.accepted_prediction_tokens",
+    "completion_tokens_details.audio_tokens",
+    "completion_tokens_details.reasoning_tokens",
+    "completion_tokens_details.rejected_prediction_tokens",
+    "prompt_tokens",
+    "prompt_tokens_details",
+    "prompt_tokens_details.audio_tokens",
+    "prompt_tokens_details.cache_write_tokens",
+    "prompt_tokens_details.cached_tokens",
+    "total_tokens"
+   ],
+   "usage_missing": false,
+   "voided": false
+  },
+  {
+   "attempt": 1,
+   "cache_creation_input_tokens": null,
+   "cached_input_tokens": 2043,
+   "client_limit": "none",
+   "completion_tokens": 652,
+   "cost_usd": "0.00047553",
+   "error": null,
+   "finish_reason": "stop",
+   "gateway_refusal": null,
+   "http_status": 200,
+   "latency_ms": 5941,
+   "model_reported": "gpt-6-luna",
+   "null_max_tokens_with_injected_limit": null,
+   "outcome": "ok",
+   "prompt_tokens": 3334,
+   "reasoning_tokens": 0,
+   "request": "lightrag_gleaning",
+   "request_defaults_applied": [
+    "reasoning_effort",
+    "max_completion_tokens"
+   ],
+   "usage_fields": [
+    "completion_tokens",
+    "completion_tokens_details",
+    "completion_tokens_details.accepted_prediction_tokens",
+    "completion_tokens_details.audio_tokens",
+    "completion_tokens_details.reasoning_tokens",
+    "completion_tokens_details.rejected_prediction_tokens",
+    "prompt_tokens",
+    "prompt_tokens_details",
+    "prompt_tokens_details.audio_tokens",
+    "prompt_tokens_details.cache_write_tokens",
+    "prompt_tokens_details.cached_tokens",
+    "total_tokens"
+   ],
+   "usage_missing": false,
+   "voided": false
+  },
+  {
+   "attempt": 1,
+   "cache_creation_input_tokens": null,
+   "cached_input_tokens": 0,
+   "client_limit": "none",
+   "completion_tokens": 1963,
+   "cost_usd": "0.0012159",
+   "error": null,
+   "finish_reason": "stop",
+   "gateway_refusal": null,
+   "http_status": 200,
+   "latency_ms": 15071,
+   "model_reported": "gpt-6-luna",
+   "null_max_tokens_with_injected_limit": null,
+   "outcome": "ok",
+   "prompt_tokens": 2344,
+   "reasoning_tokens": 0,
+   "request": "fast_extraction",
+   "request_defaults_applied": [
+    "reasoning_effort",
+    "max_completion_tokens"
+   ],
+   "usage_fields": [
+    "completion_tokens",
+    "completion_tokens_details",
+    "completion_tokens_details.accepted_prediction_tokens",
+    "completion_tokens_details.audio_tokens",
+    "completion_tokens_details.reasoning_tokens",
+    "completion_tokens_details.rejected_prediction_tokens",
+    "prompt_tokens",
+    "prompt_tokens_details",
+    "prompt_tokens_details.audio_tokens",
+    "prompt_tokens_details.cache_write_tokens",
+    "prompt_tokens_details.cached_tokens",
+    "total_tokens"
+   ],
+   "usage_missing": false,
+   "voided": false
+  },
+  {
+   "attempt": 1,
+   "cache_creation_input_tokens": null,
+   "cached_input_tokens": null,
+   "client_limit": "max_tokens=null",
+   "completion_tokens": null,
+   "cost_usd": "0",
+   "error": {
+    "code": "invalid_type",
+    "message_length": 83,
+    "param": "max_tokens",
+    "type": "invalid_request_error"
+   },
+   "finish_reason": null,
+   "gateway_refusal": null,
+   "http_status": 400,
+   "latency_ms": 290,
+   "model_reported": null,
+   "null_max_tokens_with_injected_limit": true,
+   "outcome": "rejected_incompatible",
+   "prompt_tokens": null,
+   "reasoning_tokens": null,
+   "request": "fast_summary",
+   "request_defaults_applied": [
+    "reasoning_effort",
+    "max_completion_tokens"
+   ],
+   "usage_fields": [],
+   "usage_missing": false,
+   "voided": true
+  },
+  {
+   "attempt": 1,
+   "cache_creation_input_tokens": null,
+   "cached_input_tokens": 0,
+   "client_limit": "none",
+   "completion_tokens": 3569,
+   "cost_usd": "0.0020781",
+   "error": null,
+   "finish_reason": "stop",
+   "gateway_refusal": null,
+   "http_status": 200,
+   "latency_ms": 30862,
+   "model_reported": "gpt-6-luna",
+   "null_max_tokens_with_injected_limit": null,
+   "outcome": "ok",
+   "prompt_tokens": 2936,
+   "reasoning_tokens": 0,
+   "request": "ms_extraction",
+   "request_defaults_applied": [
+    "reasoning_effort",
+    "max_completion_tokens"
+   ],
+   "usage_fields": [
+    "completion_tokens",
+    "completion_tokens_details",
+    "completion_tokens_details.accepted_prediction_tokens",
+    "completion_tokens_details.audio_tokens",
+    "completion_tokens_details.reasoning_tokens",
+    "completion_tokens_details.rejected_prediction_tokens",
+    "prompt_tokens",
+    "prompt_tokens_details",
+    "prompt_tokens_details.audio_tokens",
+    "prompt_tokens_details.cache_write_tokens",
+    "prompt_tokens_details.cached_tokens",
+    "total_tokens"
+   ],
+   "usage_missing": false,
+   "voided": false
+  },
+  {
+   "attempt": 1,
+   "cache_creation_input_tokens": null,
+   "cached_input_tokens": 0,
+   "client_limit": "none",
+   "completion_tokens": 1474,
+   "cost_usd": "0.0010925",
+   "error": null,
+   "finish_reason": "stop",
+   "gateway_refusal": null,
+   "http_status": 200,
+   "latency_ms": 13987,
+   "model_reported": "gpt-6-luna",
+   "null_max_tokens_with_injected_limit": null,
+   "outcome": "ok",
+   "prompt_tokens": 3555,
+   "reasoning_tokens": 0,
+   "request": "ms_community_report",
+   "request_defaults_applied": [
+    "reasoning_effort",
+    "max_completion_tokens"
+   ],
+   "usage_fields": [
+    "completion_tokens",
+    "completion_tokens_details",
+    "completion_tokens_details.accepted_prediction_tokens",
+    "completion_tokens_details.audio_tokens",
+    "completion_tokens_details.reasoning_tokens",
+    "completion_tokens_details.rejected_prediction_tokens",
+    "prompt_tokens",
+    "prompt_tokens_details",
+    "prompt_tokens_details.audio_tokens",
+    "prompt_tokens_details.cache_write_tokens",
+    "prompt_tokens_details.cached_tokens",
+    "total_tokens"
+   ],
+   "usage_missing": false,
+   "voided": false
+  },
+  {
+   "attempt": 1,
+   "cache_creation_input_tokens": null,
+   "cached_input_tokens": 0,
+   "client_limit": "none",
+   "completion_tokens": 792,
+   "cost_usd": "0.0006164",
+   "error": null,
+   "finish_reason": "stop",
+   "gateway_refusal": null,
+   "http_status": 200,
+   "latency_ms": 9757,
+   "model_reported": "gpt-6-luna",
+   "null_max_tokens_with_injected_limit": null,
+   "outcome": "ok",
+   "prompt_tokens": 2204,
+   "reasoning_tokens": 0,
+   "request": "nano_extraction",
+   "request_defaults_applied": [
+    "reasoning_effort",
+    "max_completion_tokens"
+   ],
+   "usage_fields": [
+    "completion_tokens",
+    "completion_tokens_details",
+    "completion_tokens_details.accepted_prediction_tokens",
+    "completion_tokens_details.audio_tokens",
+    "completion_tokens_details.reasoning_tokens",
+    "completion_tokens_details.rejected_prediction_tokens",
+    "prompt_tokens",
+    "prompt_tokens_details",
+    "prompt_tokens_details.audio_tokens",
+    "prompt_tokens_details.cache_write_tokens",
+    "prompt_tokens_details.cached_tokens",
+    "total_tokens"
+   ],
+   "usage_missing": false,
+   "voided": false
+  },
+  {
+   "attempt": 1,
+   "cache_creation_input_tokens": null,
+   "cached_input_tokens": null,
+   "client_limit": "max_tokens=500",
+   "completion_tokens": null,
+   "cost_usd": "0",
+   "error": {
+    "code": "unsupported_parameter",
+    "message_length": 106,
+    "param": "max_tokens",
+    "type": "invalid_request_error"
+   },
+   "finish_reason": null,
+   "gateway_refusal": null,
+   "http_status": 400,
+   "latency_ms": 580,
+   "model_reported": null,
+   "null_max_tokens_with_injected_limit": null,
+   "outcome": "rejected_incompatible",
+   "prompt_tokens": null,
+   "reasoning_tokens": null,
+   "request": "nano_entity_summary",
+   "request_defaults_applied": [
+    "reasoning_effort"
+   ],
+   "usage_fields": [],
+   "usage_missing": false,
+   "voided": true
+  },
+  {
+   "attempt": 1,
+   "cache_creation_input_tokens": null,
+   "cached_input_tokens": 0,
+   "client_limit": "none",
+   "completion_tokens": 147,
+   "cost_usd": "0.000098",
+   "error": null,
+   "finish_reason": "stop",
+   "gateway_refusal": null,
+   "http_status": 200,
+   "latency_ms": 2480,
+   "model_reported": "gpt-6-luna",
+   "null_max_tokens_with_injected_limit": null,
+   "outcome": "ok",
+   "prompt_tokens": 245,
+   "reasoning_tokens": 0,
+   "request": "nano_community_report",
+   "request_defaults_applied": [
+    "reasoning_effort",
+    "max_completion_tokens"
+   ],
+   "usage_fields": [
+    "completion_tokens",
+    "completion_tokens_details",
+    "completion_tokens_details.accepted_prediction_tokens",
+    "completion_tokens_details.audio_tokens",
+    "completion_tokens_details.reasoning_tokens",
+    "completion_tokens_details.rejected_prediction_tokens",
+    "prompt_tokens",
+    "prompt_tokens_details",
+    "prompt_tokens_details.audio_tokens",
+    "prompt_tokens_details.cache_write_tokens",
+    "prompt_tokens_details.cached_tokens",
+    "total_tokens"
+   ],
+   "usage_missing": false,
+   "voided": false
+  }
+ ],
+ "caps_usd": {
+  "allowance": "0.1",
+  "gateway_cap": "0.1",
+  "ledger_spent_before": "0",
+  "stage_cap": "0.1"
+ },
+ "console_check": "Compare by hand: the provider console's usage page for this key's project must show 10 requests and a total equal to USD 0.00640183 to rounding. The refused call must not appear in it. This program cannot read the console, and it is the only check not made of the gateway's own numbers.",
+ "finished_utc": "20261103 16:19",
+ "gates": {
+  "answers_ended_by_the_output_limit": 0,
+  "every_call_200_or_recorded_incompatible": true,
+  "no_request_left_unsent": true,
+  "null_max_tokens_with_injected_limit": {
+   "all_accepted": false,
+   "all_carried_the_injected_field": true,
+   "calls": 1
+  },
+  "output_limit_injected_wherever_the_client_set_none": true,
+  "reasoning_effort_accepted": true,
+  "reasoning_off_ok": true,
+  "reasoning_tokens_reported_on_every_answer": true,
+  "reasoning_tokens_zero_on_every_answer": true,
+  "refusal_test_passed": true,
+  "rejected_requests": [
+   "fast_summary",
+   "nano_entity_summary"
+  ],
+  "shapes": {
+   "json_object": {
+    "accepted": [
+     "fast_extraction",
+     "nano_community_report"
+    ],
+    "rejected": [
+     "fast_summary"
+    ]
+   },
+   "json_schema": {
+    "accepted": [
+     "ms_community_report"
+    ],
+    "rejected": []
+   },
+   "max_tokens": {
+    "accepted": [],
+    "rejected": [
+     "nano_entity_summary"
+    ]
+   },
+   "max_tokens_null": {
+    "accepted": [],
+    "rejected": [
+     "fast_summary"
+    ]
+   }
+  },
+  "total_cost_within_stage_cap": true,
+  "usage_field_names": [
+   "completion_tokens",
+   "completion_tokens_details",
+   "completion_tokens_details.accepted_prediction_tokens",
+   "completion_tokens_details.audio_tokens",
+   "completion_tokens_details.reasoning_tokens",
+   "completion_tokens_details.rejected_prediction_tokens",
+   "prompt_tokens",
+   "prompt_tokens_details",
+   "prompt_tokens_details.audio_tokens",
+   "prompt_tokens_details.cache_write_tokens",
+   "prompt_tokens_details.cached_tokens",
+   "total_tokens"
+  ],
+  "usage_has_a_cache_write_field": true,
+  "usage_present_on_every_answer": true
+ },
+ "hosted": {
+  "allowance_usd": "0.1",
+  "calls_in_this_run": 10,
+  "cap_usd": "0.1",
+  "chat_model": "gpt-6-luna",
+  "chat_upstream": "hosted",
+  "cost_usd": "0.00640183",
+  "currency": "USD",
+  "embedding_model": "stage-a-unused-embedding",
+  "embedding_upstream": "local",
+  "hosted_base_url": "https://api.openai.com/v1",
+  "key_file": "set",
+  "ledger": "shared",
+  "ledger_records_after": 11,
+  "ledger_records_before": 1,
+  "model_reported": {
+   "None": 2,
+   "gpt-6-luna": 8
+  },
+  "output_limit_default": 6144,
+  "prices": {
+   "cache_write_per_mtok": "0.125",
+   "cached_input_per_mtok": "0.01",
+   "input_per_mtok": "0.1",
+   "output_per_mtok": "0.5",
+   "read_at": "20261103 16:10",
+   "source_url": "https://developers.openai.com/api/docs/pricing",
+   "unit": "per million tokens"
+  },
+  "request_defaults": {
+   "reasoning_effort": "none"
+  },
+  "request_defaults_names": [
+   "reasoning_effort"
+  ],
+  "response_facts": {
+   "answers_with_reasoning_text": 0,
+   "chat_calls": 10,
+   "finish_reasons": {
+    "stop": 8
+   },
+   "longest_answer_output_tokens": 3569,
+   "reasoning_tokens_total": 0,
+   "unparsed_or_streamed": 2
+  },
+  "resumed_an_existing_ledger": true,
+  "run_records_sha256": "f2df1868053d1a401c076875479ab757a90aed691dc2bc26686a5dd5db17927f",
+  "spent_before_usd": "0",
+  "started": true,
+  "upstream_timeout_s": 900
+ },
+ "model_requested": "gpt-6-luna",
+ "models_reported": [
+  "gpt-6-luna"
+ ],
+ "not_sent": [],
+ "note": "numbers, field names and short codes only: no request or response text, no key and no path is kept here",
+ "refusal_test": {
+  "allowance_usd": "0.0001",
+  "client_error_code": "gateway_budget_exceeded",
+  "client_http_status": 429,
+  "ledger_records": 1,
+  "nothing_forwarded": true,
+  "passed": true,
+  "request": "ms_community_report",
+  "request_bytes": 17661,
+  "throwaway_body_log_removed": true,
+  "upstream": "a loopback port nothing listens on"
+ },
+ "requests": [
+  {
+   "bytes": 114,
+   "name": "ping",
+   "shapes": [],
+   "worst_case_usd": "0.003082"
+  },
+  {
+   "bytes": 9716,
+   "name": "lightrag_extraction",
+   "shapes": [],
+   "worst_case_usd": "0.003682125"
+  },
+  {
+   "bytes": 15060,
+   "name": "lightrag_gleaning",
+   "shapes": [],
+   "worst_case_usd": "0.004016125"
+  },
+  {
+   "bytes": 11123,
+   "name": "fast_extraction",
+   "shapes": [
+    "json_object"
+   ],
+   "worst_case_usd": "0.00377"
+  },
+  {
+   "bytes": 955,
+   "name": "fast_summary",
+   "shapes": [
+    "json_object",
+    "max_tokens_null"
+   ],
+   "worst_case_usd": "0.0031345"
+  },
+  {
+   "bytes": 12700,
+   "name": "ms_extraction",
+   "shapes": [],
+   "worst_case_usd": "0.003868625"
+  },
+  {
+   "bytes": 17661,
+   "name": "ms_community_report",
+   "shapes": [
+    "json_schema"
+   ],
+   "worst_case_usd": "0.004178625"
+  },
+  {
+   "bytes": 10787,
+   "name": "nano_extraction",
+   "shapes": [],
+   "worst_case_usd": "0.003749"
+  },
+  {
+   "bytes": 516,
+   "name": "nano_entity_summary",
+   "shapes": [
+    "max_tokens"
+   ],
+   "worst_case_usd": "0.000283125"
+  },
+  {
+   "bytes": 1140,
+   "name": "nano_community_report",
+   "shapes": [
+    "json_object"
+   ],
+   "worst_case_usd": "0.003146125"
+  }
+ ],
+ "stage": "A",
+ "started_utc": "20261103 16:18",
+ "stopped": null,
+ "totals": {
+  "forwarded_attempts": 10,
+  "gateway_cost_usd": "0.00640183",
+  "gateway_records": 10
+ }
+}
