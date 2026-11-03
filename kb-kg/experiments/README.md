@@ -1,7 +1,7 @@
 # Experiments worth running next
 
-**Status: X1 has run; X2 pass A has run on a local model (free); X2 pass B, the paid pilot, has run its first three stages (the owner approved stages A to C, D-34; USD 0.263 on 20261103, [results](x2-index-cost/pass-b-results.md));
-stage D has not; X3 to X5 are proposals and nothing in them has run.** Each experiment needs the owner's
+**Status: X1 has run; X2 pass A has run on a local model (free); X2 pass B, the paid pilot, has run all four stages (the owner approved stages A to C, D-34, and D, D-37; USD 1.105 by the gateway on 20261103, 1.184 with the cache-write price the gateway left out, D-39; [results](x2-index-cost/pass-b-results.md));
+the owner's console comparison for stage D is still to come; X3 to X5 are proposals and nothing in them has run.** Each experiment needs the owner's
 explicit yes, one at a time (decision D-14 in [`DECISIONS.md`](../../DECISIONS.md)). Every proposal states its cost, models and data
 first. Where a cost cannot be known before a pilot, the proposal says so and asks for a **cap on the pilot**,
 not for a budget on the whole experiment.

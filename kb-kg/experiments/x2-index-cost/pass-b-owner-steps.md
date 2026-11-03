@@ -1,8 +1,8 @@
 # Pass B: what the owner does before stage A
 
-Written 20261103 01:17 UTC; status updated 20261103 17:02 UTC. It belongs to [the pass-B plan](pass-b-plan.md); that page says why, this one
+Written 20261103 01:17 UTC; status updated 20261103 19:15 UTC. It belongs to [the pass-B plan](pass-b-plan.md); that page says why, this one
 says how. Nothing here spends money. **Status: the five decisions were answered (D-32), the project, hard limit and key were set up,
-the yes for stages A to C was given (D-34) and stage A has run (the plan's run log). What follows is kept as it was given, for the
+the yes for stages A to C was given (D-34), then the yes for stage D (D-37), and all four stages have run (the plan's run log). What follows is kept as it was given, for the
 record and for a repeat.** Under D-14 a paid step starts only on an explicit yes with model, provider and cap. The commands are for **your own terminal**, so that the key never passes through the conversation (D-20).
 
 ## 1. Five answers I need

@@ -1,8 +1,8 @@
 # X2 pass B: a plan for the paid pilot
 
 **Plan written 20261102 20:24 UTC and revised at 20:39 UTC after an independent review (the changes are listed at the end). When it was
-written no paid call had been made and nothing was approved; since then the owner has approved stages A to C (D-34) and they have
-run (USD 0.263 spent in all; the run log near the end and [the results](pass-b-results.md)).** The owner asked for this plan ("Plan paid pilot") after
+written no paid call had been made and nothing was approved; since then the owner has approved stages A to C (D-34) and stage D (D-37) and all four have
+run (USD 1.105 spent by the gateway's count, 1.184 with the cache-write price it left out, D-39; the run log near the end and [the results](pass-b-results.md)).** The owner asked for this plan ("Plan paid pilot") after
 [pass A](pass-a-local-model.md). Under D-14 a paid step starts only on the owner's explicit yes with model, provider and cap; this
 page says what that yes would unlock, what is fixed in advance, and what has to be built and checked for free first. Everything that
 could be chosen after seeing a result is fixed here instead.
@@ -12,9 +12,9 @@ decision 2, a cap of USD 3 in total with the stage limits below. **Decided 20261
 recommendations"): 3 yes, article text may go to OpenAI's API; 4 local embeddings; 5 all four builders; 7 two yeses (one for stages A to
 C, one for D). **Decision 6 was done by the owner on 20261103:** a project of its own at OpenAI with a USD 3 hard limit and a restricted key in a
 private file ([`pass-b-owner-steps.md`](pass-b-owner-steps.md)). **The yes for stages A to C was given on 20261103 16:12 UTC (D-34),
-after the dry runs; stages A, B and C have run** (run log below; the numbers are in [`pass-b-results.md`](pass-b-results.md)), and
-stage D needs its own yes. Stage 0 is done (below); what is next is in
-[`RESUME.md`](../../../RESUME.md).
+after the dry runs, and the yes for stage D at 17:58 UTC (D-37); all four stages have run** (run log below; the numbers are in
+[`pass-b-results.md`](pass-b-results.md)). Stage 0 is done (below); what is next (the owner's console comparison for stage D, and closing the
+pilot) is in [`RESUME.md`](../../../RESUME.md).
 
 ## What pass B answers, and what it does not
 
@@ -252,7 +252,7 @@ granite's, so the pass-A figures only bracket them.
 | Key exposure | D-20 route; only the gateway holds it; the canary test (F2); never printed; deleted afterwards |
 | Third-party text sent to a provider | Decision 3; text never committed; the body logs stay outside the repository |
 | Price changes between reading and running; a regional endpoint | Re-read when the config is written; `read_at` recorded; the default endpoint is used |
-| The provider's bill differs from tokens times price (cache writes, rounding) | The console total is compared in stage A and at the end of each stage |
+| The provider's bill differs from tokens times price (cache writes, rounding) | The console total is compared in stage A and at the end of each stage. **This happened:** the gateway left out OpenAI's cache-write price (found after stage D; D-39), which the comparisons did not catch because they were made against the gateway's own figures |
 
 ## The repeat on Anthropic (separate, later, its own yes)
 
@@ -279,11 +279,12 @@ key hand-off were specified; F1 was tightened.
 | When (UTC) | What | Result | Spent |
 |---|---|---|---|
 | 20261103 16:12 | Stage A, attempt 1 (the owner's yes, D-34). Ten requests and a refusal test planned | **Stopped at the first call, the ping: HTTP 401, `invalid_api_key`** (type `invalid_request_error`, no parameter, a 262-character message). The stop rule for a key or account fault worked: nothing else was sent; the nine other requests and the refusal test did not run. Four things are now known about the real provider: the gateway reached `api.openai.com` over TLS (a handshake had been tested first, from the interpreters that host the gateway); it added `reasoning_effort` and `max_completion_tokens` to the ping, as recorded in its log; OpenAI answered in its standard error shape, which the stage-A script parsed; and the 401 came back in 383 ms. Whether OpenAI would have accepted those two fields is **not yet known**, because authentication failed first. The 401 is recorded with zero cost and `voided`, as any non-2xx call is | USD 0 (the gateway's figure; the console should show no charge) |
-| 20261103 16:18 | Stage A, attempt 2, with a new key (D-34). Ten requests and the refusal test | **Eight requests answered 200; two were rejected with 400 and cost nothing.** Reasoning off (`reasoning_effort: none`) was accepted and every answer reported 0 reasoning tokens and ended `stop`; the gateway's injected `max_completion_tokens` was accepted; `json_object` was accepted (fast-graphrag's extraction, nano-graphrag's community report) and so was strict `json_schema` (Microsoft GraphRAG's community report); usage carries `prompt_tokens_details.cache_write_tokens` and `cached_tokens` and `completion_tokens_details.reasoning_tokens`; the model reported itself as `gpt-6-luna`. **Rejected: nano-graphrag's entity summary (`max_tokens: 500`, `unsupported_parameter`, parameter `max_tokens`) and fast-graphrag's summary (`max_tokens: null`, sent beside the gateway's injected `max_completion_tokens`, `invalid_type`, parameter `max_tokens`).** The refusal test passed: with an allowance of USD 0.0001 the largest request got a 429 `gateway_budget_exceeded`, the throwaway ledger holds one record and nothing was forwarded. Tokens: 16,677 input (2,043 of them cached; the gleaning prompt reused the extraction prompt's prefix) and 9,836 output over the eight answers; the gateway's cost recomputed from those tokens at the profile's prices equals its own to the last digit. Latency 2 to 31 s. **The console comparison, the only check that is not the gateway's own numbers, is the owner's and was pending when this was written** | USD 0.00640183 (the gateway's figure) |
+| 20261103 16:18 | Stage A, attempt 2, with a new key (D-34). Ten requests and the refusal test | **Eight requests answered 200; two were rejected with 400 and cost nothing.** Reasoning off (`reasoning_effort: none`) was accepted and every answer reported 0 reasoning tokens and ended `stop`; the gateway's injected `max_completion_tokens` was accepted; `json_object` was accepted (fast-graphrag's extraction, nano-graphrag's community report) and so was strict `json_schema` (Microsoft GraphRAG's community report); usage carries `prompt_tokens_details.cache_write_tokens` and `cached_tokens` and `completion_tokens_details.reasoning_tokens`; the model reported itself as `gpt-6-luna`. **Rejected: nano-graphrag's entity summary (`max_tokens: 500`, `unsupported_parameter`, parameter `max_tokens`) and fast-graphrag's summary (`max_tokens: null`, sent beside the gateway's injected `max_completion_tokens`, `invalid_type`, parameter `max_tokens`).** The refusal test passed: with an allowance of USD 0.0001 the largest request got a 429 `gateway_budget_exceeded`, the throwaway ledger holds one record and nothing was forwarded. Tokens: 16,677 input (2,043 of them cached; the gleaning prompt reused the extraction prompt's prefix) and 9,836 output over the eight answers; the gateway's cost recomputed from those tokens at the profile's prices equals its own to the last digit (that check used the fields the gateway read, so it could not show what the gateway left out: OpenAI's `cache_write_tokens`, D-39). Latency 2 to 31 s. **The console comparison, the only check that is not the gateway's own numbers, is the owner's and was pending when this was written** | USD 0.00640183 (the gateway's figure) |
 | 20261103 16:32 | Stage A, re-test of the two rejected shapes (the ping, fast-graphrag's summary and nano-graphrag's entity summary) through gateway 1.2.0 with the translation on, after the owner chose it (D-35). Three requests and the refusal test | **All three answered 200, reasoning 0, `stop`**: the null `max_tokens` was dropped and the injected `max_completion_tokens` accepted; `max_tokens: 500` was accepted as `max_completion_tokens: 500`. All gates yes; the refusal test passed again. Tokens 268 input and 57 output | USD 0.0000553 |
 | 20261103 17:19 | **Stage B**, one document for each builder, in the order LightRAG, fast-graphrag, Microsoft GraphRAG, nano-graphrag (the owner's "Agrees", D-34) | All four completed, runner exit 0, no rule tripped, every answer HTTP 200 and finish `stop`, 0 reasoning tokens. 56 chat requests, 128,240 input tokens (18,568 cached), 52,390 output. The labelled translation was not needed by any call. nano-graphrag, which failed on its first document with the local model, finished, at 2.7 times the plan's guess | USD 0.03735 (limit 0.20, stop at 0.09) |
 | 20261103 17:24 | **Stage C, run r1**, five documents for each builder | All four completed, no rule tripped, no repeated request, every answer 200 and `stop`. 208 chat requests | USD 0.11354 |
 | 20261103 17:38 | **Stage C, run r2** (the pre-registered second run) | All four completed, nothing tripped (the repeat window let it run). 168 chat requests. Microsoft GraphRAG made 65 calls against r1's 113 (10 communities against 18); r2's input was cached more (r1 had just run) | USD 0.10599 (stage C 0.21952 of its limit 0.60) |
+| 20261103 17:57 to 19:01 | **Stage D**, 20 documents for each builder, one run each (the owner's "Agrees; yes to D", D-37), in the order LightRAG, fast-graphrag, Microsoft GraphRAG, nano-graphrag | All four completed, runner exit 0, no rule tripped, no repeated request, 1,308 chat requests, every answer 200 and `stop`, 0 reasoning tokens. LightRAG 99 calls, fast-graphrag 96, Microsoft GraphRAG 558, nano-graphrag 555. **The labelled translation was used by a build for the first time:** 13 requests of fast-graphrag carried `max_tokens: null`, the gateway dropped it, all 13 were answered 200. Arithmetic from stage C had expected 0.65; the actual was 1.30 times that, and nano-graphrag alone 1.45 times | USD 0.84204 by the gateway, 0.90556 with the cache-write price (limit and allowance 1.50) |
 
 **Stage A in all, per the gateway's ledger (the figures to hold against OpenAI's usage page, 20261103 16:32 UTC):** 11 requests
 answered 200, 16,945 input tokens of which 2,043 cached, 9,893 output tokens, **USD 0.00645713**; two 400 rejections (no tokens) and one
@@ -308,6 +309,13 @@ for stages B and C is the owner's and is the gate to stage D** (figures in the r
 
 **The owner compared OpenAI's usage page for stages B and C and replied that it agrees, and gave the yes for stage D** (recorded 20261103 17:58 UTC,
 D-37): 20 documents for each of the four builders, one run each, in the usual order, allowance and stop-at USD 1.50, the pilot's cap USD 3.00.
+
+**Stage D ran (17:57 to 19:01 UTC) and with it the four stages: USD 1.10537 by the gateway, 1,751 answered requests, 4,170,590 input
+tokens (943,721 cached), 1,546,498 output tokens.** The tables, the comparison with the arithmetic from C and my readings are in
+[`pass-b-results.md`](pass-b-results.md). **The gateway left out OpenAI's cache-write price (D-39):** OpenAI reported 3,140,582 tokens as written
+to its cache (2,540,573 in stage D) and gateway 1.2.0 priced them as plain input; at the model page's USD 0.125 per million the four stages
+cost 1.18389, not 1.10537. The console comparison for stage D is the owner's and is the first that can tell the two figures apart; the
+earlier ones (A, and B with C) were made against the gateway's figures. No further paid step is approved; a repeat of D is not covered by D-37.
 
 A credentials fault is a harness reason, so a repeat of stage A is allowed once the cause is fixed and written down (stop rules,
 above). Attempt 1's files are kept under the pilot directory as `stage-a-attempt1`.

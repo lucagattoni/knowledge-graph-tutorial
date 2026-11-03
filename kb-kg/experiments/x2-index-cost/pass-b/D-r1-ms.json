@@ -1,0 +1,441 @@
+{
+  "runner": "tools/exp/x2_passa_microsoft_graphrag.py",
+  "builder": "microsoft/graphrag",
+  "version": "3.3.0",
+  "upstream_url": "http://127.0.0.1:11434/v1",
+  "model": "gpt-6-luna",
+  "embed_model": "qwen3-embedding:0.6b",
+  "chat_request_defaults": {},
+  "embedding_dim": 1024,
+  "preflight": {
+    "mode": "auto",
+    "ollama": true,
+    "embed_model": "qwen3-embedding:0.6b",
+    "embedding_model_installed": true,
+    "chat_model_checked": false,
+    "note": "the chat model is hosted; its context is the provider's"
+  },
+  "graphrag_versions": {
+    "graphrag": "3.3.0",
+    "graphrag-llm": "3.3.0",
+    "graphrag-chunking": "3.3.0",
+    "graphrag-cache": "3.3.0",
+    "graphrag-storage": "3.3.0",
+    "graphrag-vectors": "3.3.0",
+    "graphrag-input": "3.3.0",
+    "graphrag-common": "3.3.0",
+    "litellm": "1.100.1",
+    "openai": "2.54.0",
+    "tiktoken": "0.14.0",
+    "lancedb": "0.38.0",
+    "pandas": "3.1.0",
+    "numpy": "2.5.4"
+  },
+  "python": "3.12.16",
+  "machine": "arm64",
+  "system": "Darwin",
+  "method": "standard (the default of `graphrag index`)",
+  "settings": "the file `graphrag init --model gpt-4.1 --embedding text-embedding-3-large` writes, with: api_base for both models (the gateway), the two model names given on the command line, vector_store.vector_size read from a probe call",
+  "settings_overrides": {
+    "concurrency": 4,
+    "request_timeout_s": 3600.0,
+    "note": "null means the builder's default"
+  },
+  "document_input": "the `body` of each article, one .txt file each, in documents.tsv order, first N",
+  "checkpoint_semantics": "each checkpoint is a separate batch run from clean directories and an empty LLM cache, with its own preflight calls; nothing carries over from a smaller checkpoint",
+  "child_isolation": {
+    "env": "env whitelist: PATH, HOME (a scratch dir), a dummy GRAPHRAG_API_KEY, proxy variables, TIKTOKEN_CACHE_DIR",
+    "proxy": "http://127.0.0.1:9 (refuses connections), NO_PROXY=127.0.0.1,localhost",
+    "os_level_network_block": "sandbox-exec profile: deny every outbound connection except to loopback",
+    "sandbox_selftest": {
+      "loopback": "connected",
+      "non_loopback_documentation_address": "PermissionError 1",
+      "blocks_non_loopback": true,
+      "allows_loopback": true
+    }
+  },
+  "dimension_probe": {
+    "calls": 1,
+    "http_status": 200,
+    "input_tokens": 4,
+    "note": "logged by the gateway, belongs to no checkpoint"
+  },
+  "checkpoints": {
+    "20": {
+      "gateway_summary": {
+        "chat_calls": 558,
+        "chat_input_tokens": 938420,
+        "chat_output_tokens": 296662,
+        "embedding_calls": 95,
+        "embedding_inputs": 1363,
+        "embedding_input_tokens": 223088,
+        "other_calls": 0,
+        "latency_ms_sum": 3248263,
+        "latency_note": "summed over calls that run concurrently, so it is not wall time"
+      },
+      "by_kind": {
+        "community_report": {
+          "calls": 199,
+          "ok": 199,
+          "input_tokens": 553423,
+          "output_tokens": 157463,
+          "latency_ms": 1523360,
+          "statuses": {
+            "200": 199
+          },
+          "input_tokens_stats": {
+            "n": 199,
+            "sum": 553423,
+            "min": 2254,
+            "median": 2522,
+            "max": 8978
+          },
+          "voided": 0,
+          "usage_missing": 0
+        },
+        "embedding": {
+          "calls": 94,
+          "ok": 94,
+          "input_tokens": 223078,
+          "output_tokens": 0,
+          "latency_ms": 118083,
+          "statuses": {
+            "200": 94
+          },
+          "input_tokens_stats": {
+            "n": 94,
+            "sum": 223078,
+            "min": 361,
+            "median": 597.0,
+            "max": 8994
+          },
+          "voided": 0,
+          "usage_missing": 0,
+          "inputs": 1362,
+          "max_inputs_in_one_call": 16
+        },
+        "extract_gleaning_continue": {
+          "calls": 47,
+          "ok": 47,
+          "input_tokens": 207495,
+          "output_tokens": 47556,
+          "latency_ms": 447207,
+          "statuses": {
+            "200": 47
+          },
+          "input_tokens_stats": {
+            "n": 47,
+            "sum": 207495,
+            "min": 2420,
+            "median": 4285,
+            "max": 7253
+          },
+          "voided": 0,
+          "usage_missing": 0
+        },
+        "extract_graph": {
+          "calls": 47,
+          "ok": 47,
+          "input_tokens": 126061,
+          "output_tokens": 79507,
+          "latency_ms": 731425,
+          "statuses": {
+            "200": 47
+          },
+          "input_tokens_stats": {
+            "n": 47,
+            "sum": 126061,
+            "min": 1839,
+            "median": 2935,
+            "max": 2937
+          },
+          "voided": 0,
+          "usage_missing": 0
+        },
+        "preflight_connectivity_test": {
+          "calls": 1,
+          "ok": 1,
+          "input_tokens": 17,
+          "output_tokens": 5,
+          "latency_ms": 1142,
+          "statuses": {
+            "200": 1
+          },
+          "input_tokens_stats": {
+            "n": 1,
+            "sum": 17,
+            "min": 17,
+            "median": 17,
+            "max": 17
+          },
+          "voided": 0,
+          "usage_missing": 0
+        },
+        "preflight_embedding_test": {
+          "calls": 1,
+          "ok": 1,
+          "input_tokens": 10,
+          "output_tokens": 0,
+          "latency_ms": 21,
+          "statuses": {
+            "200": 1
+          },
+          "input_tokens_stats": {
+            "n": 1,
+            "sum": 10,
+            "min": 10,
+            "median": 10,
+            "max": 10
+          },
+          "voided": 0,
+          "usage_missing": 0,
+          "inputs": 1,
+          "max_inputs_in_one_call": 1
+        },
+        "summarize_description_entity": {
+          "calls": 188,
+          "ok": 188,
+          "input_tokens": 37739,
+          "output_tokens": 9820,
+          "latency_ms": 306844,
+          "statuses": {
+            "200": 188
+          },
+          "input_tokens_stats": {
+            "n": 188,
+            "sum": 37739,
+            "min": 161,
+            "median": 192.0,
+            "max": 431
+          },
+          "voided": 0,
+          "usage_missing": 0
+        },
+        "summarize_description_relationship": {
+          "calls": 76,
+          "ok": 76,
+          "input_tokens": 13685,
+          "output_tokens": 2311,
+          "latency_ms": 120181,
+          "statuses": {
+            "200": 76
+          },
+          "input_tokens_stats": {
+            "n": 76,
+            "sum": 13685,
+            "min": 159,
+            "median": 179.0,
+            "max": 212
+          },
+          "voided": 0,
+          "usage_missing": 0
+        }
+      },
+      "gateway_total": {
+        "calls": 653,
+        "ok": 653,
+        "input_tokens": 1161508,
+        "output_tokens": 296662,
+        "latency_ms": 3248263
+      },
+      "retries": {
+        "distinct_requests": 653,
+        "identical_repeated_requests": 0,
+        "calls_not_200_or_voided": 0,
+        "statuses": {
+          "200": 653
+        },
+        "gateway_refusals": {}
+      },
+      "embedding_by_field": {
+        "entity_description": {
+          "calls": 70,
+          "inputs": 1116,
+          "rows_in_table": 1116,
+          "input_tokens": 39350
+        },
+        "community_full_content": {
+          "calls": 18,
+          "inputs": 199,
+          "rows_in_table": 199,
+          "input_tokens": 137920
+        },
+        "text_unit_text": {
+          "calls": 6,
+          "inputs": 47,
+          "rows_in_table": 47,
+          "input_tokens": 45808
+        }
+      },
+      "embedding_split_matches_tables": true,
+      "unclassified_chat_calls": 0,
+      "call_multiset_sha256": "8080c1ca76dcc8f29d3939f2bd2277fd7216a1726b35dc6abec6ab1d72d834e1",
+      "cost_usd": "0.2308402",
+      "cost_usd_cumulative_in_this_run": "0.2308402",
+      "documents": 20,
+      "started": "20261103 18:16 UTC",
+      "wall_seconds": 883.5,
+      "command": "graphrag index --root <fresh project directory>",
+      "exit_code": 0,
+      "timed_out": false,
+      "child_timeout_s": 43200,
+      "documents_indexed": 20,
+      "indexed_all_documents": true,
+      "output_tables": {
+        "documents": 20,
+        "text_units": 47,
+        "entities": 1116,
+        "relationships": 1434,
+        "communities": 199,
+        "community_reports": 199,
+        "communities_by_level": {
+          "0": 20,
+          "1": 88,
+          "2": 87,
+          "3": 4
+        },
+        "entities_seen_in_2_or_more_chunks": 188,
+        "relationships_seen_in_2_or_more_chunks": 82,
+        "entities_in_a_level0_community": 715,
+        "chunk_tokens_o200k": {
+          "n": 47,
+          "sum": 44486,
+          "min": 103,
+          "median": 1200,
+          "max": 1200
+        },
+        "chunks_per_document": [
+          1,
+          1,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          3,
+          3,
+          3,
+          3,
+          4,
+          5
+        ],
+        "graphrag_stats": {
+          "num_documents": 20,
+          "total_runtime_s": 880.07239818573,
+          "workflow_seconds": {
+            "load_input_documents": 0.1,
+            "create_base_text_units": 0.4,
+            "create_final_documents": 0.01,
+            "extract_graph": 428.67,
+            "finalize_graph": 0.24,
+            "extract_covariates": 0.0,
+            "create_communities": 0.19,
+            "create_final_text_units": 0.14,
+            "create_community_reports": 400.5,
+            "generate_text_embeddings": 49.79
+          }
+        }
+      },
+      "failure_markers_in_logs": {
+        "chunk_extraction_errors": 0,
+        "extraction_or_summary_on_error_callbacks": 0,
+        "graph_extraction_failed_no_entities_or_relationships": 0,
+        "community_report_errors": 0,
+        "community_report_exceptions": 0,
+        "community_processing_errors": 0,
+        "communities_without_a_report": 0,
+        "relationships_dropped_for_missing_entities": 1,
+        "embeddings_skipped_for_none": 0,
+        "vector_size_overridden_by_graphrag": 0
+      },
+      "scope_of_kinds": {
+        "preflight_connectivity_test": "once per run",
+        "preflight_embedding_test": "once per run",
+        "extract_graph": "per chunk",
+        "extract_gleaning_continue": "per chunk",
+        "extract_gleaning_loop_check": "per chunk (none at the default of one gleaning)",
+        "summarize_description_entity": "corpus-level (one per entity seen with 2 or more distinct descriptions)",
+        "summarize_description_relationship": "corpus-level (one per relationship seen with 2 or more distinct descriptions)",
+        "community_report": "corpus-level (one per community, every level, of the merged graph)",
+        "embedding": "per field: chunk text per chunk; entity descriptions and community reports corpus-level"
+      }
+    }
+  },
+  "calls_jsonl_sha256": "5879190e129e29ad3c8a49a112a341eaff155c03ef5f1b4f7fc19e6a2487c57a",
+  "started_utc": "20261103 18:16 UTC",
+  "finished_utc": "20261103 18:31 UTC",
+  "status": "ok",
+  "template_settings_sha256": "45d9769851027a5498885204f0e42e37e8e5eebfe84b1be950e88193b327d376",
+  "prompt_files_equal_packaged_constants": {
+    "extract_graph.txt": true,
+    "summarize_descriptions.txt": true,
+    "community_report_graph.txt": true
+  },
+  "hosted": {
+    "chat_upstream": "hosted",
+    "embedding_upstream": "local",
+    "chat_model": "gpt-6-luna",
+    "embedding_model": "qwen3-embedding:0.6b",
+    "hosted_base_url": "https://api.openai.com/v1",
+    "currency": "USD",
+    "key_file": "set",
+    "ledger": "shared",
+    "allowance_usd": "1.32943835",
+    "prices": {
+      "unit": "per million tokens",
+      "input_per_mtok": "0.1",
+      "output_per_mtok": "0.5",
+      "cached_input_per_mtok": "0.01",
+      "cache_write_per_mtok": "0.125",
+      "source_url": "https://developers.openai.com/api/docs/pricing",
+      "read_at": "20261103 16:10"
+    },
+    "output_limit_default": 6144,
+    "translate_max_tokens": true,
+    "departures_from_the_builders_requests": [
+      "max_tokens: null is dropped and a set max_tokens is sent as max_completion_tokens (the model rejects both)"
+    ],
+    "request_defaults_names": [
+      "reasoning_effort"
+    ],
+    "request_defaults": {
+      "reasoning_effort": "none"
+    },
+    "upstream_timeout_s": 900,
+    "started": true,
+    "resumed_an_existing_ledger": true,
+    "model_reported": {
+      "gpt-6-luna": 558
+    },
+    "cost_usd": "0.2308402",
+    "spent_before_usd": "0.43389008",
+    "cap_usd": "1.76332843",
+    "ledger_records_before": 1248,
+    "ledger_records_after": 1902,
+    "calls_in_this_run": 654,
+    "run_records_sha256": "6ef470579d6462696d9e5ad49600fc7ec6fabda2dfc46ad2a82499aa664f2ea3",
+    "response_facts": {
+      "chat_calls": 558,
+      "finish_reasons": {
+        "stop": 558
+      },
+      "answers_with_reasoning_text": 0,
+      "reasoning_tokens_total": 0,
+      "unparsed_or_streamed": 0,
+      "longest_answer_output_tokens": 4344
+    }
+  },
+  "gateway": {
+    "log": "the profile's shared ledger (meter.jsonl and meter.jsonl.bodies.jsonl; holds article text; never commit)",
+    "prices": "the chat model's are the profile's (see `hosted`); the embedding model's are zero",
+    "upstream_timeout_s": 900
+  },
+  "calls_jsonl_note": "one line per call (no text), under the work directory; the hash ties this JSON to it"
+}

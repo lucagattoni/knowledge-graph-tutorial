@@ -399,7 +399,7 @@ writes above the prompt as unusable usage.
 uv run python -m unittest tools/test_metering_gateway.py
 ```
 
-136 tests, about 11 seconds, no network and no key: fake upstreams are real loopback servers written in the test
+144 tests, about 12 seconds, no network and no key: fake upstreams are real loopback servers written in the test
 file. Green on Python 3.11, 3.12, 3.13, 3.14 and 3.15, one run each, and on three consecutive runs on 3.13
 (20261102 21:08 UTC, version 1.1.0). The longer series (10 consecutive runs on 3.13, 16 runs with eight copies going
 at once) were made on the earlier 78-test suite and have not been repeated on the 36 tests added since for the
