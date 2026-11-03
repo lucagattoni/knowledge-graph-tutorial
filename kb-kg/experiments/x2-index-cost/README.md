@@ -1,7 +1,7 @@
 # X2: the measured index cost of cheap graph builders
 
 **Status: Step 0 groundwork (the [order and gates](../README.md#order-and-gates)) is done, and so is pass A on two local models
-(20261102). The paid pilot has run, stages A to D (USD 1.105 by the gateway in all, 20261103; [results](pass-b-results.md)); the owner's console comparison for stage D is still to come.** This directory holds what is frozen before any model sees it, the rehearsal results, the
+(20261102). The paid pilot has run, stages A to D (USD 1.105 by the gateway in all, 20261103; [results](pass-b-results.md)); the console's spend for the pilot (USD 0.67, read 20261103, D-40) matches neither total and is to be read again after 20261104 00:00 UTC.** This directory holds what is frozen before any model sees it, the rehearsal results, the
 [pass-A results](pass-a) and later the pilot results.
 
 **Pass A: [a local model answers the builders](pass-a-local-model.md).** `granite4.2:8b` ran all four through the gateway: LightRAG to 20

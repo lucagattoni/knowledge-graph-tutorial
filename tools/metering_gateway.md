@@ -375,7 +375,7 @@ writes above the prompt as unusable usage.
   read, so it was circular on this point. Version 1.3.0 reads the field (unit tests; mutation check below). The pilot's committed ledger has `cache_creation_input_tokens` null in all its records, so the written-token counts
   are not re-derivable from the repository (they come from the body log, which is outside it). The pilot's figures are not
   re-run: the results page gives the gateway's total and the total with the write price, from the answers' own token counts, side by side.
-  **Not observed:** 1.3.0 against a real provider, and the provider's own billing of the written tokens.
+  **Not observed:** 1.3.0 against a real provider, and the provider's own billing of the written tokens (the console's spend for the pilot, read 20261103, was USD 0.67 against the gateway's 1.105 and matches neither total: D-40).
 - The unit tests use `http.client` and raw sockets. The real OpenAI and Anthropic Python SDKs have since been pointed
   at it, but only against fake upstreams written for the purpose (`tools/exp/gateway_sdk_e2e_openai.py`, 17 checks, and
   `tools/exp/gateway_sdk_e2e_anthropic.py`, 12 checks: chat, streaming, embeddings, the key swap, exact cost, the cap).
