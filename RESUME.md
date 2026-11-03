@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261103 00:26 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261103 01:18 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
@@ -72,8 +72,8 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
 
 ## Next, once the owner answers
 
-- **Paid pilot, stage A (needs answers 3 to 7 above and the owner's explicit yes with model, provider and cap, D-14).** The owner
-  prepares a key file by the D-20 route (mode 600, one line, outside the repository and the scratch directory) and sets the hard
+- **Paid pilot, stage A (needs answers 3 to 7 above and the owner's explicit yes with model, provider and cap, D-14).** The owner's
+  steps are in [`pass-b-owner-steps.md`](kb-kg/experiments/x2-index-cost/pass-b-owner-steps.md). The owner prepares a key file by the D-20 route (mode 600, one line, outside the repository and the scratch directory) and sets the hard
   limit at the provider; then, from the repository root: `tools/exp/passb_stage_a.py extract` (free; the pass-A gateway
   directories and the builders' throwaway environments must exist, or be rebuilt at the pins on the rehearsal pages), then
   `passb_stage_a.py run` without `--send` (prints the plan, starts nothing), then with `--send`. Stages B, C and D run with
