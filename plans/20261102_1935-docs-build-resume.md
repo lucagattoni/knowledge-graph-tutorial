@@ -29,11 +29,9 @@ the rules every page follows: [`20261102_1929-docs-writing-spec.md`](20261102_19
    the experiments session was told the file set and to tell the documentation session the paths it changes. A push to `main`
    deploys the site when it touches `docs/**`, `DECISIONS.md`, `kb-kg/**`, `pinakes/**`, `tools/build_docs.py`,
    `tools/test_build_docs.py`, `mkdocs.yml`, `docs-site/**` or `.github/workflows/docs.yml` (the workflow's own path filter).
-4. **`CLAUDE.md` still describes the old structure.** Proposed edit (not applied): the title becomes "KB/KG documentation:
-   project instructions"; add to Structure: "`docs/` is the documentation and the site's home; `kb-kg/`, `pinakes/` and
-   `DECISIONS.md` are the archive and are never edited to match it. Add a project, paper, dataset, benchmark or trend as a page
-   plus a row in its chapter's `changes.tsv`; then `uv run tools/build_docs.py` (never edit a generated section by hand;
-   `--check` must exit 0). Page rules: `plans/20261102_1929-docs-writing-spec.md`."
+4. **Done 20261103 01:14 UTC, at the owner's yes:** `CLAUDE.md` now has the title "KB/KG documentation: project instructions" and
+   Structure bullets for `docs/` and the archive, how to add a page and run the generator, the `docs/experiments/` refresh rule
+   and the fact that a push to `main` which touches the site's paths deploys it.
 5. **Safety gate false positive:** the pattern for local paths (`/home/<name>/`) matches real web addresses that contain
    `/home/` (two author copies of papers on a university site were replaced by DOIs). A narrower pattern is the owner's call.
 6. **Private-name list:** `tools/public-safe-patterns.local.txt` does not exist in either checkout, so the gate does not check
