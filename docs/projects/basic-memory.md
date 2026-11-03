@@ -73,6 +73,7 @@ A web search on 20261102 found no independent evaluation. Search results are lea
 
 - [agent-memory (Tigerless Labs)](tigerless-agent-memory.md)
 - [claude-obsidian](claude-obsidian.md)
+- [EverOS](everos.md)
 - [LLM Wiki (nashsu)](llm-wiki-nashsu.md)
 - [Projects](README.md)
 

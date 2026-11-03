@@ -70,6 +70,8 @@ Source for the table: [9]. Selected rows: the systems that have a page in this d
 **Projects**
 
 - [Claude-Mem](claude-mem.md)
+- [EverOS](everos.md)
+- [Memori](memori.md)
 - [Projects](README.md)
 
 **Benchmarks**

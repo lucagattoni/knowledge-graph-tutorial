@@ -35,6 +35,7 @@ Cormack, Clarke and Büttcher introduced Reciprocal Rank Fusion (RRF) as "a simp
 **Projects**
 
 - [Hindsight](../projects/hindsight.md)
+- [TencentDB Agent Memory](../projects/tencentdb-agent-memory.md)
 
 **Applied to Pinakes**
 

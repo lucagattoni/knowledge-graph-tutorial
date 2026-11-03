@@ -57,7 +57,9 @@ Hu et al. treat agent memory as an evolving memory state of an [agent](./agent.m
 - [HippoRAG](../projects/hipporag.md)
 - [MCP reference servers](../projects/mcp-servers.md)
 - [Memgraph](../projects/memgraph.md)
+- [Memori](../projects/memori.md)
 - [MemOS](../projects/memos.md)
+- [memU](../projects/memu.md)
 - [OpenViking](../projects/openviking.md)
 
 **Papers**

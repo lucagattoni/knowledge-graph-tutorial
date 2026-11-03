@@ -1,2 +1,8 @@
 date_utc	kind	subject	summary	source	read_utc
 20261102	added	chapter	First edition: 37 project pages and a watch list of 123 repositories, joined with the GitHub snapshot of 20261030 19:54 UTC.	docs/projects/README.md	20261102 23:26 UTC
+20261103	added	Supermemory	Project page added: MIT repository without the engine; the LongMemEval headline moved from 81.6 to 95 to 97 percent; one independent coding-task run.	https://github.com/supermemoryai/supermemory	20261103 01:37 UTC
+20261103	added	TencentDB Agent Memory	Project page added: MIT licence (GitHub shows NOASSERTION); two branches; first-party results; one independent evaluation (MemDev-Bench).	https://github.com/TencentCloud/TencentDB-Agent-Memory	20261103 01:40 UTC
+20261103	added	Memori	Project page added: reworded Apache 2.0 licence (GitHub shows NOASSERTION); conversations go to the vendor hosted service by default; first-party LoCoMo 81.95 (paper) and 87.0 (website) against 41.34 in a competitor-run harness.	https://github.com/MemoriLabs/Memori	20261103 01:30 UTC
+20261103	added	memU	Project page added: embedding-only sidecar for coding agents; the 92.09 percent LoCoMo claim is historical; four third-party runs by rivals, none of the current service; Apache-2.0 text with an edited grant.	https://github.com/NevaMind-AI/memU	20261103 01:46 UTC
+20261103	added	EverOS	Project page added: Apache-2.0 agent memory runtime renamed from EverMemOS; first-party scores only on LoCoMo and LongMemEval; competitor and third-party runs give lower or mixed figures.	https://github.com/EverMind-AI/EverOS	20261103 01:45 UTC
+20261103	updated	watch list	The 21 active projects without a page now carry a reason in the note column (a judgement of this documentation).	docs/projects/watchlist.tsv	20261103 01:55 UTC

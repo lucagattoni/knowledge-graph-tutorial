@@ -52,6 +52,7 @@ In a multi-stage ranking architecture an initial retrieval stage selects candida
 - [Mem0](../projects/mem0.md)
 - [OpenViking](../projects/openviking.md)
 - [RAGFlow](../projects/ragflow.md)
+- [Supermemory](../projects/supermemory.md)
 
 **Benchmarks**
 

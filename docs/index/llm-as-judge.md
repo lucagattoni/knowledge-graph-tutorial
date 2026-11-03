@@ -49,8 +49,10 @@ Whether judges are now the standard way to score answers is **unstated** in the 
 **Projects**
 
 - [Mem0](../projects/mem0.md)
+- [memU](../projects/memu.md)
 - [MIRIX](../projects/mirix.md)
 - [RAG-Anything](../projects/rag-anything.md)
+- [Supermemory](../projects/supermemory.md)
 
 **Papers**
 

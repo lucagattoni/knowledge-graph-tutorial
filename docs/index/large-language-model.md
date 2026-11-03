@@ -75,6 +75,7 @@ The size at which a model counts as large is not fixed. One survey gives three p
 - [LlamaIndex](../projects/llama-index.md)
 - [LLM Wiki (nashsu)](../projects/llm-wiki-nashsu.md)
 - [Mem0](../projects/mem0.md)
+- [Memori](../projects/memori.md)
 - [MemOS](../projects/memos.md)
 - [Microsoft GraphRAG](../projects/microsoft-graphrag.md)
 - [MIRIX](../projects/mirix.md)

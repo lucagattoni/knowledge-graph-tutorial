@@ -45,6 +45,7 @@ Cost. The gist says compiling once avoids re-deriving at every question [1]. Wen
 **Projects**
 
 - [claude-obsidian](../projects/claude-obsidian.md)
+- [TencentDB Agent Memory](../projects/tencentdb-agent-memory.md)
 
 **Experiments**
 

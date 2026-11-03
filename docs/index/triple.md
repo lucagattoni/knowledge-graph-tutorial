@@ -45,6 +45,7 @@ In RDF 1.1 Concepts, an RDF triple "consists of three components": a subject (an
 **Projects**
 
 - [HippoRAG](../projects/hipporag.md)
+- [Memori](../projects/memori.md)
 
 **Papers**
 

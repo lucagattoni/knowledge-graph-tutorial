@@ -61,8 +61,12 @@ Hindsight is an [agent memory](../index/agent-memory.md) system from Vectorize.i
 **Projects**
 
 - [Claude-Mem](claude-mem.md)
+- [EverOS](everos.md)
+- [Memori](memori.md)
 - [MemOS](memos.md)
 - [Projects](README.md)
+- [Supermemory](supermemory.md)
+- [TencentDB Agent Memory](tencentdb-agent-memory.md)
 
 **Datasets**
 

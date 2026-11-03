@@ -71,7 +71,9 @@ The Apache-2.0 file arrived in the commit "Server-beta: Postgres storage + indep
 **Projects**
 
 - [agent-memory (Tigerless Labs)](tigerless-agent-memory.md)
+- [memU](memu.md)
 - [Projects](README.md)
+- [TencentDB Agent Memory](tencentdb-agent-memory.md)
 
 **Experiments**
 

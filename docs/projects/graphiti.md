@@ -70,8 +70,10 @@ The paper's caveats: the DMR (Deep Memory Retrieval) set is small, its conversat
 - [Cognee](cognee.md)
 - [FalkorDB](falkordb.md)
 - [Hindsight](hindsight.md)
+- [Memori](memori.md)
 - [MemOS](memos.md)
 - [Projects](README.md)
+- [Supermemory](supermemory.md)
 
 **Papers**
 

@@ -1,6 +1,6 @@
 # Resume: the new documentation (`docs/`)
 
-Last updated 20261103 01:08 UTC. **Merged to `main` on 20261103 01:07 UTC as `804c814`
+Last updated 20261103 01:58 UTC (the owner's review of the lists, item 2 below, and the work after the merge: a tenth trend, five project pages, the experiments pages at `37c922c`). **Merged to `main` on 20261103 01:07 UTC as `804c814`
 ([PR #1](https://github.com/lucagattoni/knowledge-graph-tutorial/pull/1)) on the owner's instruction "merge it"; the docs workflow
 run for that commit succeeded (build and deploy) and the deployed site's home page and a deeper page answered 200, the deeper one
 with the newest wording.** The branch was `worktree-20261102_1805-docs-restructure-proposal`; before the merge the experiments
@@ -14,7 +14,7 @@ the rules every page follows: [`20261102_1929-docs-writing-spec.md`](20261102_19
 
 | What | State |
 |---|---|
-| Chapters | History (8 eras), Trends (9 families, 2 themes), Projects (37 pages, 123-row watch list), Papers (68 in 10 groups), Datasets (26), Benchmarks (24), Experiments, Applied to Pinakes, Index (157 entries); 293 pages |
+| Chapters | History (8 eras), Trends (10 families, 2 themes), Projects (42 pages, 123-row watch list), Papers (68 in 10 groups), Datasets (26), Benchmarks (24), Experiments, Applied to Pinakes, Index (157 entries); 299 pages (counted 20261103) |
 | Checked | every page was written, then checked by an agent that re-fetched its sources, then fixed; an independent audit against the owner's decisions ranked 15 gaps; most were fixed, some only in part, and the rest are listed under "Waiting on the owner" and "Known limits" below |
 | Verified by the main session | strict site build exits 0; `tools/build_docs.py --check` exits 0; 70 generator tests and 44 site tests pass; no missing link target in 293 pages; 0 alias problems; `tools/check_public_safe.sh` exits 0 on its generic patterns |
 | Live chapters | Projects, Papers, Datasets, Benchmarks, Trends: a `changes.tsv` each (one first-edition row) and generated sections |
@@ -23,8 +23,14 @@ the rules every page follows: [`20261102_1929-docs-writing-spec.md`](20261102_19
 
 1. **Review in a local preview** (the owner's condition S-6): the preview was served; the owner then asked for the push, the PR and
    the merge; how much of the 293 pages was read is unstated. The site is now published.
-2. **The lists** (eras, trends, 37 projects, 68 papers, 26 datasets, 24 benchmarks) were chosen by the assistant under the
-   owner's delegation, not approved item by item.
+2. **The lists were reviewed item by item on 20261103** (D-33; record in `20261102_1951-docs-catalogue.md`, section "The owner's
+   review of the lists"). Open from that review: **Open Knowledge Format** (the plain-files trend lists it as a representative, but
+   it is a specification and has no project page: give it a page, or say in the Projects chapter why a listed representative has
+   none), **Semantica** (14,349 stars, no page, not named in the construction trend's section on ontology-grounded context
+   graphs) and the Papers chapter, which has no group for the new semantic-web-standards trend (its table says one group per
+   trend: add a group or state the exception). Honcho, SurrealDB and MemMachine are borderline (the writer of the
+   reasons leaned towards no page; MemMachine has one of the few independent agent-memory scores, on the LoCoMo benchmark
+   page) and TrustGraph is the weaker twin of Semantica; the watch list notes say why none has a page.
 3. **Done:** the merge to `main` (above). Each later change to a fact that `docs/experiments/` quotes needs the page refreshed;
    the experiments session was told the file set and to tell the documentation session the paths it changes. A push to `main`
    deploys the site when it touches `docs/**`, `DECISIONS.md`, `kb-kg/**`, `pinakes/**`, `tools/build_docs.py`,

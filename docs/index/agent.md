@@ -55,6 +55,7 @@ They disagree on the test. Anthropic and OpenAI test who controls the steps: the
 - [MIRIX](../projects/mirix.md)
 - [PageIndex](../projects/pageindex.md)
 - [Projects](../projects/README.md)
+- [TencentDB Agent Memory](../projects/tencentdb-agent-memory.md)
 - [Understand Anything](../projects/understand-anything.md)
 
 **Papers**
