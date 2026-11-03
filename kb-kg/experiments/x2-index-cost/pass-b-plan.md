@@ -267,6 +267,15 @@ checks were added because the gateway's log cannot show reasoning tokens or fini
 "passed C", the fault-repeat rule and the policy for rejected requests were fixed in writing; the ledger across stages and the
 key hand-off were specified; F1 was tightened.
 
+## Run log (paid attempts, newest last)
+
+| When (UTC) | What | Result | Spent |
+|---|---|---|---|
+| 20261103 16:12 | Stage A, attempt 1 (the owner's yes, D-34). Ten requests and a refusal test planned | **Stopped at the first call, the ping: HTTP 401, `invalid_api_key`** (type `invalid_request_error`, no parameter, a 262-character message). The stop rule for a key or account fault worked: nothing else was sent; the nine other requests and the refusal test did not run. Four things are now known about the real provider: the gateway reached `api.openai.com` over TLS (a handshake had been tested first, from the interpreters that host the gateway); it added `reasoning_effort` and `max_completion_tokens` to the ping, as recorded in its log; OpenAI answered in its standard error shape, which the stage-A script parsed; and the 401 came back in 383 ms. Whether OpenAI would have accepted those two fields is **not yet known**, because authentication failed first. The 401 is recorded with zero cost and `voided`, as any non-2xx call is | USD 0 (the gateway's figure; the console should show no charge) |
+
+A credentials fault is a harness reason, so a repeat of stage A is allowed once the cause is fixed and written down (stop rules,
+above). Attempt 1's files are kept under the pilot directory as `stage-a-attempt1`.
+
 ## Sources
 
 Read 20261102 (UTC), 20:19 to 20:36: the pages named in "Facts"; pass-A results in [`pass-a/`](pass-a) and
