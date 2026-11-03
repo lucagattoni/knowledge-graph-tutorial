@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261103 17:02 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261103 17:57 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
@@ -33,11 +33,11 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
    there). Its value was once malformed; rotating or revoking the key is the owner's call.
 2. **The paid pilot, X2 pass B (D-26 to D-28).** A [plan](kb-kg/experiments/x2-index-cost/pass-b-plan.md) was written 20261102 and
    revised after an independent review. The owner chose OpenAI `gpt-6-luna` with reasoning off and a cap of USD 3 (D-30), answered
-   the open questions on 20261103 (D-32) and gave the yes for stages A to C (D-34). **Where it stands: stage A is done** (attempt 1
-   stopped on a 401 for a bad key, USD 0; attempt 2, 20261103 16:18 UTC: eight answers, two request shapes rejected; the owner chose a
-   labelled gateway translation for them, D-35, and the re-test answered 200; the run log in the plan). **Waiting on the owner: the
-   comparison of OpenAI's usage page with the gateway's total** (11 requests answered, 16,945 input tokens of which 2,043 cached, 9,893
-   output, USD 0.00645713); it is the gate to stage B, then B and C run (D-34). Stage D needs its own yes. **The free work (stage 0) is done**, including a dress rehearsal of the whole ladder with
+   the open questions on 20261103 (D-32) and gave the yes for stages A to C (D-34). **Where it stands: stages A, B and C are done**
+   (20261103; USD 0.263 in all, 443 answered requests; the stop rules fired nowhere; the numbers and my readings are in
+   [`pass-b-results.md`](kb-kg/experiments/x2-index-cost/pass-b-results.md), the run log in the plan). **Waiting on the owner: the
+   comparison of OpenAI's usage page with the gateway's totals for stages B and C** (table in the results page), then **the yes for stage D**
+   (20 documents, about USD 0.65 by arithmetic from C, limit 1.50, with the cap USD 3 leaving 2.74). **The free work (stage 0) is done**, including a dress rehearsal of the whole ladder with
    the real driver, runners and builders against a fake provider (573 checks; it found and fixed one error, D-31). The other options
    from pass A are on [the pass-A page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md#where-this-leaves-the-owner). To
    rerun a pass-A builder, use the command line in its runner's header (`tools/exp/x2_passa_*.py`) and the arguments on the
@@ -74,10 +74,9 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
 
 ## Next, once the owner answers
 
-- **Paid pilot, stages B and C (the owner's yes is given, D-34; the gate is the owner's comparison of OpenAI's usage page with stage
-  A's totals, in the plan's run log).** From the repository root: `uv run python tools/exp/passb_stage.py --stage B --builder lightrag
+- **Paid pilot, stage D (needs its own yes, D-14; the gate is the owner's console comparison for B and C).** Stages B and C ran with the commands below. From the repository root: `uv run python tools/exp/passb_stage.py --stage B --builder lightrag
   --builder fast --builder ms --builder nano --profile PROFILE --builders-config CONFIG --out-dir OUT` is a dry run (add `--send` to
-  run), then stage C twice (`--stage C --run-label r1`, then `r2`); stage D needs its own yes. The profile, the builders config, the
+  run), stage C ran twice (`--stage C --run-label r1`, then `r2`); stage D is `--stage D` the same way, dry run first. The profile, the builders config, the
   key file and the ledger are in the owner's private pilot directory made on 20261103 (`~/.config/kb-kg-pilot/`: `profile.json`,
   `builders.json`, `openai.key`, `ledger/`; none is in this repository); the builders' throwaway environments and the corpus are in
   the session's scratch directory and must be rebuilt if it is gone. The pre-flight, the gateway's cap and the watchdog run by

@@ -1,0 +1,691 @@
+{
+ "runner": "x2_passa_fast_graphrag.py",
+ "builder": "fast-graphrag",
+ "version": "0.0.5",
+ "package_files_sha256": "da8a9d520f70448fc951413c562f9bb094365acfa276fdcb7f93d1d46ab71146",
+ "upstream_url": "http://127.0.0.1:11434/v1",
+ "model": "gpt-6-luna",
+ "embed_model": "qwen3-embedding:0.6b",
+ "chat_request_defaults": {},
+ "embedding_dim": 1024,
+ "preflight": {
+  "mode": "auto",
+  "ollama": true,
+  "embed_model": "qwen3-embedding:0.6b",
+  "embedding_model_installed": true,
+  "chat_model_checked": false,
+  "note": "the chat model is hosted; its context is the provider's"
+ },
+ "documents": {
+  "count": 5,
+  "source": "documents.tsv",
+  "total_chars": 32458
+ },
+ "inputs_given_to_the_builder": {
+  "domain": "Analyze news articles and identify the organizations, people, products, places and events they report on, and how these relate to each other.",
+  "example_queries": [
+   "Which company announced the product described in the article?",
+   "Who is quoted in the article, and what organization do they belong to?",
+   "What event does the article report, and where and when did it take place?"
+  ],
+  "entity_types": [
+   "Organization",
+   "Person",
+   "Product",
+   "Place",
+   "Event"
+  ]
+ },
+ "builder_settings": {
+  "defaults_seen": {
+   "llm_class": "OpenAILLMService",
+   "llm_model": "gpt-6-luna",
+   "llm_max_requests_concurrent": 4,
+   "llm_rate_limit_per_minute_enabled": false,
+   "embedding_model": "qwen3-embedding:0.6b",
+   "embedding_dim": 1024,
+   "embedding_max_elements_per_request": 32,
+   "embedding_max_requests_concurrent": 1024,
+   "embedding_rate_limit_per_minute_enabled": true,
+   "max_gleaning_steps": 0,
+   "chunk_token_size": 800,
+   "chunk_token_overlap": 100,
+   "chunk_size_chars": 3200,
+   "chunk_overlap_chars": 400,
+   "max_node_description_size": 512,
+   "edge_merge_threshold": 5,
+   "insert_similarity_score_threshold": 0.9
+  },
+  "changed_from_library_defaults": {
+   "llm_max_requests_concurrent": {
+    "library": 1024,
+    "applied": 4
+   },
+   "llm_timeout_s": {
+    "library": 180.0,
+    "applied": 3600.0
+   },
+   "model_names": "the real names given on the command line instead of gpt-4o-mini / text-embedding-3-small",
+   "embedding_dim": {
+    "library": 1536,
+    "applied": 1024
+   },
+   "base_url_and_key": "the gateway's address and a dummy key, passed to both services"
+  }
+ },
+ "ok": true,
+ "stopped_at_document": null,
+ "documents_not_indexed": [],
+ "child_exit_status": 0,
+ "checkpoints": {
+  "5": {
+   "total": {
+    "calls": 25,
+    "ok": 25,
+    "input_tokens": 42802,
+    "output_tokens": 31645,
+    "latency_ms": 226640
+   },
+   "chat": {
+    "calls": 15,
+    "ok": 15,
+    "input_tokens": 34134,
+    "output_tokens": 31645,
+    "latency_ms": 219151,
+    "retry_calls": 0
+   },
+   "embedding": {
+    "calls": 10,
+    "ok": 10,
+    "input_tokens": 8668,
+    "output_tokens": 0,
+    "latency_ms": 7489,
+    "requests": 10,
+    "inputs": 251,
+    "inputs_per_request": {
+     "5": 1,
+     "12": 1,
+     "23": 1,
+     "25": 1,
+     "26": 1,
+     "32": 5
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 10,
+     "ok": 10,
+     "input_tokens": 8668,
+     "output_tokens": 0,
+     "latency_ms": 7489
+    },
+    "extract": {
+     "calls": 15,
+     "ok": 15,
+     "input_tokens": 34134,
+     "output_tokens": 31645,
+     "latency_ms": 219151,
+     "retry_calls": 0
+    }
+   },
+   "http_statuses": {
+    "200": 25
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0,
+   "documents_run": 5,
+   "cost_usd": "0.01685909",
+   "documents_indexed": 5,
+   "sdk_retries_logged": 0,
+   "graph_totals": {
+    "entities": 251,
+    "relations": 447,
+    "chunks": 15
+   },
+   "extraction_calls_equal_chunker_count": true
+  }
+ },
+ "per_document": [
+  {
+   "n": 1,
+   "rank": 1,
+   "url_sha256_16": "0068586b43cf2f56",
+   "chars": 6341,
+   "chunks_by_library_chunker": 3,
+   "chunk_chars_min": 1233,
+   "chunk_chars_max": 3056,
+   "graph_totals_after": {
+    "entities": 55,
+    "relations": 101,
+    "chunks": 3
+   },
+   "chunks_stored_for_this_document": 3,
+   "seconds": 23.473,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 5,
+    "ok": 5,
+    "input_tokens": 8663,
+    "output_tokens": 6903,
+    "latency_ms": 49612
+   },
+   "chat": {
+    "calls": 3,
+    "ok": 3,
+    "input_tokens": 6810,
+    "output_tokens": 6903,
+    "latency_ms": 48191,
+    "retry_calls": 0
+   },
+   "embedding": {
+    "calls": 2,
+    "ok": 2,
+    "input_tokens": 1853,
+    "output_tokens": 0,
+    "latency_ms": 1421,
+    "requests": 2,
+    "inputs": 55,
+    "inputs_per_request": {
+     "23": 1,
+     "32": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 2,
+     "ok": 2,
+     "input_tokens": 1853,
+     "output_tokens": 0,
+     "latency_ms": 1421
+    },
+    "extract": {
+     "calls": 3,
+     "ok": 3,
+     "input_tokens": 6810,
+     "output_tokens": 6903,
+     "latency_ms": 48191,
+     "retry_calls": 0
+    }
+   },
+   "http_statuses": {
+    "200": 5
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0,
+   "cost_usd": "0.00352041"
+  },
+  {
+   "n": 2,
+   "rank": 2,
+   "url_sha256_16": "01648ca159300692",
+   "chars": 6005,
+   "chunks_by_library_chunker": 3,
+   "chunk_chars_min": 680,
+   "chunk_chars_max": 3146,
+   "graph_totals_after": {
+    "entities": 92,
+    "relations": 163,
+    "chunks": 6
+   },
+   "chunks_stored_for_this_document": 3,
+   "seconds": 16.373,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 5,
+    "ok": 5,
+    "input_tokens": 8022,
+    "output_tokens": 4630,
+    "latency_ms": 34832
+   },
+   "chat": {
+    "calls": 3,
+    "ok": 3,
+    "input_tokens": 6631,
+    "output_tokens": 4630,
+    "latency_ms": 33708,
+    "retry_calls": 0
+   },
+   "embedding": {
+    "calls": 2,
+    "ok": 2,
+    "input_tokens": 1391,
+    "output_tokens": 0,
+    "latency_ms": 1124,
+    "requests": 2,
+    "inputs": 37,
+    "inputs_per_request": {
+     "5": 1,
+     "32": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 2,
+     "ok": 2,
+     "input_tokens": 1391,
+     "output_tokens": 0,
+     "latency_ms": 1124
+    },
+    "extract": {
+     "calls": 3,
+     "ok": 3,
+     "input_tokens": 6631,
+     "output_tokens": 4630,
+     "latency_ms": 33708,
+     "retry_calls": 0
+    }
+   },
+   "http_statuses": {
+    "200": 5
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0,
+   "cost_usd": "0.00253692"
+  },
+  {
+   "n": 3,
+   "rank": 3,
+   "url_sha256_16": "019b1ddf6f78fa7e",
+   "chars": 5112,
+   "chunks_by_library_chunker": 2,
+   "chunk_chars_min": 2674,
+   "chunk_chars_max": 2694,
+   "graph_totals_after": {
+    "entities": 117,
+    "relations": 210,
+    "chunks": 8
+   },
+   "chunks_stored_for_this_document": 2,
+   "seconds": 12.152,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 3,
+    "ok": 3,
+    "input_tokens": 5554,
+    "output_tokens": 3282,
+    "latency_ms": 22626
+   },
+   "chat": {
+    "calls": 2,
+    "ok": 2,
+    "input_tokens": 4661,
+    "output_tokens": 3282,
+    "latency_ms": 22216,
+    "retry_calls": 0
+   },
+   "embedding": {
+    "calls": 1,
+    "ok": 1,
+    "input_tokens": 893,
+    "output_tokens": 0,
+    "latency_ms": 410,
+    "requests": 1,
+    "inputs": 25,
+    "inputs_per_request": {
+     "25": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 1,
+     "ok": 1,
+     "input_tokens": 893,
+     "output_tokens": 0,
+     "latency_ms": 410
+    },
+    "extract": {
+     "calls": 2,
+     "ok": 2,
+     "input_tokens": 4661,
+     "output_tokens": 3282,
+     "latency_ms": 22216,
+     "retry_calls": 0
+    }
+   },
+   "http_statuses": {
+    "200": 3
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0,
+   "cost_usd": "0.00181298"
+  },
+  {
+   "n": 4,
+   "rank": 4,
+   "url_sha256_16": "024c021da3256374",
+   "chars": 6374,
+   "chunks_by_library_chunker": 3,
+   "chunk_chars_min": 1055,
+   "chunk_chars_max": 2896,
+   "graph_totals_after": {
+    "entities": 207,
+    "relations": 343,
+    "chunks": 11
+   },
+   "chunks_stored_for_this_document": 3,
+   "seconds": 38.37,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 6,
+    "ok": 6,
+    "input_tokens": 9736,
+    "output_tokens": 9626,
+    "latency_ms": 65757
+   },
+   "chat": {
+    "calls": 3,
+    "ok": 3,
+    "input_tokens": 6864,
+    "output_tokens": 9626,
+    "latency_ms": 62182,
+    "retry_calls": 0
+   },
+   "embedding": {
+    "calls": 3,
+    "ok": 3,
+    "input_tokens": 2872,
+    "output_tokens": 0,
+    "latency_ms": 3575,
+    "requests": 3,
+    "inputs": 90,
+    "inputs_per_request": {
+     "26": 1,
+     "32": 2
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 3,
+     "ok": 3,
+     "input_tokens": 2872,
+     "output_tokens": 0,
+     "latency_ms": 3575
+    },
+    "extract": {
+     "calls": 3,
+     "ok": 3,
+     "input_tokens": 6864,
+     "output_tokens": 9626,
+     "latency_ms": 62182,
+     "retry_calls": 0
+    }
+   },
+   "http_statuses": {
+    "200": 6
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0,
+   "cost_usd": "0.00505822"
+  },
+  {
+   "n": 5,
+   "rank": 5,
+   "url_sha256_16": "02e889122ba12a26",
+   "chars": 8626,
+   "chunks_by_library_chunker": 4,
+   "chunk_chars_min": 836,
+   "chunk_chars_max": 3191,
+   "graph_totals_after": {
+    "entities": 251,
+    "relations": 447,
+    "chunks": 15
+   },
+   "chunks_stored_for_this_document": 4,
+   "seconds": 21.63,
+   "error_log_lines_in_document": 0,
+   "sdk_retries_logged_in_document": 0,
+   "indexed": true,
+   "total": {
+    "calls": 6,
+    "ok": 6,
+    "input_tokens": 10827,
+    "output_tokens": 7204,
+    "latency_ms": 53813
+   },
+   "chat": {
+    "calls": 4,
+    "ok": 4,
+    "input_tokens": 9168,
+    "output_tokens": 7204,
+    "latency_ms": 52854,
+    "retry_calls": 0
+   },
+   "embedding": {
+    "calls": 2,
+    "ok": 2,
+    "input_tokens": 1659,
+    "output_tokens": 0,
+    "latency_ms": 959,
+    "requests": 2,
+    "inputs": 44,
+    "inputs_per_request": {
+     "12": 1,
+     "32": 1
+    }
+   },
+   "by_kind": {
+    "embedding": {
+     "calls": 2,
+     "ok": 2,
+     "input_tokens": 1659,
+     "output_tokens": 0,
+     "latency_ms": 959
+    },
+    "extract": {
+     "calls": 4,
+     "ok": 4,
+     "input_tokens": 9168,
+     "output_tokens": 7204,
+     "latency_ms": 52854,
+     "retry_calls": 0
+    }
+   },
+   "http_statuses": {
+    "200": 6
+   },
+   "repeated_identical_requests": {
+    "chat": 0,
+    "embedding": 0
+   },
+   "voided": 0,
+   "usage_missing": 0,
+   "refused_by_gateway": 0,
+   "cost_usd": "0.00393056"
+  }
+ ],
+ "first_request_of_each_kind": {
+  "embedding": {
+   "route": "/v1/embeddings",
+   "request_body_keys": [
+    "dimensions",
+    "encoding_format",
+    "input",
+    "model"
+   ],
+   "n_messages": 0,
+   "roles": [],
+   "response_format": null,
+   "model": "qwen3-embedding:0.6b",
+   "max_tokens": "absent",
+   "dimensions": 1024,
+   "stream": false,
+   "http_status": 200
+  },
+  "extract": {
+   "route": "/v1/chat/completions",
+   "request_body_keys": [
+    "messages",
+    "model",
+    "response_format"
+   ],
+   "n_messages": 2,
+   "roles": [
+    "system",
+    "user"
+   ],
+   "response_format": {
+    "type": "json_object"
+   },
+   "model": "gpt-6-luna",
+   "max_tokens": "absent",
+   "dimensions": "absent",
+   "stream": false,
+   "http_status": 200
+  }
+ },
+ "gateway": {
+  "calls_in_log": 26,
+  "calls_before_the_builder_started": 1,
+  "calls_after_the_last_document": 0,
+  "embedding_probe_calls": 1,
+  "models_requested": {
+   "gpt-6-luna": 15,
+   "qwen3-embedding:0.6b": 11
+  },
+  "routes": {
+   "/v1/chat/completions": 15,
+   "/v1/embeddings": 11
+  }
+ },
+ "calls_jsonl_sha256": "ae0746560cfb909358281148ee21b3b48b3d6be459ccb0bbd36727c8d6524525",
+ "request_multiset_sha256": "258699763eea41c2539d279e0db7ad9798b13890df858e4697ab00f86468a033",
+ "wall_seconds_all_documents": 112.136,
+ "outbound_attempts": [],
+ "openai_sdk_retries_logged": 0,
+ "tokenizer_failures_logged_by_library": [
+  "LLM: failed to load tokenizer for model 'gpt-6-luna' ('Could not automatically map gpt-6-luna to a tokeniser. Please use `tiktoken.get_encoding` to explicitly g"
+ ],
+ "error_log_lines": {
+  "count": 0,
+  "by_head": {}
+ },
+ "environment_variable_names": [
+  "ALL_PROXY",
+  "HOME",
+  "HTTPS_PROXY",
+  "HTTP_PROXY",
+  "LC_CTYPE",
+  "NO_PROXY",
+  "OPENAI_API_KEY",
+  "OPENAI_BASE_URL",
+  "PATH",
+  "PYTHONDONTWRITEBYTECODE",
+  "TIKTOKEN_CACHE_DIR",
+  "TMPDIR",
+  "__CF_USER_TEXT_ENCODING",
+  "all_proxy",
+  "http_proxy",
+  "https_proxy",
+  "no_proxy"
+ ],
+ "minimal_environment_variable_names": [
+  "ALL_PROXY",
+  "HOME",
+  "HTTPS_PROXY",
+  "HTTP_PROXY",
+  "NO_PROXY",
+  "OPENAI_API_KEY",
+  "OPENAI_BASE_URL",
+  "PATH",
+  "PYTHONDONTWRITEBYTECODE",
+  "TIKTOKEN_CACHE_DIR",
+  "TMPDIR",
+  "all_proxy",
+  "http_proxy",
+  "https_proxy",
+  "no_proxy"
+ ],
+ "proxy_setting": "http://127.0.0.1:9",
+ "warnings": [
+  "the library could not load a tokenizer for the model name; it falls back to a naive one (no code in the package calls it on the indexing path: grep of the pinned source)"
+ ],
+ "started_utc": "20261103 17:27:25",
+ "finished_utc": "20261103 17:29:22",
+ "hosted": {
+  "chat_upstream": "hosted",
+  "embedding_upstream": "local",
+  "chat_model": "gpt-6-luna",
+  "embedding_model": "qwen3-embedding:0.6b",
+  "hosted_base_url": "https://api.openai.com/v1",
+  "currency": "USD",
+  "key_file": "set",
+  "ledger": "shared",
+  "allowance_usd": "0.58475493",
+  "prices": {
+   "unit": "per million tokens",
+   "input_per_mtok": "0.1",
+   "output_per_mtok": "0.5",
+   "cached_input_per_mtok": "0.01",
+   "cache_write_per_mtok": "0.125",
+   "source_url": "https://developers.openai.com/api/docs/pricing",
+   "read_at": "20261103 16:10"
+  },
+  "output_limit_default": 6144,
+  "translate_max_tokens": true,
+  "departures_from_the_builders_requests": [
+   "max_tokens: null is dropped and a set max_tokens is sent as max_completion_tokens (the model rejects both)"
+  ],
+  "request_defaults_names": [
+   "reasoning_effort"
+  ],
+  "request_defaults": {
+   "reasoning_effort": "none"
+  },
+  "upstream_timeout_s": 900,
+  "started": true,
+  "resumed_an_existing_ledger": true,
+  "model_reported": {
+   "gpt-6-luna": 15
+  },
+  "cost_usd": "0.01685909",
+  "spent_before_usd": "0.05905008",
+  "cap_usd": "0.64380501",
+  "ledger_records_before": 186,
+  "ledger_records_after": 212,
+  "calls_in_this_run": 26,
+  "run_records_sha256": "ba082787d7fc324f1ddacfdf09f5a7ce04c9c51c21f19d29fb72a04c2b437bdf",
+  "response_facts": {
+   "chat_calls": 15,
+   "finish_reasons": {
+    "stop": 15
+   },
+   "answers_with_reasoning_text": 0,
+   "reasoning_tokens_total": 0,
+   "unparsed_or_streamed": 0,
+   "longest_answer_output_tokens": 6035
+  }
+ }
+}

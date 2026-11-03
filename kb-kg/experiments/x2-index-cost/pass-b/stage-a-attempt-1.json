@@ -1,0 +1,212 @@
+{
+ "calls": [
+  {
+   "attempt": 1,
+   "cache_creation_input_tokens": null,
+   "cached_input_tokens": null,
+   "client_limit": "none",
+   "completion_tokens": null,
+   "cost_usd": "0",
+   "error": {
+    "code": "invalid_api_key",
+    "message_length": 262,
+    "param": null,
+    "type": "invalid_request_error"
+   },
+   "finish_reason": null,
+   "gateway_refusal": null,
+   "http_status": 401,
+   "latency_ms": 383,
+   "model_reported": null,
+   "null_max_tokens_with_injected_limit": null,
+   "outcome": "auth",
+   "prompt_tokens": null,
+   "reasoning_tokens": null,
+   "request": "ping",
+   "request_defaults_applied": [
+    "reasoning_effort",
+    "max_completion_tokens"
+   ],
+   "usage_fields": [],
+   "usage_missing": false,
+   "voided": true
+  }
+ ],
+ "caps_usd": {
+  "allowance": "0.1",
+  "gateway_cap": "0.1",
+  "ledger_spent_before": "0",
+  "stage_cap": "0.1"
+ },
+ "console_check": "Compare by hand: the provider console's usage page for this key's project must show 1 requests and a total equal to USD 0 to rounding. The refused call must not appear in it. This program cannot read the console, and it is the only check not made of the gateway's own numbers.",
+ "finished_utc": "20261103 16:12",
+ "gates": {
+  "answers_ended_by_the_output_limit": 0,
+  "every_call_200_or_recorded_incompatible": false,
+  "no_request_left_unsent": false,
+  "null_max_tokens_with_injected_limit": null,
+  "output_limit_injected_wherever_the_client_set_none": true,
+  "reasoning_effort_accepted": false,
+  "reasoning_off_ok": false,
+  "reasoning_tokens_reported_on_every_answer": false,
+  "reasoning_tokens_zero_on_every_answer": false,
+  "refusal_test_passed": false,
+  "rejected_requests": [],
+  "shapes": {},
+  "total_cost_within_stage_cap": true,
+  "usage_field_names": [],
+  "usage_has_a_cache_write_field": false,
+  "usage_present_on_every_answer": false
+ },
+ "hosted": {
+  "allowance_usd": "0.1",
+  "calls_in_this_run": 1,
+  "cap_usd": "0.1",
+  "chat_model": "gpt-6-luna",
+  "chat_upstream": "hosted",
+  "cost_usd": "0",
+  "currency": "USD",
+  "embedding_model": "stage-a-unused-embedding",
+  "embedding_upstream": "local",
+  "hosted_base_url": "https://api.openai.com/v1",
+  "key_file": "set",
+  "ledger": "shared",
+  "ledger_records_after": 1,
+  "ledger_records_before": 0,
+  "model_reported": {
+   "None": 1
+  },
+  "output_limit_default": 6144,
+  "prices": {
+   "cache_write_per_mtok": "0.125",
+   "cached_input_per_mtok": "0.01",
+   "input_per_mtok": "0.1",
+   "output_per_mtok": "0.5",
+   "read_at": "20261103 16:10",
+   "source_url": "https://developers.openai.com/api/docs/pricing",
+   "unit": "per million tokens"
+  },
+  "request_defaults": {
+   "reasoning_effort": "none"
+  },
+  "request_defaults_names": [
+   "reasoning_effort"
+  ],
+  "response_facts": {
+   "answers_with_reasoning_text": 0,
+   "chat_calls": 1,
+   "finish_reasons": {},
+   "longest_answer_output_tokens": 0,
+   "reasoning_tokens_total": 0,
+   "unparsed_or_streamed": 1
+  },
+  "resumed_an_existing_ledger": false,
+  "run_records_sha256": "113dc90b685d5e5e65a5671937bbfd7b720f19c82fdb22f80a8af00b73ed7672",
+  "spent_before_usd": "0",
+  "started": true,
+  "upstream_timeout_s": 900
+ },
+ "model_requested": "gpt-6-luna",
+ "models_reported": [],
+ "not_sent": [
+  "lightrag_extraction",
+  "lightrag_gleaning",
+  "fast_extraction",
+  "fast_summary",
+  "ms_extraction",
+  "ms_community_report",
+  "nano_extraction",
+  "nano_entity_summary",
+  "nano_community_report"
+ ],
+ "note": "numbers, field names and short codes only: no request or response text, no key and no path is kept here",
+ "refusal_test": {
+  "passed": false,
+  "skipped": "stopped earlier (auth)"
+ },
+ "requests": [
+  {
+   "bytes": 114,
+   "name": "ping",
+   "shapes": [],
+   "worst_case_usd": "0.003082"
+  },
+  {
+   "bytes": 9716,
+   "name": "lightrag_extraction",
+   "shapes": [],
+   "worst_case_usd": "0.003682125"
+  },
+  {
+   "bytes": 15060,
+   "name": "lightrag_gleaning",
+   "shapes": [],
+   "worst_case_usd": "0.004016125"
+  },
+  {
+   "bytes": 11123,
+   "name": "fast_extraction",
+   "shapes": [
+    "json_object"
+   ],
+   "worst_case_usd": "0.00377"
+  },
+  {
+   "bytes": 955,
+   "name": "fast_summary",
+   "shapes": [
+    "json_object",
+    "max_tokens_null"
+   ],
+   "worst_case_usd": "0.0031345"
+  },
+  {
+   "bytes": 12700,
+   "name": "ms_extraction",
+   "shapes": [],
+   "worst_case_usd": "0.003868625"
+  },
+  {
+   "bytes": 17661,
+   "name": "ms_community_report",
+   "shapes": [
+    "json_schema"
+   ],
+   "worst_case_usd": "0.004178625"
+  },
+  {
+   "bytes": 10787,
+   "name": "nano_extraction",
+   "shapes": [],
+   "worst_case_usd": "0.003749"
+  },
+  {
+   "bytes": 516,
+   "name": "nano_entity_summary",
+   "shapes": [
+    "max_tokens"
+   ],
+   "worst_case_usd": "0.000283125"
+  },
+  {
+   "bytes": 1140,
+   "name": "nano_community_report",
+   "shapes": [
+    "json_object"
+   ],
+   "worst_case_usd": "0.003146125"
+  }
+ ],
+ "stage": "A",
+ "started_utc": "20261103 16:12",
+ "stopped": {
+  "at_request": "ping",
+  "http_status": 401,
+  "reason": "auth"
+ },
+ "totals": {
+  "forwarded_attempts": 1,
+  "gateway_cost_usd": "0",
+  "gateway_records": 1
+ }
+}
