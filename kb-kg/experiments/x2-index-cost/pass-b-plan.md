@@ -306,6 +306,9 @@ tokens.** The tables, the comparison with the plan's estimates and with pass A, 
 [`pass-b-results.md`](pass-b-results.md); the per-call record is in [`pass-b/meter.jsonl`](pass-b/meter.jsonl). **The console comparison
 for stages B and C is the owner's and is the gate to stage D** (figures in the results page); stage D needs its own yes with C's numbers.
 
+**The owner compared OpenAI's usage page for stages B and C and replied that it agrees, and gave the yes for stage D** (recorded 20261103 17:58 UTC,
+D-37): 20 documents for each of the four builders, one run each, in the usual order, allowance and stop-at USD 1.50, the pilot's cap USD 3.00.
+
 A credentials fault is a harness reason, so a repeat of stage A is allowed once the cause is fixed and written down (stop rules,
 above). Attempt 1's files are kept under the pilot directory as `stage-a-attempt1`.
 
