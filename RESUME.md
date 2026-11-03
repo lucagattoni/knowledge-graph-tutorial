@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261103 20:09 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261103 20:33 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
@@ -21,7 +21,7 @@ page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md).
 | `kb-kg/directions/` | nine pages and an overview, first drafts |
 | `kb-kg/experiments/` | five proposals; X1 run; **Step 0 of the order and gates built 20261102** (D-25); X2 pass A on two local models done (D-26, D-27, D-28); X3 to X5 not started |
 | `pinakes/` | approach record, recommendations R1 to R7, 12 takeaways, ClaudeKB precedent, what Pinakes has measured, four proposals for what to measure next (P1 answered, the P4 pilot run, P2 blocked, P3's free-path half in the public benchmark repository, described on its own page) |
-| `tools/` | `gh_snapshot.py` (57 tests), `build_projects_index.py` (12 tests), `check_public_safe.sh`; `tools/exp/` (stub model server, document selection, statistics, four builder rehearsal runners, two SDK end-to-end checks; 32 tests plus the runners); `metering_gateway.py` 1.3.0 (144 tests); four pass-A runners (`x2_passa_*.py`) and `passa_common.py` (23 tests); the pass-B pieces `passb_common.py` (hosted setup, 49 tests), `passb_watchdog.py` (92), `passb_preflight.py` (54), `passb_stage_a.py` (56) and the stage driver `passb_stage.py` (44); every pass-B tool has met OpenAI (stages A to D, 20261103; the gateway at 1.2.0, and 1.3.0, which prices OpenAI's cache writes, has not); the watchdog, live in all 16 runs, tripped nothing, so its stops have only been exercised against fakes |
+| `tools/` | `gh_snapshot.py` (57 tests), `build_projects_index.py` (12 tests), `check_public_safe.sh`; `tools/exp/` (stub model server, document selection, statistics, four builder rehearsal runners, two SDK end-to-end checks; 32 tests plus the runners); `metering_gateway.py` 1.3.0 (144 tests); four pass-A runners (`x2_passa_*.py`) and `passa_common.py` (23 tests); the pass-B pieces `passb_common.py` (hosted setup, 49 tests), `passb_watchdog.py` (92), `passb_preflight.py` (54), `passb_stage_a.py` (56) and the stage driver `passb_stage.py` (44); every pass-B tool has met OpenAI (stages A to D, 20261103; the gateway at 1.1.0 and 1.2.0, and 1.3.0, which prices OpenAI's cache writes, has not); the watchdog, live in all 16 runs, tripped nothing, so its stops have only been exercised against fakes |
 
 Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wave B about 5.9M, wave C about
 1.5M; about 11.5M in all. Step 0's seven agents: about 1.84M (my sum of their totals).
@@ -34,8 +34,8 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
 2. **The paid pilot, X2 pass B (D-26 to D-28).** A [plan](kb-kg/experiments/x2-index-cost/pass-b-plan.md) was written 20261102 and
    revised after an independent review. The owner chose OpenAI `gpt-6-luna` with reasoning off and a cap of USD 3 (D-30), answered
    the open questions on 20261103 (D-32) and gave the yes for stages A to C (D-34). **Where it stands: all four stages are done**
-   (20261103 16:12 to 19:01 UTC; 1,751 answered requests; USD 1.105 by the gateway, 1.184 with OpenAI's cache-write price, which gateway 1.2.0
-   left out, D-39; the stop rules fired nowhere; the numbers and my readings are in
+   (20261103 16:12 to 19:01 UTC; 1,751 answered requests; USD 1.105 by the gateway, 1.184 with OpenAI's cache-write price, which the gateways up to
+   1.2.0 left out, D-39; the stop rules fired nowhere; the numbers and my readings are in
    [`pass-b-results.md`](kb-kg/experiments/x2-index-cost/pass-b-results.md), the run log in the plan). The owner compared the console for stage A
    and for B with C (agrees, against the gateway's figures) and gave the yes for stage D (D-37); stage D ran 17:57 to 19:01 (D-38).
    **The console, read by me in Chrome at the owner's instruction (D-40), shows USD 0.67 for the whole pilot against the gateway's 1.105

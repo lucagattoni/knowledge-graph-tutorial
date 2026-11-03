@@ -1,6 +1,6 @@
 # X2 pass B: results of stages A to D
 
-Written 20261103 20:09 UTC. These are the numbers from the paid pilot's four stages, run 20261103 between 16:12 and 19:01 UTC on OpenAI's
+Written 20261103 20:33 UTC. These are the numbers from the paid pilot's four stages, run 20261103 between 16:12 and 19:01 UTC on OpenAI's
 `gpt-6-luna` (reasoning off) through the metering gateway, with the key in a private file and the owner's yes (D-34 for stages A to C,
 D-37 for stage D). **The pilot has run to its end**: the spend is far below its USD 3.00 cap, nothing more is approved, and D-37 does not
 cover a repeat of D. **Nothing here says which graph is better**: no quality was measured. My readings are kept apart, in the last
@@ -183,7 +183,7 @@ runs; the gateway's figures).
 - **No provider error, no refusal by the gateway and no voided call** in any of the 16 runs: every record of every run is HTTP 200, from the ledger.
 - **No usage figure was missing**, and in no answer did cache reads plus cache writes exceed the prompt tokens (checked on all 1,751 answered requests).
 
-## For the console comparison (the owner's)
+## For the console comparison
 
 The plan compares OpenAI's usage page with the gateway at the end of each stage. Stage A agreed on 20261103 (recorded in the run log),
 and so did stages B and C together (recorded in the plan's run log; against the gateway's figures). **Stage D was the first comparison in which the
@@ -204,8 +204,10 @@ total; a prompt-caching hit rate of **22.6%**, equal to 943,721 / 4,170,590; and
 writes 0.275, cache writes (12-hour) 0, cached input 0.002, input 0.005 and output 0.389. The console has no bucket finer than a day, so it
 cannot split stages: this compares the whole pilot, not stage D. **The spend is below both totals** (1.105 by the gateway, 1.184 with the
 cache-write price), and no line is near the ledger's at the plan's prices: the console's output line is 0.50 of the ledger's, cache writes
-0.70, plain input 0.58 and cached input 0.21. No subset of the 17 groups (stage A and each run), and no single cut-off time, reproduces the four
-lines; the prices per million that would reproduce them from the whole pilot's tokens are 0.058, 0.0021, 0.0876 and 0.2515 against the plan's
+0.70, plain input 0.58 and cached input 0.21. No subset of the 17 groups (stage A and each run) and no cut-off counted from the start reproduces the four
+lines. Of all 1.5 million windows of consecutive calls, exactly one fits within the rounding (the 1,053 calls from 18:19:18 to 19:00:46 UTC, found
+with the per-call written tokens from the body log), but a random target of the console's size fits some window in 16% of tries (each line scaled
+by a random factor within 10%) and in 1% (within 50%), so I do not count the fit as an explanation. The prices per million that would reproduce them from the whole pilot's tokens are 0.058, 0.0021, 0.0876 and 0.2515 against the plan's
 0.10, 0.01, 0.125 and 0.50. **I do not know why.** One possibility, untested: the console's cost for the current UTC day is partial (its smallest
 bucket is a day, and the figure did not move between my reads at 19:37 and 20:07, 36 and 66 minutes after the last call). It is to be read again after
 4 November 00:00 UTC. Until then **neither total is confirmed, and the console's is lower than both**. The console does list the cache writes as

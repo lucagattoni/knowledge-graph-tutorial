@@ -13,7 +13,7 @@ through. It exists because the third-party builders an experiment runs cannot do
    the outgoing request, and never printed or logged.
 
 **Status: used against one real provider.** On 20261103 the four stages of a paid pilot sent 1,751 answered requests (and three
-rejected ones) to OpenAI's `gpt-6-luna`; the gateway's total was USD 1.105, **about 0.079 too low** because versions up to 1.2.0 did not
+rejected ones) to OpenAI's `gpt-6-luna`; the gateway's total was USD 1.105, **about 0.079 too low if the bill follows the model page**, because versions up to 1.2.0 did not
 price OpenAI's cache writes; what that showed is in
 [What this leaves unchecked](#what-this-leaves-unchecked). Everything else below was tested against fake upstreams on loopback,
 with invented prices and made-up keys. Version 1.2.0 added `translate_max_tokens`; version 1.3.0 prices OpenAI's

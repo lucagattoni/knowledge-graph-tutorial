@@ -11,7 +11,7 @@ could be chosen after seeing a result is fixed here instead.
 decision 2, a cap of USD 3 in total with the stage limits below. **Decided 20261103 01:26 UTC** (owner, reply "go wit your
 recommendations"): 3 yes, article text may go to OpenAI's API; 4 local embeddings; 5 all four builders; 7 two yeses (one for stages A to
 C, one for D). **Decision 6 was done by the owner on 20261103:** a project of its own at OpenAI with a USD 3 hard limit and a restricted key in a
-private file ([`pass-b-owner-steps.md`](pass-b-owner-steps.md)). **The yes for stages A to C was given on 20261103 16:12 UTC (D-34),
+private file (the console later showed USD 5.00 beside the project's spend; whether that is the hard limit is unknown, D-40) ([`pass-b-owner-steps.md`](pass-b-owner-steps.md)). **The yes for stages A to C was given on 20261103 16:12 UTC (D-34),
 after the dry runs, and the yes for stage D at 17:57 UTC (D-37); all four stages have run** (run log below; the numbers are in
 [`pass-b-results.md`](pass-b-results.md)). Stage 0 is done (below); what is next (a settled console reading, D-40, and closing the
 pilot) is in [`RESUME.md`](../../../RESUME.md).
