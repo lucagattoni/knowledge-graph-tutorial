@@ -2,7 +2,7 @@
 type: index
 kind: standard
 aliases: [Shapes Constraint Language]
-updated: 20261103 01:52 UTC
+updated: 20261103 10:14 UTC
 ---
 
 # SHACL
@@ -26,7 +26,7 @@ The W3C's own description changed. The 2017 Recommendation calls SHACL "a langua
 
 ## Related
 
-[RDF](./rdf.md), [RDF Schema](./rdfs.md), [OWL](./owl.md), [SPARQL](./sparql.md), [ontology](./ontology.md), [linked data](./linked-data.md), [agent](./agent.md). Papers: Hogan et al. 2021 is in [foundations](../papers/foundations.md).
+[RDF](./rdf.md), [RDF Schema](./rdfs.md), [OWL](./owl.md), [SPARQL](./sparql.md), [ontology](./ontology.md), [linked data](./linked-data.md), [agent](./agent.md). Papers: Hogan et al. 2021 is in [foundations](../papers/foundations.md); Corman et al. 2018, on recursive shapes, is in [semantic web standards](../papers/semantic-web-standards.md).
 
 ## Appears in
 
@@ -41,6 +41,14 @@ The W3C's own description changed. The 2017 Recommendation calls SHACL "a langua
 **Trends**
 
 - [Semantic web standards: from RDF 1.1 and RDF-star to RDF 1.2](../trends/semantic-web-standards.md)
+
+**Projects**
+
+- [Semantica](../projects/semantica.md)
+
+**Papers**
+
+- [Papers: Semantic web standards](../papers/semantic-web-standards.md)
 
 **Datasets**
 

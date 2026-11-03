@@ -60,6 +60,7 @@ Entries: [Cypher](./cypher.md), [GQL](./gql.md), [SQL/PGQ](./sql-pgq.md), [RDF](
 
 - [Papers: Building knowledge graphs with LLMs](../papers/llm-kg-construction.md)
 - [Papers: foundations](../papers/foundations.md)
+- [Papers: Semantic web standards](../papers/semantic-web-standards.md)
 
 **Benchmarks**
 

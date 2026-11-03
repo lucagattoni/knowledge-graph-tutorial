@@ -18,7 +18,7 @@ the rules every page follows: [`20261102_1929-docs-writing-spec.md`](20261102_19
 
 | What | State |
 |---|---|
-| Chapters | History (8 eras), Trends (10 families, 2 themes), Projects (42 pages, 123-row watch list), Papers (68 in 10 groups), Datasets (26), Benchmarks (24), Experiments, Applied to Pinakes, Index (157 entries); 299 pages (counted 20261103) |
+| Chapters | History (8 eras), Trends (10 families, 2 themes), Projects (43 pages, 123-row watch list), Papers (73 in 11 groups), Datasets (26), Benchmarks (24), Experiments, Applied to Pinakes, Index (157 entries); 301 pages (counted 20261103) |
 | Checked | every page was written, then checked by an agent that re-fetched its sources, then fixed; an independent audit against the owner's decisions ranked 15 gaps; most were fixed, some only in part, and the rest are listed under "Waiting on the owner" and "Known limits" below |
 | Verified by the main session | strict site build exits 0; `tools/build_docs.py --check` exits 0; 70 generator tests and 44 site tests pass; no missing link target in 293 pages; 0 alias problems; `tools/check_public_safe.sh` exits 0 on its generic patterns |
 | Live chapters | Projects, Papers, Datasets, Benchmarks, Trends: a `changes.tsv` each (one first-edition row) and generated sections |
@@ -28,11 +28,10 @@ the rules every page follows: [`20261102_1929-docs-writing-spec.md`](20261102_19
 1. **Review in a local preview** (the owner's condition S-6): the preview was served; the owner then asked for the push, the PR and
    the merge; how much of the 293 pages was read is unstated. The site is now published.
 2. **The lists were reviewed item by item on 20261103** (D-33; record in `20261102_1951-docs-catalogue.md`, section "The owner's
-   review of the lists"). Open from that review: **Open Knowledge Format** (the plain-files trend lists it as a representative, but
-   it is a specification and has no project page: give it a page, or say in the Projects chapter why a listed representative has
-   none), **Semantica** (14,349 stars, no page, not named in the construction trend's section on ontology-grounded context
-   graphs) and the Papers chapter, which has no group for the new semantic-web-standards trend (its table says one group per
-   trend: add a group or state the exception). Honcho, SurrealDB and MemMachine are borderline (the writer of the
+   review of the lists"). Answered later the same day: **Open Knowledge Format** gets a sentence in the Projects chapter
+   and no page; **Semantica** gets a page and is named in the construction trend; the Papers chapter gets a group for the new
+   trend (five papers; the owner chose it over stating an exception); the five agent-memory pages keep their length (1,200 to
+   1,550 words against the 500 to 900 target: a known limit). Still open: Honcho, SurrealDB and MemMachine are borderline (the writer of the
    reasons leaned towards no page; MemMachine has one of the few independent agent-memory scores, on the LoCoMo benchmark
    page) and TrustGraph is the weaker twin of Semantica; the watch list notes say why none has a page.
 3. **Done:** the merge to `main` (above). Each later change to a fact that `docs/experiments/` quotes needs the page refreshed;
@@ -48,6 +47,12 @@ the rules every page follows: [`20261102_1929-docs-writing-spec.md`](20261102_19
    private repository names (open item 3 in `RESUME.md`).
 
 ## Known limits (from the audit and the checkers)
+
+- The six project pages written on 20261103 (supermemory, TencentDB Agent Memory, Memori, memU, EverOS, Semantica) run about
+  1,200 to 1,550 words against the 500 to 900 target, because a second check added verified corrections; the owner chose to
+  leave them. The new trend page and the new paper group are also over their length targets.
+- The new paper group places Pérez et al. (2006, SPARQL semantics) beside the RDF-star papers, where the Papers chapter's rule
+  would send a SPARQL-semantics paper to Foundations; the group page gives its reason.
 
 - Index entries and some other pages run over their length targets (index entries 400 to 490 words against 150 to 400).
 - `Foundations` is one 8,600-word page; the Papers map is not clickable (links inside a Mermaid diagram are not rewritten).

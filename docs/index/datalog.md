@@ -43,6 +43,10 @@ No disagreement found in the sources read. They differ in emphasis: the textbook
 
 - [Semantic web standards: from RDF 1.1 and RDF-star to RDF 1.2](../trends/semantic-web-standards.md)
 
+**Projects**
+
+- [Semantica](../projects/semantica.md)
+
 **Index**
 
 - [Closed-world assumption](closed-world-assumption.md)

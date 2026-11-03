@@ -74,6 +74,7 @@ The first-party reports say what they are: the BEAM report calls its two scores 
 - [MemOS](memos.md)
 - [MIRIX](mirix.md)
 - [Projects](README.md)
+- [Semantica](semantica.md)
 
 **Datasets**
 

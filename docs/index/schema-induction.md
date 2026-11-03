@@ -38,6 +38,10 @@ Still moving: [Building knowledge graphs with LLMs](../trends/llm-kg-constructio
 
 <!-- BEGIN GENERATED: appears-in -->
 
+**Projects**
+
+- [Semantica](../projects/semantica.md)
+
 **Papers**
 
 - [Papers: Building knowledge graphs with LLMs](../papers/llm-kg-construction.md)

@@ -74,6 +74,7 @@ The 6.0.0 notes say 6.0 has "the same procedures as 4.20.7, and you lose nothing
 - [GraphRAG SDK](graphrag-sdk.md)
 - [LlamaIndex](llama-index.md)
 - [Projects](README.md)
+- [Semantica](semantica.md)
 
 **Index**
 

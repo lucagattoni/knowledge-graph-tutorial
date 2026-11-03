@@ -53,6 +53,7 @@ The definition. Gruber 1993 has "explicit specification of a conceptualization" 
 - [Cognee](../projects/cognee.md)
 - [GraphRAG SDK](../projects/graphrag-sdk.md)
 - [OntoGPT](../projects/ontogpt.md)
+- [Semantica](../projects/semantica.md)
 
 **Papers**
 

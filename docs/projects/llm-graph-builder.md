@@ -76,6 +76,7 @@ The successor is hosted. Neo4j announced Document Intelligence on 20260601 as a 
 **Projects**
 
 - [Projects](README.md)
+- [Semantica](semantica.md)
 
 <!-- END GENERATED: appears-in -->
 

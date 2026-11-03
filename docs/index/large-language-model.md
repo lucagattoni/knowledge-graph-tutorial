@@ -85,6 +85,7 @@ The size at which a model counts as large is not fixed. One survey gives three p
 - [PageIndex](../projects/pageindex.md)
 - [Projects](../projects/README.md)
 - [RAG-Anything](../projects/rag-anything.md)
+- [Semantica](../projects/semantica.md)
 - [Understand Anything](../projects/understand-anything.md)
 
 **Papers**

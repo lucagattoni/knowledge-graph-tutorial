@@ -2,7 +2,7 @@
 type: index
 kind: concept
 aliases: [RDF triple, triplet, RDF statement]
-updated: 20261103 01:52 UTC
+updated: 20261103 10:14 UTC
 ---
 
 # Triple
@@ -32,7 +32,7 @@ In RDF 1.1 Concepts, an RDF triple "consists of three components": a subject (an
 
 ## Related
 
-[RDF](./rdf.md), [RDF-star](./rdf-star.md), [triple store](./triple-store.md), [SPARQL](./sparql.md), [property graph](./property-graph.md), [knowledge graph](./knowledge-graph.md), [entity](./entity.md), [knowledge graph embedding](./knowledge-graph-embedding.md), [relation extraction](./relation-extraction.md). Data: [Wikidata](../datasets/wikidata.md). Benchmark: [Text2KGBench](../benchmarks/text2kgbench.md). Trend: [LLM graph construction](../trends/llm-kg-construction.md). Papers: [foundations](../papers/foundations.md).
+[RDF](./rdf.md), [RDF-star](./rdf-star.md), [triple store](./triple-store.md), [SPARQL](./sparql.md), [property graph](./property-graph.md), [knowledge graph](./knowledge-graph.md), [entity](./entity.md), [knowledge graph embedding](./knowledge-graph-embedding.md), [relation extraction](./relation-extraction.md). Data: [Wikidata](../datasets/wikidata.md). Benchmark: [Text2KGBench](../benchmarks/text2kgbench.md). Trend: [LLM graph construction](../trends/llm-kg-construction.md). Papers: [foundations](../papers/foundations.md); on triples nested in triples (RDF-star): [semantic web standards](../papers/semantic-web-standards.md).
 
 ## Appears in
 

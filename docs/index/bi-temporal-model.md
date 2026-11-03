@@ -42,6 +42,7 @@ A bi-temporal model keeps two time axes for each fact. The valid time of a fact 
 **Projects**
 
 - [Graphiti](../projects/graphiti.md)
+- [Semantica](../projects/semantica.md)
 
 **Papers**
 

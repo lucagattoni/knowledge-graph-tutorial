@@ -3,7 +3,7 @@ type: trend
 shift: fixed schemas -> induced ones
 status: steady
 order: 2
-updated: 20261102 23:27 UTC
+updated: 20261103 10:36 UTC
 ---
 
 # Building knowledge graphs with LLMs: from fixed schemas to induced ones
@@ -47,7 +47,7 @@ Merged here from the candidate list. It is the Induced row of the table above. *
 
 ### Ontology-grounded context graphs
 
-Merged here too. Projects from 2025 and 2026 put an ontology under a graph meant for agents. Two keep the origin of facts. Helix Foundry (created 20261007) loads values that keep the table row or quote they came from [25]. Carrel ("Ontology-Augmented Generation") retains sources, time information and conflict indicators; its learn-an-ontology Agent Loop plugin is "not yet implemented" [26]. The other two say nothing of provenance in the READMEs read. OntoBricks maps Databricks tables to a graph with [OWL](../index/owl.md) (Web Ontology Language), R2RML (a mapping language from relational tables to RDF) and [SPARQL](../index/sparql.md) [27]. CortexDB (created 20250807) lists a "Palantir-style ontology with governed actions" beside memory and a knowledge graph in the [Resource Description Framework](../index/rdf.md) (RDF) in one SQLite file [28].
+Merged here too. Projects from 2025 and 2026 put an ontology under a graph meant for agents. Two keep the origin of facts. Helix Foundry (created 20261007) loads values that keep the table row or quote they came from [25]. Carrel ("Ontology-Augmented Generation") retains sources, time information and conflict indicators; its learn-an-ontology Agent Loop plugin is "not yet implemented" [26]. The other two say nothing of provenance in the READMEs read. OntoBricks maps Databricks tables to a graph with [OWL](../index/owl.md) (Web Ontology Language), R2RML (a mapping language from relational tables to RDF) and [SPARQL](../index/sparql.md) [27]. CortexDB (created 20250807) lists a "Palantir-style ontology with governed actions" beside memory and a knowledge graph in the [Resource Description Framework](../index/rdf.md) (RDF) in one SQLite file [28]. Semantica, the largest of this kind in the snapshot (14,349 stars), has a [project page](../projects/semantica.md) that sets its README against its code [39].
 
 *Reading:* they belong to this family because the asset they build is a typed graph under an ontology. How agents read the graph afterwards is [Agent memory](./agent-memory.md) or Graph-based RAG. "Context graph" is mostly a label: the wording ("context graph" in an abstract or title) returned 34 results for 20251102 to 20261102 against 9 the year before (read 20261102 21:21 UTC), but the titles are mostly about other graph topics, and only a few use it for an enterprise knowledge structure for agents, such as "Context Graphs for Proactive Enterprise Agents" (2607.07721) [17]. No source read defines it.
 
@@ -65,8 +65,9 @@ Stars are from the snapshot of 20261030 19:54 UTC [18]; they are signals, not ve
 | [kg-gen](https://github.com/stair-lab/kg-gen) | Schema step unstated; clusters entities | README says MIT; no LICENSE file found | 1,289 | Quiet: no push for 219 days at the snapshot [18][31] |
 | [Helix Foundry](https://github.com/HelixDB/helix-foundry) | Ontology first | Apache-2.0 | 1,854 | Created 20261007 [18][25] |
 | [Carrel](https://github.com/FengZhenfei/carrel) | Ontology first | MIT | 653 | Created 20260928 [18][26] |
+| [Semantica](../projects/semantica.md) | Ontology promised; applied after extraction in the code read | MIT | 14,349 | Page added at the owner's review of 20261103; the README is set against the code there [18][39] |
 
-*Reading:* of the four projects with a page, three need a schema or label list from a person (Hyper-Extract templates, GLiNER labels, OntoGPT LinkML), and the most-starred, LLM Graph Builder, makes it optional. The quiet code is AutoSchemaKG (induced) and kg-gen (no schema step stated); the active repositories are ontology first and young. Neo4j's own banner points users of its reference tool to a hosted service, Neo4j Document Intelligence in Aura [19].
+*Reading:* of the first four projects with a page, three need a schema or label list from a person (Hyper-Extract templates, GLiNER labels, OntoGPT LinkML), and the most-starred of them, LLM Graph Builder, makes it optional. Semantica, added at the owner's review of 20261103 with more stars than any of the four, promises an ontology under its graph, but in the code read the ontology is applied after extraction, not before it [39]. The quiet code is AutoSchemaKG (induced) and kg-gen (no schema step stated); the active repositories are ontology first and young. Neo4j's own banner points users of its reference tool to a hosted service, Neo4j Document Intelligence in Aura [19].
 
 ## Fundamental papers
 
@@ -151,3 +152,4 @@ The MAGG paper says it does not "separately evaluate induced domain quality", so
 36. https://github.com/neo4j/neo4j-graphrag-python/blob/main/CHANGELOG.md : 1.8.0: "Added support for automatic schema extraction from text using LLMs. In the `SimpleKGPipeline`, when the user provides no schema, the automatic schema extraction is enabled by default." (read 20261102 22:24 UTC)
 37. https://github.com/neo4j/neo4j-graphrag-python/releases : the release list through the GitHub API: 1.8.0 published 2025-07-03 15:05 UTC (read 20261102 22:24 UTC)
 38. https://github.com/neo4j/neo4j-graphrag-python/blob/main/src/neo4j_graphrag/experimental/pipeline/config/template_pipeline/simple_kg_builder.py : `EXTRACTED` is "same as no schema, schema will be extracted by LLM" (read 20261102 22:30 UTC)
+39. [Semantica](../projects/semantica.md), the project page of this documentation, written from primary sources read on 20261103 and checked by a second agent: licence, ontology and temporal features read against the code, no independent evaluation found; stars from the snapshot [18]

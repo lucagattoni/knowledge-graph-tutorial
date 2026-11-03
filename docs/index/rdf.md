@@ -2,7 +2,7 @@
 type: index
 kind: standard
 aliases: [Resource Description Framework, RDF 1.1, RDF 1.2]
-updated: 20261103 01:52 UTC
+updated: 20261103 10:14 UTC
 ---
 
 # RDF
@@ -27,7 +27,7 @@ The W3C's RDF 1.1 Concepts calls RDF "a framework for representing information i
 
 ## Related
 
-[RDF Schema](./rdfs.md) · [OWL](./owl.md) · [SPARQL](./sparql.md) · [SHACL](./shacl.md) · [JSON-LD](./json-ld.md) · [URI](./uri.md) · [linked data](./linked-data.md) · [semantic web](./semantic-web.md) · [RDF Dataset Canonicalization](./rdf-dataset-canonicalization.md) · [property graph](./property-graph.md) · [knowledge graph](./knowledge-graph.md)
+[RDF Schema](./rdfs.md) · [OWL](./owl.md) · [SPARQL](./sparql.md) · [SHACL](./shacl.md) · [JSON-LD](./json-ld.md) · [URI](./uri.md) · [linked data](./linked-data.md) · [semantic web](./semantic-web.md) · [RDF Dataset Canonicalization](./rdf-dataset-canonicalization.md) · [property graph](./property-graph.md) · [knowledge graph](./knowledge-graph.md) · Papers on RDF-star: [semantic web standards](../papers/semantic-web-standards.md)
 
 ## Appears in
 
@@ -50,6 +50,7 @@ The W3C's RDF 1.1 Concepts calls RDF "a framework for representing information i
 **Papers**
 
 - [Papers: foundations](../papers/foundations.md)
+- [Papers: Semantic web standards](../papers/semantic-web-standards.md)
 
 **Datasets**
 

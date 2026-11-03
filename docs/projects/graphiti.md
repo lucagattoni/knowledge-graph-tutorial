@@ -73,6 +73,7 @@ The paper's caveats: the DMR (Deep Memory Retrieval) set is small, its conversat
 - [Memori](memori.md)
 - [MemOS](memos.md)
 - [Projects](README.md)
+- [Semantica](semantica.md)
 - [Supermemory](supermemory.md)
 
 **Papers**

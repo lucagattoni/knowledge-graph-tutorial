@@ -215,3 +215,12 @@ chapter's `changes.tsv`.
 | 3, projects | 26 active projects had no page and no stated reason | **Five new pages** (supermemory, TencentDB-Agent-Memory, Memori, memU, EverOS, all agent memory; 42 pages in all) and a stated reason in the watch list for each of the other 21 |
 | 4, papers | Keep the two one-paper groups (Text2Cypher; Knowledge Compounding). Keep the WordNet, YAGO, DBpedia, Freebase and Wikidata papers in Foundations | The papers chapter's rule names the exception |
 | 5 and 6, datasets and benchmarks | Keep both lists; none of the considered items gets a page | none |
+
+Answered later the same day, after the first part was merged (PR 2), on four open cases the first part left:
+
+| Case | The owner's decision | Change |
+|---|---|---|
+| Open Knowledge Format: listed by the plain-files trend as a representative, but a specification with no project page | A sentence in the Projects chapter, no page | The chapter says why it has no page; its watch-list note records the decision |
+| Semantica: 14,349 stars, no page, not named in the construction trend's section on ontology-grounded context graphs | A page, and name it in the trend | `docs/projects/semantica.md` (43 project pages in all); the trend names it |
+| The Papers chapter has no group for the new trend (its table says one group per trend) | Add a group (the owner chose it over stating an exception) | `docs/papers/semantic-web-standards.md`: five papers by the same four tests, fifteen in further reading (73 papers in 11 groups) |
+| The six new project pages run 1,200 to 1,550 words against the 500 to 900 target | Leave them | Listed under "Known limits" in `20261102_1935-docs-build-resume.md` |

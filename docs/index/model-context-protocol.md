@@ -75,6 +75,7 @@ No disagreement found in the sources read. Dates need care, though. A revision n
 - [Projects](../projects/README.md)
 - [RAG-Anything](../projects/rag-anything.md)
 - [RAGFlow](../projects/ragflow.md)
+- [Semantica](../projects/semantica.md)
 - [Supermemory](../projects/supermemory.md)
 - [TencentDB Agent Memory](../projects/tencentdb-agent-memory.md)
 - [Understand Anything](../projects/understand-anything.md)
