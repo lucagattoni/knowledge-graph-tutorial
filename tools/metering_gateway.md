@@ -17,7 +17,7 @@ rejected ones) to OpenAI's `gpt-6-luna`; the gateway's total was USD 1.105, **ab
 price OpenAI's cache writes; what that showed is in
 [What this leaves unchecked](#what-this-leaves-unchecked). Everything else below was tested against fake upstreams on loopback,
 with invented prices and made-up keys. Version 1.2.0 added `translate_max_tokens`; version 1.3.0 prices OpenAI's
-`prompt_tokens_details.cache_write_tokens` (found in the pilot's stage D; no real provider has met 1.3.0).
+`prompt_tokens_details.cache_write_tokens` (found after the pilot's stage D, while its tables were built; no real provider has met 1.3.0).
 
 Standard library only (threaded `http.server`, `http.client`); no dependency to install. Python 3.11 or newer.
 Binds `127.0.0.1` and nothing else.
@@ -366,14 +366,16 @@ writes above the prompt as unusable usage.
   answered 200). **Not observed:** streaming, the embeddings route, Anthropic, a 429 or 5xx from a provider, a
   timeout, and the provider's own billing (OpenAI's usage page is the only check that is not the gateway's own numbers, and the
   owner makes that comparison by hand).
-- **Version 1.2.0 did not price OpenAI's cache writes, and the pilot's own check could not show it.** It read
+- **Versions up to 1.2.0 did not price OpenAI's cache writes, and the pilot's own check could not show it.** (1.2.0 ran stages B to D and stage A's
+  re-test; stage A's first two runs ran the 1.1.0 code; neither read the field.) The gateway read
   `prompt_tokens_details.cached_tokens` and ignored `.cache_write_tokens`, which every answer carried, so it priced the written tokens as
   plain input (USD 0.10 per million) where the model's page says cache writes cost 1.25 times that (0.125). Over stages A to D OpenAI
   reported 3,140,582 written tokens (2,540,573 of them in stage D), which is about USD 0.0785 of the gateway's USD 1.105 (7%) if the
   bill follows the page; the stage-A check "the gateway's cost recomputed from the tokens equals its own" used the same fields the gateway
-  read, so it was circular on this point. Version 1.3.0 reads the field (unit tests; mutation check below). The pilot's figures are not
+  read, so it was circular on this point. Version 1.3.0 reads the field (unit tests; mutation check below). The pilot's committed ledger has `cache_creation_input_tokens` null in all its records, so the written-token counts
+  are not re-derivable from the repository (they come from the body log, which is outside it). The pilot's figures are not
   re-run: the results page gives the gateway's total and the total with the write price, from the answers' own token counts, side by side.
-  **Not observed:** 1.3.0 against a real provider, and the provider's own billing of the written tokens.
+  **Not observed:** 1.3.0 against a real provider, and the provider's own billing of the written tokens (the console's spend for the pilot, read 20261103, was USD 0.67 against the gateway's 1.105 and matches neither total: D-40).
 - The unit tests use `http.client` and raw sockets. The real OpenAI and Anthropic Python SDKs have since been pointed
   at it, but only against fake upstreams written for the purpose (`tools/exp/gateway_sdk_e2e_openai.py`, 17 checks, and
   `tools/exp/gateway_sdk_e2e_anthropic.py`, 12 checks: chat, streaming, embeddings, the key swap, exact cost, the cap).

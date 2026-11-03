@@ -1,7 +1,7 @@
 # Experiments worth running next
 
 **Status: X1 has run; X2 pass A has run on a local model (free); X2 pass B, the paid pilot, has run all four stages (the owner approved stages A to C, D-34, and D, D-37; USD 1.105 by the gateway on 20261103, 1.184 with the cache-write price the gateway left out, D-39; [results](x2-index-cost/pass-b-results.md));
-the owner's console comparison for stage D is still to come; X3 to X5 are proposals and nothing in them has run.** Each experiment needs the owner's
+the console's spend for the pilot (USD 0.67, read 20261103, D-40) matches neither total and is to be read again after 20261104 00:00 UTC; X3 to X5 are proposals and nothing in them has run.** Each experiment needs the owner's
 explicit yes, one at a time (decision D-14 in [`DECISIONS.md`](../../DECISIONS.md)). Every proposal states its cost, models and data
 first. Where a cost cannot be known before a pilot, the proposal says so and asks for a **cap on the pilot**,
 not for a budget on the whole experiment.
@@ -47,7 +47,7 @@ be chosen and downloaded.
 step starts only on the owner's explicit yes (D-14), stating cost, model and data first. A step does not start just
 because the one before it worked.
 
-**Step 0 status, 20261102: built, with the gaps below.** (a) The [metering gateway](../../tools/metering_gateway.md)
+**Step 0 status, 20261102: built, with the gaps below.** (Written before the paid pilot; two of the gaps have since closed: the gateway has been used against OpenAI, stages A to D, 20261103, and output tokens have been measured there, see [the X2 results](x2-index-cost/pass-b-results.md).) (a) The [metering gateway](../../tools/metering_gateway.md)
 exists for both providers and has been exercised with the real OpenAI and Anthropic SDKs against fake providers. (b) and
 (d) Four builders were installed in throwaway environments and rehearsed against a stub; the
 [results side by side](x2-index-cost/README.md#the-rehearsals-side-by-side) are on the X2 page. (c) The 20 X2 documents

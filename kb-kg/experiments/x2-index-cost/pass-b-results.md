@@ -1,6 +1,6 @@
 # X2 pass B: results of stages A to D
 
-Written 20261103 19:13 UTC. These are the numbers from the paid pilot's four stages, run 20261103 between 16:12 and 19:01 UTC on OpenAI's
+Written 20261103 20:09 UTC. These are the numbers from the paid pilot's four stages, run 20261103 between 16:12 and 19:01 UTC on OpenAI's
 `gpt-6-luna` (reasoning off) through the metering gateway, with the key in a private file and the owner's yes (D-34 for stages A to C,
 D-37 for stage D). **The pilot has run to its end**: the spend is far below its USD 3.00 cap, nothing more is approved, and D-37 does not
 cover a repeat of D. **Nothing here says which graph is better**: no quality was measured. My readings are kept apart, in the last
@@ -12,13 +12,18 @@ files passed the path, key, name, e-mail and copied-text scans (no run of eight 
 
 ## One correction first: the gateway left out OpenAI's cache-write price
 
-Every answer of OpenAI carried `usage.prompt_tokens_details.cache_write_tokens` beside `cached_tokens`, and gateway version 1.2.0, which ran
-the whole pilot, read only the second. It priced the written tokens as plain input, USD 0.10 per million, where OpenAI's model page says
+Every answer of OpenAI carried `usage.prompt_tokens_details.cache_write_tokens` beside `cached_tokens`, and the gateway read only the second:
+version 1.2.0, which ran stages B to D and stage A's re-test, and the 1.1.0 code of stage A's first two runs (by the plan's file times they came
+before the 1.2.0 change; neither version read the field, so no figure differs). It priced the written tokens as plain input, USD 0.10 per million, where OpenAI's model page says
 "Cache writes are billed at 1.25x the uncached input token rate", USD 0.125 (page and prompt-caching guide read 20261103; the sources are in
 [the gateway's page](../../../tools/metering_gateway.md#where-the-usage-field-names-come-from)). I found it while building stage D's tables, after
 the run; the stage-A check "the gateway's cost recomputed from the tokens equals its own" could not show it, because it used the same
 fields. Version 1.3.0 of the gateway reads the field. The pilot was **not** re-run: the gateway's figures stay in the ledger as run, and the
-tables below give them first, with the price of the written tokens added from the answers' own token counts where a column says so.
+tables below give them first, with the price of the written tokens added from the answers' own token counts where a column says so. The
+price itself was configured (0.125 in the run profile) but the gateway applied a cache-write price only to Anthropic usage, so it was set and
+unused. **The written-token counts are not in the repository's ledger**: `cache_creation_input_tokens` is null in all 2,510 records of
+[`meter.jsonl`](pass-b/meter.jsonl), because 1.2.0 did not read the field; the counts come from the gateway's body log, which is outside the
+repository, and are summed per run in [`stage-totals.json`](pass-b/stage-totals.json), so they cannot be re-derived from the committed files.
 
 | Stage | Tokens OpenAI reported as written to its cache | The gateway's total (USD) | With the cache-write price (USD) | Difference |
 |---|---|---|---|---|
@@ -28,7 +33,8 @@ tables below give them first, with the price of the written tokens added from th
 | D | 2,540,573 | 0.84204 | 0.90556 | 0.06351 |
 | **A to D** | 3,140,582 | **1.10537** | **1.18389** | 0.07851 (7.1% of the gateway's total) |
 
-Which figure holds is for OpenAI's usage page to say: the owner's comparison for stage D (below) will show which of the two it matches, if either. **The earlier
+Which figure holds is for OpenAI's usage page to say. Its spend for the whole pilot (USD 0.67, read 20261103) **matches neither**; see "For the
+console comparison" below. **The earlier
 "Agrees" of the owner, for stage A and for stages B and C, was given against the gateway's figures**; I do not know whether those
 comparisons covered dollars to the cent or tokens, so they neither confirm nor exclude the write price (it adds 0.01500 to
 the 0.26333 of stages A to C). The price is for the default 30-minute lifetime; OpenAI's 12-hour option costs twice as
@@ -180,16 +186,33 @@ runs; the gateway's figures).
 ## For the console comparison (the owner's)
 
 The plan compares OpenAI's usage page with the gateway at the end of each stage. Stage A agreed on 20261103 (recorded in the run log),
-and so did stages B and C together (recorded in the plan's run log; against the gateway's figures). **Stage D is the one still to compare**,
-and it is the first comparison in which the cache-write price can be told apart: the two figures differ by 0.0635. The figures for the
-hosted calls (embeddings are local and not on that page), from the ledger and the answers' own usage:
+and so did stages B and C together (recorded in the plan's run log; against the gateway's figures). **Stage D was the first comparison in which the
+cache-write price could be told apart** (the two figures differ by 0.0635 for stage D). I read the page myself, in Chrome, at the owner's
+instruction; what it showed is below the table. The figures for the hosted calls (embeddings are local and not on that page), from the ledger
+and the answers' own usage:
 
 | | Requests answered | Input tokens (cached; written) | Output tokens | USD, the gateway | USD, with the cache-write price |
 |---|---|---|---|---|---|
 | A (agreed) | 11 | 16,945 (2,043; 14,358) | 9,893 | 0.00645713 | 0.00681608 |
 | B and C (agreed) | 432 | 929,150 (318,730; 585,651) | 385,284 | 0.25687130 | 0.271512575 |
-| D (to compare) | 1,308 | 3,224,495 (622,948; 2,540,573) | 1,151,321 | 0.84204468 | 0.905559005 |
+| D | 1,308 | 3,224,495 (622,948; 2,540,573) | 1,151,321 | 0.84204468 | 0.905559005 |
 | **A to D** | 1,751 | 4,170,590 (943,721; 3,140,582) | 1,546,498 | **1.10537311** | **1.183887660** |
+
+**What the console showed** (project `kb-kg-pilot`, "Last 7 days"; read in Chrome on 20261103 before 19:37 UTC, at 19:37 and at 20:07, the same each
+time): **1,751 requests**; "Total tokens" 4,170,590, which the page's own line calls input tokens and which equals the ledger's input
+total; a prompt-caching hit rate of **22.6%**, equal to 943,721 / 4,170,590; and a spend of **USD 0.67**, in the lines `gpt-6-luna` cache
+writes 0.275, cache writes (12-hour) 0, cached input 0.002, input 0.005 and output 0.389. The console has no bucket finer than a day, so it
+cannot split stages: this compares the whole pilot, not stage D. **The spend is below both totals** (1.105 by the gateway, 1.184 with the
+cache-write price), and no line is near the ledger's at the plan's prices: the console's output line is 0.50 of the ledger's, cache writes
+0.70, plain input 0.58 and cached input 0.21. No subset of the 17 groups (stage A and each run), and no single cut-off time, reproduces the four
+lines; the prices per million that would reproduce them from the whole pilot's tokens are 0.058, 0.0021, 0.0876 and 0.2515 against the plan's
+0.10, 0.01, 0.125 and 0.50. **I do not know why.** One possibility, untested: the console's cost for the current UTC day is partial (its smallest
+bucket is a day, and the figure did not move between my reads at 19:37 and 20:07, 36 and 66 minutes after the last call). It is to be read again after
+4 November 00:00 UTC. Until then **neither total is confirmed, and the console's is lower than both**. The console does list the cache writes as
+a line of their own, so the gateway's omission was an omission of a billed category whatever the final dollars. The two earlier "Agrees" (stage A;
+B with C) are the owner's, against the gateway's figures, and I do not know what they compared. Anthropic's console showed no spend after
+1 November (USD 0.34 that day, on Claude Opus 5, data as of 18:57 UTC on 3 November): the pilot used none. The project's own limit is shown as
+USD 5.00 beside the USD 0.67, against the plan's USD 3 hard limit; I do not know whether that figure is the hard limit or a budget.
 
 ## Corpus-scale arithmetic (not a measurement)
 
