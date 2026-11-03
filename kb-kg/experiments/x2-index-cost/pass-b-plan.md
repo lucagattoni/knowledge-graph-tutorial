@@ -52,7 +52,8 @@ Read 20261102 (UTC). Prices change; they are read again when the gateway config 
 
 Three consequences. **Hidden reasoning is the main hazard**: both providers' small models reason by default and bill it as output,
 as `granite4.2:8b` did locally (17 s and 278 tokens against 0.3 s and 8 for one question). The builders cannot send the field that
-turns it off, so the gateway has to add it, and today it refuses to on a paid upstream, on purpose. **fast-graphrag and
+turns it off, so the gateway has to add it. Version 1.0.0 refused to on a paid upstream, on purpose; 1.1.0 does it only for an
+upstream whose config says so. **fast-graphrag and
 nano-graphrag cannot run on Claude through that layer**, because their `json_object` format is a 400 there. And **the cap is not a
 full guard**: a call the gateway voided can still have been billed.
 

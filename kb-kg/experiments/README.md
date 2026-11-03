@@ -1,6 +1,7 @@
 # Experiments worth running next
 
-**Status: X1 has run; X2 to X5 are proposals and nothing in them has run.** Each experiment needs the owner's
+**Status: X1 has run; X2 pass A has run on a local model (free); X2 pass B, the paid pilot, is planned and not approved, and nothing
+paid has run; X3 to X5 are proposals and nothing in them has run.** Each experiment needs the owner's
 explicit yes, one at a time (decision D-14 in [`DECISIONS.md`](../../DECISIONS.md)). Every proposal states its cost, models and data
 first. Where a cost cannot be known before a pilot, the proposal says so and asks for a **cap on the pilot**,
 not for a budget on the whole experiment.
