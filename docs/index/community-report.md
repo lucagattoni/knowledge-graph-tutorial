@@ -35,6 +35,10 @@ No disagreement found in the sources read. Only the name differs: "community sum
 
 - [Graph-based RAG: from eager LLM-built graphs to cheaper, lazier ones](../trends/graph-based-rag.md)
 
+**Projects**
+
+- [Semantica](../projects/semantica.md)
+
 **Experiments**
 
 - [X2: the index cost of cheap graph builders](../experiments/x2-index-cost.md)

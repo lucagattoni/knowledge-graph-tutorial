@@ -49,6 +49,7 @@ No disagreement found in the sources read.
 **Projects**
 
 - [Cognee](../projects/cognee.md)
+- [Semantica](../projects/semantica.md)
 
 **Index**
 

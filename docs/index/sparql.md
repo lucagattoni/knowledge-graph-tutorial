@@ -2,7 +2,7 @@
 type: index
 kind: standard
 aliases: [SPARQL Query Language for RDF, SPARQL 1.1, SPARQL 1.2]
-updated: 20261103 01:52 UTC
+updated: 20261103 10:14 UTC
 ---
 
 # SPARQL
@@ -30,7 +30,7 @@ The dates agree across the W3C pages [1][2][6][8]. The wording changed: the 2008
 
 ## Related
 
-[RDF](./rdf.md), [SHACL](./shacl.md), [OWL](./owl.md), [linked data](./linked-data.md), [semantic web](./semantic-web.md), [URI](./uri.md), [SQL](./sql.md), [Cypher](./cypher.md), [GQL](./gql.md), [large language model](./large-language-model.md). Pages: [asking graphs in natural language](../trends/graph-query-generation.md), its [papers](../papers/graph-query-generation.md), the benchmark [LC-QuAD](../benchmarks/lc-quad.md).
+[RDF](./rdf.md), [SHACL](./shacl.md), [OWL](./owl.md), [linked data](./linked-data.md), [semantic web](./semantic-web.md), [URI](./uri.md), [SQL](./sql.md), [Cypher](./cypher.md), [GQL](./gql.md), [large language model](./large-language-model.md). Pages: [asking graphs in natural language](../trends/graph-query-generation.md), its [papers](../papers/graph-query-generation.md), the benchmark [LC-QuAD](../benchmarks/lc-quad.md). Papers on its formal semantics and on SPARQL-star: [semantic web standards](../papers/semantic-web-standards.md).
 
 ## Appears in
 
@@ -51,9 +51,14 @@ The dates agree across the W3C pages [1][2][6][8]. The wording changed: the 2008
 - [Semantic web standards: from RDF 1.1 and RDF-star to RDF 1.2](../trends/semantic-web-standards.md)
 - [Trends: what the field is doing now](../trends/README.md)
 
+**Projects**
+
+- [Semantica](../projects/semantica.md)
+
 **Papers**
 
 - [Papers: Asking graphs in natural language](../papers/graph-query-generation.md)
+- [Papers: Semantic web standards](../papers/semantic-web-standards.md)
 
 **Datasets**
 

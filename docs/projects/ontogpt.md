@@ -67,6 +67,7 @@ The new README section says a modern LLM (large language model) can extract stru
 
 - [GLiNER](gliner.md)
 - [Projects](README.md)
+- [Semantica](semantica.md)
 
 **Index**
 

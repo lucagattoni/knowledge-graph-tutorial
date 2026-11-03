@@ -37,6 +37,10 @@ The W3C PROV family defines provenance as "information about entities, activitie
 
 - [Semantic web standards: from RDF 1.1 and RDF-star to RDF 1.2](../trends/semantic-web-standards.md)
 
+**Projects**
+
+- [Semantica](../projects/semantica.md)
+
 **Benchmarks**
 
 - [KILT](../benchmarks/kilt.md)

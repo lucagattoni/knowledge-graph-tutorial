@@ -82,6 +82,7 @@ No code, prompts or paper stand behind the LazyGraphRAG figures in the sources r
 - [LightRAG](lightrag.md)
 - [LlamaIndex](llama-index.md)
 - [Projects](README.md)
+- [Semantica](semantica.md)
 
 **Papers**
 

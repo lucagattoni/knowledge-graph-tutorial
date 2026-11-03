@@ -74,6 +74,7 @@ Commit subjects on the default branch since 20260804 include dependency bumps, f
 - [Neo4j LLM Knowledge Graph Builder](llm-graph-builder.md)
 - [neo4j-graphrag-python](neo4j-graphrag-python.md)
 - [Projects](README.md)
+- [Semantica](semantica.md)
 
 **Benchmarks**
 

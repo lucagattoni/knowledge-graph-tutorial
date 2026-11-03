@@ -487,6 +487,7 @@ points to the entry under its usual name.
 - semantic parser, see [Semantic parsing](semantic-parsing.md)
 - [Semantic parsing](semantic-parsing.md) : concept
 - [Semantic Web](semantic-web.md) : concept
+- [Semantica](../projects/semantica.md) : project
 - [Semi-structured data](semi-structured-data.md) : concept
 - semistructured data, see [Semi-structured data](semi-structured-data.md)
 - sense disambiguation, see [Word sense disambiguation](word-sense-disambiguation.md)

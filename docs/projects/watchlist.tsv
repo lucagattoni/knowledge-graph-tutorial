@@ -59,14 +59,14 @@ breferrari/obsidian-mind	markdown-kb	plain-file-knowledge	No page: judged no dis
 Ar9av/obsidian-wiki	markdown-kb	plain-file-knowledge	No page: judged no distinct approach: agent skills turning notes and sessions into a linked Obsidian vault, like claude-obsidian; adds a manifest that skips unchanged sources; its test is first-party
 okf-memory/okf-agent-memory	markdown-kb	plain-file-knowledge,agent-memory	No page: judged no distinct approach: agent memory as Markdown files with BM25 recall, like tigerless-agent-memory; adds the OKF v0.2 format and MCP server; created 20260905, no embeddings or database
 monarch-initiative/ontogpt	core	llm-kg-construction	
-GoogleCloudPlatform/open-knowledge-format	markdown-kb	plain-file-knowledge	No page: judged a specification, not software: six commits, one account, no release; the plain-file trend gives it its own section and lists it, so a page is arguable
+GoogleCloudPlatform/open-knowledge-format	markdown-kb	plain-file-knowledge	No page: judged a specification, not software: six commits, one account, no release; the plain-file trend tells it in its own section; the owner chose a sentence in the Projects chapter, not a page (20261103)
 inkeep/open-knowledge	markdown-kb	plain-file-knowledge	No page: judged no distinct approach: Markdown files under git with BM25 search and an MCP server, like basic-memory; editor and desktop app, no LLM index step; GPL-3.0, read-only reference
 VectifyAI/OpenKB	markdown-kb	plain-file-knowledge,reasoning-over-structure	
 volcengine/OpenViking	agent-memory	agent-memory,plain-file-knowledge	
 VectifyAI/PageIndex	core	reasoning-over-structure	
 HKUDS/RAG-Anything	core	graph-based-rag	
 infiniflow/ragflow	adjacent	infrastructure-and-mcp,reasoning-over-structure	
-semantica-agi/semantica	core	llm-kg-construction	No page: judged no distinct approach: ontology-grounded context graph, a subsection the construction trend merges, naming four other projects; bi-temporal facts as in graphiti, plus OWL and SHACL; page arguable
+semantica-agi/semantica	core	llm-kg-construction	
 supermemoryai/supermemory	agent-memory	agent-memory	
 surrealdb/surrealdb	adjacent	infrastructure-and-mcp	No page: judged adjacent: multi-model database where graph is one model; like memgraph, offers graph, vector and text indexes; BSL 1.1; the infrastructure trend lists it only as also named
 TencentCloud/TencentDB-Agent-Memory	agent-memory	agent-memory	
