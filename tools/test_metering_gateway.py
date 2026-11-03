@@ -1861,6 +1861,110 @@ class TranslateMaxTokensTests(unittest.TestCase):
             parse_keyed(priced("m", "fake-anthropic", "translate_max_tokens = true"), openai_extra=ALLOW)
 
 
+# --------------------------------------------------------------------------- OpenAI cache writes (1.3.0)
+
+
+def openai_usage_body(prompt=1000, completion=200, cached=None, written=..., model="fake-write", details=None):
+    """A chat answer whose usage carries `prompt_tokens_details`: `cached_tokens` and `cache_write_tokens` (`...` leaves the latter out)."""
+    body = openai_chat_body(prompt=prompt, completion=completion, model=model)
+    d = dict(details or {})
+    if cached is not None:
+        d["cached_tokens"] = cached
+    if written is not ...:
+        d["cache_write_tokens"] = written
+    if d:
+        body["usage"]["prompt_tokens_details"] = d
+    return body
+
+
+WRITE_MODELS = (
+    "\n[models.\"fake-write\"]\nupstream = \"fake-openai\"\ninput_per_mtok = 0.10\noutput_per_mtok = 0.50\ncached_input_per_mtok = 0.01\n"
+    "cache_write_per_mtok = 0.125\nsource_url = \"https://example.invalid/pricing/fake-write\"\nread_at = \"20261103 10:00\"\n"
+    "\n[models.\"fake-nowrite\"]\nupstream = \"fake-openai\"\ninput_per_mtok = 0.10\noutput_per_mtok = 0.50\ncached_input_per_mtok = 0.01\n"
+    "source_url = \"https://example.invalid/pricing/fake-nowrite\"\nread_at = \"20261103 10:00\"\n"
+)
+
+
+class OpenAICacheWriteTests(unittest.TestCase):
+    """OpenAI's usage reports `prompt_tokens_details.cache_write_tokens` beside `cached_tokens`; both are parts of `prompt_tokens`, and the
+    writes cost more than plain input (`gpt-6-luna`: 0.125 against 0.10 per million). Versions up to 1.2.0 ignored the field and priced the
+    writes as plain input, which understated the pilot's stages A to D by about USD 0.079 of 1.105."""
+
+    def rig(self, body, **kwargs):
+        return Rig(self, openai=FakeUpstream(answer(body)), models_extra=WRITE_MODELS, **kwargs)
+
+    def test_writes_reads_and_plain_input_are_priced_apart(self):
+        rig = self.rig(openai_usage_body(prompt=1000, completion=200, cached=300, written=500))
+        self.assertEqual(rig.chat(chat_req("fake-write"))[0], 200)
+        (rec,) = rig.records()
+        self.assertEqual((rec["input_tokens"], rec["cached_input_tokens"], rec["cache_creation_input_tokens"], rec["output_tokens"]),
+                         (1000, 300, 500, 200))
+        # 200 plain x 0.10 + 300 read x 0.01 + 500 written x 0.125 + 200 out x 0.50, per million: 20 + 3 + 62.5 + 100
+        self.assertEqual(rec["cost"], "0.0001855")
+        self.assertIs(rec["usage_missing"], False)
+
+    def test_writes_alone_without_a_cached_figure(self):
+        rig = self.rig(openai_usage_body(prompt=1000, completion=0, written=1000))
+        rig.chat(chat_req("fake-write"))
+        (rec,) = rig.records()
+        self.assertEqual((rec["cached_input_tokens"], rec["cache_creation_input_tokens"]), (None, 1000))
+        self.assertEqual(rec["cost"], "0.000125")                                  # 1000 x 0.125 per million
+
+    def test_a_model_with_no_cache_write_price_prices_the_writes_as_plain_input_and_still_records_them(self):
+        rig = self.rig(openai_usage_body(prompt=1000, completion=200, cached=300, written=500, model="fake-nowrite"))
+        rig.chat(chat_req("fake-nowrite"))
+        (rec,) = rig.records()
+        self.assertEqual(rec["cache_creation_input_tokens"], 500)
+        self.assertEqual(rec["cost"], "0.000173")             # (200 plain + 500 written) x 0.10 + 300 read x 0.01 + 200 out x 0.50, per million
+
+    def test_a_null_or_absent_write_figure_is_no_figure(self):
+        for written in (None, ...):
+            rig = self.rig(openai_usage_body(prompt=1000, completion=0, cached=100, written=written))
+            rig.chat(chat_req("fake-write"))
+            (rec,) = rig.records()
+            self.assertIsNone(rec["cache_creation_input_tokens"])
+            self.assertIs(rec["usage_missing"], False)
+            self.assertEqual(rec["cost"], "0.000091")                              # 900 x 0.10 + 100 x 0.01, per million
+
+    def test_a_write_figure_that_is_not_a_count_makes_the_usage_unusable_and_the_whole_reservation_is_charged(self):
+        for bad in ("500", -1, True, 1.5, [500]):
+            rig = self.rig(openai_usage_body(prompt=1000, completion=5, cached=0, written=bad))
+            rig.chat(chat_req("fake-write"))
+            (rec,) = rig.records()
+            self.assertIs(rec["usage_missing"], True, bad)
+            self.assertEqual(rec["cost"], rec["reserve"], bad)
+
+    def test_reads_plus_writes_above_the_prompt_make_the_usage_unusable(self):
+        for cached, written in ((600, 600), (0, 1001), (1001, 0), (1000, 1)):
+            rig = self.rig(openai_usage_body(prompt=1000, completion=5, cached=cached, written=written))
+            rig.chat(chat_req("fake-write"))
+            (rec,) = rig.records()
+            self.assertIs(rec["usage_missing"], True, (cached, written))
+        rig = self.rig(openai_usage_body(prompt=1000, completion=0, cached=400, written=600))      # exactly the prompt is fine
+        rig.chat(chat_req("fake-write"))
+        self.assertIs(rig.records()[0]["usage_missing"], False)
+
+    def test_a_streamed_usage_chunk_carries_the_writes_too(self):
+        chunk = {"id": "c1", "object": "chat.completion.chunk", "model": "fake-write", "usage": None}
+        events = [sse_data({**chunk, "choices": [{"index": 0, "delta": {"content": "a"}}]}),
+                  sse_data({**chunk, "choices": [], "usage": {"prompt_tokens": 1000, "completion_tokens": 200, "total_tokens": 1200,
+                                                               "prompt_tokens_details": {"cached_tokens": 300, "cache_write_tokens": 500}}}),
+                  b"data: [DONE]\n\n"]
+        rig = Rig(self, openai=FakeUpstream(lambda req, h: send_sse(h, events)), models_extra=WRITE_MODELS)
+        rig.chat(chat_req("fake-write", stream=True))
+        (rec,) = rig.records()
+        self.assertEqual((rec["cached_input_tokens"], rec["cache_creation_input_tokens"]), (300, 500))
+        self.assertEqual(rec["cost"], "0.0001855")
+
+    def test_the_summary_totals_stay_equal_to_the_ledger(self):
+        rig = self.rig(openai_usage_body(prompt=1000, completion=200, cached=300, written=500))
+        rig.chat(chat_req("fake-write"))
+        rig.chat(chat_req("fake-write"))
+        spent = sum((Decimal(r["cost"]) for r in rig.records()), Decimal(0))
+        self.assertEqual(spent, Decimal("0.000371"))
+        self.assertEqual(rig.gw.ledger.spent, spent)
+
+
 # --------------------------------------------------------------------------- the key held in a file
 
 

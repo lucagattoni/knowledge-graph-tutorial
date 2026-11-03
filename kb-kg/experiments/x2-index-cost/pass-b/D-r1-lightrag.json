@@ -1,0 +1,635 @@
+{
+ "runner": "x2_passa_lightrag.py",
+ "builder": "LightRAG",
+ "package": "lightrag-hku",
+ "upstream_url": "http://127.0.0.1:11434/v1",
+ "model": "gpt-6-luna",
+ "embed_model": "qwen3-embedding:0.6b",
+ "chat_request_defaults": {},
+ "corpus_sha256": "20b61b5ab84de84a927420c5d265b7ec8d859ae49980699958a787ade9e4d28f",
+ "documents_requested": 20,
+ "checkpoints_requested": [
+  20
+ ],
+ "checkpoints": {
+  "20": {
+   "documents_attempted": 20,
+   "documents_processed": 20,
+   "wall_seconds_since_start": 601.6,
+   "gateway": {
+    "calls": 413,
+    "chat": {
+     "by_kind": {
+      "extraction_initial": {
+       "calls": 49,
+       "ok": 49,
+       "input_tokens": 132348,
+       "output_tokens": 88132,
+       "latency_ms": 698668
+      },
+      "extraction_gleaning": {
+       "calls": 49,
+       "ok": 49,
+       "input_tokens": 240414,
+       "output_tokens": 43411,
+       "latency_ms": 377064
+      },
+      "summary_entity": {
+       "calls": 1,
+       "ok": 1,
+       "input_tokens": 641,
+       "output_tokens": 155,
+       "latency_ms": 2737
+      }
+     },
+     "total": {
+      "calls": 99,
+      "ok": 99,
+      "input_tokens": 373403,
+      "output_tokens": 131698,
+      "latency_ms": 1078469
+     }
+    },
+    "embeddings": {
+     "by_kind": {
+      "relationships": {
+       "calls": 147,
+       "ok": 147,
+       "input_tokens": 41107,
+       "output_tokens": 0,
+       "latency_ms": 143990,
+       "inputs": 1356
+      },
+      "entities": {
+       "calls": 147,
+       "ok": 147,
+       "input_tokens": 39044,
+       "output_tokens": 0,
+       "latency_ms": 105363,
+       "inputs": 1368
+      },
+      "chunks": {
+       "calls": 20,
+       "ok": 20,
+       "input_tokens": 45881,
+       "output_tokens": 0,
+       "latency_ms": 23508,
+       "inputs": 49
+      }
+     },
+     "total": {
+      "calls": 314,
+      "ok": 314,
+      "input_tokens": 126032,
+      "output_tokens": 0,
+      "latency_ms": 272861,
+      "inputs": 2773
+     }
+    },
+    "other_calls": 0,
+    "http_status": {
+     "200": 413
+    },
+    "voided": 0,
+    "usage_missing": 0,
+    "refused_by_gateway": 0,
+    "errors": {},
+    "distinct_requests": 413,
+    "repeated_identical_requests": 0,
+    "latency_ms_total": 1351330,
+    "model_requested": {
+     "chat": {
+      "gpt-6-luna": 99
+     },
+     "embeddings": {
+      "qwen3-embedding:0.6b": 314
+     }
+    },
+    "request_body": {
+     "chat": {
+      "keys": {
+       "messages": 99,
+       "model": 99
+      },
+      "values_of_other_keys": {}
+     },
+     "embeddings": {
+      "keys": {
+       "encoding_format": 314,
+       "input": 314,
+       "model": 314
+      },
+      "values_of_other_keys": {
+       "encoding_format": [
+        "\"base64\""
+       ]
+      }
+     }
+    },
+    "as_stub_summary": {
+     "chat_calls": 99,
+     "chat_prompt_tokens": 373403,
+     "chat_completion_tokens": 131698,
+     "embedding_calls": 314,
+     "embedding_inputs": 2773,
+     "embedding_tokens": 126032,
+     "other_calls": 0
+    }
+   },
+   "builder": {
+    "stored": {
+     "chunks": 49,
+     "chunk_tokens_sum_lightrag_tokenizer": 44560,
+     "entities": 1333,
+     "relationships": 1355,
+     "graph_nodes": 1333,
+     "graph_edges": 1355,
+     "llm_response_cache_entries": 99
+    },
+    "lightrag_warning_counts": {
+     "WARNING: doc-#-chunk-#: LLM output format error; find LLM use <|#|> as record s": 12,
+     "WARNING: doc-#-chunk-#: Complete delimiter can not be found in extraction resul": 3,
+     "WARNING: Recovering mis-prefixed relation: # ~ #": 10,
+     "WARNING: doc-#-chunk-#: LLM output format error; found #/# fields on ENTITY # @": 4,
+     "WARNING: doc-#-chunk-#: LLM output format error; found #/# fields on RELATION #": 81
+    }
+   },
+   "cost_usd": "0.08367406"
+  }
+ },
+ "status": "ok",
+ "failure": null,
+ "started_utc": "20261103 17:57:54",
+ "python": "3.12.16",
+ "machine": "arm64",
+ "system": "Darwin",
+ "environment": {
+  "python_isolated_mode": true,
+  "names_kept": [
+   "HOME",
+   "LC_CTYPE",
+   "PATH",
+   "TMPDIR"
+  ],
+  "names_removed": 1,
+  "removed_names_that_look_like_credentials": 0,
+  "proxy": "http://127.0.0.1:9 (closed port), loopback excluded",
+  "builder_settings_set_by_flag": {}
+ },
+ "gateway": {
+  "base_url": "http://127.0.0.1:62964/v1",
+  "models": [
+   "gpt-6-luna",
+   "qwen3-embedding:0.6b"
+  ],
+  "upstream_timeout_s": 900,
+  "metering": "the chat model is hosted and priced; the gateway refuses past the cap (the ledger's spend plus the profile's allowance)"
+ },
+ "preflight": {
+  "mode": "auto",
+  "ollama": true,
+  "embed_model": "qwen3-embedding:0.6b",
+  "embedding_model_installed": true,
+  "chat_model_checked": false,
+  "note": "the chat model is hosted; its context is the provider's"
+ },
+ "tripwire_selftest_recorded_a_connect_to_127.0.0.1:9": true,
+ "tokenizer": {
+  "o200k_base": "available",
+  "cl100k_base": "available"
+ },
+ "embedding_dim": 1024,
+ "dimension_probe": {
+  "http_status": 200,
+  "input_tokens": 4,
+  "latency_ms": 568,
+  "vector_length": 1024,
+  "note": "not counted in any checkpoint"
+ },
+ "config_as_constructed": {
+  "chunk_token_size": 1200,
+  "chunk_overlap_token_size": 100,
+  "entity_extract_max_gleaning": 1,
+  "force_llm_summary_on_merge": 8,
+  "summary_max_tokens": 1200,
+  "summary_context_size": 12000,
+  "llm_model_max_async": 4,
+  "default_llm_timeout_s": 1800,
+  "worker_timeout_s_arithmetic": 3600,
+  "max_parallel_insert": 3,
+  "embedding_batch_num": 10,
+  "embedding_func_max_async": 8,
+  "embedding_dim": 1024,
+  "embedding_max_token_size": 8192,
+  "entity_extraction_use_json": false,
+  "enable_llm_cache": true,
+  "enable_llm_cache_for_entity_extract": true,
+  "tiktoken_model_name": "gpt-4o-mini",
+  "llm_model_name": "gpt-6-luna",
+  "overridden_by_flag": [
+   "default_llm_timeout",
+   "llm_model_max_async"
+  ],
+  "chunking": "fixed-token (ainsert always uses it)"
+ },
+ "per_document": [
+  {
+   "document": 1,
+   "doc_rank": 1,
+   "chars": 6341,
+   "doc_status": "processed",
+   "wall_seconds": 33.7,
+   "gateway_calls": 18,
+   "chat_calls": 4,
+   "chat_input_tokens": 15287,
+   "chat_output_tokens": 5503,
+   "embedding_inputs": 122,
+   "latency_ms_total": 55754,
+   "non_200_calls": 0,
+   "cost_usd": "0.00337444"
+  },
+  {
+   "document": 2,
+   "doc_rank": 2,
+   "chars": 6005,
+   "doc_status": "processed",
+   "wall_seconds": 20.6,
+   "gateway_calls": 12,
+   "chat_calls": 4,
+   "chat_input_tokens": 13018,
+   "chat_output_tokens": 3234,
+   "embedding_inputs": 61,
+   "latency_ms_total": 32617,
+   "non_200_calls": 0,
+   "cost_usd": "0.0020404"
+  },
+  {
+   "document": 3,
+   "doc_rank": 3,
+   "chars": 5112,
+   "doc_status": "processed",
+   "wall_seconds": 17.3,
+   "gateway_calls": 9,
+   "chat_calls": 2,
+   "chat_input_tokens": 7310,
+   "chat_output_tokens": 1920,
+   "embedding_inputs": 47,
+   "latency_ms_total": 20458,
+   "non_200_calls": 0,
+   "cost_usd": "0.0011771"
+  },
+  {
+   "document": 4,
+   "doc_rank": 4,
+   "chars": 6374,
+   "doc_status": "processed",
+   "wall_seconds": 35.3,
+   "gateway_calls": 19,
+   "chat_calls": 4,
+   "chat_input_tokens": 15247,
+   "chat_output_tokens": 5944,
+   "embedding_inputs": 131,
+   "latency_ms_total": 59166,
+   "non_200_calls": 0,
+   "cost_usd": "0.00357024"
+  },
+  {
+   "document": 5,
+   "doc_rank": 5,
+   "chars": 8626,
+   "doc_status": "processed",
+   "wall_seconds": 34.1,
+   "gateway_calls": 19,
+   "chat_calls": 4,
+   "chat_input_tokens": 15724,
+   "chat_output_tokens": 5888,
+   "embedding_inputs": 134,
+   "latency_ms_total": 61940,
+   "non_200_calls": 0,
+   "cost_usd": "0.00352262"
+  },
+  {
+   "document": 6,
+   "doc_rank": 6,
+   "chars": 6083,
+   "doc_status": "processed",
+   "wall_seconds": 34.5,
+   "gateway_calls": 20,
+   "chat_calls": 4,
+   "chat_input_tokens": 15446,
+   "chat_output_tokens": 6243,
+   "embedding_inputs": 140,
+   "latency_ms_total": 60617,
+   "non_200_calls": 0,
+   "cost_usd": "0.0039452"
+  },
+  {
+   "document": 7,
+   "doc_rank": 7,
+   "chars": 14982,
+   "doc_status": "processed",
+   "wall_seconds": 42.4,
+   "gateway_calls": 25,
+   "chat_calls": 6,
+   "chat_input_tokens": 23165,
+   "chat_output_tokens": 8085,
+   "embedding_inputs": 173,
+   "latency_ms_total": 94131,
+   "non_200_calls": 0,
+   "cost_usd": "0.00517082"
+  },
+  {
+   "document": 8,
+   "doc_rank": 8,
+   "chars": 6237,
+   "doc_status": "processed",
+   "wall_seconds": 24.8,
+   "gateway_calls": 15,
+   "chat_calls": 4,
+   "chat_input_tokens": 13387,
+   "chat_output_tokens": 4548,
+   "embedding_inputs": 91,
+   "latency_ms_total": 43316,
+   "non_200_calls": 0,
+   "cost_usd": "0.00288577"
+  },
+  {
+   "document": 9,
+   "doc_rank": 9,
+   "chars": 11756,
+   "doc_status": "processed",
+   "wall_seconds": 21.5,
+   "gateway_calls": 19,
+   "chat_calls": 6,
+   "chat_input_tokens": 20805,
+   "chat_output_tokens": 6686,
+   "embedding_inputs": 112,
+   "latency_ms_total": 65038,
+   "non_200_calls": 0,
+   "cost_usd": "0.00427753"
+  },
+  {
+   "document": 10,
+   "doc_rank": 10,
+   "chars": 10120,
+   "doc_status": "processed",
+   "wall_seconds": 26.1,
+   "gateway_calls": 21,
+   "chat_calls": 6,
+   "chat_input_tokens": 20548,
+   "chat_output_tokens": 6110,
+   "embedding_inputs": 130,
+   "latency_ms_total": 67183,
+   "non_200_calls": 0,
+   "cost_usd": "0.00399983"
+  },
+  {
+   "document": 11,
+   "doc_rank": 11,
+   "chars": 8275,
+   "doc_status": "processed",
+   "wall_seconds": 17.9,
+   "gateway_calls": 14,
+   "chat_calls": 4,
+   "chat_input_tokens": 14541,
+   "chat_output_tokens": 3707,
+   "embedding_inputs": 81,
+   "latency_ms_total": 37600,
+   "non_200_calls": 0,
+   "cost_usd": "0.00252946"
+  },
+  {
+   "document": 12,
+   "doc_rank": 12,
+   "chars": 5601,
+   "doc_status": "processed",
+   "wall_seconds": 34.2,
+   "gateway_calls": 16,
+   "chat_calls": 4,
+   "chat_input_tokens": 13706,
+   "chat_output_tokens": 4171,
+   "embedding_inputs": 102,
+   "latency_ms_total": 47093,
+   "non_200_calls": 0,
+   "cost_usd": "0.00275392"
+  },
+  {
+   "document": 13,
+   "doc_rank": 13,
+   "chars": 6359,
+   "doc_status": "processed",
+   "wall_seconds": 35.8,
+   "gateway_calls": 21,
+   "chat_calls": 4,
+   "chat_input_tokens": 15714,
+   "chat_output_tokens": 7324,
+   "embedding_inputs": 146,
+   "latency_ms_total": 70177,
+   "non_200_calls": 0,
+   "cost_usd": "0.00449783"
+  },
+  {
+   "document": 14,
+   "doc_rank": 14,
+   "chars": 9754,
+   "doc_status": "processed",
+   "wall_seconds": 29.8,
+   "gateway_calls": 20,
+   "chat_calls": 4,
+   "chat_input_tokens": 16119,
+   "chat_output_tokens": 6250,
+   "embedding_inputs": 140,
+   "latency_ms_total": 64438,
+   "non_200_calls": 0,
+   "cost_usd": "0.00395435"
+  },
+  {
+   "document": 15,
+   "doc_rank": 15,
+   "chars": 13179,
+   "doc_status": "processed",
+   "wall_seconds": 36.1,
+   "gateway_calls": 29,
+   "chat_calls": 6,
+   "chat_input_tokens": 25079,
+   "chat_output_tokens": 10044,
+   "embedding_inputs": 213,
+   "latency_ms_total": 103784,
+   "non_200_calls": 0,
+   "cost_usd": "0.00634964"
+  },
+  {
+   "document": 16,
+   "doc_rank": 16,
+   "chars": 22011,
+   "doc_status": "processed",
+   "wall_seconds": 36.2,
+   "gateway_calls": 37,
+   "chat_calls": 11,
+   "chat_input_tokens": 41080,
+   "chat_output_tokens": 13107,
+   "embedding_inputs": 245,
+   "latency_ms_total": 129266,
+   "non_200_calls": 0,
+   "cost_usd": "0.00868006"
+  },
+  {
+   "document": 17,
+   "doc_rank": 17,
+   "chars": 16351,
+   "doc_status": "processed",
+   "wall_seconds": 32.2,
+   "gateway_calls": 35,
+   "chat_calls": 8,
+   "chat_input_tokens": 30476,
+   "chat_output_tokens": 11600,
+   "embedding_inputs": 249,
+   "latency_ms_total": 121824,
+   "non_200_calls": 0,
+   "cost_usd": "0.00729303"
+  },
+  {
+   "document": 18,
+   "doc_rank": 18,
+   "chars": 7683,
+   "doc_status": "processed",
+   "wall_seconds": 23.9,
+   "gateway_calls": 16,
+   "chat_calls": 4,
+   "chat_input_tokens": 15691,
+   "chat_output_tokens": 4752,
+   "embedding_inputs": 103,
+   "latency_ms_total": 48908,
+   "non_200_calls": 0,
+   "cost_usd": "0.00316048"
+  },
+  {
+   "document": 19,
+   "doc_rank": 19,
+   "chars": 12684,
+   "doc_status": "processed",
+   "wall_seconds": 32.9,
+   "gateway_calls": 27,
+   "chat_calls": 6,
+   "chat_input_tokens": 23517,
+   "chat_output_tokens": 9044,
+   "embedding_inputs": 192,
+   "latency_ms_total": 94370,
+   "non_200_calls": 0,
+   "cost_usd": "0.00572017"
+  },
+  {
+   "document": 20,
+   "doc_rank": 20,
+   "chars": 8038,
+   "doc_status": "processed",
+   "wall_seconds": 32.5,
+   "gateway_calls": 21,
+   "chat_calls": 4,
+   "chat_input_tokens": 17543,
+   "chat_output_tokens": 7538,
+   "embedding_inputs": 161,
+   "latency_ms_total": 73650,
+   "non_200_calls": 0,
+   "cost_usd": "0.00477117"
+  }
+ ],
+ "stored_final": {
+  "chunks": 49,
+  "chunk_tokens_sum_lightrag_tokenizer": 44560,
+  "entities": 1333,
+  "relationships": 1355,
+  "graph_nodes": 1333,
+  "graph_edges": 1355,
+  "llm_response_cache_entries": 99
+ },
+ "lightrag_warning_counts": {
+  "WARNING: doc-#-chunk-#: LLM output format error; find LLM use <|#|> as record s": 12,
+  "WARNING: doc-#-chunk-#: Complete delimiter can not be found in extraction resul": 3,
+  "WARNING: Recovering mis-prefixed relation: # ~ #": 10,
+  "WARNING: doc-#-chunk-#: LLM output format error; found #/# fields on ENTITY # @": 4,
+  "WARNING: doc-#-chunk-#: LLM output format error; found #/# fields on RELATION #": 81
+ },
+ "openai_api_base_was_set_to_gateway": true,
+ "outbound": {
+  "connections_not_to_gateway": {},
+  "name_lookups_not_loopback": {},
+  "subprocess_starts": [
+   "subprocess.Popen:uname from subprocess < platform < functools < platform < openai._base_client < concurrent.futures.thread",
+   "subprocess.Popen:file from subprocess < platform < openai._base_client < concurrent.futures.thread < threading",
+   "subprocess.Popen:file from subprocess < platform < openai._base_client < concurrent.futures.thread < threading"
+  ]
+ },
+ "gateway_log_records": 414,
+ "calls_logged_after_last_checkpoint": 0,
+ "calls_jsonl_sha256": "13be3c164da3425af4acea469aed7b952f71daf0a3588b5db0c02e07d040a030",
+ "calls_jsonl_note": "sha256 of the gateway's own log (no bodies); it holds call ids and times, so it differs between runs. calls_multiset_sha256 is the order-free, time-free fingerprint",
+ "calls_multiset_sha256": "a9cec2e5d0d7e523737ba48c86ec00701414d5ba7f5a508c2338599623f1d0d4",
+ "hosted": {
+  "chat_upstream": "hosted",
+  "embedding_upstream": "local",
+  "chat_model": "gpt-6-luna",
+  "embedding_model": "qwen3-embedding:0.6b",
+  "hosted_base_url": "https://api.openai.com/v1",
+  "currency": "USD",
+  "key_file": "set",
+  "ledger": "shared",
+  "allowance_usd": "1.5",
+  "prices": {
+   "unit": "per million tokens",
+   "input_per_mtok": "0.1",
+   "output_per_mtok": "0.5",
+   "cached_input_per_mtok": "0.01",
+   "cache_write_per_mtok": "0.125",
+   "source_url": "https://developers.openai.com/api/docs/pricing",
+   "read_at": "20261103 16:10"
+  },
+  "output_limit_default": 6144,
+  "translate_max_tokens": true,
+  "departures_from_the_builders_requests": [
+   "max_tokens: null is dropped and a set max_tokens is sent as max_completion_tokens (the model rejects both)"
+  ],
+  "request_defaults_names": [
+   "reasoning_effort"
+  ],
+  "request_defaults": {
+   "reasoning_effort": "none"
+  },
+  "upstream_timeout_s": 900,
+  "started": true,
+  "resumed_an_existing_ledger": true,
+  "model_reported": {
+   "gpt-6-luna": 99
+  },
+  "cost_usd": "0.08367406",
+  "spent_before_usd": "0.26332843",
+  "cap_usd": "1.76332843",
+  "ledger_records_before": 687,
+  "ledger_records_after": 1101,
+  "calls_in_this_run": 414,
+  "run_records_sha256": "880df1e51b11e107abe35db3f08669b8eaae2e89b982d2530427e3a216959336",
+  "response_facts": {
+   "chat_calls": 99,
+   "finish_reasons": {
+    "stop": 99
+   },
+   "answers_with_reasoning_text": 0,
+   "reasoning_tokens_total": 0,
+   "unparsed_or_streamed": 0,
+   "longest_answer_output_tokens": 3600
+  }
+ },
+ "version": "1.5.7",
+ "dependency_versions": {
+  "lightrag-hku": "1.5.7",
+  "openai": "3.42.1",
+  "tiktoken": "0.14.0",
+  "nano-vectordb": "0.0.4.3",
+  "networkx": "3.7",
+  "numpy": "2.5.4",
+  "tenacity": "9.1.4",
+  "pipmaster": "1.2.2"
+ },
+ "finished_utc": "20261103 18:07:57",
+ "wall_seconds": 603.0
+}
