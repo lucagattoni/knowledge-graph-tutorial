@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261104 10:47 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261104 10:51 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
@@ -41,8 +41,9 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
    **The console, read by me in Chrome (D-40, D-41), shows USD 0.67 billed for the whole pilot; that is the list-price value 1.184 (1.105 by
    the gateway, which left out the cache-write price) less complimentary daily tokens, which the organisation gets because "Share inputs and outputs with
    OpenAI" is enabled for all projects (Data controls, Sharing): the pilot's article text and outputs were probably shared with OpenAI for training, against
-   the plan's premise that API data is not used for training unless you opt in. Waiting on the owner: whether that setting stays as it is (nothing was
-   changed), and closing the pilot** (delete the key file `~/.config/kb-kg-pilot/openai.key`, revoke the key at OpenAI, delete or limit the project; the
+   the plan's premise that API data is not used for training unless you opt in. The owner chose to leave that setting on (D-42; nothing was changed), so anything sent
+   through this organisation's key is shared: a later paid run that would send non-public text must say so in its yes. Waiting on the owner: closing the
+   pilot** (delete the key file `~/.config/kb-kg-pilot/openai.key`, revoke the key at OpenAI, delete or limit the project; the
    project shows a limit of USD 5.00 against the plan's USD 3, unknown whether hard).
    No further paid step is approved; a repeat of D is not covered by D-37. **The free work (stage 0) is done**, including a dress rehearsal of the whole ladder with
    the real driver, runners and builders against a fake provider (573 checks; it found and fixed one error, D-31). The other options

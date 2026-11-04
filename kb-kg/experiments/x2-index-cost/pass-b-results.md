@@ -1,6 +1,6 @@
 # X2 pass B: results of stages A to D
 
-Written 20261104 10:47 UTC. These are the numbers from the paid pilot's four stages, run 20261103 between 16:12 and 19:01 UTC on OpenAI's
+Written 20261104 10:51 UTC. These are the numbers from the paid pilot's four stages, run 20261103 between 16:12 and 19:01 UTC on OpenAI's
 `gpt-6-luna` (reasoning off) through the metering gateway, with the key in a private file and the owner's yes (D-34 for stages A to C,
 D-37 for stage D). **The pilot has run to its end**: the spend is far below its USD 3.00 cap, nothing more is approved, and D-37 does not
 cover a repeat of D. **Nothing here says which graph is better**: no quality was measured. My readings are kept apart, in the last
@@ -224,7 +224,7 @@ that price: 0.2751 at 0.125 per million, where 0.10 would give 0.22. The gateway
 organisation has opted in for all projects (the tooltip ties the complimentary tokens to shared traffic), so the pilot's article text and the models' outputs were
 probably shared with OpenAI for improving and training its models. The page says only traffic sent after the setting was turned on is shared;
 when it was turned on I do not know (the allowance applied on 3 November, which suggests before). The articles are the corpus's public text (an
-ODC-By dataset; the publishers' own terms were not checked, D-32). The setting is the owner's; I changed nothing.
+ODC-By dataset; the publishers' own terms were not checked, D-32). The owner chose to leave the setting on (D-42); I changed nothing.
 
 The two earlier "Agrees" (stage A; B with C) are the owner's, against the gateway's figures, and I do not know what they compared. Anthropic's console
 showed no spend after 1 November (USD 0.34 that day, on Claude Opus 5, data as of 18:57 UTC on 3 November): the pilot used none. The project's own
