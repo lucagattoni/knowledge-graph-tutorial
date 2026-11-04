@@ -80,7 +80,7 @@ The sources read show no maintenance-mode notice and no hosted or paid tier; the
 
 **Experiments**
 
-- [Experiments](../experiments/README.md)
+- [Experiments evidence: status log](../experiments/evidence/status.md)
 - [X1: Snapshot distributions](../experiments/x1-snapshot-distributions.md)
 - [X4: a code graph against grep](../experiments/x4-code-graph-vs-grep.md)
 

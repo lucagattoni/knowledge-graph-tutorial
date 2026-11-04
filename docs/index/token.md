@@ -37,7 +37,7 @@ The unit differs. The retrieval textbook counts word-like pieces of a document [
 **Experiments**
 
 - [Experiments](../experiments/README.md)
-- [Instruments](../experiments/instruments.md)
+- [Instruments evidence: the metering gateway](../experiments/evidence/instruments-gateway.md)
 - [X2: the index cost of cheap graph builders](../experiments/x2-index-cost.md)
 
 **Index**

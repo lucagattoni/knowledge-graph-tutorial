@@ -110,7 +110,7 @@ The size at which a model counts as large is not fixed. One survey gives three p
 
 **Experiments**
 
-- [Instruments](../experiments/instruments.md)
+- [Instruments evidence: the metering gateway](../experiments/evidence/instruments-gateway.md)
 - [X2: the index cost of cheap graph builders](../experiments/x2-index-cost.md)
 
 **Applied to Pinakes**

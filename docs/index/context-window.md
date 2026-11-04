@@ -54,7 +54,7 @@ Li and four co-authors report that, with enough resources, long-context models b
 
 **Experiments**
 
-- [X2: the index cost of cheap graph builders](../experiments/x2-index-cost.md)
+- [X2 evidence: pass A on local models](../experiments/evidence/x2-pass-a.md)
 
 **Index**
 
