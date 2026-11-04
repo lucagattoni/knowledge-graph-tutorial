@@ -1,6 +1,7 @@
 # Resume: the new documentation (`docs/`)
 
-Last updated 20261103 10:47 UTC. **Third merge: PR 3 (the owner's answers to the four cases left open by the review: a Semantica page, a
+Last updated 20261104 10:44 UTC. **Fourth merge: PR 4 (`docs/experiments/` with the paid pilot's results, stages A to D, at the archive's `56aaece`; the pilot's cost shown as open between USD 1.10537, 1.18389 and the console's 0.67) was merged to `main` on 20261104 10:42 UTC as `ad2f0c4` on the owner's instruction "Merge now"; the docs workflow run for that commit succeeded (build and deploy) and the deployed X2 page carries the section "What the console showed". Next for the pages: one refresh when the experiments session records the console re-read (after 20261104 00:00 UTC), and for the changes it made after `56aaece` (`4a2fb67`: five notes fixed, the near-miss window test, "no single cut-off time" withdrawn).**
+**Third merge: PR 3 (the owner's answers to the four cases left open by the review: a Semantica page, a
 paper group for the new trend, a sentence on Open Knowledge Format; the RDF-star Index entry corrected) was merged to `main` on
 20261103 10:45 UTC as `c31f54e` on the owner's instruction "Merge now"; the docs workflow run for that commit succeeded (build and
 deploy), and the deployed Semantica page, the new paper group and the corrected RDF-star entry answered 200 with the new content.**
