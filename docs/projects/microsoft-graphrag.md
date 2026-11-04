@@ -98,7 +98,7 @@ No code, prompts or paper stand behind the LazyGraphRAG figures in the sources r
 
 **Experiments**
 
-- [Experiments](../experiments/README.md)
+- [Experiments evidence: status log](../experiments/evidence/status.md)
 - [X2: the index cost of cheap graph builders](../experiments/x2-index-cost.md)
 - [X3: Matched-cost comparison](../experiments/x3-matched-cost-comparison.md)
 

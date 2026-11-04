@@ -124,6 +124,10 @@ These rules come from the project's `CLAUDE.md` and the owner's decision S-3.
 - Every factual statement about a project, paper, dataset, benchmark, standard or event carries a number
   `[n]` pointing to the page's `## Sources` list. Sources list line:
   `n. <URL> : what it supports (read YYYYMMDD HH:MM UTC)`.
+- **One exception, 20261104:** the Experiments chapter's three long pages (the chapter page, Instruments, X2) were split into a short
+  result page and evidence pages under `docs/experiments/evidence/`. All parts of one page share the one sources page of that family
+  (`experiments-sources.md`, `instruments-sources.md`, `x2-sources.md`); a number in brackets on a result page or an evidence page
+  refers to it, and a source is never renumbered. A new source is appended to its family's list.
 - Read times come from the clock at the time of the read: `date -u "+%Y%m%d %H:%M"`.
 - **Load-bearing facts** (what the page's argument rests on: a "distinctive because" box, a "why it
   emerged" paragraph, an era boundary, every number in a comparison or results table) **and every fact
