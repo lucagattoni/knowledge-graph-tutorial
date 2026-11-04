@@ -13,7 +13,7 @@ through. It exists because the third-party builders an experiment runs cannot do
    the outgoing request, and never printed or logged.
 
 **Status: used against one real provider.** On 20261103 the four stages of a paid pilot sent 1,751 answered requests (and three
-rejected ones) to OpenAI's `gpt-6-luna`; the gateway's total was USD 1.105, **about 0.079 too low if the bill follows the model page**, because versions up to 1.2.0 did not
+rejected ones) to OpenAI's `gpt-6-luna`; the gateway's total was USD 1.105, **about 0.079 too low at list prices (the console's cache-writes line confirms the price, D-41)**, because versions up to 1.2.0 did not
 price OpenAI's cache writes; what that showed is in
 [What this leaves unchecked](#what-this-leaves-unchecked). Everything else below was tested against fake upstreams on loopback,
 with invented prices and made-up keys. Version 1.2.0 added `translate_max_tokens`; version 1.3.0 prices OpenAI's
@@ -370,8 +370,8 @@ writes above the prompt as unusable usage.
   re-test; stage A's first two runs ran the 1.1.0 code; neither read the field.) The gateway read
   `prompt_tokens_details.cached_tokens` and ignored `.cache_write_tokens`, which every answer carried, so it priced the written tokens as
   plain input (USD 0.10 per million) where the model's page says cache writes cost 1.25 times that (0.125). Over stages A to D OpenAI
-  reported 3,140,582 written tokens (2,540,573 of them in stage D), which is about USD 0.0785 of the gateway's USD 1.105 (7%) if the
-  bill follows the page; the stage-A check "the gateway's cost recomputed from the tokens equals its own" used the same fields the gateway
+  reported 3,140,582 written tokens (2,540,573 of them in stage D), which is about USD 0.0785 of the gateway's USD 1.105 (7%) at list prices (the console's cache-writes line
+  confirms the price, D-41); the stage-A check "the gateway's cost recomputed from the tokens equals its own" used the same fields the gateway
   read, so it was circular on this point. Version 1.3.0 reads the field (unit tests; mutation check below). The pilot's committed ledger has `cache_creation_input_tokens` null in all its records, so the written-token counts
   are not re-derivable from the repository (they come from the body log, which is outside it). The pilot's figures are not
   re-run: the results page gives the gateway's total and the total with the write price, from the answers' own token counts, side by side.

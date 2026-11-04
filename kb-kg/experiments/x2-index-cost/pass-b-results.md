@@ -1,6 +1,6 @@
 # X2 pass B: results of stages A to D
 
-Written 20261104 10:51 UTC. These are the numbers from the paid pilot's four stages, run 20261103 between 16:12 and 19:01 UTC on OpenAI's
+Written 20261104 11:14 UTC. These are the numbers from the paid pilot's four stages, run 20261103 between 16:12 and 19:01 UTC on OpenAI's
 `gpt-6-luna` (reasoning off) through the metering gateway, with the key in a private file and the owner's yes (D-34 for stages A to C,
 D-37 for stage D). **The pilot has run to its end**: the spend is far below its USD 3.00 cap, nothing more is approved, and D-37 does not
 cover a repeat of D. **Nothing here says which graph is better**: no quality was measured. My readings are kept apart, in the last
@@ -210,11 +210,14 @@ so the pilot's day was closed and its figure final: the idea that the day's cost
 (read 20261104): "You're eligible for free daily usage on traffic shared with OpenAI", up to 250 thousand tokens a day across `gpt-5.4`, `gpt-5.2`,
 `gpt-5.1`, `gpt-5`, `gpt-4.1`, `gpt-4o`, `o1` and `o3`, and "up to 2.5 million tokens per day across gpt-5.4-mini, gpt-5.4-nano, gpt-5-mini,
 gpt-5-nano, gpt-4.1-mini, gpt-4.1-nano, gpt-4o-mini, o3-mini, and o4-mini"; "usage beyond these limits, as well as usage for other models, will be
-billed at standard rates". `gpt-6-luna` is on neither list. The ledger fits an allowance of 2.5 million tokens all the same: the running
-prompt-plus-completion total of the pilot's calls, in the order the gateway saw them, is 2,499,227 just before the call at 18:19:29 UTC, and the 1,051
-calls after it, priced at the plan's prices with cache writes at 0.125, give input 0.0054, cached input 0.0019, cache writes 0.2751 and output 0.3874
-against the console's 0.005, 0.002, 0.275 and 0.389: three lines to the rounding and the output line 0.4% low (no split of the crossing call closes
-that gap, and I do not know why it is there). Earlier I had searched for a cut-off or a window of calls and found only a fit that random targets
+billed at standard rates". `gpt-6-luna` is on neither list. The ledger fits an allowance of 2.5 million tokens all the same. Counting prompt
+plus completion tokens in the order the ledger file holds the calls, which is the order they completed (ts plus latency; the documentation session
+found this), the running total is 2,495,984 before the call stamped 18:19:33.765 UTC and 2,500,443 after it; the 1,051 calls after it, priced at the
+plan's prices with cache writes at 0.125, give input 0.0054, cached input 0.00185, cache writes 0.2751 and output 0.3885 (0.3893 if the crossing call
+is counted too) against the console's 0.005, 0.002, 0.275 and 0.389: **all four lines inside the rounding**. In the order of the calls' start times,
+which I used first, the crossing call is the one at 18:19:29.577 (2,499,227 before, 2,502,673 after) and the output line comes to 0.3874, 0.4% low, so
+the fit depends on the order. I tried those two orders and chose the second after seeing the gap in the first; completion order is the natural one
+for a meter, because a call's tokens are known only when it ends, but whether OpenAI counts by completion I cannot tell. Earlier I had searched for a cut-off or a window of calls and found only a fit that random targets
 reproduce about one time in six (D-40); the allowance is the better reading because the line falls at the round figure of 2,500,000 and because the
 console itself says the allowance applies to this organisation. **So USD 0.67 is what OpenAI billed, after complimentary tokens, and it is not a check
 on the gateway. At list prices the pilot is worth 1.18389** (the plan's prices, cache writes at 0.125), and the console's cache-writes line confirms
@@ -279,6 +282,6 @@ twenty documents continues, the stage-D column is too low for those two. Nothing
 ## What this cannot show
 
 Quality of any graph. A second model or provider. A repeat of stage D, or its run-to-run spread. Behaviour at corpus scale (609 articles) or whether
-the community steps keep growing. Exactly how the complimentary tokens were applied (the output line is 0.4% off the allowance model), or whether `gpt-6-luna` is on the program's list (it is not named). OpenAI's rate limits (no 429
+the community steps keep growing. Whether OpenAI counts the complimentary allowance in completion order (the fit is exact in that order, which I chose after the start-time order left the output line 0.4% low), or whether `gpt-6-luna` is on the program's list (it is not named). OpenAI's rate limits (no 429
 appeared at concurrency 4; the account's tier is unstated). How much of the cache behaviour belongs to a fresh account and to runs that
 followed each other within minutes. Two runs (C) and one run (D) are small samples.
