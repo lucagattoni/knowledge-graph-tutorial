@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261104 11:59 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261104 12:13 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** All of the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` is in `main`; on 20261104 the owner asked for the branch and its worktree to be deleted, so later work starts from `main`
 in a new worktree.
@@ -43,9 +43,9 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
    the gateway, which left out the cache-write price) less complimentary daily tokens, which the organisation gets because "Share inputs and outputs with
    OpenAI" is enabled for all projects (Data controls, Sharing): the pilot's article text and outputs were probably shared with OpenAI for training, against
    the plan's premise that API data is not used for training unless you opt in. The owner chose to leave that setting on (D-42; nothing was changed), so anything sent
-   through this organisation's key is shared: a later paid run that would send non-public text must say so in its yes.** The owner asked on 20261104 to close the pilot by deleting the key file and revoking the key; **this session did
-   neither** (a hard delete and a credential action are the owner's to do): `rm ~/.config/kb-kg-pilot/openai.key`, and revoke the key at OpenAI (project
-   `kb-kg-pilot`, API keys); **neither was confirmed done when this was written**. Still open: the project shows a limit of USD 5.00 against the plan's USD 3,
+   through this organisation's key is shared: a later paid run that would send non-public text must say so in its yes.** **The pilot's key is closed (D-43):** on 20261104 the owner revoked the key at OpenAI and removed the key file from the Mac mini (this session did neither,
+   a hard delete and a credential action being the owner's to do; it checked both afterwards: the console lists the project's only key as Revoked, and the
+   key file is absent). Still open: the project shows a limit of USD 5.00 against the plan's USD 3,
    unknown whether hard; and whether to keep or delete the private pilot directory `~/.config/kb-kg-pilot/` (profile, builders config, the ledger and its body
    log, the result directories; all outside the repository).
    No further paid step is approved; a repeat of D is not covered by D-37. **The free work (stage 0) is done**, including a dress rehearsal of the whole ladder with
