@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261104 12:13 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261104 12:25 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** All of the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` is in `main`; on 20261104 the owner asked for the branch and its worktree to be deleted, so later work starts from `main`
 in a new worktree.
@@ -57,10 +57,10 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
    paid step needs its own yes with model, provider and cap (D-14). Pinakes follow-ups (a BM25-alone
    arm request, a calibrated deep run) are in [`pinakes/experiments/next.md`](pinakes/experiments/next.md#order-for-the-follow-ups).
    The `NOTICE` copyright line uses the git author name "Luca Gattoni"; the owner may change it.
-3. **Whether the safety gate should fail when its private-name list is missing.** A new worktree has no copy of the
-   gitignored list; the gate warns but still exits 0, so it passes without checking private names. Asked on 20261102;
-   unanswered. A copy of the list is kept outside the repository (`~/.config/kb-kg/public-safe-patterns.local.txt`, saved 20261104 before the worktree
-   that held the only copy was removed); copy it to `tools/public-safe-patterns.local.txt` in any new worktree before the first commit.
+3. **Whether the safety gate should fail when its private-name list is missing.** Answered by the owner on 20261104 ("go with your
+   recommendations"): no, it warns. A new worktree has no copy of the gitignored list, so the gate now also loads the copy kept outside the
+   repository (`~/.config/kb-kg/public-safe-patterns.local.txt`, saved 20261104 before the worktree that held the only copy was removed; the path
+   can be set with `KB_KG_PRIVATE_PATTERNS`). Only when no list exists anywhere does it warn and exit 0 without checking private names. Done.
 
 ## Done since the first pass
 

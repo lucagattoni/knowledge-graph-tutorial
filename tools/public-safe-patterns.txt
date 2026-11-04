@@ -4,7 +4,9 @@
 # Paths from a developer machine
 /Users/[A-Za-z0-9._-]+
 /private/tmp
-/home/[a-z][a-z0-9_-]+/
+# A Linux home path stands alone (line start, space, quote, bracket) or follows file://. After a host name it is a web address
+# and is not matched, so a link to /home/<author>/ on a university site no longer fails the gate.
+(^|[^A-Za-z0-9._~/-])/home/[a-z][a-z0-9_-]+/|file:///home/[a-z]
 
 # Credentials
 sk-ant-[A-Za-z0-9_-]{10,}
