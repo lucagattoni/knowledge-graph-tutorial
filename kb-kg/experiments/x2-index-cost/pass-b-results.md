@@ -1,6 +1,6 @@
 # X2 pass B: results of stages A to D
 
-Written 20261103 20:33 UTC. These are the numbers from the paid pilot's four stages, run 20261103 between 16:12 and 19:01 UTC on OpenAI's
+Written 20261104 10:47 UTC. These are the numbers from the paid pilot's four stages, run 20261103 between 16:12 and 19:01 UTC on OpenAI's
 `gpt-6-luna` (reasoning off) through the metering gateway, with the key in a private file and the owner's yes (D-34 for stages A to C,
 D-37 for stage D). **The pilot has run to its end**: the spend is far below its USD 3.00 cap, nothing more is approved, and D-37 does not
 cover a repeat of D. **Nothing here says which graph is better**: no quality was measured. My readings are kept apart, in the last
@@ -33,8 +33,8 @@ repository, and are summed per run in [`stage-totals.json`](pass-b/stage-totals.
 | D | 2,540,573 | 0.84204 | 0.90556 | 0.06351 |
 | **A to D** | 3,140,582 | **1.10537** | **1.18389** | 0.07851 (7.1% of the gateway's total) |
 
-Which figure holds is for OpenAI's usage page to say. Its spend for the whole pilot (USD 0.67, read 20261103) **matches neither**; see "For the
-console comparison" below. **The earlier
+OpenAI's usage page shows USD 0.67 for the whole pilot, which is neither total: it is what was billed after complimentary daily tokens (see "For
+the console comparison" below). Its cache-writes line fits 0.125 per million, so the list-price total is the larger one. **The earlier
 "Agrees" of the owner, for stage A and for stages B and C, was given against the gateway's figures**; I do not know whether those
 comparisons covered dollars to the cent or tokens, so they neither confirm nor exclude the write price (it adds 0.01500 to
 the 0.26333 of stages A to C). The price is for the default 30-minute lifetime; OpenAI's 12-hour option costs twice as
@@ -198,23 +198,37 @@ and the answers' own usage:
 | D | 1,308 | 3,224,495 (622,948; 2,540,573) | 1,151,321 | 0.84204468 | 0.905559005 |
 | **A to D** | 1,751 | 4,170,590 (943,721; 3,140,582) | 1,546,498 | **1.10537311** | **1.183887660** |
 
-**What the console showed** (project `kb-kg-pilot`, "Last 7 days"; read in Chrome on 20261103 before 19:37 UTC, at 19:37 and at 20:07, the same each
-time): **1,751 requests**; "Total tokens" 4,170,590, which the page's own line calls input tokens and which equals the ledger's input
-total; a prompt-caching hit rate of **22.6%**, equal to 943,721 / 4,170,590; and a spend of **USD 0.67**, in the lines `gpt-6-luna` cache
-writes 0.275, cache writes (12-hour) 0, cached input 0.002, input 0.005 and output 0.389. The console has no bucket finer than a day, so it
-cannot split stages: this compares the whole pilot, not stage D. **The spend is below both totals** (1.105 by the gateway, 1.184 with the
-cache-write price), and no line is near the ledger's at the plan's prices: the console's output line is 0.50 of the ledger's, cache writes
-0.70, plain input 0.58 and cached input 0.21. No subset of the 17 groups (stage A and each run) and no cut-off counted from the start reproduces the four
-lines. Of all 1.5 million windows of consecutive calls, exactly one fits within the rounding (the 1,053 calls from 18:19:18 to 19:00:46 UTC, found
-with the per-call written tokens from the body log), but a random target of the console's size fits some window in 16% of tries (each line scaled
-by a random factor within 10%) and in 1% (within 50%), so I do not count the fit as an explanation. The prices per million that would reproduce them from the whole pilot's tokens are 0.058, 0.0021, 0.0876 and 0.2515 against the plan's
-0.10, 0.01, 0.125 and 0.50. **I do not know why.** One possibility, untested: the console's cost for the current UTC day is partial (its smallest
-bucket is a day, and the figure did not move between my reads at 19:37 and 20:07, 36 and 66 minutes after the last call). It is to be read again after
-4 November 00:00 UTC. Until then **neither total is confirmed, and the console's is lower than both**. The console does list the cache writes as
-a line of their own, so the gateway's omission was an omission of a billed category whatever the final dollars. The two earlier "Agrees" (stage A;
-B with C) are the owner's, against the gateway's figures, and I do not know what they compared. Anthropic's console showed no spend after
-1 November (USD 0.34 that day, on Claude Opus 5, data as of 18:57 UTC on 3 November): the pilot used none. The project's own limit is shown as
-USD 5.00 beside the USD 0.67, against the plan's USD 3 hard limit; I do not know whether that figure is the hard limit or a budget.
+**What the console showed** (project `kb-kg-pilot`, "Last 7 days"; read in Chrome on 20261103 before 19:37 UTC, at 19:37 and at 20:07, and on 20261104 at
+10:43, the same each time): **1,751 requests**; "Total tokens" 4,170,590, which the page's own line calls input tokens and which equals the ledger's
+input total; a prompt-caching hit rate of **22.6%**, equal to 943,721 / 4,170,590; and a spend of **USD 0.67**, in the lines `gpt-6-luna` cache writes
+0.275, cache writes (12-hour) 0, cached input 0.002, input 0.005 and output 0.389. The console has no bucket finer than a day, so it cannot split
+stages: this compares the whole pilot, not stage D. The organisation's own November spend had risen from 0.67 to 4.11 by the last read (other use),
+so the pilot's day was closed and its figure final: the idea that the day's cost was only partial is refuted.
+
+**Why it is below both totals: complimentary daily tokens** (explained 20261104, D-41). In the console's Data controls, Sharing, the organisation has
+"Share inputs and outputs with OpenAI" **enabled for all projects**, and the page says "You're enrolled for complimentary daily tokens". Its tooltip
+(read 20261104): "You're eligible for free daily usage on traffic shared with OpenAI", up to 250 thousand tokens a day across `gpt-5.4`, `gpt-5.2`,
+`gpt-5.1`, `gpt-5`, `gpt-4.1`, `gpt-4o`, `o1` and `o3`, and "up to 2.5 million tokens per day across gpt-5.4-mini, gpt-5.4-nano, gpt-5-mini,
+gpt-5-nano, gpt-4.1-mini, gpt-4.1-nano, gpt-4o-mini, o3-mini, and o4-mini"; "usage beyond these limits, as well as usage for other models, will be
+billed at standard rates". `gpt-6-luna` is on neither list. The ledger fits an allowance of 2.5 million tokens all the same: the running
+prompt-plus-completion total of the pilot's calls, in the order the gateway saw them, is 2,499,227 just before the call at 18:19:29 UTC, and the 1,051
+calls after it, priced at the plan's prices with cache writes at 0.125, give input 0.0054, cached input 0.0019, cache writes 0.2751 and output 0.3874
+against the console's 0.005, 0.002, 0.275 and 0.389: three lines to the rounding and the output line 0.4% low (no split of the crossing call closes
+that gap, and I do not know why it is there). Earlier I had searched for a cut-off or a window of calls and found only a fit that random targets
+reproduce about one time in six (D-40); the allowance is the better reading because the line falls at the round figure of 2,500,000 and because the
+console itself says the allowance applies to this organisation. **So USD 0.67 is what OpenAI billed, after complimentary tokens, and it is not a check
+on the gateway. At list prices the pilot is worth 1.18389** (the plan's prices, cache writes at 0.125), and the console's cache-writes line confirms
+that price: 0.2751 at 0.125 per million, where 0.10 would give 0.22. The gateway's 1.10537 was low against list prices by 0.0785.
+
+**Data sharing.** The plan's decision 3 rested on the page it read: API data is "not used for training unless you explicitly opt in". This
+organisation has opted in for all projects (the tooltip ties the complimentary tokens to shared traffic), so the pilot's article text and the models' outputs were
+probably shared with OpenAI for improving and training its models. The page says only traffic sent after the setting was turned on is shared;
+when it was turned on I do not know (the allowance applied on 3 November, which suggests before). The articles are the corpus's public text (an
+ODC-By dataset; the publishers' own terms were not checked, D-32). The setting is the owner's; I changed nothing.
+
+The two earlier "Agrees" (stage A; B with C) are the owner's, against the gateway's figures, and I do not know what they compared. Anthropic's console
+showed no spend after 1 November (USD 0.34 that day, on Claude Opus 5, data as of 18:57 UTC on 3 November): the pilot used none. The project's own
+limit is shown as USD 5.00 beside the USD 0.67, against the plan's USD 3 hard limit; I do not know whether that figure is the hard limit or a budget.
 
 ## Corpus-scale arithmetic (not a measurement)
 
@@ -265,6 +279,6 @@ twenty documents continues, the stage-D column is too low for those two. Nothing
 ## What this cannot show
 
 Quality of any graph. A second model or provider. A repeat of stage D, or its run-to-run spread. Behaviour at corpus scale (609 articles) or whether
-the community steps keep growing. Whether OpenAI's bill includes the cache-write price (the console decides, above). OpenAI's rate limits (no 429
+the community steps keep growing. Exactly how the complimentary tokens were applied (the output line is 0.4% off the allowance model), or whether `gpt-6-luna` is on the program's list (it is not named). OpenAI's rate limits (no 429
 appeared at concurrency 4; the account's tier is unstated). How much of the cache behaviour belongs to a fresh account and to runs that
 followed each other within minutes. Two runs (C) and one run (D) are small samples.

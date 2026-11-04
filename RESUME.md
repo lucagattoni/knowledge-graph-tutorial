@@ -1,6 +1,6 @@
 # Resume
 
-Last updated 20261103 20:33 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
+Last updated 20261104 10:47 UTC. Decisions: [`DECISIONS.md`](DECISIONS.md). **The repository has been public
 since 20261102 08:46 UTC (D-22).** `main` was fast-forwarded to the work branch
 `worktree-20261030_1852-kb-kg-docs-scaffold` at `14c154d` before the change; later commits go to both.
 
@@ -38,11 +38,12 @@ Subagent cost, from the harness's per-agent totals: wave A about 4.1M tokens, wa
    1.2.0 left out, D-39; the stop rules fired nowhere; the numbers and my readings are in
    [`pass-b-results.md`](kb-kg/experiments/x2-index-cost/pass-b-results.md), the run log in the plan). The owner compared the console for stage A
    and for B with C (agrees, against the gateway's figures) and gave the yes for stage D (D-37); stage D ran 17:57 to 19:01 (D-38).
-   **The console, read by me in Chrome at the owner's instruction (D-40), shows USD 0.67 for the whole pilot against the gateway's 1.105
-   (1.184 with the cache-write price): it matches neither; requests, input tokens and the cache hit rate equal the ledger; cause unknown; read it again
-   after 20261104 00:00 UTC** (`platform.openai.com/usage`, project `kb-kg-pilot`, the 'Spend categories' tab). **Waiting on the owner, once that is settled: closing the
-   pilot** (delete the key file `~/.config/kb-kg-pilot/openai.key`, revoke the key at OpenAI, delete or limit the project; the project shows a limit of
-   USD 5.00 against the plan's USD 3, unknown whether hard).
+   **The console, read by me in Chrome (D-40, D-41), shows USD 0.67 billed for the whole pilot; that is the list-price value 1.184 (1.105 by
+   the gateway, which left out the cache-write price) less complimentary daily tokens, which the organisation gets because "Share inputs and outputs with
+   OpenAI" is enabled for all projects (Data controls, Sharing): the pilot's article text and outputs were probably shared with OpenAI for training, against
+   the plan's premise that API data is not used for training unless you opt in. Waiting on the owner: whether that setting stays as it is (nothing was
+   changed), and closing the pilot** (delete the key file `~/.config/kb-kg-pilot/openai.key`, revoke the key at OpenAI, delete or limit the project; the
+   project shows a limit of USD 5.00 against the plan's USD 3, unknown whether hard).
    No further paid step is approved; a repeat of D is not covered by D-37. **The free work (stage 0) is done**, including a dress rehearsal of the whole ladder with
    the real driver, runners and builders against a fake provider (573 checks; it found and fixed one error, D-31). The other options
    from pass A are on [the pass-A page](kb-kg/experiments/x2-index-cost/pass-a-local-model.md#where-this-leaves-the-owner). To

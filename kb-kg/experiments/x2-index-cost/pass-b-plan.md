@@ -13,7 +13,7 @@ recommendations"): 3 yes, article text may go to OpenAI's API; 4 local embedding
 C, one for D). **Decision 6 was done by the owner on 20261103:** a project of its own at OpenAI with a USD 3 hard limit and a restricted key in a
 private file (the console later showed USD 5.00 beside the project's spend; whether that is the hard limit is unknown, D-40) ([`pass-b-owner-steps.md`](pass-b-owner-steps.md)). **The yes for stages A to C was given on 20261103 16:12 UTC (D-34),
 after the dry runs, and the yes for stage D at 17:57 UTC (D-37); all four stages have run** (run log below; the numbers are in
-[`pass-b-results.md`](pass-b-results.md)). Stage 0 is done (below); what is next (a settled console reading, D-40, and closing the
+[`pass-b-results.md`](pass-b-results.md)). Stage 0 is done (below); what is next (the owner's choice on the data-sharing setting, D-41, and closing the
 pilot) is in [`RESUME.md`](../../../RESUME.md).
 
 ## What pass B answers, and what it does not
@@ -314,8 +314,10 @@ D-37): 20 documents for each of the four builders, one run each, in the usual or
 tokens (943,721 cached), 1,546,498 output tokens.** The tables, the comparison with the arithmetic from C and my readings are in
 [`pass-b-results.md`](pass-b-results.md). **The gateway left out OpenAI's cache-write price (D-39):** OpenAI reported 3,140,582 tokens as written
 to its cache (2,540,573 in stage D) and the gateway (1.1.0 in stage A's first two runs, 1.2.0 after) priced them as plain input; at the model page's USD 0.125 per million the four stages
-cost 1.18389, not 1.10537. I read the console myself in Chrome (D-40): it shows USD 0.67 for the whole pilot with requests, input tokens and the cache hit rate equal to the
-ledger, and **matches neither total**; the cause is unknown and the figure is to be read again after 20261104 00:00 UTC. The earlier comparisons (A, and B with C) were made against the gateway's figures. No further paid step is approved; a repeat of D is not covered by D-37.
+cost 1.18389, not 1.10537. I read the console myself in Chrome (D-40, D-41): it shows USD 0.67 billed for the whole pilot, with requests, input tokens and the cache hit rate equal to the
+ledger; that is the list-price value (1.18389) less complimentary daily tokens, which the organisation gets because it shares inputs and outputs with OpenAI (D-41), and its cache-writes line confirms 0.125 per million. The earlier comparisons (A, and B with C) were made against the gateway's figures. No further paid step is approved; a repeat of D is not covered by D-37.
+
+**Data sharing, found 20261104 (D-41):** decision 3 rested on the page the plan read, "API data is not used for training unless you explicitly opt in" (table above). The organisation has "Share inputs and outputs with OpenAI" enabled for all projects, so the pilot's article text and the models' outputs were probably shared for improving and training OpenAI's models; the articles are the corpus's public text (an ODC-By dataset; the publishers' terms were not checked). The setting is the owner's; nothing was changed.
 
 A credentials fault is a harness reason, so a repeat of stage A is allowed once the cause is fixed and written down (stop rules,
 above). Attempt 1's files are kept under the pilot directory as `stage-a-attempt1`.
