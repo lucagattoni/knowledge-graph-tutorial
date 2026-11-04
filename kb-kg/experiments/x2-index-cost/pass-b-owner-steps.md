@@ -14,7 +14,7 @@ recommendations": 3, 4, 5 and 7 are answered as the table recommends (D-32). Onl
 
 | # | Question | My recommendation | If you disagree |
 |---|---|---|---|
-| 3 | May the 20 article texts go to OpenAI's API? | Yes (the text is never committed) | No: the pilot stops here and nothing more is run |
+| 3 | May the 20 article texts go to OpenAI's API? | Yes (the text is never committed; **found 20261104, D-41: the organisation shares inputs and outputs with OpenAI for training; the owner left that on, D-42**) | No: the pilot stops here and nothing more is run |
 | 4 | Embeddings | Local `qwen3-embedding:0.6b`, free, as in pass A | OpenAI `text-embedding-3-small`, about USD 0.002 more and a second price to track |
 | 5 | Builders | All four, in the order LightRAG, fast-graphrag, Microsoft GraphRAG, nano-graphrag | A subset, named |
 | 6 | Key and hard limit | Sections 2 and 3 below, then "done" and the key file's path (never its content) | Say that no provider-side limit exists and the gateway is the only guard (I advise against it) |
